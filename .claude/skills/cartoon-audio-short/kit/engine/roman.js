@@ -13,6 +13,8 @@ export const OUTFITS = {
   civC: { tunic: "#5d8a3a", skin: "#c99067", hair: "#1e1714", stout: true },
   workA: { tunic: "#8a5d3b", skin: "#f5c9a0", cap: "#c2733a", apron: "#d8c9a6" },
   workB: { tunic: "#3f6a6f", skin: "#ecd0b6", cap: "#5b4a8a", moustache: "#4a3020" },
+  // M-Play Zone host (see references/mplay-zone.md): orange beanie, teal hoodie. Glasses still to be drawn.
+  host: { tunic: "#2f9e94", skin: "#f5c9a0", cap: "#e8742a", hair: "#3b2a20" },
 };
 
 /** galea: iron bowl, brass brow band, cheek guards, transverse red crest */

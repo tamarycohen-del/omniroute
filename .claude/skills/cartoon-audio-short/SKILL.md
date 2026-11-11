@@ -7,6 +7,11 @@ description: Make a vertical animated cartoon short. Offers 10 ideas, writes the
 
 The look: flat 2D bean-head cartoon characters (canvas-drawn "cards" with plum outlines) in a colourful 3D world with black ink outlines, painted textures, depth-of-field and gliding cameras. The output is 1080x1920, 30 fps, exactly as long as the voiceover. The user's voice is unchanged. The music bed and SFX are synthesized and sit at **50 % of the voice level**. Proven on "The Soldier Who Never Left" (19.7 s, 8 shots).
 
+## Channel profile (read first)
+For the **M-Play Zone** channel, read `references/mplay-zone.md` before Stage 1. Its defaults override the
+generic ones below: 55–65 s length, small one-word captions on, a recurring host character, a generated
+voiceover when the user has none (`tools/tts_edge.py` + `tools/words2phrases.py`), and a publish stage.
+
 ## Rules
 - Stories, characters and shots are always original. Never recreate another creator's video shot for shot. Offer an original take on the same idea instead.
 - No real, named living people as characters, and no brand mascots or logos.
@@ -19,7 +24,7 @@ The look: flat 2D bean-head cartoon characters (canvas-drawn "cards" with plum o
 If an audio file is already attached, skip to Stage 4. If a script was also given, use it for the timing.
 Otherwise ask one AskUserQuestion (or plain text if that tool is missing): **"Where are you starting from?"**
 - **Voiceover ready**: ask them to upload it, plus the script text if they have it (the script makes the timing exact). Go to Stage 4 when it arrives.
-- **I have a script, need the voiceover**: tighten the script per Stage 3 if needed, give it back with recording tips, ask for the upload, then go to Stage 4.
+- **I have a script, need the voiceover**: tighten the script per Stage 3 if needed, give it back with recording tips, ask for the upload, then go to Stage 4. If they'd rather not record, offer a generated voice (ElevenLabs via Composio, or `tools/tts_edge.py`; see the channel profile).
 - **Need video ideas and a script**: go to Stage 2.
 Also ask the target length if they haven't said. The default is 20-30 s; 45-60 s is allowed.
 
@@ -67,7 +72,8 @@ Then run `bash <skill>/kit/tools/setup.sh ~/shorts/<slug>`. It copies the engine
 - Chromium: use the pre-installed Playwright browser with `--use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist`. That gives CPU WebGL at about 3-10 s per frame.
 
 ### 4.1 Timing
-Run `python3 timing.py voice.mp3 script.txt --out work`.
+With a generated Edge voice, run `python3 words2phrases.py tts_words.json script.txt voice.mp3 --out work` instead (exact timings, no alignment needed).
+Otherwise run `python3 timing.py voice.mp3 script.txt --out work`.
 - With whisper or faster-whisper installed, it uses word timestamps.
 - Otherwise it aligns script phrases (split at punctuation) to silence-detected speech segments, with a DP that matches syllables to duration and penalises sentence ends inside a segment and long gaps inside a phrase.
 - With no ASR and no script, ask for the script. Claude cannot hear audio.
@@ -125,10 +131,19 @@ Rewrite the cue table for the story; the synths stay. `audio.py` writes only ste
 - Mix with `python3 mix.py voice.mp3 music.wav sfx.wav`. It sets music to exactly 50 % of the voice's gated RMS (−6 dB) and SFX to 50 % with peaks capped at 0.7× the voice peak. It prints the measured levels: confirm music shows −6.0 dB vs voice and SFX is at or below that.
 - Lock picture timing before making sound. Any timing change means re-running audio.py and mix.py.
 
+### 4.7b Captions (when the user or the channel profile wants them)
+`python3 captions.py work/words.json work/captions.ass --style small` (or `--style bold`). `finish.sh` burns
+`work/captions.ass` in automatically when it exists. Keep captions clear of the bottom 20 % (YouTube's UI).
+
 ### 4.8 Render + finish
 - Run `node render.mjs frames "0-<N-1>"` with Bash `run_in_background`, watched by a Monitor loop that reports progress and catches errors or process exit. `RESUME=1` continues after an interruption. Don't run heavy Python at the same time on small machines.
 - Run `bash finish.sh "Title"`. It applies one linear gain to about −14 LUFS plus a −1 dBFS peak limiter, encodes H.264 CRF 17 + AAC, runs freeze/black and loudness QA, and writes `out/qa_sheet.jpg`. Look at the sheet. Frozen spans ≥0.4 s or black frames need a fix.
 - Deliver the MP4 with SendUserFile and a few lines on what each shot shows. Offer captions, tweaks, or the next idea from the list.
+
+## Stage 5: Publish (only on the user's explicit go-ahead)
+Follow the "Publish" section of `references/mplay-zone.md`: show the title, description, hashtags, pinned
+comment and AI disclosure, ask public / unlisted / private, upload through the Composio YouTube tools only
+after the user says to, then schedule the 48–72 h analytics check (`yt-edit`).
 
 ## Engine gotchas (kept in the kit; keep them if rebuilding)
 - `#include <fog_vertex>` / `<fog_fragment>` go on their own lines.
@@ -143,5 +158,7 @@ Rewrite the cue table for the story; the synths stay. `audio.py` writes only ste
 - `main.js`: renderer, toon materials, world, cards (1200x2000 CanvasTexture planes, origin at soles), passes colour (RT samples 4) → normal/depth → ink+grade (saturation, gain/lift, vignette, flash) → DOF to screen. It exposes `window.renderFrame(f)` and `window.ready`.
 - `story.js` exports SHOTS, `shotAt`, `camAt`, `dofAt`, LIGHTS/`lightFor`, `worldAt`, `actorsAt(f, T)`, `fxAt(f, T)`. All are pure functions of the frame.
 - `render.mjs`: Playwright → `renderFrame(f)` → `toDataURL('image/jpeg', .95)` → `frames/f0000.jpg`.
-- `mix.py`: gated-RMS level lock (music and SFX at 50 % of the voice). `finish.sh`: linear loudness gain, limiter, encode, QA.
+- `mix.py`: gated-RMS level lock (music and SFX at 50 % of the voice), writes `mix_raw.wav`. `finish.sh`: linear loudness gain, limiter, encode (+ captions if `work/captions.ass` exists), QA.
+- `tts_edge.py`: generated narrator voice + word timings. `words2phrases.py`: TTS timings → `work/words.json` + `work/phrases.json`. `captions.py`: one-word captions → `.ass`.
+- `kit/vendor/`: three.js r160 (`three.module.js`) and `toon.ts` (MIT, mromidev/claude-animated-shorts), so `setup.sh` needs no network.
 - Characters: the Pen API from mromidev/claude-animated-shorts `templates/bridge/toon.ts`, extended in the same module scope by the cast file.
