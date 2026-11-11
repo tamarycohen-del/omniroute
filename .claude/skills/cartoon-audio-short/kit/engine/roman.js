@@ -13,8 +13,15 @@ export const OUTFITS = {
   civC: { tunic: "#5d8a3a", skin: "#c99067", hair: "#1e1714", stout: true },
   workA: { tunic: "#8a5d3b", skin: "#f5c9a0", cap: "#c2733a", apron: "#d8c9a6" },
   workB: { tunic: "#3f6a6f", skin: "#ecd0b6", cap: "#5b4a8a", moustache: "#4a3020" },
-  // M-Play Zone host (see references/mplay-zone.md): orange beanie, teal hoodie. Glasses still to be drawn.
-  host: { tunic: "#2f9e94", skin: "#f5c9a0", cap: "#e8742a", hair: "#3b2a20" },
+  // M-Play Zone host (see references/mplay-zone.md): orange beanie, round glasses, teal hoodie.
+  host: { tunic: "#2f9e94", skin: "#f5c9a0", cap: "#e8742a", hair: "#3b2a20", glasses: true },
+  // 1600s cast
+  king: { tunic: "#2d4f9e", cape: "#9e2230", skin: "#f3d2b4", hair: "#7a4a26", beard: "#7a4a26", crown: "#e8b83a", stout: true },
+  admiral: { tunic: "#20304f", skin: "#efcfb2", cap: "#1c2436", moustache: "#d9d4c8" },
+  sailorA: { tunic: "#e8e2d0", skin: "#f5c9a0", cap: "#c0302c" },
+  sailorB: { tunic: "#4f7fb8", skin: "#c99067", hair: "#1e1714" },
+  sailorC: { tunic: "#8a5d3b", skin: "#ecd0b6", cap: "#3f6a6f", moustache: "#4a3020" },
+  builder: { tunic: "#7a5434", skin: "#f5c9a0", cap: "#d9a441", apron: "#d8c9a6" },
 };
 
 /** galea: iron bowl, brass brow band, cheek guards, transverse red crest */
@@ -212,6 +219,21 @@ export const romanFront = (p, key, opts = {}) => {
   }
   faceFront(p, cx, hc, W, expr, facing, look, lid, helmet, skin, O.beard ? O.beard : O.moustache, !!O.stout);
   if (O.brows) for (const s of [-1, 1]) p.ell(cx + 7 * u * facing + s * 14 * u, hc - 20 * u, 11 * u, 5 * u, O.brows, 2 * u);
+  if (O.glasses) { // round glasses over the eyes (eyes sit at fx +- 13u on the head centre line)
+    const fx = cx + 7 * u * facing;
+    for (const s of [-1, 1]) p.ell(fx + s * 13 * u, hc, 10.5 * u, 10 * u, null, 2.8 * u);
+    p.stroke([[fx - 2.6 * u, hc - 1.5 * u], [fx + 2.6 * u, hc - 1.5 * u]], 2.6 * u);
+  }
+  if (O.crown) { // gold crown with five points and gems, sitting on the head top
+    const top = hc - H.b, base = top + 0.16 * HH, cw = 0.62 * H.a, ht = 0.3 * HH, gold = O.crown;
+    const pts = [[cx - cw, base]];
+    for (let i = 0; i <= 8; i++) { const x = cx - cw + (2 * cw) * i / 8; pts.push([x, i % 2 ? base - ht * 0.55 : base - ht]); }
+    pts.push([cx + cw, base]);
+    p.shadedFill(pts, gold, mul(gold, [0.7, 0.6, 0.45]), light, cw, 0.35); p.inkRing(pts, ow * 0.8, thick);
+    p.band([[cx - cw, base - 0.03 * HH], [cx + cw, base - 0.03 * HH]], mul(gold, [0.85, 0.75, 0.55]), 0.05 * HH, 1.4 * u);
+    for (const [k, c] of [[-0.5, "#c0302c"], [0, "#2f6fb8"], [0.5, "#2f9e5a"]]) p.ell(cx + k * cw, base - 0.03 * HH, 4.5 * u, 4 * u, c, 1.4 * u);
+    for (let i = 0; i <= 8; i += 2) p.dot(cx - cw + (2 * cw) * i / 8, base - ht - 3 * u, 3.6 * u, "#fff3c4");
+  }
   if (O.beard) { // re-draw the mouth over the beard for open mouths
     if (expr === "shock" || expr === "snore") p.ell(cx + 8 * u * facing, hc + 22 * u, 6 * u, 7 * u, "#5a1e28", 2 * u);
   }
