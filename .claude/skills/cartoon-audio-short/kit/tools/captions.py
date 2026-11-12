@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """One-word-at-a-time captions as an .ass file (burned in by finish.sh when work/captions.ass exists).
 
-    python3 captions.py work/words.json work/captions.ass [--style small|bold] [--y 0.62]
+    python3 captions.py work/words.json work/captions.ass [--style small|bold|white] [--y 0.62]
 
 small (default): small white words with a thin dark outline, centred, the curious-fact look.
 bold: bigger, yellow active word, heavier outline (more "Shorts" style).
@@ -14,6 +14,7 @@ STYLES = {
     #        font size, primary,     outline, shadow, bold
     "small": (62,  "&H00FFFFFF", 4, 1, -1),
     "bold":  (104, "&H0000D7FF", 9, 0, -1),
+    "white": (104, "&H00FFFFFF", 9, 0, -1),   # bold size, white text
 }
 
 
