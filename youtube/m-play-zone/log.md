@@ -6,4 +6,4 @@
 
 ## 2026-11-12: Vasa pilot published
 - Channel renamed to History Oops (new description, keywords, profile picture).
-- Uploaded public: https://youtube.com/shorts/3NBi8dnQAT4 (66 s, big white captions, category Education).
+- Uploaded public via the API as 3NBi8dnQAT4; minutes later YouTube listed it as "Deleted video" (user did not delete it). Plan: user re-uploads from the YouTube app.
