@@ -120,7 +120,7 @@ const FX = (key, draw, pos, s, extra = {}) => ({ key, draw, x: pos[0], y: pos[1]
 const tagAt = (out, t, x, z, k = 1, col, y0 = 0, s = 0.36) => out.push(FX('tag' + t + col + q(k, 1), (p) => { const g = p.g; g.save(); g.translate(300, 680); g.scale(k, k); g.translate(-300, -680); tagCard(p, { t, col }); g.restore(); }, [x, y0 + 2.05, z], s));
 const front = (C, d) => { const fx = C.look[0] - C.pos[0], fy = C.look[1] - C.pos[1], fz = C.look[2] - C.pos[2], L = Math.hypot(fx, fy, fz); return [C.pos[0] + fx / L * d, C.pos[1] + fy / L * d, C.pos[2] + fz / L * d]; };
 const phoneAt = (out, f, T, C, tag, k) => { const s = 0.36, P = front(C, 1.25); out.push(FX('phone' + tag + q(k, 1), (p) => phoneCard(p, { T, mom: MOM, opts: { seed: 8, expr: 'smile', blink: 0, R: 'wave', wv: 0.6 }, tag, k }), [P[0], P[1] - 0.5 * 2.25 * s + 0.02, P[2]], s, { order: 8 })); };
-const mathAt = (out, C, lines, hi, d = 1.6) => { const s = 0.62 * d / 2.6, P = front(C, d); out.push(FX('math' + lines.join('|') + hi, (p) => mathCard(p, { lines, hi }), [P[0], P[1] - 0.55 * 2.25 * s, P[2]], s, { order: 9 })); };
+const mathAt = (out, C, lines, hi, d = 1.6) => { const s = 0.62 * d / 2.6, P = front(C, d); out.push(FX('math' + lines.join('|') + hi, (p) => mathCard(p, { lines, hi }), [P[0], P[1] - 0.55 * 2.25 * s + 0.2 * d, P[2]], s, { order: 9 })); };
 const n = (v) => v.toLocaleString('en-US');
 export const fxAt = (f, T) => {
   const S = shotAt(f), C = camAt(f), out = [];
