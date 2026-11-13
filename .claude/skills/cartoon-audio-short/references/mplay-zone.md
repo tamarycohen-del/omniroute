@@ -55,3 +55,7 @@ public, unlisted or private.
 2. This skill, Stage 2: 10 ideas, the user picks one.
 3. Stage 3 script → voice (option 1, 2 or 3) → Stage 4 build → contact sheet → full render → finish with captions.
 4. Stage 5 publish after approval.
+
+
+## Recurring host rule (Factopia)
+The host (orange cap, round glasses, teal top; outfit `host`) appears in every video: a reaction shot in the middle and a close-up in the ending. In story videos he can be one of the people in the scene.

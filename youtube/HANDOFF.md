@@ -19,6 +19,11 @@ Branch: `claude/happy-newton-la11y6`. Channel id `UCZfAUpE88vp9EUA2ESHk0KA` (You
 | How many times will you see them again (Ethan) | to schedule day after 20:00 | `youtube/history-oops/see-again/` |
 Final MP4s were in the old session's scratchpad (not in git); re-render from sources if needed.
 
+## Recurring host (in EVERY video)
+- Our original host character: orange cap, round glasses, teal top (`romanFront(p, 'host', ...)`, outfit `host` in the engine).
+- He appears in every video: at least one reaction shot in the middle and a close-up in the ending (grin + thumbs up, or the final punchline).
+- In story videos he can be one of the people in the scene (e.g. the front-row student in the Einstein video).
+
 ## How we make a video
 - Skill: `.claude/skills/cartoon-audio-short/` (three.js cartoon engine, `render.mjs`, `mix.py`, `captions.py --style white`, `finish.sh`, `fitvoice.py`).
 - Voice: ElevenLabs `Ethan – Energetic YouTube Narrator` (voice_id `uB5dGadiIOtRLnqbQl9M`, eleven_v4, tags [excited]/[playful]). Free tier is often busy — retry; elevenlabsusercontent.com is blocked locally, fetch via the Composio workbench.
