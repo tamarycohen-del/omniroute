@@ -286,7 +286,7 @@ const CLASS = new THREE.Group(); CLASS.position.set(0, 0, -1200); scene.add(CLAS
 const boardCanvas = document.createElement('canvas'); boardCanvas.width = 700; boardCanvas.height = 900;
 const boardTex = new THREE.CanvasTexture(boardCanvas); boardTex.colorSpace = THREE.SRGBColorSpace; let boardKey = '';
 { const wallC = toon({ color: '#e8d8b8' }), floorC = toon({ color: '#b07a4a' });
-  add(tbox(14, 0.2, 12, 2), floorC, 0, -0.1, 0, CLASS, { cast: false });
+  add(tbox(14, 0.2, 12, 2), floorC, 0, -0.07, 0, CLASS, { cast: false });
   add(tbox(14, 4.6, 0.2, 2), wallC, 0, 2.3, -5, CLASS); add(tbox(0.2, 4.6, 12, 2), wallC, -7, 2.3, 0, CLASS); add(tbox(0.2, 4.6, 12, 2), wallC, 7, 2.3, 0, CLASS);
   add(tbox(14, 0.2, 12, 2), toon({ color: '#f4f0e6' }), 0, 4.7, 0, CLASS, { cast: false });
   for (const z of [-3, 0, 3]) { add(box(0.05, 1.8, 2.0), toon({ color: '#9ed4f0', emissive: '#bfe6ff', emissiveIntensity: 0.4 }), 6.88, 2.4, z, CLASS, { cast: false }); add(box(0.08, 2.0, 0.1), toon({ color: '#ffffff' }), 6.86, 2.4, z, CLASS, { cast: false }); }
