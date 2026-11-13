@@ -8,12 +8,9 @@ g.save(); g.translate(800,760); g.globalAlpha=0.14; g.fillStyle='#fff';
 for(let k=0;k<16;k++){ g.rotate(Math.PI/8); g.beginPath(); g.moveTo(0,0); g.lineTo(1200,-90); g.lineTo(1200,90); g.closePath(); g.fill(); } g.restore();
 // small floating facts icons
 g.globalAlpha=0.5; g.fillStyle='#fff'; g.font='900 120px "Arial Black", sans-serif'; g.textAlign='center';
-g.fillText('%',330,620); g.fillText('×',1290,640); g.fillText('?',300,1060); g.fillText('=',1300,1080); g.globalAlpha=1;
+g.fillText('%',330,620); g.fillText('×',1290,640); g.fillText('=',1300,1080); g.globalAlpha=1;
 const cv=document.createElement('canvas'); cv.width=600; cv.height=1000;
 T.romanFront(new T.Pen(cv.getContext('2d')),'host',{seed:4,expr:'shock'});
-g.drawImage(cv,-329,-200,2244,3740);
-// number tag above the head
-const tc=document.createElement('canvas'); tc.width=600; tc.height=1000; tagCard(new T.Pen(tc.getContext('2d')),{t:'?',col:'#5ac0ff'});
-g.drawImage(tc, 800-330, 10-560*1.1+120, 660, 1100);
+g.drawImage(cv,-329,-300,2244,3740);
 window.done=true;
 </script></body></html>
