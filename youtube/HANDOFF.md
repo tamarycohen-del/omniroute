@@ -19,6 +19,11 @@ Branch: `claude/happy-newton-la11y6`. Channel id `UCZfAUpE88vp9EUA2ESHk0KA` (You
 | How many times will you see them again (Ethan) | to schedule day after 20:00 | `youtube/history-oops/see-again/` |
 Final MP4s were in the old session's scratchpad (not in git); re-render from sources if needed.
 
+## What the analytics say (Nov 2026)
+- Vasa (warship): ~70% average viewed, likes almost doubled. Emu war: ~51%. "Stayed to watch" rate ~60-62% on both.
+- Lesson: one clear tension line that builds to a single climax near the end (Vasa) beats a string of separate jokes (Emu).
+- Rules for new videos: keep the middle (20-40 s) tight with a visual change or twist there; end on a loop back to the opening or a last punch; finish with one simple question to the viewer (e.g. "What's the biggest mistake in history?").
+
 ## Recurring host (in EVERY video)
 - Our original host character: orange cap, round glasses, teal top (`romanFront(p, 'host', ...)`, outfit `host` in the engine).
 - He appears in every video: at least one reaction shot in the middle and a close-up in the ending (grin + thumbs up, or the final punchline).
