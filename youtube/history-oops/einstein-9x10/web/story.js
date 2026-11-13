@@ -26,7 +26,7 @@ export const LIGHTS = {
 export const lightFor = (S) => ({ ...LIGHTS[S.light] });
 
 const CAMS = {
-  enter: [{ f: 0, pos: [0.4, 2.3, CZ + 6.8], look: [0.6, 1.8, BZ], fov: 50 }, { f: 144, pos: [0.4, 2.1, CZ + 4.6], look: [0.6, 2.0, BZ], fov: 46 }],
+  enter: [{ f: 0, pos: [0.4, 2.3, CZ + 5.6], look: [0.6, 1.8, BZ], fov: 50 }, { f: 144, pos: [0.4, 2.1, CZ + 4.6], look: [0.6, 2.0, BZ], fov: 46 }],
   board: [{ f: 145, pos: [0, 2.3, CZ + 0.4], look: [0, 2.3, BZ], fov: 44 }, { f: 400, pos: [0, 2.3, CZ - 0.2], look: [0, 2.3, BZ], fov: 44 },
     { f: 457, pos: [0.3, 1.25, CZ - 2.6], look: [0.3, 1.25, BZ], fov: 34, ease: 'easeOut' }, { f: 489, pos: [0.3, 1.25, CZ - 2.8], look: [0.3, 1.25, BZ], fov: 32 }],
   laugh: [{ f: 490, pos: [-1.2, 1.6, CZ - 4.2], look: [-1.2, 1.0, CZ + 2], fov: 60 }, { f: 573, pos: [-1.2, 1.55, CZ - 3.8], look: [-1.2, 1.0, CZ + 2], fov: 56 }],

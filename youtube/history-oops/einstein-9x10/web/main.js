@@ -94,6 +94,8 @@ scene.fog = new THREE.Fog('#ffffff', 40, 600);
 const world = new THREE.Group(); scene.add(world);
 const waterU = { t: { value: 0 }, deep: { value: new THREE.Color('#2f6f8f') }, shal: { value: new THREE.Color('#5fa8bf') }, glint: { value: new THREE.Color('#e9f6ff') } };
 const asph = toon({ color: '#5a5c62' }), walk = toon({ color: '#c9c2b4' }), lawnM = toon({ color: '#7cb84e' }), lineM = toon({ color: '#f4f0e0' }), yel = toon({ color: '#f2c230' });
+// stop ground layers flickering: push the lawn and road back in depth so whatever lies on them always wins
+Object.assign(lawnM, { polygonOffset: true, polygonOffsetFactor: 8, polygonOffsetUnits: 8 }); Object.assign(asph, { polygonOffset: true, polygonOffsetFactor: 4, polygonOffsetUnits: 4 });
 const roofs = ['#b8483a', '#3d6e8a', '#6a4a3a', '#4a6a3a'].map((c) => toon({ color: c })), walls = ['#f2e6c8', '#cfe2ee', '#f2cfc0', '#e0eac8', '#f6f0e0'].map((c) => toon({ color: c }));
 const dark = toon({ color: '#2a2a30' }), glassM = toon({ color: '#9ec4d6' }), tyreM = toon({ color: '#222020' }), chrome = toon({ color: '#d0d4d8' });
 const sandM = toon({ color: '#ecd29a' }), waterBlobM = new THREE.MeshToonMaterial({ gradientMap: grad, color: '#5fb8d8', transparent: true, opacity: 0.82, depthWrite: false });
