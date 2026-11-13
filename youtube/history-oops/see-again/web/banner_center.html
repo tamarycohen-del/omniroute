@@ -7,7 +7,7 @@ g.fillStyle=bg; g.fillRect(0,0,W,H);
 g.save(); g.translate(W/2,H/2); g.globalAlpha=0.1; g.fillStyle='#fff';
 for(let k=0;k<24;k++){ g.rotate(Math.PI/12); g.beginPath(); g.moveTo(0,0); g.lineTo(2000,-120); g.lineTo(2000,120); g.closePath(); g.fill(); } g.restore();
 if ('host' === 'host') { const cv=document.createElement('canvas'); cv.width=600; cv.height=1000;
-  T.romanFront(new T.Pen(cv.getContext('2d')),'host',{seed:4,expr:'smile',R:'point',facing:0,look:0});
+  T.romanFront(new T.Pen(cv.getContext('2d')),'host',{seed:4,expr:'grin',facing:0,look:0});
   g.drawImage(cv, 1280 - 160, 440, 320, 533); }
 window.done=true;
 </script></body></html>
