@@ -14,7 +14,7 @@ Branch: `claude/happy-newton-la11y6`. Channel id `UCZfAUpE88vp9EUA2ESHk0KA` (You
 | Video | Status | Files |
 |---|---|---|
 | Vasa warship (old Edge voice) | uploaded by owner | `youtube/m-play-zone/production/vasa/` |
-| Emu War (ElevenLabs Jon - Catalyst) | to schedule 20:00 | `youtube/history-oops/emu-war/` |
+| Emu War (ElevenLabs Jon - Catalyst) | uploaded by owner | `youtube/history-oops/emu-war/` |
 | What If Gravity Turned Off (Ethan) | to schedule next day 20:00 | `youtube/history-oops/gravity-off/` |
 | How many times will you see them again (Ethan) | to schedule day after 20:00 | `youtube/history-oops/see-again/` |
 Final MP4s were in the old session's scratchpad (not in git); re-render from sources if needed.
