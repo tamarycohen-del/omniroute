@@ -93,14 +93,16 @@ scene.fog = new THREE.Fog('#ffffff', 40, 600);
 const world = new THREE.Group(); scene.add(world);
 const waterU = { t: { value: 0 }, deep: { value: new THREE.Color('#2f6f8f') }, shal: { value: new THREE.Color('#5fa8bf') }, glint: { value: new THREE.Color('#e9f6ff') } };
 const asph = toon({ color: '#5a5c62' }), walk = toon({ color: '#c9c2b4' }), lawnM = toon({ color: '#7cb84e' }), lineM = toon({ color: '#f4f0e0' }), yel = toon({ color: '#f2c230' });
+// stop ground layers flickering: push the lawn and road back in depth so whatever lies on them always wins
+Object.assign(lawnM, { polygonOffset: true, polygonOffsetFactor: 8, polygonOffsetUnits: 8 }); Object.assign(asph, { polygonOffset: true, polygonOffsetFactor: 4, polygonOffsetUnits: 4 });
 const roofs = ['#b8483a', '#3d6e8a', '#6a4a3a', '#4a6a3a'].map((c) => toon({ color: c })), walls = ['#f2e6c8', '#cfe2ee', '#f2cfc0', '#e0eac8', '#f6f0e0'].map((c) => toon({ color: c }));
 const dark = toon({ color: '#2a2a30' }), glassM = toon({ color: '#9ec4d6' }), tyreM = toon({ color: '#222020' }), chrome = toon({ color: '#d0d4d8' });
 const sandM = toon({ color: '#ecd29a' }), waterBlobM = new THREE.MeshToonMaterial({ gradientMap: grad, color: '#5fb8d8', transparent: true, opacity: 0.82, depthWrite: false });
 // ground
 add(new THREE.PlaneGeometry(3000, 3000), lawnM, 0, 0, 0, world, { cast: false }).rotation.x = -Math.PI / 2;
-add(new THREE.PlaneGeometry(260, 9), asph, 0, 0.02, 0, world, { cast: false }).rotation.x = -Math.PI / 2;
+add(new THREE.PlaneGeometry(260, 9), asph, 0, 0.04, 0, world, { cast: false }).rotation.x = -Math.PI / 2;
 for (const z of [-5.6, 5.6]) add(tbox(260, 0.18, 2.2, 1), walk, 0, 0.09, z, world, { cast: false });
-for (let x = -120; x < 120; x += 6) add(box(2.6, 0.02, 0.18), lineM, x, 0.03, 0, world, { cast: false });
+for (let x = -120; x < 120; x += 6) add(box(2.6, 0.02, 0.18), lineM, x, 0.07, 0, world, { cast: false });
 // houses
 const house = (x, z, w, d, h, wallM, roofM, face) => { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = face; world.add(g);
   add(tbox(w, h, d, 2), wallM, 0, h / 2, 0, g);
@@ -140,8 +142,8 @@ const fl = (o, h, spin = 1, group = 'street', extra = {}) => { o.userData.base =
 }
 // ---- highway (x = 400): 6 lanes along x, cars in both directions
 const HX = 400;
-add(new THREE.PlaneGeometry(400, 30), asph, HX, 0.02, 0, world, { cast: false }).rotation.x = -Math.PI / 2;
-for (let x = HX - 190; x < HX + 190; x += 8) for (const z of [-5, 0, 5]) add(box(3.4, 0.02, 0.2), lineM, x, 0.03, z, world, { cast: false });
+add(new THREE.PlaneGeometry(400, 30), asph, HX, 0.04, 0, world, { cast: false }).rotation.x = -Math.PI / 2;
+for (let x = HX - 190; x < HX + 190; x += 8) for (const z of [-5, 0, 5]) add(box(3.4, 0.02, 0.2), lineM, x, 0.07, z, world, { cast: false });
 for (const z of [-15.5, 15.5]) add(tbox(400, 0.9, 0.4, 2), chrome, HX, 0.45, z, world);
 const hwCars = [];
 { const cols = ['#d84a3a', '#3a7ad8', '#f2c230', '#5ab85a', '#f2f2f2', '#8a4ad8', '#2a2a30', '#e8862a', '#4ad8c8', '#d84a9a'];
