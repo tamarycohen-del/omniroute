@@ -193,7 +193,7 @@ const stars = (() => { const pos = []; const r = P.rng(77); for (let i = 0; i < 
 // ---- bedroom (x = 0, z = -600): walls, bed, window with night sky, lamp, poster
 const ROOM = new THREE.Group(); ROOM.position.set(0, 0, -600); scene.add(ROOM);
 { const wallR = toon({ color: '#8a9ad8' }), floorR = toon({ color: '#a8784a' });
-  add(tbox(10, 0.2, 8, 2), floorR, 0, -0.1, 0, ROOM, { cast: false });
+  add(tbox(10, 0.2, 8, 2), floorR, 0, -0.07, 0, ROOM, { cast: false });
   add(tbox(10, 5, 0.2, 2), wallR, 0, 2.5, -4, ROOM); add(tbox(0.2, 5, 8, 2), wallR, -5, 2.5, 0, ROOM); add(tbox(0.2, 5, 8, 2), wallR, 5, 2.5, 0, ROOM);
   add(tbox(10, 0.2, 8, 2), toon({ color: '#d8d8f0' }), 0, 5.1, 0, ROOM, { cast: false });
   // bed
@@ -269,7 +269,7 @@ worldState = function (S, f) { _ws(S, f); heroCar.visible = !!S.hero; if (S.hero
   for (const x of [-1.6, 1.6]) { add(tbox(0.8, 1.6, 0.6, 1), toon({ color: '#e8453a' }), x, 0.8, 0, g); add(box(0.5, 0.35, 0.05), toon({ color: '#1a1a24' }), x, 1.25, 0.31, g, { cast: false }); }
   add(tbox(9, 0.1, 5, 2), toon({ color: '#9a9aa0' }), 0, 0.05, 0, g, { cast: false }); }
 const OFFICE = new THREE.Group(); OFFICE.position.set(0, 0, -900); scene.add(OFFICE);
-{ add(tbox(12, 0.2, 10, 2), toon({ color: '#8a8a94' }), 0, -0.1, 0, OFFICE, { cast: false });
+{ add(tbox(12, 0.2, 10, 2), toon({ color: '#8a8a94' }), 0, -0.07, 0, OFFICE, { cast: false });
   add(tbox(12, 4, 0.2, 2), toon({ color: '#e8e2d4' }), 0, 2, -4, OFFICE); add(tbox(0.2, 4, 10, 2), toon({ color: '#e8e2d4' }), -6, 2, 0, OFFICE); add(tbox(0.2, 4, 10, 2), toon({ color: '#e8e2d4' }), 6, 2, 0, OFFICE);
   add(tbox(12, 0.2, 10, 2), toon({ color: '#f4f4f4' }), 0, 4.1, 0, OFFICE, { cast: false });
   for (const x of [-3, 3]) add(box(1.6, 0.1, 0.8), toon({ color: '#fff8e0', emissive: '#fff4d0', emissiveIntensity: 0.6 }), x, 4.0, 0, OFFICE, { cast: false });
