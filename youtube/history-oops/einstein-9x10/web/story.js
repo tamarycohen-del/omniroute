@@ -38,13 +38,13 @@ const CAMS = {
   silent: [{ f: 1167, pos: [-3, 2.6, CZ - 3.6], look: [0.5, 1.2, CZ + 3], fov: 54 }, { f: 1216, pos: [-2.6, 2.5, CZ - 3.4], look: [0.5, 1.2, CZ + 3], fov: 52 }],
   twist: [{ f: 1217, pos: [0, 2.3, CZ + 0.4], look: [0, 2.3, BZ], fov: 46 }, { f: 1471, pos: [0, 2.3, CZ - 0.2], look: [0, 2.3, BZ], fov: 44 }],
   lesson: [{ f: 1472, pos: [0.8, 2.0, CZ + 0.6], look: [0.6, 2.0, BZ], fov: 46 }, { f: 1556, pos: [0.9, 2.0, CZ - 0.2], look: [0.6, 2.0, BZ], fov: 44 }],
-  end: [{ f: 1557, pos: [-1.0, 1.35, CZ + 4.6], look: [-1.2, 1.2, CZ + 2.6], fov: 40 }, { f: 1675, pos: [-1.05, 1.35, CZ + 4.1], look: [-1.2, 1.25, CZ + 2.6], fov: 36 }],
+  end: [{ f: 1557, pos: [-1.0, 1.4, CZ + 2.8], look: [-1.2, 1.25, CZ + 0.65], fov: 40 }, { f: 1675, pos: [-1.05, 1.4, CZ + 2.4], look: [-1.2, 1.3, CZ + 0.65], fov: 36 }],
 };
 const KICKS = [{ f: 457, a: 0.03 }, { f: 490, a: 0.02 }, { f: 1250, a: 0.05 }];
 const FLASH = [1217];
 export const camAt = (f) => { const S = shotAt(f); const c = camFromKeys(CAMS[S.id], f, { kicks: KICKS }); c.flash = 0; for (const a of FLASH) if (f >= a && f < a + 6) c.flash = (1 - (f - a) / 6) * 0.5; return c; };
 const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
-const FOCUS = { waited: [2.0, 1.75, CZ - 4.2], turn: [2.0, 1.8, CZ - 4.2], world: [2.0, 1.8, CZ - 4.2], quote: [2.4, 1.7, CZ - 4.2], end: [-1.2, 1.2, CZ + 2.6], laugh: [0, 1.1, CZ + 1] };
+const FOCUS = { waited: [2.0, 1.75, CZ - 4.2], turn: [2.0, 1.8, CZ - 4.2], world: [2.0, 1.8, CZ - 4.2], quote: [2.4, 1.7, CZ - 4.2], end: [-1.2, 1.25, CZ + 0.65], laugh: [0, 1.1, CZ + 1] };
 export const dofAt = (f) => { const S = shotAt(f), C = camAt(f); if (FOCUS[S.id]) return { focus: dist(C.pos, FOCUS[S.id]), cinf: 7 }; return { focus: 30, cinf: 0 }; };
 
 // rows on the board over time
@@ -64,8 +64,9 @@ export const actorsAt = (f, T) => {
     const laughing = (id === 'laugh' || (id === 'wrong' && f < 620)), quiet = ['quote', 'world', 'silent'].includes(id);
     const o = life(f, 60 + i, { expr: laughing ? 'laugh' : quiet ? (i % 2 ? 'nervous' : 'neutral') : i % 3 ? 'smile' : 'neutral', L: laughing && i % 2 ? 'belly' : 'hang', R: laughing && i % 3 === 0 ? 'point' : 'hang',
       bob: laughing ? q(0.012 * Math.abs(Math.sin(f * 0.7 + i)), 3) : q(idle(f, 60 + i).bob, 3) });
-    if (id === 'end' && i === 5) { o.expr = f > 1640 ? 'grin' : 'smile'; o.R = f > 1645 ? 'thumb' : 'hang'; }
-    out.push(R(T, KIDS[i % 8], o, [-3.6 + c * 2.4, 0, CZ + 0.2 + r * 2.0 + 0.45], { s: 0.72, ground: 0 })); }
+    if (id === 'end' && i === 1) { o.expr = f > 1640 ? 'grin' : 'smile'; o.R = f > 1645 ? 'thumb' : 'hang'; }
+    if (i === 1 && ['silent', 'quote', 'world'].includes(id)) o.expr = 'smile';
+    out.push(R(T, i === 1 ? 'host' : KIDS[i % 8], o, [-3.6 + c * 2.4, 0, CZ + 0.2 + r * 2.0 + 0.45], { s: 0.72, ground: 0 })); }
   // professor
   const [px, pz] = PROF_AT(f);
   const facing = id === 'board' ? 0 : 0, write = id === 'board' && f < 470;
@@ -85,6 +86,6 @@ export const fxAt = (f, T) => {
   if (S.id === 'twist') { if (f >= 1318) hudWord(out, C, 'NO DATE', '#ffffff', pop(1318), -0.34, 80); if (f >= 1344) hudWord(out, C, 'NO SCHOOL', '#ffffff', pop(1344), -0.46, 80); if (f >= 1370) hudWord(out, C, 'NO STUDENT', '#ffffff', pop(1370), -0.58, 80);
     if (f >= 1419) hudWord(out, C, 'INTERNET LEGEND', '#ffd23a', pop(1419), 0.26, 62); }
   if (S.id === 'lesson' && f >= 1505) hudWord(out, C, 'THE LESSON IS REAL', '#7ad85a', pop(1505), 0.3, 56);
-  if (S.id === 'end' && f >= 1640) { const P = front(C, 1.6), s = 0.36; out.push(FX('tallyE', (p) => tallyCard(p, { dim: true }), [P[0] + 0.12, P[1] - 0.12, P[2]], s * pop(1640), { order: 9 })); }
+  if (S.id === 'end' && f >= 1640) { const P = front(C, 1.6), s = 0.36; out.push(FX('tallyE', (p) => tallyCard(p, { dim: true }), [P[0] - 0.08, P[1] - 0.12, P[2]], s * pop(1640), { order: 9 })); }
   return out;
 };
