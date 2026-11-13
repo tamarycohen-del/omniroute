@@ -15,7 +15,8 @@ export const SHOTS = [
   { id: 'twist', a: 1217, b: 1471, light: 'class' },
   { id: 'lesson', a: 1472, b: 1556, light: 'class' },
   { id: 'end', a: 1557, b: 1675, light: 'class' },
-  { id: 'hook', a: 2000, b: 2299, light: 'class' }, // cold-open hook, rendered separately and spliced in front
+  { id: 'hook', a: 2000, b: 2299, light: 'class' },
+  { id: 'walk', a: 2500, b: 2650, light: 'class' }, // bridge: he walks to the empty board // cold-open hook, rendered separately and spliced in front
 ];
 export const HOOK_SMUG = 2190;
 export const shotAt = (f) => SHOTS.find((s) => f >= s.a && f <= s.b) || SHOTS[SHOTS.length - 1];
@@ -29,6 +30,7 @@ export const lightFor = (S) => ({ ...LIGHTS[S.light] });
 
 const CAMS = {
   enter: [{ f: 0, pos: [0.4, 2.3, CZ + 5.6], look: [0.6, 1.8, BZ], fov: 50 }, { f: 144, pos: [0.4, 2.1, CZ + 4.6], look: [0.6, 2.0, BZ], fov: 46 }],
+  walk: [{ f: 2500, pos: [3.2, 1.85, CZ - 1.0], look: [3.15, 1.6, CZ - 4.2], fov: 48 }, { f: 2607, pos: [1.9, 1.8, CZ - 1.0], look: [1.5, 1.7, CZ - 4.5], fov: 46 }],
   hook: [{ f: 2000, pos: [1.0, 1.72, CZ - 1.9], look: [1.05, 1.68, CZ - 4.45], fov: 34 }, { f: 2220, pos: [1.03, 1.72, CZ - 2.35], look: [1.05, 1.7, CZ - 4.45], fov: 34 }],
   board: [{ f: 145, pos: [0, 2.3, CZ + 0.4], look: [0, 2.3, BZ], fov: 44 }, { f: 400, pos: [0, 2.3, CZ - 0.2], look: [0, 2.3, BZ], fov: 44 },
     { f: 457, pos: [0.3, 1.25, CZ - 2.6], look: [0.3, 1.25, BZ], fov: 34, ease: 'easeOut' }, { f: 489, pos: [0.3, 1.25, CZ - 2.8], look: [0.3, 1.25, BZ], fov: 32 }],
@@ -52,13 +54,13 @@ export const dofAt = (f) => { const S = shotAt(f), C = camAt(f); if (FOCUS[S.id]
 
 // rows on the board over time
 const ROWT = [145, 206, 271, 350, 360, 370, 380, 390, 398, 457];
-export const worldAt = (f) => { const S = shotAt(f); let rows = S.id === 'hook' ? 0 : ROWT.filter((t) => f >= t).length;
-  return { lift: 0, fall: 0, space: false, board: { rows, red: f >= 470 && S.id !== 'hook', stamp: S.id === 'twist' && f >= 1250 ? Math.max(1, 2.2 - 1.2 * E.easeOut(ramp(f, 1250, 1258))) : 0 } }; };
+export const worldAt = (f) => { const S = shotAt(f); let rows = S.id === 'hook' || S.id === 'walk' ? 0 : ROWT.filter((t) => f >= t).length;
+  return { lift: 0, fall: 0, space: false, board: { rows, red: f >= 470 && S.id !== 'hook' && S.id !== 'walk', stamp: S.id === 'twist' && f >= 1250 ? Math.max(1, 2.2 - 1.2 * E.easeOut(ramp(f, 1250, 1258))) : 0 } }; };
 
 const KIDS = ['civA', 'civB', 'civC', { tunic: '#e86a3a', skin: '#c99067', hair: '#1e1714' }, { tunic: '#5ab85a', skin: '#f5c9a0', hair: '#7a4a26', dress: '#e8a0c0' }, 'workB', { tunic: '#8ab8e8', skin: '#ecd0b6', hair: '#3b2a20' }, 'civA'];
 const R = (T, who, o, pos, extra = {}) => ({ key: (typeof who === 'string' ? who : who.tunic) + JSON.stringify(o), draw: (p) => T.romanFront(p, who, o), x: pos[0], y: pos[1], z: pos[2], ...extra });
 const life = (f, seed, o = {}) => { const I = idle(f, seed); return { seed, blink: blinkAt(f, seed), bob: q(I.bob, 3), headTilt: q(I.headTilt, 1), tilt: q(I.tilt * 0.6, 1), ...o }; };
-const PROF_AT = (f) => { const S = shotAt(f); if (S.id === 'hook') return [1.05, CZ - 4.45]; if (S.id === 'enter') return [lerp(5.5, 2.0, E.smooth(ramp(f, 10, 120))), CZ - 4.0]; if (S.id === 'board') return [1.65, CZ - 4.3]; return [2.0, CZ - 4.2]; };
+const PROF_AT = (f) => { const S = shotAt(f); if (S.id === 'hook') return [1.05, CZ - 4.45]; if (S.id === 'walk') return [lerp(3.4, 1.65, E.smooth(ramp(f, 2500, 2595))), CZ - 4.2]; if (S.id === 'enter') return [lerp(5.5, 2.0, E.smooth(ramp(f, 10, 120))), CZ - 4.0]; if (S.id === 'board') return [1.65, CZ - 4.3]; return [2.0, CZ - 4.2]; };
 
 export const actorsAt = (f, T) => {
   const S = shotAt(f), out = [], id = S.id;
@@ -74,7 +76,7 @@ export const actorsAt = (f, T) => {
   const [px, pz] = PROF_AT(f);
   const facing = id === 'board' ? 0 : 0, write = id === 'board' && f < 470;
   const expr = id === 'hook' ? (f >= HOOK_SMUG ? 'scheme' : 'neutral') : id === 'board' ? (f < 470 ? 'neutral' : 'smile') : id === 'wrong' || id === 'waited' ? 'neutral' : ['turn', 'quote', 'world', 'lesson'].includes(id) ? (f > 1080 && id === 'world' ? 'grin' : 'smile') : 'smile';
-  const po = { seed: 6, expr, blink: blinkAt(f, 6), L: write ? 'up' : id === 'quote' ? 'hip' : 'hang', R: id === 'world' && f > 1029 ? 'point' : id === 'quote' ? 'hip' : 'hang', bob: q(idle(f, 6).bob, 3), facing, step: id === 'enter' && f < 120 ? q(walk(f, 10, 1.0, 0.6).phase, 1) : 0 };
+  const po = { seed: 6, expr, blink: blinkAt(f, 6), L: write ? 'up' : id === 'quote' ? 'hip' : 'hang', R: id === 'world' && f > 1029 ? 'point' : id === 'quote' ? 'hip' : 'hang', bob: q(idle(f, 6).bob, 3), facing, step: id === 'enter' && f < 120 ? q(walk(f, 10, 1.0, 0.6).phase, 1) : id === 'walk' && f < 2595 ? q(walk(f, 2500, 1.0, 0.6).phase, 1) : 0 };
   if (id !== 'end' && id !== 'laugh' && id !== 'silent' || id === 'silent') out.push({ key: 'prof' + JSON.stringify(po), draw: (p) => profCard(p, T, po), x: px, y: 0, z: pz, ground: 0 });
   return out;
 };

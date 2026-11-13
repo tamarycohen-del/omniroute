@@ -14,6 +14,8 @@ SR, FPS = 48000, 30
 HERE = os.path.dirname(os.path.abspath(__file__))
 KEEP = [(145, 1166), (1217, 1675)]
 TAIL = 15
+BRIDGE = (2500, 2607)  # Einstein walks to the empty board (walk shot)
+BRIDGE_LINES = ["So he walked up to the board...", "and started writing."]
 HOOK_LINES = ["Einstein once got nine times ten wrong...", "in front of a whole class.", "And he did it on purpose."]
 
 
@@ -50,10 +52,12 @@ def main():
     if mode == "plan":
         print(json.dumps({"segments": segs, "frames": f"2000-{2000 + nh - 1}", "HOOK_SMUG": smug})); return
     fin = os.path.join(HERE, "final"); shutil.rmtree(fin, ignore_errors=True); os.makedirs(os.path.join(fin, "frames")); os.makedirs(os.path.join(fin, "work"))
-    order = list(range(2000, 2000 + nh)) + [f for a, b in KEEP for f in range(a, b + 1)] + list(range(2000, 2000 + TAIL))
+    order = list(range(2000, 2000 + nh)) + list(range(BRIDGE[0], BRIDGE[1] + 1)) + [f for a, b in KEEP for f in range(a, b + 1)] + list(range(2000, 2000 + TAIL))
     for i, f in enumerate(order):
         os.link(os.path.join(HERE, "frames", f"f{f:04d}.jpg"), os.path.join(fin, "frames", f"f{i:04d}.jpg"))
     H = nh / FPS
+    B = (BRIDGE[1] - BRIDGE[0] + 1) / FPS
+    bp = os.path.join(HERE, 'bridge.mp3')
     # voice
     hv = load(hook)[: int(H * SR)]; hv = np.pad(hv, (0, int(H * SR) - len(hv)))
     v = load(os.path.join(HERE, "voice.mp3"))
@@ -66,11 +70,12 @@ def main():
             p = p.copy(); p[:xf] *= ramp; out[-xf:] *= ramp[::-1]; out = np.concatenate([out[:-xf], out[-xf:] + p[:xf], p[xf:]])
         return out
     total = len(order) / FPS; N = int(round(total * SR))
-    voice = fit(np.concatenate([hv] + [cut(v, a, b) for a, b in KEEP] + [np.zeros(int(TAIL / FPS * SR))]), N)
+    bv = load(bp)[: int(B * SR)]; bv = np.pad(bv, (0, int(B * SR) - len(bv)))
+    voice = fit(np.concatenate([hv, bv] + [cut(v, a, b) for a, b in KEEP] + [np.zeros(int(TAIL / FPS * SR))]), N)
     mus = load(os.path.join(HERE, "music.wav")); sfx = load(os.path.join(HERE, "sfx.wav"))
-    music = fit(join([mus[: int(H * SR)]] + [cut(mus, a, b) for a, b in KEEP] + [mus[: int(TAIL / FPS * SR)]]), N)
+    music = fit(join([mus[: int(H * SR)], mus[int(H * SR): int((H + B) * SR)]] + [cut(mus, a, b) for a, b in KEEP] + [mus[: int(TAIL / FPS * SR)]]), N)
     music[-int(0.4 * SR):] *= np.linspace(1, 0, int(0.4 * SR))
-    hs = np.zeros(int(H * SR)); sf = fit(np.concatenate([hs] + [cut(sfx, a, b) for a, b in KEEP] + [np.zeros(int(TAIL / FPS * SR))]), N)
+    hs = np.zeros(int(H * SR) + int(B * SR)); sf = fit(np.concatenate([hs] + [cut(sfx, a, b) for a, b in KEEP] + [np.zeros(int(TAIL / FPS * SR))]), N)
     # a soft chime when he smirks
     t = np.arange(int(0.8 * SR)) / SR; ch = (np.sin(2 * np.pi * 1318 * t) + 0.5 * np.sin(2 * np.pi * 1976 * t)) * np.exp(-t * 5) * 0.3
     s0 = int((smug - 2000) / FPS * SR); sf[s0: s0 + len(ch)] += ch[: len(sf) - s0]
@@ -86,8 +91,11 @@ def main():
     for (a, b), line in zip(segs, lines):
         ws = line.split(); L = sum(len(w) + 1 for w in ws); t0 = a
         for w in ws: d = (b - a) * (len(w) + 1) / L; words.append({"w": w, "s": round(t0, 3), "e": round(t0 + d, 3)}); t0 += d
+    for (a, b), line in zip(speech_segments(bp), BRIDGE_LINES):
+        ws = line.split(); L = sum(len(w) + 1 for w in ws); t0 = a + H
+        for w in ws: d = (b - a) * (len(w) + 1) / L; words.append({"w": w, "s": round(t0, 3), "e": round(t0 + d, 3)}); t0 += d
     orig = json.load(open(os.path.join(HERE, "work", "words.json")))
-    off = H
+    off = H + B
     for a, b in KEEP:
         for w in orig:
             if a / FPS <= w["s"] < (b + 1) / FPS: words.append({"w": w["w"], "s": round(w["s"] - a / FPS + off, 3), "e": round(w["e"] - a / FPS + off, 3)})
