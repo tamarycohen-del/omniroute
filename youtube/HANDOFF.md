@@ -20,8 +20,8 @@ Branch: `claude/happy-newton-la11y6`. Channel id `UCZfAUpE88vp9EUA2ESHk0KA` (You
 Final MP4s were in the old session's scratchpad (not in git); re-render from sources if needed.
 
 ## What the analytics say (Nov 2026)
-- Vasa (warship): ~70% average viewed, likes almost doubled. Emu war: ~51%. "Stayed to watch" rate ~60-62% on both.
-- Lesson: one clear tension line that builds to a single climax near the end (Vasa) beats a string of separate jokes (Emu).
+- Upload order: Vasa first, then Emu. Vasa: ~70% average viewed but fewer views. Emu: ~51% average viewed but more views (catchier topic/title). "Stayed to watch" ~60-62% on both.
+- Lesson: a catchy, absurd topic brings views (Emu); one clear tension line that builds to a single climax near the end (Vasa) keeps them watching (Vasa). Aim for both in one video.
 - Rules for new videos: keep the middle (20-40 s) tight with a visual change or twist there; end on a loop back to the opening or a last punch; finish with one simple question to the viewer (e.g. "What's the biggest mistake in history?").
 
 ## Recurring host (in EVERY video)
