@@ -218,8 +218,8 @@ const SCENES = {
   },
   phone3(u, t) { // 58.6-63.4: zoom on the reply - no "love you" - then the phone dies
     const z = 1.22 + 0.35 * sm(u / 1.6); cam(z, 540, 1000);
-    phone(u, { msgs: [{ ...MSG_TEN, at: -1 }, { ...MSG_ASK, at: -1 }, { ...MSG_REPLY, at: -1 }], batt: 1, clock: '3:35', zoomMsg: 2, hl: sm((u - 1.8) / 0.3), dieAt: 6.3 });
-    if (u > 1.8 && u < 6.3) { // "love you" from the first text, pointed out
+    phone(u, { msgs: [{ ...MSG_TEN, at: -1 }, { ...MSG_ASK, at: -1 }, { ...MSG_REPLY, at: -1 }], batt: 1, clock: '3:35', zoomMsg: 2, hl: sm((u - 1.8) / 0.3), dieAt: 6.05 });
+    if (u > 1.8 && u < 6.05) { // "love you" from the first text, pointed out
       g.save(); g.strokeStyle = '#c6ff3a'; g.lineWidth = 7; g.globalAlpha = sm((u - 2.0) / 0.3); g.beginPath(); g.roundRect(292, 632, 470, 132, 34); g.stroke(); g.restore();
     }
   },
@@ -240,8 +240,8 @@ const SCENES = {
     hallway({ backGlow: 0.5, frontGlow: 0.3 }); dog(80, 1470, 0.9, { pose: 'stare', flip: true, t: u, look: 1, tail: 0.4 }); darken(0.15); g.restore();
     g.fillStyle = '#c6ff3a'; g.fillRect(0, 955, W, 10);
     const a = sm((u - 0.2) / 0.3), b = sm((u - 2.8) / 0.3);
-    choiceCard(540, 820, 'OPEN THE DOOR', a, '#c6ff3a');
-    choiceCard(540, 1790, 'BACK DOOR WITH BISCUIT', b, '#c6ff3a');
+    choiceCard(540, 820, 'OPEN THE DOOR', a, '#ff4d5e');
+    choiceCard(540, 1790, 'BACK DOOR WITH BISCUIT', b, '#ff4d5e');
     if (u > 5.3) { const c = sm((u - 5.3) / 0.3); g.save(); g.globalAlpha = c; g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#0a0610'; g.strokeText('COMMENT YOUR CHOICE', 540, 1080); g.fillText('COMMENT YOUR CHOICE', 540, 1080); const bob = Math.sin(t * 6) * 10; g.fillStyle = '#c6ff3a'; g.beginPath(); g.moveTo(510, 1110 + bob); g.lineTo(570, 1110 + bob); g.lineTo(540, 1150 + bob); g.fill(); g.restore(); }
   },
   end(u, t) { g.fillStyle = '#000'; g.fillRect(0, 0, W, H); },
