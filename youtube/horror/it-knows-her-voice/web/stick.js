@@ -48,7 +48,7 @@ export const capCard = (p, o = {}) => {
   ws.forEach((w, i) => { const wd = g.measureText(w).width; if (lw + wd > 540 && lines[lines.length - 1].length) { lines.push([]); lw = 0; } lines[lines.length - 1].push(i); lw += wd + sp; });
   g.lineJoin = 'round';
   lines.forEach((L, li) => { const widths = L.map((i) => g.measureText(ws[i]).width), total = widths.reduce((a, b) => a + b, 0) + sp * (L.length - 1); let x = 300 - total / 2; const y = 500 + (li - (lines.length - 1) / 2) * 64;
-    L.forEach((i, j) => { g.lineWidth = 12; g.strokeStyle = '#0a0610'; g.strokeText(ws[i], x, y); g.fillStyle = i === hi ? '#c6ff3a' : '#ffffff'; g.fillText(ws[i], x, y); x += widths[j] + sp; }); });
+    L.forEach((i, j) => { g.lineWidth = 12; g.strokeStyle = '#0a0610'; g.strokeText(ws[i], x, y); g.fillStyle = i === hi ? '#c6ff3a' : (o.color || '#ffffff'); g.fillText(ws[i], x, y); x += widths[j] + sp; }); });
   g.restore();
 };
 /** chapter label: red digital time + small caps title */
