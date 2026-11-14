@@ -4,7 +4,22 @@ import { profCard, wordCard, tallyCard } from './props_ein.js';
 import { babyCard, bigNum } from './props_nur.js';
 import { gaugeCard, sprayCard, burstWord } from './props_snz.js';
 export const FPS = 30, TOTAL = 1676;
+// ---- SNEEZE SHORT: phrase start/end times (s) from the voice track; shots are generated from these ----
+export const PH = [[0, 3.6], [3.8, 6.0], [6.2, 9.0], [9.2, 10.3], [10.6, 12.4], [12.6, 19.5], [19.8, 21.2], [21.5, 23.4], [23.7, 25.6], [25.9, 27.8], [28.0, 29.0]];
+export const SZ0 = 7000, SZ_END = 29.6;
+const sf = (t) => SZ0 + Math.round(t * 30);
+const KEDGE = (k) => (k === 0 ? 0 : (PH[k - 1][1] + PH[k][0]) / 2);
+const KEND = (k) => (k === PH.length - 1 ? SZ_END : (PH[k][1] + PH[k + 1][0]) / 2);
+const SZSHOTS = [];
+const PRESS_SPLIT = (PH[5][0] + PH[5][1]) / 2;
+for (let k = 0; k < PH.length; k++) {
+  const light = k >= 4 && k <= 8 ? 'thr' : 'car';
+  if (k === 5) { SZSHOTS.push({ id: 'z5a', a: sf(KEDGE(5)), b: sf(PRESS_SPLIT) - 1, light }); SZSHOTS.push({ id: 'z5b', a: sf(PRESS_SPLIT), b: sf(KEND(5)) - 1, light }); }
+  else SZSHOTS.push({ id: 'z' + k, a: sf(KEDGE(k)), b: sf(KEND(k)) - (k === PH.length - 1 ? 0 : 1), light });
+}
+export const SZ_FRAMES = [SZ0, sf(SZ_END)];
 export const SHOTS = [
+  ...SZSHOTS,
   { id: 'enter', a: 0, b: 144, light: 'class' },
   { id: 'board', a: 145, b: 489, light: 'class' },
   { id: 'laugh', a: 490, b: 573, light: 'class' },
@@ -51,6 +66,20 @@ export const lightFor = (S) => ({ ...LIGHTS[S.light] });
 
 const CAMS = {
   enter: [{ f: 0, pos: [0.4, 2.3, CZ + 5.6], look: [0.6, 1.8, BZ], fov: 50 }, { f: 144, pos: [0.4, 2.1, CZ + 4.6], look: [0.6, 2.0, BZ], fov: 46 }],
+  ...(() => { const C = {}, A = (k) => sf(KEDGE(k)), B = (k) => sf(KEND(k)) - 1, CZc = -1600, TZ = -1700;
+    C.z0 = [{ f: A(0), pos: [0.25, 1.6, CZc + 1.55], look: [0, 1.48, CZc], fov: 38 }, { f: B(0), pos: [0.22, 1.58, CZc + 1.3], look: [0, 1.5, CZc], fov: 36 }];
+    C.z1 = [{ f: A(1), pos: [1.3, 1.7, CZc + 2.6], look: [0, 1.35, CZc], fov: 44 }, { f: B(1), pos: [1.05, 1.68, CZc + 2.4], look: [0, 1.35, CZc], fov: 43 }];
+    C.z2 = [{ f: A(2), pos: [-0.3, 1.6, CZc + 1.7], look: [0, 1.48, CZc], fov: 38 }, { f: B(2), pos: [-0.25, 1.58, CZc + 1.45], look: [0, 1.5, CZc], fov: 37 }];
+    C.z3 = [{ f: A(3), pos: [0.15, 1.56, CZc + 1.5], look: [0, 1.52, CZc], fov: 36 }, { f: A(3) + 5, pos: [0.08, 1.55, CZc + 0.95], look: [0, 1.52, CZc], fov: 34, ease: 'easeOut' }, { f: B(3), pos: [0.07, 1.55, CZc + 0.9], look: [0, 1.52, CZc], fov: 34 }];
+    C.z4 = [{ f: A(4), pos: [0, 1.5, TZ + 6.5], look: [0, 1.5, TZ - 3], fov: 70 }, { f: B(4), pos: [0, 1.5, TZ + 2.4], look: [0.1, 1.5, TZ - 3], fov: 62, ease: 'easeOut' }];
+    C.z5a = [{ f: sf(KEDGE(5)), pos: [-0.25, 1.5, TZ + 2.4], look: [0.2, 1.5, TZ - 2], fov: 60 }, { f: sf(PRESS_SPLIT) - 1, pos: [-0.2, 1.5, TZ + 1.3], look: [0.3, 1.5, TZ - 2], fov: 58 }];
+    C.z5b = [{ f: sf(PRESS_SPLIT), pos: [-0.4, 1.5, TZ + 0.5], look: [0.93, 1.62, TZ - 1.2], fov: 58 }, { f: sf(KEND(5)) - 1, pos: [-0.25, 1.52, TZ + 0.2], look: [0.93, 1.64, TZ - 1.2], fov: 54 }];
+    C.z6 = [{ f: A(6), pos: [-0.3, 1.55, TZ + 0.25], look: [0.93, 1.65, TZ - 1.2], fov: 54 }, { f: B(6), pos: [-0.2, 1.55, TZ + 0.05], look: [0.93, 1.65, TZ - 1.2], fov: 52 }];
+    C.z7 = [{ f: A(7), pos: [0.1, 1.62, TZ - 0.2], look: [0.93, 1.65, TZ - 1.2], fov: 50 }, { f: B(7), pos: [0.35, 1.64, TZ - 0.55], look: [0.93, 1.65, TZ - 1.2], fov: 46 }];
+    C.z8 = [{ f: A(8), pos: [0.35, 1.64, TZ - 0.55], look: [0.93, 1.65, TZ - 1.2], fov: 46 }, { f: B(8), pos: [0.3, 1.62, TZ - 0.5], look: [0.93, 1.65, TZ - 1.2], fov: 48 }];
+    C.z9 = [{ f: A(9), pos: [0.3, 1.6, CZc + 1.75], look: [0, 1.45, CZc], fov: 40 }, { f: B(9), pos: [0.26, 1.58, CZc + 1.5], look: [0, 1.46, CZc], fov: 39 }];
+    C.z10 = [{ f: A(10), pos: [0.26, 1.58, CZc + 1.5], look: [0, 1.46, CZc], fov: 39 }, { f: sf(SZ_END), pos: [0.3, 1.6, CZc + 1.75], look: [0, 1.46, CZc], fov: 40, ease: 'easeOut' }];
+    return C; })(),
   s1: [{ f: 6000, pos: [0.4, 1.65, -1600 + 2.5], look: [0, 1.4, -1600], fov: 42 }, { f: 6099, pos: [0.35, 1.62, -1600 + 2.1], look: [0, 1.42, -1600], fov: 40 }],
   s2: [{ f: 6100, pos: [-0.25, 1.5, -1700 + 2.6], look: [0.2, 1.5, -1700 - 2], fov: 60 }, { f: 6199, pos: [-0.2, 1.5, -1700 + 1.2], look: [0.3, 1.5, -1700 - 2], fov: 60 }],
   s3: [{ f: 6200, pos: [-0.35, 1.55, -1700 + 0.4], look: [0.93, 1.65, -1700 - 1.2], fov: 56 }, { f: 6299, pos: [-0.25, 1.55, -1700 + 0.1], look: [0.93, 1.65, -1700 - 1.2], fov: 54 }],
@@ -80,15 +109,19 @@ const CAMS = {
   end: [{ f: 1557, pos: [-1.0, 1.4, CZ + 2.8], look: [-1.2, 1.25, CZ + 0.65], fov: 40 }, { f: 1675, pos: [-1.05, 1.4, CZ + 2.4], look: [-1.2, 1.3, CZ + 0.65], fov: 36 }],
 };
 const KICKS = [{ f: 457, a: 0.03 }, { f: 490, a: 0.02 }, { f: 1250, a: 0.05 }];
-const FLASH = [1217];
+const FLASH = [1217, Math.round(SZ0 + PH[6][0] * 30 + 18)];
 export const camAt = (f) => { const S = shotAt(f); const c = camFromKeys(CAMS[S.id], f, { kicks: KICKS }); c.flash = 0; for (const a of FLASH) if (f >= a && f < a + 6) c.flash = (1 - (f - a) / 6) * 0.5; return c; };
 const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
-const FOCUS = { s1: [0, 1.5, -1600], s4: [0, 1.5, -1600], n1: [-1.2, 1.0, NZ - 1.0], n2: [0, 0.9, NZ - 3.55], n4: [-1.55, 1.2, NZ - 1.0], h3a: [0.2, 1.1, CZ - 2.6], h3b: [0.2, 1.25, CZ - 2.6], h3c: [0.2, 1.0, CZ - 2.6], h3d: [0.2, 1.2, CZ - 2.6], hq: [0.2, 1.4, CZ - 2.6], hook: [1.05, 1.7, CZ - 4.45], waited: [2.0, 1.75, CZ - 4.2], turn: [2.0, 1.8, CZ - 4.2], world: [2.0, 1.8, CZ - 4.2], quote: [2.4, 1.7, CZ - 4.2], end: [-1.2, 1.25, CZ + 0.65], laugh: [0, 1.1, CZ + 1] };
+const FOCUS = { z0: [0, 1.5, -1600], z1: [0, 1.45, -1600], z2: [0, 1.5, -1600], z3: [0, 1.5, -1600], z9: [0, 1.5, -1600], z10: [0, 1.5, -1600], s1: [0, 1.5, -1600], s4: [0, 1.5, -1600], n1: [-1.2, 1.0, NZ - 1.0], n2: [0, 0.9, NZ - 3.55], n4: [-1.55, 1.2, NZ - 1.0], h3a: [0.2, 1.1, CZ - 2.6], h3b: [0.2, 1.25, CZ - 2.6], h3c: [0.2, 1.0, CZ - 2.6], h3d: [0.2, 1.2, CZ - 2.6], hq: [0.2, 1.4, CZ - 2.6], hook: [1.05, 1.7, CZ - 4.45], waited: [2.0, 1.75, CZ - 4.2], turn: [2.0, 1.8, CZ - 4.2], world: [2.0, 1.8, CZ - 4.2], quote: [2.4, 1.7, CZ - 4.2], end: [-1.2, 1.25, CZ + 0.65], laugh: [0, 1.1, CZ + 1] };
 export const dofAt = (f) => { const S = shotAt(f), C = camAt(f); if (FOCUS[S.id]) return { focus: dist(C.pos, FOCUS[S.id]), cinf: 7 }; return { focus: 30, cinf: 0 }; };
 
 // rows on the board over time
 const ROWT = [145, 206, 271, 350, 360, 370, 380, 390, 398, 457];
-export const worldAt = (f) => { const S = shotAt(f); if (S.id === 's2' || S.id === 's3') return { lift: 0, fall: 0, space: false, board: { rows: 10, red: true, stamp: 0 }, throat: { pressure: S.id === 's2' ? E.easeIn(ramp(f, 6110, 6195)) : 0.3, crack: S.id === 's3' ? E.back(ramp(f, 6202, 6210), 2) : 0, lightZ: S.id === 's2' ? -0.6 : 0.2 } }; if (/^n\d$/.test(S.id)) return { lift: 0, fall: 0, space: false, board: { rows: 10, red: true, stamp: 0 }, checks: S.id === 'n3' ? Math.min(9, Math.max(0, Math.floor((f - 5124) / 4))) : 9 }; let rows = S.id === 'hook' || S.id === 'walk' ? 0 : ROWT.filter((t) => f >= t).length;
+export const worldAt = (f) => { const S = shotAt(f);
+  if (/^z[4-8]/.test(S.id)) { const t = (f - SZ0) / 30, popA = SZ0 + PH[6][0] * 30 + 18;
+    const pr = S.id === 'z4' ? 0.1 : S.id.startsWith('z5') ? Math.min(1, E.easeIn(Math.max(0, (t - PH[5][0]) / (PH[5][1] - PH[5][0])))) : 0.3;
+    const crack = f < popA ? 0 : S.id === 'z8' ? Math.max(0.02, 1 - Math.max(0, (t - PH[8][0] - 0.6) / 1.2)) : E.back(ramp(f, popA, popA + 8), 2);
+    return { lift: 0, fall: 0, space: false, board: { rows: 10, red: true, stamp: 0 }, throat: { pressure: pr, crack, lightZ: S.id === 'z4' || S.id === 'z5a' ? -0.6 : 0.2 } }; } if (S.id === 's2' || S.id === 's3') return { lift: 0, fall: 0, space: false, board: { rows: 10, red: true, stamp: 0 }, throat: { pressure: S.id === 's2' ? E.easeIn(ramp(f, 6110, 6195)) : 0.3, crack: S.id === 's3' ? E.back(ramp(f, 6202, 6210), 2) : 0, lightZ: S.id === 's2' ? -0.6 : 0.2 } }; if (/^n\d$/.test(S.id)) return { lift: 0, fall: 0, space: false, board: { rows: 10, red: true, stamp: 0 }, checks: S.id === 'n3' ? Math.min(9, Math.max(0, Math.floor((f - 5124) / 4))) : 9 }; let rows = S.id === 'hook' || S.id === 'walk' ? 0 : ROWT.filter((t) => f >= t).length;
   return { lift: 0, fall: 0, space: false, board: { rows, red: f >= 470 && S.id !== 'hook' && S.id !== 'walk', stamp: S.id === 'twist' && f >= 1250 ? Math.max(1, 2.2 - 1.2 * E.easeOut(ramp(f, 1250, 1258))) : 0 } }; };
 
 const KIDS = ['civA', 'civB', 'civC', { tunic: '#e86a3a', skin: '#c99067', hair: '#1e1714' }, { tunic: '#5ab85a', skin: '#f5c9a0', hair: '#7a4a26', dress: '#e8a0c0' }, 'workB', { tunic: '#8ab8e8', skin: '#ecd0b6', hair: '#3b2a20' }, 'civA'];
@@ -99,6 +132,16 @@ const PROF_AT = (f) => { const S = shotAt(f); if (S.id === 'hook') return [1.05,
 export const actorsAt = (f, T) => {
   const S = shotAt(f), out = [], id = S.id;
   if (id.startsWith('h3')) return out;
+  if (/^z\d+$/.test(id)) { const k = +id.slice(1), t = (f - SZ0) / 30, pk = (t - PH[k][0]) / Math.max(0.1, PH[k][1] - PH[k][0]);
+    let o;
+    if (k === 0) o = life(f, 11, { expr: 'pained', L: 'nose', R: 'hang', blink: 0, bob: q(0.004 * Math.sin(f * 0.9), 3) });
+    else if (k === 1) o = life(f, 11, { expr: 'smile', L: 'hang', R: 'hang', bob: q(0.006 * Math.sin(f * 0.5), 3) });
+    else if (k === 2) o = life(f, 11, pk < 0.45 ? { expr: 'nervous', headTilt: q(-4 * Math.sin(f * 0.6), 1) } : { expr: 'pained', L: 'nose', blink: 0, bob: q(0.004 * Math.sin(f * 0.9), 3) });
+    else if (k === 3) o = life(f, 11, { expr: 'pained', L: 'nose', blink: 0, bob: q(0.006 * Math.sin(f * 1.4), 3) });
+    else if (k === 9) o = life(f, 11, { expr: pk < 0.5 ? 'nervous' : 'pained', headTilt: q(-3 - 5 * pk, 1), bob: q(-0.01 * pk, 3) });
+    else if (k === 10) { const e = Math.min(1, (t - PH[10][0]) / 0.25); o = life(f, 11, { expr: e < 0.3 ? 'pained' : 'laugh', headTilt: q(6 * e, 1), bob: q(0.012 * e, 3) }); }
+    if (o) out.push(R(T, 'host', o, [0, 0.1, -1600], { s: 0.92, ground: 0, blob: false }));
+    return out; }
   if (id === 's1' || id === 's4') { const t = f - 6000;
     const o = id === 's1' ? life(f, 11, { expr: f < 6040 ? 'nervous' : 'pained', L: f >= 6040 ? 'nose' : 'hang', R: 'hang', blink: f >= 6040 ? 0 : undefined })
       : life(f, 11, { expr: f < 6320 ? 'pained' : 'laugh', L: 'hang', R: 'hang', headTilt: f >= 6320 ? -6 : 0 });
@@ -141,6 +184,17 @@ const front = (C, d) => { const fx = C.look[0] - C.pos[0], fy = C.look[1] - C.po
 const hudWord = (out, C, t, col, k, dy, size = 130) => { const d = 1.6, s = 0.38, P = front(C, d); out.push(FX('w' + t + q(k, 1), (p) => { const g = p.g; g.save(); g.translate(300, 500); g.scale(k, k); g.translate(-300, -500); wordCard(p, { t, col, size, rot: -0.06 }); g.restore(); }, [P[0], P[1] - 0.5 * 2.25 * s + dy, P[2]], s, { order: 9 })); };
 export const fxAt = (f, T) => {
   const S = shotAt(f), C = camAt(f), out = [], pop = (a) => E.back(ramp(f, a, a + 8), 2.2);
+  if (/^z\d/.test(S.id)) { const t = (f - SZ0) / 30;
+    if (S.id === 'z5a' || S.id === 'z5b') { const P = front(C, 1.6), v = Math.min(1, E.easeIn(Math.max(0, (t - PH[5][0]) / (PH[5][1] - PH[5][0])))), sh = v > 0.7 ? Math.sin(f * 2.1) * 0.05 : 0;
+      out.push(FX('gauge' + Math.round(v * 60) + (sh > 0), (p) => gaugeCard(p, { v, shake: sh }), [P[0] + 0.14, P[1] + 0.02, P[2]], 0.32, { order: 9 })); }
+    if (S.id === 'z6') { const a = Math.round(SZ0 + PH[6][0] * 30 + 18); if (f >= a) { const P = front(C, 1.5); out.push(FX('pop', (p) => burstWord(p, { t: 'POP!', size: 170 }), [P[0] - 0.12, P[1] + 0.2, P[2]], 0.3 * pop(a), { order: 9 })); } }
+    if (S.id === 'z8') { const P = front(C, 1.5), a = Math.round(SZ0 + PH[8][0] * 30 + 20); if (f >= a) out.push(FX('healed', (p) => burstWord(p, { t: 'HEALED', size: 120, bg: '#c8f5c0', col: '#1f8a3a' }), [P[0] - 0.1, P[1] + 0.22, P[2]], 0.26 * pop(a), { order: 9 })); }
+    if (S.id === 'z9' && t > PH[9][0] + 0.4) { const P = front(C, 1.4); out.push(FX('ahah' + (t > PH[9][0] + 1.2), (p) => wordCard(p, { t: t > PH[9][0] + 1.2 ? 'AH... AH...' : 'AH...', col: '#ffffff', size: 92, rot: -0.08 }), [P[0] - 0.05, P[1] + 0.3, P[2]], 0.22, { order: 9 })); }
+    if (S.id === 'z10') { const a = Math.round(SZ0 + PH[10][0] * 30 + 4), P = front(C, 1.2);
+      if (f >= a) { out.push(FX('spray' + Math.min(10, Math.floor((f - a) / 2)), (p) => sprayCard(p, { k: Math.min(1, (f - a) / 18) }), [P[0] + 0.2, P[1] - 0.3, P[2]], 0.34, { order: 8 }));
+        out.push(FX('achoo', (p) => burstWord(p, { t: 'AH-CHOO!', size: 104, bg: '#bfe8ff', col: '#1f6ad8' }), [P[0] - 0.08, P[1] + 0.12, P[2]], 0.22 * pop(a), { order: 9 })); } }
+    if (S.id === 'z0' && t > 1.2) { const P = front(C, 1.4); out.push(FX('hookq', (p) => burstWord(p, { t: 'DON\'T!', size: 130 }), [P[0] + 0.15, P[1] + 0.3, P[2]], 0.18 * pop(SZ0 + 36), { order: 9 })); }
+  }
   if (S.id === 's2') { const P = front(C, 1.6), v = E.easeIn(ramp(f, 6110, 6195)) * 0.96, sh = v > 0.7 ? Math.sin(f * 2.1) * 0.04 : 0;
     out.push(FX('gauge' + Math.round(v * 60) + (sh > 0), (p) => gaugeCard(p, { v, shake: sh }), [P[0] + 0.14, P[1] + 0.02, P[2]], 0.32, { order: 9 })); }
   if (S.id === 's3' && f >= 6204) { const P = front(C, 1.5); out.push(FX('pop', (p) => burstWord(p, { t: 'POP!', size: 170 }), [P[0] - 0.12, P[1] + 0.2, P[2]], 0.3 * pop(6204), { order: 9 })); }
