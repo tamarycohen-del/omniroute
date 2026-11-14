@@ -275,7 +275,7 @@ window.renderFrame = (f) => {
   g.save(); SCENES[shot](u, t); g.restore();
   g.setTransform(1, 0, 0, 1, 0, 0);
   const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
-  if (!/^(choice|end|phone)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: t < 41.6 ? '3:33' : t < 58.6 ? '3:34' : '3:35', title: 'IT KNOWS HER VOICE', sub: 'CHAPTER ONE' }); g.restore(); }
+  if (!/^(choice|end|phone)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: t < 41.6 ? '3:33' : t < 58.6 ? '3:34' : '3:35', title: 'HER VOICE', sub: 'CHAPTER ONE' }); g.restore(); }
   const ks = knockAmt(t);
   // (no KNOCK text: the knocks are heard, not written)
   if (shot !== 'choice') captions(t, shot.startsWith('phone'));
