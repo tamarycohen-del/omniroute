@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="800" height="800"></canvas>
+<script type="module">
+// Channel profile picture options (800x800, everything important inside the centre circle).
+import { whiteStick } from './stick.js'; import { biscuitFront } from './biscuit.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d');
+const bg = () => { const r = g.createRadialGradient(400, 360, 40, 400, 400, 560); r.addColorStop(0, '#3a2a6e'); r.addColorStop(1, '#0c0818'); g.fillStyle = r; g.fillRect(0, 0, 800, 800); };
+const moon = (x, y, s) => { g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(x, y, s, 0, 7); g.fill(); g.fillStyle = '#2e2260'; g.beginPath(); g.arc(x + s * 0.4, y - s * 0.25, s * 0.9, 0, 7); g.fill(); };
+const OPT = {
+  A() { bg(); moon(600, 190, 50); g.save(); g.translate(400 - 300 * 2.3, 470 - 495 * 2.3); g.scale(2.3, 2.3); whiteStick({ g }, { beanie: '#2a2a36', expr: 'scared', look: 0.4 }); g.restore(); },
+  B() { bg(); const x = 290, y = 170, w = 220, h = 470;
+    g.fillStyle = '#2a1e44'; g.fillRect(x - 16, y - 16, w + 32, h + 16); g.fillStyle = '#4a3a7a'; g.fillRect(x, y, w, h);
+    g.fillStyle = 'rgba(0,0,0,0.18)'; g.fillRect(x + 24, y + 30, w - 48, 160); g.fillRect(x + 24, y + 230, w - 48, 210);
+    g.fillStyle = '#c8b070'; g.beginPath(); g.arc(x + 30, y + 250, 11, 0, 7); g.fill();
+    g.fillStyle = '#ff2a3a'; g.shadowColor = '#ff2a3a'; g.shadowBlur = 30; g.font = '700 96px "DejaVu Sans Mono", monospace'; g.textAlign = 'center'; g.fillText('3:33', 400, 150); g.shadowBlur = 0;
+    g.fillStyle = 'rgba(200,215,255,0.95)'; g.fillRect(x, y + h - 8, w, 9);
+    g.save(); g.globalCompositeOperation = 'lighter'; const lg = g.createLinearGradient(0, y + h, 0, y + h + 140); lg.addColorStop(0, 'rgba(170,190,255,0.5)'); lg.addColorStop(1, 'rgba(170,190,255,0)'); g.fillStyle = lg; g.beginPath(); g.moveTo(x, y + h); g.lineTo(x + w, y + h); g.lineTo(x + w + 80, y + h + 140); g.lineTo(x - 80, y + h + 140); g.fill(); g.restore();
+    g.fillStyle = '#06040c'; for (const fx of [0.34, 0.58]) g.fillRect(x + w * fx, y + h - 9, w * 0.11, 10); },
+  C() { bg(); moon(170, 170, 40);
+    g.save(); g.translate(330 - 300 * 1.75, 430 - 495 * 1.75); g.scale(1.75, 1.75); whiteStick({ g }, { beanie: '#2a2a36', expr: 'worried', look: 1 }); g.restore();
+    g.save(); g.translate(545, 560); g.scale(1.55, 1.55); biscuitFront(g, { t: 0, dark: 0 }); g.restore(); },
+};
+window.renderFrame = (k) => { g.setTransform(1, 0, 0, 1, 0, 0); OPT['ABC'[k]](); };
+window.ready = true;
+</script></body></html>
