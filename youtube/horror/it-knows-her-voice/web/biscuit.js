@@ -39,11 +39,11 @@ export const biscuit = (g, o = {}) => {
   // head (round skull + long snout)
   g.save(); g.translate(hx, hy + lift);
   g.beginPath(); g.ellipse(0, 0, 50, 44, 0, 0, 7); g.fill(); g.stroke();
-  g.beginPath(); g.moveTo(26, -18); g.quadraticCurveTo(96, -12, 104, 12); g.quadraticCurveTo(100, 30, 30, 32); g.closePath(); g.fill(); g.stroke();
+  g.beginPath(); g.moveTo(26, -18); g.quadraticCurveTo(70, -14, 76, 10); g.quadraticCurveTo(72, 28, 30, 32); g.closePath(); g.fill(); g.stroke();
   g.fillStyle = FUR; g.beginPath(); g.ellipse(18, 6, 30, 22, 0, 0, 7); g.fill(); // hides the seam
-  g.fillStyle = BELLY; g.beginPath(); g.ellipse(70, 22, 28, 8, 0, 0, 7); g.fill();
-  g.fillStyle = NOSE; g.beginPath(); g.ellipse(104, 4, 13, 11, 0, 0, 7); g.fill();
-  g.fillStyle = 'rgba(255,255,255,0.5)'; g.beginPath(); g.arc(100, 0, 3, 0, 7); g.fill();
+  g.fillStyle = BELLY; g.beginPath(); g.ellipse(52, 22, 20, 7, 0, 0, 7); g.fill();
+  g.fillStyle = NOSE; g.beginPath(); g.ellipse(76, 4, 12, 10, 0, 0, 7); g.fill();
+  g.fillStyle = 'rgba(255,255,255,0.5)'; g.beginPath(); g.arc(73, 0, 3, 0, 7); g.fill();
   // ear (floppy, or perked when staring)
   const up = (o.ears || (pose === 'stare' ? 'up' : 'down')) === 'up';
   g.fillStyle = FUR_D; g.strokeStyle = O; g.lineWidth = 8;
