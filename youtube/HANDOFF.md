@@ -24,6 +24,11 @@ Final MP4s were in the old session's scratchpad (not in git); re-render from sou
 - Lesson: a catchy, absurd topic brings views (Emu); one clear tension line that builds to a single climax near the end (Vasa) keeps them watching. Aim for both in one video.
 - Rules for new videos: keep the middle (20-40 s) tight with a visual change or twist there; end on a loop back to the opening or a last punch; finish with one simple question to the viewer (e.g. "What's the biggest mistake in history?").
 
+## Rendering speed (new style)
+- New style renders at 2x supersampling (2160x3840, downscaled with lanczos) + detail pass: ~8-14 s/frame on this CPU-only container.
+- Always render in 2 processes: one forward (`RESUME=1 node render.mjs frames "a-b"`), one backward with a reversed comma list of the same frames. They meet in the middle; RESUME skips frames already done.
+- Optional speed-up when time matters: 1.5x supersampling instead of 2x (about 2x faster, barely visible on a phone).
+
 ## Recurring host (in EVERY video)
 - Our original host character: orange cap, round glasses, teal top (`romanFront(p, 'host', ...)`, outfit `host` in the engine).
 - He appears in every video: at least one reaction shot in the middle and a close-up in the ending (grin + thumbs up, or the final punchline).
