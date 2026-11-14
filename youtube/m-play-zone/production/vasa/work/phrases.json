@@ -1,0 +1,360 @@
+{
+ "duration": 65.959184,
+ "frames30": 1979,
+ "source": "tts-word-boundaries",
+ "segments": [
+  [
+   0.094,
+   1.085
+  ],
+  [
+   1.356,
+   3.821
+  ],
+  [
+   4.271,
+   6.264
+  ],
+  [
+   6.714,
+   7.81
+  ],
+  [
+   8.26,
+   9.723
+  ],
+  [
+   10.173,
+   11.541
+  ],
+  [
+   11.991,
+   13.099
+  ],
+  [
+   13.549,
+   14.233
+  ],
+  [
+   14.683,
+   15.709
+  ],
+  [
+   16.159,
+   19.626
+  ],
+  [
+   20.076,
+   20.736
+  ],
+  [
+   20.937,
+   21.727
+  ],
+  [
+   22.177,
+   25.125
+  ],
+  [
+   25.575,
+   26.542
+  ],
+  [
+   26.719,
+   28.287
+  ],
+  [
+   28.57,
+   29.95
+  ],
+  [
+   30.4,
+   31.709
+  ],
+  [
+   32.159,
+   33.103
+  ],
+  [
+   33.553,
+   34.272
+  ],
+  [
+   34.531,
+   36.064
+  ],
+  [
+   36.514,
+   37.788
+  ],
+  [
+   38.238,
+   38.946
+  ],
+  [
+   39.396,
+   40.186
+  ],
+  [
+   40.636,
+   41.261
+  ],
+  [
+   41.544,
+   42.251
+  ],
+  [
+   42.701,
+   44.352
+  ],
+  [
+   44.694,
+   46.97
+  ],
+  [
+   47.42,
+   48.069
+  ],
+  [
+   48.519,
+   49.486
+  ],
+  [
+   49.936,
+   50.997
+  ],
+  [
+   51.447,
+   53.039
+  ],
+  [
+   53.275,
+   54.159
+  ],
+  [
+   54.609,
+   55.199
+  ],
+  [
+   55.458,
+   57.204
+  ],
+  [
+   57.654,
+   57.937
+  ],
+  [
+   58.279,
+   59.01
+  ],
+  [
+   59.258,
+   61.062
+  ],
+  [
+   61.512,
+   63.163
+  ],
+  [
+   63.613,
+   65.405
+  ]
+ ],
+ "phrases": [
+  {
+   "text": "In sixteen twenty-eight,",
+   "s": 0.094,
+   "e": 1.085
+  },
+  {
+   "text": "Sweden built the mightiest warship in the world.",
+   "s": 1.356,
+   "e": 3.821
+  },
+  {
+   "text": "It sank before it even left the harbor.",
+   "s": 4.271,
+   "e": 6.264
+  },
+  {
+   "text": "The king wanted a monster.",
+   "s": 6.714,
+   "e": 7.81
+  },
+  {
+   "text": "Sixty-four bronze cannons.",
+   "s": 8.26,
+   "e": 9.723
+  },
+  {
+   "text": "Hundreds of golden carvings.",
+   "s": 10.173,
+   "e": 11.541
+  },
+  {
+   "text": "Two full decks of guns.",
+   "s": 11.991,
+   "e": 13.099
+  },
+  {
+   "text": "Nobody argued.",
+   "s": 13.549,
+   "e": 14.233
+  },
+  {
+   "text": "You don't argue with a king.",
+   "s": 14.683,
+   "e": 15.709
+  },
+  {
+   "text": "So they kept stacking weight on top of a ship that was already too narrow.",
+   "s": 16.159,
+   "e": 19.626
+  },
+  {
+   "text": "Before launch,",
+   "s": 20.076,
+   "e": 20.736
+  },
+  {
+   "text": "they ran a test.",
+   "s": 20.937,
+   "e": 21.727
+  },
+  {
+   "text": "Thirty sailors ran from one side of the deck to the other.",
+   "s": 22.177,
+   "e": 25.125
+  },
+  {
+   "text": "After three runs,",
+   "s": 25.575,
+   "e": 26.542
+  },
+  {
+   "text": "the ship was rocking so hard,",
+   "s": 26.719,
+   "e": 28.287
+  },
+  {
+   "text": "the admiral stopped the test.",
+   "s": 28.57,
+   "e": 29.95
+  },
+  {
+   "text": "And then he made a bold decision.",
+   "s": 30.4,
+   "e": 31.709
+  },
+  {
+   "text": "He let it sail anyway.",
+   "s": 32.159,
+   "e": 33.103
+  },
+  {
+   "text": "On launch day,",
+   "s": 33.553,
+   "e": 34.272
+  },
+  {
+   "text": "thousands of people lined the shore.",
+   "s": 34.531,
+   "e": 36.064
+  },
+  {
+   "text": "The cannons fired a salute.",
+   "s": 36.514,
+   "e": 37.788
+  },
+  {
+   "text": "The sails opened.",
+   "s": 38.238,
+   "e": 38.946
+  },
+  {
+   "text": "A light breeze hit.",
+   "s": 39.396,
+   "e": 40.186
+  },
+  {
+   "text": "The ship leaned,",
+   "s": 40.636,
+   "e": 41.261
+  },
+  {
+   "text": "and came back.",
+   "s": 41.544,
+   "e": 42.251
+  },
+  {
+   "text": "Then a second gust pushed it over,",
+   "s": 42.701,
+   "e": 44.352
+  },
+  {
+   "text": "and water poured in through the open gun ports.",
+   "s": 44.694,
+   "e": 46.97
+  },
+  {
+   "text": "Twenty minutes.",
+   "s": 47.42,
+   "e": 48.069
+  },
+  {
+   "text": "Thirteen hundred meters.",
+   "s": 48.519,
+   "e": 49.486
+  },
+  {
+   "text": "That was the whole voyage.",
+   "s": 49.936,
+   "e": 50.997
+  },
+  {
+   "text": "For three hundred and thirty-three years,",
+   "s": 51.447,
+   "e": 53.039
+  },
+  {
+   "text": "it sat at the bottom.",
+   "s": 53.275,
+   "e": 54.159
+  },
+  {
+   "text": "But the cold,",
+   "s": 54.609,
+   "e": 55.199
+  },
+  {
+   "text": "dark water kept it almost perfect.",
+   "s": 55.458,
+   "e": 57.204
+  },
+  {
+   "text": "Today,",
+   "s": 57.654,
+   "e": 57.937
+  },
+  {
+   "text": "it's a museum,",
+   "s": 58.279,
+   "e": 59.01
+  },
+  {
+   "text": "with more than a million visitors a year.",
+   "s": 59.258,
+   "e": 61.062
+  },
+  {
+   "text": "The ship that never made it out of port...",
+   "s": 61.512,
+   "e": 63.163
+  },
+  {
+   "text": "became Sweden's most popular trip.",
+   "s": 63.613,
+   "e": 65.405
+  }
+ ]
+}

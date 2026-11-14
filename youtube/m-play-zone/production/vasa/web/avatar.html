@@ -1,0 +1,29 @@
+<!doctype html><html><body style="margin:0"><canvas id="c" width="1600" height="1600"></canvas>
+<script type="module">
+import * as T from './toon.js';
+const c=document.getElementById('c'), g=c.getContext('2d');
+// background: warm sunset with sea band
+const bg=g.createRadialGradient(800,650,100,800,800,1100); bg.addColorStop(0,'#ffd27a'); bg.addColorStop(0.55,'#f39a4a'); bg.addColorStop(1,'#c4572e');
+g.fillStyle=bg; g.fillRect(0,0,1600,1600);
+// sun rays
+g.save(); g.translate(800,700); g.globalAlpha=0.12; g.fillStyle='#fff';
+for(let k=0;k<16;k++){ g.rotate(Math.PI/8); g.beginPath(); g.moveTo(0,0); g.lineTo(1200,-90); g.lineTo(1200,90); g.closePath(); g.fill(); } g.restore();
+// sea
+g.fillStyle='#2f9ec4'; g.fillRect(0,1180,1600,420); g.fillStyle='#8fd4ea';
+for(let i=0;i<9;i++){ g.beginPath(); g.ellipse(120+i*180,1260+(i%2)*90,70,14,0,0,7); g.fill(); }
+// sinking mast with Swedish-style pennant behind the host
+g.save(); g.translate(1200,1250); g.rotate(0.30); g.lineCap='round';
+g.strokeStyle='#1d1208'; g.lineWidth=46; g.beginPath(); g.moveTo(0,0); g.lineTo(0,-760); g.stroke();
+g.strokeStyle='#7a4a22'; g.lineWidth=30; g.beginPath(); g.moveTo(0,0); g.lineTo(0,-760); g.stroke();
+g.strokeStyle='#1d1208'; g.lineWidth=30; g.beginPath(); g.moveTo(-170,-520); g.lineTo(170,-520); g.stroke();
+g.strokeStyle='#7a4a22'; g.lineWidth=16; g.beginPath(); g.moveTo(-170,-520); g.lineTo(170,-520); g.stroke();
+g.fillStyle='#2457a8'; g.strokeStyle='#1d1208'; g.lineWidth=10; g.beginPath(); g.moveTo(10,-750); g.lineTo(230,-700); g.lineTo(10,-650); g.closePath(); g.fill(); g.stroke();
+g.fillStyle='#ffd400'; g.fillRect(10,-708,170,18);
+g.restore();
+g.fillStyle='#2f9ec4'; g.fillRect(900,1180,700,60);
+// host, shocked, big
+const cv=document.createElement('canvas'); cv.width=600; cv.height=1000;
+T.romanFront(new T.Pen(cv.getContext('2d')),'host',{seed:4,expr:'shock'});
+g.drawImage(cv,-329,-330,2244,3740);
+window.done=true;
+</script></body></html>

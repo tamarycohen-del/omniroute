@@ -1,0 +1,13 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0"><canvas id="c" width="2560" height="1440"></canvas>
+<script type="module">
+import * as T from './toon.js';
+const c=document.getElementById('c'), g=c.getContext('2d'), W=2560, H=1440;
+const bg=g.createLinearGradient(0,0,W,H); bg.addColorStop(0,'#ffc23a'); bg.addColorStop(0.5,'#ff9a3a'); bg.addColorStop(1,'#f0642a');
+g.fillStyle=bg; g.fillRect(0,0,W,H);
+g.save(); g.translate(W/2,H/2); g.globalAlpha=0.1; g.fillStyle='#fff';
+for(let k=0;k<24;k++){ g.rotate(Math.PI/12); g.beginPath(); g.moveTo(0,0); g.lineTo(2000,-120); g.lineTo(2000,120); g.closePath(); g.fill(); } g.restore();
+if ('host' === 'host') { const cv=document.createElement('canvas'); cv.width=600; cv.height=1000;
+  T.romanFront(new T.Pen(cv.getContext('2d')),'host',{seed:4,expr:'grin',facing:0,look:0});
+  g.drawImage(cv, 1280 - 160, 440, 320, 533); }
+window.done=true;
+</script></body></html>

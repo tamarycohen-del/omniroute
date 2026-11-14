@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0"><canvas id="c" width="1600" height="1600"></canvas>
+<script type="module">
+import * as T from './toon.js'; import { tagCard } from './props_see.js';
+const c=document.getElementById('c'), g=c.getContext('2d');
+const bg=g.createRadialGradient(800,700,80,800,800,1150); bg.addColorStop(0,'#ffe27a'); bg.addColorStop(0.55,'#ffb03a'); bg.addColorStop(1,'#f0742a');
+g.fillStyle=bg; g.fillRect(0,0,1600,1600);
+g.save(); g.translate(800,760); g.globalAlpha=0.14; g.fillStyle='#fff';
+for(let k=0;k<16;k++){ g.rotate(Math.PI/8); g.beginPath(); g.moveTo(0,0); g.lineTo(1200,-90); g.lineTo(1200,90); g.closePath(); g.fill(); } g.restore();
+// small floating facts icons
+g.globalAlpha=0.5; g.fillStyle='#fff'; g.font='900 120px "Arial Black", sans-serif'; g.textAlign='center';
+g.fillText('%',330,620); g.fillText('×',1290,640); g.fillText('=',1300,1080); g.globalAlpha=1;
+const cv=document.createElement('canvas'); cv.width=600; cv.height=1000;
+T.romanFront(new T.Pen(cv.getContext('2d')),'host',{seed:4,expr:'shock'});
+g.drawImage(cv,-329,-300,2244,3740);
+window.done=true;
+</script></body></html>
