@@ -33,7 +33,9 @@ Final MP4s were in the old session's scratchpad (not in git); re-render from sou
 - **Look (decided):** flat 2D vector style (dark purple palette, soft gradients, moonlight, vignette), rendered with the 2D canvas engine in `youtube/horror/flat2d/` (`anim.html` + `stick.js` `whiteStick`, `render2d.mjs`): ~12 s for 270 frames.
 - **Main character (decided):** white stickman with dark outline and a **dark beanie** (option B). The old host (orange cap) is retired for this series. Props like the flashlight only when a scene needs them - not a fixed item.
 - Captions: bold uppercase, one keyword in lime; chapter label top-left ("3:33 AM / NIGHT ONE").
-- Open decisions: which apocalypse; keep or hide the existing fact videos; new channel name (the Factopia rename reminder on Nov 23 may change).
+- **Decided: full switch on the current channel** (no second channel). First series: "It Knows Her Voice" (power outage, knocks at 3:33, mom's voice at the door - open or not).
+- **Narration voice:** a new horror voice (not Ethan). Samples in `youtube/horror/voices/`: Cedric M (BQOei2tk6QCBMHQWPhbj) done; Michael C. Vincent (n1PvBOwxb8X6m7tahp2h) and Larry (5bh6Hc8SO3Yh1skN9Cqm) pending (free tier busy). User picks.
+- Open decisions: keep or hide the existing fact videos; new channel name + banner + avatar (the Factopia rename reminder on Nov 23 should become a horror-name reminder).
 
 ## New videos: use the research + script skill
 - `.claude/skills/factopia-research-script/SKILL.md`: landscape scan -> facts + audience -> 3-5 angles (user picks) -> script with the hard retention rules -> self-review + upload package. Then build with `cartoon-audio-short`.
