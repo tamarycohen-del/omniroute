@@ -57,3 +57,12 @@ Final MP4s were in the old session's scratchpad (not in git); re-render from sou
 - Loudness: -14 LUFS, true peak -1 dB.
 - Never upload to YouTube without the owner's explicit OK (an API upload was removed by YouTube once; owner uploads by hand now).
 - Don't copy other channels' content, characters, names or voices.
+
+## Series 1 "Her Voice" - Part 1 DONE (Nov 14 2026)
+- Folder: `youtube/horror/it-knows-her-voice/` (ep1_script.txt approved, audio/, web/ep1.html, biscuit.js, biscuit_sheet.jpg).
+- Voices: narrator **Clancy** (FLpz0UhC9a7CIfUSBo6S), the voice at the door **Tammy** (TDdaEMZGTCMRB4x8bVQ2, normal warm mom voice - user: do NOT make it sound wrong), muffled through the door in voice.py.
+- Build: `audio/voice.py` (splices takes, words.json from Scribe word times) -> `audio/sfx.py` (synth bed, half the voice level) -> copy words.json to web/ -> render web/ep1.html with render2d.mjs (2 processes, ~50 s) from a scratch dir that has a node_modules link -> ffmpeg loudnorm -14 LUFS.
+- Re-record only the changed line (user: don't waste credits). Match a spliced line's loudness to its neighbours and cut in silence.
+- User notes for the look: no KNOCK text; no "the voice" label; label top-left = time + episode name ("HER VOICE") + small "CHAPTER ONE"; both choice cards the same colour (red); Biscuit = small brown long dog, short snout, front view under the bed (narrow body, eyes don't move, only trembles).
+- Part 1 ends with the choice OPEN THE DOOR / BACK DOOR WITH BISCUIT; Part 2 follows the most-liked comment.
+- ElevenLabs free tier: one call once failed with "unusual activity... free tier disabled" (proxy); a retry later worked.
