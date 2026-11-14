@@ -5,5 +5,5 @@ await new Promise((r) => srv.on('listening', r));
 const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: 1080, height: 1920 } });
 pg.on('pageerror', (e) => console.log('ERR', e.message));
 await pg.goto(`http://localhost:${srv.address().port}/index.html`); await pg.waitForFunction(() => window.ready);
-for (const [t, shot, name] of [[0.5, 'wide', 'a'], [2.0, 'face', 'b']]) { const d = await pg.evaluate(([t, s]) => { window.renderFrame(t, s); return document.getElementById('c').toDataURL('image/jpeg', 0.95); }, [t, shot]); fs.writeFileSync(path.join(root, name + '.jpg'), Buffer.from(d.split(',')[1], 'base64')); }
+for (const [t, shot, name] of (process.env.ONLY === 'chars' ? [[0.5, 'chars', 'c']] : [[0.5, 'wide', 'a'], [2.0, 'face', 'b']])) { const d = await pg.evaluate(([t, s]) => { window.renderFrame(t, s); return document.getElementById('c').toDataURL('image/jpeg', 0.95); }, [t, shot]); fs.writeFileSync(path.join(root, name + '.jpg'), Buffer.from(d.split(',')[1], 'base64')); }
 await b.close(); srv.close(); console.log('ok');

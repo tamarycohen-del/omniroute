@@ -59,3 +59,43 @@ export const chapterCard = (p, o = {}) => {
   g.fillRect(40, 880, 300, 3); g.fillStyle = '#d8d0e8'; g.font = '600 30px "DejaVu Sans", sans-serif'; g.fillText((o.title || 'NIGHT ONE').split('').join(' '), 40, 925);
   g.restore();
 };
+/** white stickman (thick white limbs with dark outline), original design with a beanie.
+ *  o: { beanie: '#2a2a36' | '#f2f0ec', expr: 'neutral'|'worried'|'scared'|'shock', look, arm: 'hang'|'reach'|'flash' } */
+export const whiteStick = (p, o = {}) => {
+  const g = p.g, cx = 300, sole = 975, hipY = 760, neckY = 560, headR = 70, hc = neckY - headR + 4;
+  const O = '#121018', Wc = '#f4f2ee', ow = 30, iw = 18;
+  const limb = (pts) => { for (const [w, c] of [[ow, O], [iw, Wc]]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke(); } };
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  const step = o.step || 0;
+  limb([[cx - 4, hipY], [cx - 26 - 18 * step, 870], [cx - 38 - 30 * step, sole - 10]]);
+  limb([[cx + 4, hipY], [cx + 22 + 14 * step, 870], [cx + 30 + 26 * step, sole - 10]]);
+  limb([[cx, neckY + 6], [cx + 2, hipY]]);
+  const sh = neckY + 44;
+  limb([[cx, sh], [cx - 46, sh + 90], [cx - 52, sh + 170]]);
+  if (o.arm === 'reach' || o.arm === 'flash') limb([[cx, sh], [cx + 70, sh + 40], [cx + 140, sh + 30]]);
+  else limb([[cx, sh], [cx + 46, sh + 90], [cx + 52, sh + 170]]);
+  if (o.arm === 'flash') { g.save(); g.translate(cx + 150, sh + 28); g.rotate(-0.08); g.fillStyle = '#2a2a32'; g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.roundRect(-10, -16, 64, 32, 6); g.fill(); g.stroke(); g.fillStyle = '#fff2b0'; g.fillRect(52, -18, 10, 36); g.restore(); }
+  // head
+  g.fillStyle = Wc; g.strokeStyle = O; g.lineWidth = 9; g.beginPath(); g.arc(cx, hc, headR, 0, 7); g.fill(); g.stroke();
+  g.fillStyle = 'rgba(0,0,0,0.06)'; g.beginPath(); g.arc(cx + 18, hc + 14, headR - 14, 0, 7); g.fill();
+  // face
+  const lx = (o.look || 0) * 12, ex = cx + 8 + lx, ey = hc + 8, e = o.expr || 'neutral';
+  g.fillStyle = O; g.strokeStyle = O;
+  const big = e === 'scared' || e === 'shock';
+  for (const s of [-1, 1]) { g.beginPath(); g.ellipse(ex + s * 22, ey, big ? 9 : 7, big ? 12 : 9, 0, 0, 7); g.fill(); }
+  g.lineWidth = 7; // brows
+  const by = ey - 26, tilt = e === 'neutral' ? -4 : e === 'worried' ? 10 : 14;
+  for (const s of [-1, 1]) { g.beginPath(); g.moveTo(ex + s * 10, by - (s > 0 ? 0 : 0) + (e === 'neutral' ? 4 : -tilt * 0.4)); g.lineTo(ex + s * 34, by + (e === 'neutral' ? -2 : tilt * 0.6)); g.stroke(); }
+  g.lineWidth = 6;
+  if (e === 'shock') { g.beginPath(); g.ellipse(ex, ey + 32, 9, 13, 0, 0, 7); g.fill(); }
+  else if (e === 'scared') { g.beginPath(); g.moveTo(ex - 14, ey + 34); g.quadraticCurveTo(ex, ey + 26, ex + 14, ey + 34); g.stroke(); g.fillStyle = '#9fd4ff'; g.beginPath(); g.ellipse(cx - headR + 12, hc - 18, 6, 10, 0, 0, 7); g.fill(); }
+  else if (e === 'worried') { g.beginPath(); g.moveTo(ex - 12, ey + 32); g.lineTo(ex + 12, ey + 30); g.stroke(); }
+  else { g.beginPath(); g.moveTo(ex - 10, ey + 30); g.lineTo(ex + 12, ey + 30); g.stroke(); }
+  // beanie: dome + folded cuff + small fold lines
+  const bc = o.beanie || '#2a2a36', dark = bc === '#f2f0ec' ? '#cfcac2' : '#1a1a22';
+  g.fillStyle = bc; g.strokeStyle = O; g.lineWidth = 8;
+  g.beginPath(); g.moveTo(cx - headR - 4, hc - 18); g.bezierCurveTo(cx - headR + 4, hc - headR - 46, cx + headR - 4, hc - headR - 46, cx + headR + 4, hc - 18); g.closePath(); g.fill(); g.stroke();
+  g.beginPath(); g.roundRect(cx - headR - 10, hc - 34, 2 * headR + 20, 30, 12); g.fillStyle = bc; g.fill(); g.stroke();
+  g.strokeStyle = dark; g.lineWidth = 4; for (let k = -3; k <= 3; k++) { g.beginPath(); g.moveTo(cx + k * 18, hc - 30); g.lineTo(cx + k * 18, hc - 8); g.stroke(); }
+  g.restore();
+};
