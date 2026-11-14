@@ -8,7 +8,7 @@ Cast: white stickman with dark beanie (narrator) | Biscuit - small brown dachshu
 3  | Suddenly, the power went out. Not just my house. The whole street.           | Window: streetlights die one by one
 4  | Then... three knocks.                                                         | Hall, he creeps to the front door
 5  | (the voice) "Honey? It's me. I forgot my keys. Let me in, it's freezing." | Light under the door  [first time we hear the voice]
-6  | Biscuit didn't run to the door. He was hiding under my bed.               | Biscuit's eyes in the dark under the bed
+6  | Biscuit didn't run to the door. He was hiding under my bed... shaking.               | Biscuit's eyes in the dark under the bed
 7  | I didn't open it. I froze for a second.                                       | He stops, hand above the lock
 8  | Mom never calls me "honey."                                                   | Face close-up, shock
 9  | So I texted her. Three percent battery. "Mom... are you outside?"             | Phone in the dark, 3% red
