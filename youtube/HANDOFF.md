@@ -29,6 +29,7 @@ Final MP4s were in the old session's scratchpad (not in git); re-render from sou
 - User wants to move the channel (visual + niche + identity) to **horror + apocalypse stories in parts** (not only apocalypses - horror too).
 - Chosen format: **"Day 1 / Day 2…" survival diary** with our host as the survivor; each part ends on a cliffhanger.
 - NOT the CELL-217 "choose A or B in the comments" format - the user does not want to repeat it. End each part with an open question instead ("What would you have done?").
+- Series parts: **~75 s each** (user). Plan 7-8 parts per series so the full compilation passes 8 min (mid-roll ads). After each series, upload the full compilation as a long video (first one: vertical centred with blurred sides; 16:9 re-render later if it does well).
 - Open decisions: which apocalypse; keep or hide the existing fact videos; new channel name (the Factopia rename reminder on Nov 23 may change).
 
 ## New videos: use the research + script skill
