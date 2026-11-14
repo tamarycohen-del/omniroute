@@ -265,7 +265,6 @@ const captions = (t, low) => {
   if (!ch) return;
   const mom = ch[0].who === 'm', words = ch.map((w) => w.w.toUpperCase()), hi = ch.findIndex((w) => t >= w.s && t < w.e + 0.08);
   g.save(); g.translate(240, low ? 1240 : mom ? 840 : 880);
-  if (mom) { g.save(); g.font = 'italic 700 40px "DejaVu Serif", serif'; g.fillStyle = '#e6dcff'; g.textAlign = 'center'; g.fillText('— the voice —', 300, 420); g.restore(); }
   capCard(P, { words, hi: hi < 0 ? ch.length - 1 : hi, color: mom ? '#e6dcff' : undefined });
   g.restore();
 };
