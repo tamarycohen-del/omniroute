@@ -41,10 +41,21 @@ const OPT = {
     const r = g.createLinearGradient(0, 800, 0, 150); r.addColorStop(0, 'rgba(120,160,255,0)'); r.addColorStop(0.35, 'rgba(10,8,30,0.05)'); r.addColorStop(1, 'rgba(5,4,10,0.85)'); g.fillStyle = r; g.fillRect(0, 0, 800, 800);
     g.save(); g.globalCompositeOperation = 'lighter'; const q = g.createRadialGradient(400, 820, 20, 400, 820, 520); q.addColorStop(0, 'rgba(140,170,255,0.55)'); q.addColorStop(1, 'rgba(140,170,255,0)'); g.fillStyle = q; g.fillRect(0, 0, 800, 800); g.restore();
     g.fillStyle = '#1b1730'; g.strokeStyle = '#000'; g.lineWidth = 8; g.beginPath(); g.roundRect(300, 700, 200, 140, 24); g.fill(); g.stroke(); g.fillStyle = '#aac4ff'; g.fillRect(316, 716, 168, 120); },
+  J() { charFace('worried', 0); },
+  K() { charFace('worried', 0.55); },
   H() { faceIcon(false); },
   I() { faceIcon(true); },
 };
 // like F, but the whole face shows: big head in the dark, beanie, glowing eyes. lit=false: face in shadow; lit=true: pale face, soft rim light.
+// our character's own face (whiteStick head), big, on the dark background. shade 0..1 darkens the face from the right.
+const charFace = (expr, shade) => {
+  g.fillStyle = '#0c0818'; g.fillRect(0, 0, 800, 800);
+  const r = g.createRadialGradient(400, 430, 60, 400, 430, 420); r.addColorStop(0, 'rgba(70,50,140,0.45)'); r.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = r; g.fillRect(0, 0, 800, 800);
+  const S = 3.0, hc = 560 - 70 + 4; // head centre in whiteStick units: cx 300, hc 494
+  g.save(); g.translate(400 - 300 * S, 470 - hc * S); g.scale(S, S); whiteStick({ g }, { beanie: '#2a2a36', expr, look: 0 }); g.restore();
+  if (shade > 0) { g.save(); g.beginPath(); g.arc(400, 470, 70 * S - 12, 0, 7); g.clip(); g.beginPath(); g.rect(0, 462, 800, 400); g.clip(); const sh = g.createLinearGradient(400 - 210, 0, 400 + 210, 0); sh.addColorStop(0, 'rgba(10,6,24,0)'); sh.addColorStop(1, `rgba(10,6,24,${shade})`); g.fillStyle = sh; g.fillRect(0, 0, 800, 800); g.restore(); }
+  const v = g.createRadialGradient(400, 420, 250, 400, 420, 560); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.6)'); g.fillStyle = v; g.fillRect(0, 0, 800, 800);
+};
 const faceIcon = (lit) => {
   g.fillStyle = '#0c0818'; g.fillRect(0, 0, 800, 800);
   const r = g.createRadialGradient(400, 470, 60, 400, 470, 420); r.addColorStop(0, lit ? 'rgba(90,70,160,0.45)' : 'rgba(60,40,120,0.35)'); r.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = r; g.fillRect(0, 0, 800, 800);
@@ -63,6 +74,6 @@ const faceIcon = (lit) => {
   g.fillStyle = '#0c0818'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 72 + 6, hc + 46, 15, 21, 0, 0, 7); g.fill(); }
   g.fillStyle = '#fff'; for (const s of [-1, 1]) { g.beginPath(); g.arc(cx + s * 72 + 12, hc + 36, 5, 0, 7); g.fill(); }
 };
-window.renderFrame = (k) => { g.setTransform(1, 0, 0, 1, 0, 0); OPT['ABCDEFGHI'[k]](); };
+window.renderFrame = (k) => { g.setTransform(1, 0, 0, 1, 0, 0); OPT['ABCDEFGHIJK'[k]](); };
 window.ready = true;
 </script></body></html>
