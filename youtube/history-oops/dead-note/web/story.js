@@ -193,7 +193,9 @@ export const actorsAt = (f, T) => {
     if (id === 'd0b') add_('host', life(f, 11, { expr: pk < 0.15 ? 'neutral' : 'shock', look: 0, headTilt: 4 }), [0, 0, 0], 0.92);
     if (id === 'd1') add_('host', life(f, 11, { expr: 'nervous', L: 'hang', R: 'hang' }), HP, 0.92);
     if (id === 'd3a') add_('host', life(f, 11, { expr: 'dazed', bob: q(0.004 * Math.sin(f * 2.3), 3) }), HP, 0.92);
-    if (id === 'd4') { const at = DDIE[4], d = die(at); add_(NEI, life(f, 21, { expr: d > 0 ? 'shock' : 'grin', R: 'reach', L: 'hang', bob: d ? 0 : q(0.006 * Math.sin(f * 3.1), 3) }), [-3.6, 0, -600.2], 0.92, d, -1); }
+    if (id === 'd4') { const at = DDIE[4], d = die(at), o = life(f, 21, { expr: d > 0 ? 'shock' : 'grin', R: 'hang', L: 'hang', bob: d ? 0 : q(0.006 * Math.sin(f * 3.1), 3) }), jig = d ? 0 : (f % 2) * 3;
+      out.push({ key: 'nei' + JSON.stringify(o) + jig, draw: (p) => { T.romanFront(p, NEI, o); const g = p.g; g.save(); g.translate(417 + jig, 655 + 975 * (o.bob || 0) * 0); g.scale(0.55, 0.55); g.translate(-230, -505); drillCard(p); g.restore(); },
+        x: -3.6, y: -0.55 * d, z: -600.2, s: 0.92, ground: d ? undefined : 0, blob: !d, roll: -1.35 * d }); }
     if (id === 'd5') add_('host', life(f, 11, { expr: 'scheme' }), HP, 0.92);
     if (id === 'd6') { const at = DDIE[6], d = die(at);
       add_(SPO, life(f, 31, { expr: d > 0 ? 'shock' : 'grin', R: d ? 'hang' : 'point' }), [0, -0.35, -1801.2], 0.9, d, -1);
@@ -263,7 +265,6 @@ export const fxAt = (f, T) => {
     const ghost = (at, pos) => { const g = (t - at - 0.25) / 1.4; if (g > 0) out.push(FX('ghost' + Math.round(g * 20), (p) => ghostCard(p, { k: Math.min(1, g), t: f }), [pos[0], pos[1] + 0.5 + 0.5 * Math.min(1, g), pos[2]], 0.32, { order: 9 })); };
     if (S.id === 'd0a' || S.id === 'd0b') { const P = front(C, 0.9); out.push(FX('rain' + (f % 12), (p) => rainCard(p, { t: f }), [P[0], P[1] - 0.95 * 0.5, P[2]], 0.85, { order: 10 })); }
     if (S.id === 'd3a' && Math.floor(f / 4) % 3 !== 0) { const P = front(C, 1.3); out.push(FX('brrr' + (f % 2), (p) => wordCard(p, { t: 'BRRRRR!', col: '#ffd23a', size: 120, rot: -0.12 + (f % 2) * 0.05 }), [P[0] - 0.12, P[1] + 0.25, P[2]], 0.2, { order: 9 })); }
-    if (S.id === 'd4' && t < DDIE[4]) out.push(FX('drill' + (f % 2), (p) => drillCard(p), [-3.15 + (f % 2) * 0.01, 0.62, -600.0], 0.32, { order: 9, roll: (f % 2) * 0.03 }));
     if (S.id === 'd4') ghost(DDIE[4], [-3.6, 0.8, -600.2]);
     if (S.id === 'd6') { const at = DDIE[6]; if (t < at) out.push(FX('bub', (p) => bubbleCard(p, { t: 'HE DIES AT\nTHE END—', size: 58 }), [-0.35, 1.2, -1801.5], 0.26, { order: 9 })); ghost(at, [0, 0.35, -1801.2]); }
     if (S.id === 'd7') ghost(DDIE[7], [-0.55, 0.75, -1899.05]);
