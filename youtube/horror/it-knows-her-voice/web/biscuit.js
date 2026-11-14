@@ -89,9 +89,9 @@ export const biscuitFront = (g, o = {}) => {
     // body lying behind the head (trembles)
     g.save(); g.translate(q(57) * 3, q(43, 1) * 2);
     g.fillStyle = FUR; g.strokeStyle = O; g.lineWidth = 8;
-    g.beginPath(); g.ellipse(0, 84, 128, 46, 0, 0, 7); g.fill(); g.stroke();
-    g.fillStyle = 'rgba(255,255,255,0.08)'; g.beginPath(); g.ellipse(-20, 62, 80, 10, 0, 0, 7); g.fill();
-    for (const s of [-1, 1]) { g.fillStyle = FUR; g.beginPath(); g.ellipse(s * 42 + q(71, s) * 2, 124, 26, 14, 0, 0, 7); g.fill(); g.stroke(); }
+    g.beginPath(); g.ellipse(0, 84, 84, 44, 0, 0, 7); g.fill(); g.stroke();
+    g.fillStyle = 'rgba(255,255,255,0.08)'; g.beginPath(); g.ellipse(-14, 62, 52, 9, 0, 0, 7); g.fill();
+    for (const s of [-1, 1]) { g.fillStyle = FUR; g.beginPath(); g.ellipse(s * 30 + q(71, s) * 2, 124, 22, 13, 0, 0, 7); g.fill(); g.stroke(); }
     g.restore();
     // ears (tremble)
     for (const s of [-1, 1]) {
@@ -109,7 +109,7 @@ export const biscuitFront = (g, o = {}) => {
     // worried brows
     g.lineWidth = 5; for (const s of [-1, 1]) { g.beginPath(); g.moveTo(s * 6, -16); g.lineTo(s * 24, -10); g.stroke(); }
     // tremble marks
-    if (sh > 0 && Math.floor(t * 12) % 2 === 0) { g.strokeStyle = 'rgba(230,220,255,0.7)'; g.lineWidth = 5; for (const s of [-1, 1]) for (const k of [0, 1]) { g.beginPath(); g.moveTo(s * (150 + k * 16), 60 + k * 8); g.lineTo(s * (160 + k * 16), 96 + k * 8); g.stroke(); } }
+    if (sh > 0 && Math.floor(t * 12) % 2 === 0) { g.strokeStyle = 'rgba(230,220,255,0.7)'; g.lineWidth = 5; for (const s of [-1, 1]) for (const k of [0, 1]) { g.beginPath(); g.moveTo(s * (106 + k * 16), 60 + k * 8); g.lineTo(s * (116 + k * 16), 96 + k * 8); g.stroke(); } }
     g.restore();
   }
   // eyes: same place in the dark and in the light
