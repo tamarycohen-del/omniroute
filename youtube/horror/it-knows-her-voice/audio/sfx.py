@@ -11,6 +11,7 @@ import numpy as np
 SR = 48000
 HERE = os.path.dirname(os.path.abspath(__file__))
 rng = np.random.default_rng(7)
+D = 2.2  # everything after the "phone died" line moved later by this much
 
 
 def load_wav(p):
@@ -91,7 +92,7 @@ def whimper():
 drone = (np.sin(2 * np.pi * 55 * t) + 0.6 * np.sin(2 * np.pi * 58.3 * t) + 0.3 * np.sin(2 * np.pi * 110.4 * t)) * 0.10
 shape = np.minimum(1, t / 1.5) * (1 + 0.5 * np.clip((t - 48.3) / 8.6, 0, 1))
 shape *= np.where((t > 57.97) & (t < 58.7), 0.1, 1.0)
-shape *= np.where(t > 75.0, np.clip((76.0 - t) / 1.0, 0, 1), 1.0)
+shape *= np.where(t > 75.0 + D, np.clip((76.0 + D - t) / 1.0, 0, 1), 1.0)
 bed += drone * shape
 # high eerie pad from the voice onward
 pad = np.sin(2 * np.pi * 659 * t + 0.6 * np.sin(2 * np.pi * 0.3 * t)) * 0.012 * np.clip((t - 19.7) / 3, 0, 1)
@@ -111,10 +112,10 @@ while hb < 57.9:
     place(heartbeat(), hb, 0.55); hb += 0.9 - 0.45 * (hb - 48.6) / 9.3
 place(sting([110, 116.5, 155.6, 233], 3.0, 1.0), 56.97, 0.55)
 place(thunk(40, 2.5), 56.97, 0.5)
-place(tick(880, 6) * 2, 63.05, 0.25)  # phone dies
-for k in np.arange(63.5, 65.4, 0.17): place(tick(500, 90), k, 0.12)  # paws
-place(sting([220, 277, 330], 3.0, 1.2), 67.45, 0.25)
-for c in [7.0, 12.7, 17.4, 26.0, 33.2, 44.45, 48.3, 63.4]: place(whoosh(0.4), c - 0.2, 0.12)
+place(tick(880, 6) * 2, 64.95, 0.25)  # phone dies
+for k in np.arange(63.5 + D, 65.4 + D, 0.17): place(tick(500, 90), k, 0.12)  # paws
+place(sting([220, 277, 330], 3.0, 1.2), 67.45 + D, 0.25)
+for c in [7.0, 12.7, 17.4, 26.0, 33.2, 44.45, 48.3, 63.4 + D]: place(whoosh(0.4), c - 0.2, 0.12)
 
 bed *= 0.5 / max(1e-9, np.abs(bed).max())  # about half the voice peak
 save(os.path.join(HERE, "bed.wav"), bed)

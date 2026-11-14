@@ -18,7 +18,9 @@ PLAN = [("n", 0.00, 19.38, 0.45),   # lines 1-4, ends "three knocks."
         ("m", 0.00, 5.56, 0.55),    # "Honey? It's me ... it's freezing."
         ("n", 19.38, 44.30, 0.35),  # lines 6-12 narration, ends "right against the door."
         ("m", 5.56, 12.32, 0.60),   # "Honey... that's not me texting you ... behind me."
-        ("n", 44.30, 58.00, 0.45),  # lines 13-15
+        ("n", 44.30, 49.10, 0.35),  # "I looked at her text again ... love you."
+        ("d", 0.20, 1.60, 0.45),    # "And then my phone died."
+        ("n", 49.10, 58.00, 0.45),  # Biscuit + the choice
         ("c", 0.00, 2.96, 0.40)]    # "Comment your choice. Part 2 follows you."
 
 
@@ -41,9 +43,9 @@ def clean(ws):
 
 def main():
     src = {"n": load(os.path.join(HERE, "narr.mp3")), "m": load(os.path.join(HERE, "mom.mp3"), door=True),
-           "c": load(os.path.join(HERE, "cta.mp3"))}
+           "c": load(os.path.join(HERE, "cta.mp3")), "d": load(os.path.join(HERE, "died.mp3"))}
     wsrc = {k: clean([w for w in json.load(open(os.path.join(HERE, f)))["words"] if w["type"] == "word"])
-            for k, f in (("n", "narr_words.json"), ("m", "mom_words.json"), ("c", "cta_words.json"))}
+            for k, f in (("n", "narr_words.json"), ("m", "mom_words.json"), ("c", "cta_words.json"), ("d", "died_words.json"))}
     parts, out_words, t = [], [], 0.0
     fade = int(0.01 * SR)
     for who, a, b, pause in PLAN:

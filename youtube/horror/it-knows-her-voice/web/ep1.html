@@ -17,7 +17,7 @@ const knockAmt = (t) => KNOCKS.reduce((m, k) => (t >= k && t < k + 0.14 ? Math.m
 const SHOTS = [
   [0.0, 'bed'], [7.0, 'phone1'], [12.7, 'window'], [17.4, 'hallKnock'], [19.7, 'frontDoor'], [26.0, 'underBed'],
   [30.4, 'lock'], [33.2, 'face'], [35.55, 'phone2'], [44.45, 'peep'], [48.3, 'doorClose'], [58.6, 'phone3'],
-  [63.4, 'biscuitWalk'], [67.45, 'choice'], [76.0, 'end'],
+  [65.6, 'biscuitWalk'], [69.65, 'choice'], [78.2, 'end'],
 ];
 const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0], SHOTS[i + 1] ? SHOTS[i + 1][0] - SHOTS[i][0] : 1]; };
 const cam = (z, fx, fy, sx = 0, sy = 0) => { g.translate(W / 2 + sx, H / 2 + sy); g.scale(z, z); g.translate(-fx, -fy); };
@@ -128,7 +128,7 @@ const SCENES = {
     const up = sm((u - 5.1) / 0.5);
     dog(560, 1660, 0.62, { pose: up > 0.5 ? 'stand' : 'crouch', look: up > 0.5 ? 1 : 0, ears: up > 0.5 ? 'up' : 'down', t });
   },
-  phone1(u, t) { cam(1.22 + 0.05 * sm(u / 5.7), 540, 900); phone(u, { msgs: [{ ...MSG_TEN, at: 2.9 }], batt: 5, clock: '10:02' }); },
+  phone1(u, t) { cam(1.22 + 0.05 * sm(u / 5.7), 540, 900); phone(u, { msgs: [{ ...MSG_TEN, at: 2.9 }], batt: 9, clock: '10:02' }); },
   window(u, t) { // 12.7-17.4: house lamp off, street lights die one by one
     cam(1.05 + 0.06 * sm(u / 4.7), 540, 980);
     wall('#120e28', '#1c1638');
@@ -218,8 +218,8 @@ const SCENES = {
   },
   phone3(u, t) { // 58.6-63.4: zoom on the reply - no "love you" - then the phone dies
     const z = 1.22 + 0.35 * sm(u / 1.6); cam(z, 540, 1000);
-    phone(u, { msgs: [{ ...MSG_TEN, at: -1 }, { ...MSG_ASK, at: -1 }, { ...MSG_REPLY, at: -1 }], batt: 1, clock: '3:35', zoomMsg: 2, hl: sm((u - 1.8) / 0.3), dieAt: 4.45 });
-    if (u > 1.8 && u < 4.45) { // "love you" from the first text, pointed out
+    phone(u, { msgs: [{ ...MSG_TEN, at: -1 }, { ...MSG_ASK, at: -1 }, { ...MSG_REPLY, at: -1 }], batt: 1, clock: '3:35', zoomMsg: 2, hl: sm((u - 1.8) / 0.3), dieAt: 6.3 });
+    if (u > 1.8 && u < 6.3) { // "love you" from the first text, pointed out
       g.save(); g.strokeStyle = '#c6ff3a'; g.lineWidth = 7; g.globalAlpha = sm((u - 2.0) / 0.3); g.beginPath(); g.roundRect(292, 632, 470, 132, 34); g.stroke(); g.restore();
     }
   },
@@ -275,7 +275,7 @@ window.renderFrame = (f) => {
   g.save(); SCENES[shot](u, t); g.restore();
   g.setTransform(1, 0, 0, 1, 0, 0);
   const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
-  if (!/^(choice|end|phone)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: t < 41.6 ? '3:33' : t < 58.6 ? '3:34' : '3:35', title: 'NIGHT ONE' }); g.restore(); }
+  if (!/^(choice|end|phone)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: t < 41.6 ? '3:33' : t < 58.6 ? '3:34' : '3:35', title: 'IT KNOWS HER VOICE', sub: 'CHAPTER ONE' }); g.restore(); }
   const ks = knockAmt(t);
   // (no KNOCK text: the knocks are heard, not written)
   if (shot !== 'choice') captions(t, shot.startsWith('phone'));

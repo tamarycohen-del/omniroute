@@ -56,7 +56,8 @@ export const chapterCard = (p, o = {}) => {
   const g = p.g; g.save(); g.textBaseline = 'alphabetic'; g.textAlign = 'left';
   g.fillStyle = '#ff2a3a'; g.shadowColor = '#ff2a3a'; g.shadowBlur = 16; g.font = '700 92px "DejaVu Sans Mono", monospace'; const tw = g.measureText(o.time || '3:33').width; g.fillText(o.time || '3:33', 40, 860);
   g.shadowBlur = 0; g.font = '700 30px "DejaVu Sans Mono", monospace'; g.fillText('AM', 50 + tw, 860);
-  g.fillRect(40, 880, 300, 3); g.fillStyle = '#d8d0e8'; g.font = '600 30px "DejaVu Sans", sans-serif'; g.fillText((o.title || 'NIGHT ONE').split('').join(' '), 40, 925);
+  g.fillRect(40, 880, 300, 3); g.fillStyle = '#ece6f6'; g.font = '800 34px "DejaVu Sans", sans-serif'; g.fillText(o.title || 'NIGHT ONE', 40, 926);
+  if (o.sub) { g.fillStyle = 'rgba(216,208,232,0.75)'; g.font = '600 20px "DejaVu Sans", sans-serif'; g.fillText(o.sub.split('').join(' '), 42, 960); }
   g.restore();
 };
 /** white stickman (thick white limbs with dark outline), original design with a beanie.
