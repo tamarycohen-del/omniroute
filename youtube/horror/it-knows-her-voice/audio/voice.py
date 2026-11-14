@@ -24,8 +24,9 @@ PLAN = [("n", 0.00, 19.38, 0.45),   # lines 1-4, ends "three knocks."
         ("c", 0.00, 2.96, 0.40)]    # "Comment your choice. Part 2 follows you."
 
 
-def load(p, door=False):
+def load(p, door=False, gain=None):
     af = ["-af", "lowpass=f=2200,highpass=f=180,aecho=0.8:0.5:35:0.25,volume=1.15"] if door else []
+    if gain: af = ["-af", f"volume={gain}dB"]
     raw = subprocess.run(["ffmpeg", "-v", "error", "-i", p] + af + ["-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
                          capture_output=True, check=True).stdout
     return np.frombuffer(raw, np.float32).astype(np.float64)
@@ -43,7 +44,7 @@ def clean(ws):
 
 def main():
     src = {"n": load(os.path.join(HERE, "narr.mp3")), "m": load(os.path.join(HERE, "mom.mp3"), door=True),
-           "c": load(os.path.join(HERE, "cta.mp3")), "d": load(os.path.join(HERE, "died.mp3"))}
+           "c": load(os.path.join(HERE, "cta.mp3")), "d": load(os.path.join(HERE, "died.mp3"), gain=-6)}  # recorded louder than the whispered lines around it
     wsrc = {k: clean([w for w in json.load(open(os.path.join(HERE, f)))["words"] if w["type"] == "word"])
             for k, f in (("n", "narr_words.json"), ("m", "mom_words.json"), ("c", "cta_words.json"), ("d", "died_words.json"))}
     parts, out_words, t = [], [], 0.0
