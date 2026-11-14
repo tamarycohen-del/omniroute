@@ -41,7 +41,28 @@ const OPT = {
     const r = g.createLinearGradient(0, 800, 0, 150); r.addColorStop(0, 'rgba(120,160,255,0)'); r.addColorStop(0.35, 'rgba(10,8,30,0.05)'); r.addColorStop(1, 'rgba(5,4,10,0.85)'); g.fillStyle = r; g.fillRect(0, 0, 800, 800);
     g.save(); g.globalCompositeOperation = 'lighter'; const q = g.createRadialGradient(400, 820, 20, 400, 820, 520); q.addColorStop(0, 'rgba(140,170,255,0.55)'); q.addColorStop(1, 'rgba(140,170,255,0)'); g.fillStyle = q; g.fillRect(0, 0, 800, 800); g.restore();
     g.fillStyle = '#1b1730'; g.strokeStyle = '#000'; g.lineWidth = 8; g.beginPath(); g.roundRect(300, 700, 200, 140, 24); g.fill(); g.stroke(); g.fillStyle = '#aac4ff'; g.fillRect(316, 716, 168, 120); },
+  H() { faceIcon(false); },
+  I() { faceIcon(true); },
 };
-window.renderFrame = (k) => { g.setTransform(1, 0, 0, 1, 0, 0); OPT['ABCDEFG'[k]](); };
+// like F, but the whole face shows: big head in the dark, beanie, glowing eyes. lit=false: face in shadow; lit=true: pale face, soft rim light.
+const faceIcon = (lit) => {
+  g.fillStyle = '#0c0818'; g.fillRect(0, 0, 800, 800);
+  const r = g.createRadialGradient(400, 470, 60, 400, 470, 420); r.addColorStop(0, lit ? 'rgba(90,70,160,0.45)' : 'rgba(60,40,120,0.35)'); r.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = r; g.fillRect(0, 0, 800, 800);
+  const cx = 400, hc = 470, R = 210;
+  g.fillStyle = lit ? '#e9e6ef' : '#2b2838'; g.strokeStyle = '#000'; g.lineWidth = 14; g.beginPath(); g.arc(cx, hc, R, 0, 7); g.fill(); g.stroke();
+  const sh = g.createLinearGradient(cx - R, 0, cx + R, 0); sh.addColorStop(0, lit ? 'rgba(20,10,40,0.05)' : 'rgba(140,130,220,0.18)'); sh.addColorStop(1, lit ? 'rgba(20,10,40,0.55)' : 'rgba(0,0,0,0.35)'); g.fillStyle = sh; g.beginPath(); g.arc(cx, hc, R - 7, 0, 7); g.fill();
+  // mouth: small worried line
+  g.strokeStyle = lit ? '#121018' : 'rgba(0,0,0,0.75)'; g.lineWidth = 12; g.lineCap = 'round'; g.beginPath(); g.moveTo(cx - 34, hc + 120); g.quadraticCurveTo(cx, hc + 104, cx + 34, hc + 120); g.stroke();
+  // beanie (same as the character)
+  g.fillStyle = '#2a2a36'; g.strokeStyle = '#000'; g.lineWidth = 14;
+  g.beginPath(); g.moveTo(cx - R - 8, hc - 50); g.bezierCurveTo(cx - R + 12, hc - R - 140, cx + R - 12, hc - R - 140, cx + R + 8, hc - 50); g.closePath(); g.fill(); g.stroke();
+  g.beginPath(); g.roundRect(cx - R - 26, hc - 100, 2 * R + 52, 86, 32); g.fill(); g.stroke();
+  g.strokeStyle = '#1a1a22'; g.lineWidth = 8; for (let k = -4; k <= 4; k++) { g.beginPath(); g.moveTo(cx + k * 44, hc - 90); g.lineTo(cx + k * 44, hc - 26); g.stroke(); }
+  // glowing eyes
+  g.save(); g.shadowColor = 'rgba(255,255,255,0.9)'; g.shadowBlur = lit ? 12 : 34; g.fillStyle = '#f8f6ff'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 72, hc + 40, 32, 42, 0, 0, 7); g.fill(); } g.restore();
+  g.fillStyle = '#0c0818'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 72 + 6, hc + 46, 15, 21, 0, 0, 7); g.fill(); }
+  g.fillStyle = '#fff'; for (const s of [-1, 1]) { g.beginPath(); g.arc(cx + s * 72 + 12, hc + 36, 5, 0, 7); g.fill(); }
+};
+window.renderFrame = (k) => { g.setTransform(1, 0, 0, 1, 0, 0); OPT['ABCDEFGHI'[k]](); };
 window.ready = true;
 </script></body></html>
