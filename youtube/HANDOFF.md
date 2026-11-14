@@ -34,7 +34,7 @@ Final MP4s were in the old session's scratchpad (not in git); re-render from sou
 - **Main character (decided):** white stickman with dark outline and a **dark beanie** (option B). The old host (orange cap) is retired for this series. Props like the flashlight only when a scene needs them - not a fixed item.
 - Captions: bold uppercase, one keyword in lime; chapter label top-left ("3:33 AM / NIGHT ONE").
 - **Decided: full switch on the current channel** (no second channel). First series: "It Knows Her Voice" (power outage, knocks at 3:33, mom's voice at the door - open or not).
-- **Narration voice:** a new horror voice (not Ethan). Samples in `youtube/horror/voices/`: Cedric M (BQOei2tk6QCBMHQWPhbj) done; Michael C. Vincent (n1PvBOwxb8X6m7tahp2h) and Larry (5bh6Hc8SO3Yh1skN9Cqm) pending (free tier busy). User picks.
+- **Narration voice:** a new horror voice (not Ethan). Samples in `youtube/horror/voices/`: Cedric M (BQOei2tk6QCBMHQWPhbj) done; Michael C. Vincent (n1PvBOwxb8X6m7tahp2h) done; Larry (5bh6Hc8SO3Yh1skN9Cqm) pending (free tier busy). User picks.
 - Open decisions: keep or hide the existing fact videos; new channel name + banner + avatar (the Factopia rename reminder on Nov 23 should become a horror-name reminder).
 
 ## New videos: use the research + script skill
