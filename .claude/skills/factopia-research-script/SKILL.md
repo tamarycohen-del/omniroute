@@ -5,7 +5,7 @@ description: Research a topic and write the script for a History Oops / Factopia
 
 # Factopia: research -> angles -> script
 
-The channel makes 30-60 s vertical animated Shorts with a recurring host (orange cap, round
+The channel makes 45-60 s vertical animated Shorts with a recurring host (orange cap, round
 glasses, teal top). Our engine draws 2D cartoon characters inside detailed 3D sets (see
 `cartoon-audio-short`). This skill covers everything BEFORE the scenes are built: what the
 video is about, why it will hold people, and the exact words. Talk to the user in Hebrew
@@ -77,7 +77,7 @@ Hard rules (check every one before showing the user):
 9. No gore, no real private people, nothing that targets a real person in a hurtful way.
    Dark premises (e.g. a death notebook) stay cartoon: characters fall out of frame, a ghost
    with a halo floats up.
-10. 30-45 s is the sweet spot; over 60 s needs a reason.
+10. **Length: 45-60 s (the user's rule - never under 45 s).** Over 60 s needs a reason. Reach the length with more story beats, not slower reading or filler.
 
 ## Stage 5 - Self-review, then hand off
 
