@@ -19,7 +19,29 @@ const OPT = {
   C() { bg(); moon(170, 170, 40);
     g.save(); g.translate(330 - 300 * 1.75, 430 - 495 * 1.75); g.scale(1.75, 1.75); whiteStick({ g }, { beanie: '#2a2a36', expr: 'worried', look: 1 }); g.restore();
     g.save(); g.translate(545, 560); g.scale(1.55, 1.55); biscuitFront(g, { t: 0, dark: 0 }); g.restore(); },
+  D() { // face split: purple moonlight + red, a lime "?" stitched on the beanie (= you choose)
+    bg(); const r = g.createLinearGradient(0, 0, 800, 0); r.addColorStop(0.5, 'rgba(255,40,60,0)'); r.addColorStop(1, 'rgba(255,40,60,0.35)'); g.fillStyle = r; g.fillRect(0, 0, 800, 800);
+    g.save(); g.translate(400 - 300 * 2.3, 470 - 495 * 2.3); g.scale(2.3, 2.3); whiteStick({ g }, { beanie: '#2a2a36', expr: 'worried', look: 0 }); g.restore();
+    g.fillStyle = '#c6ff3a'; g.font = '900 96px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#121018'; g.strokeText('?', 400, 330); g.fillText('?', 400, 330); },
+  E() { // crossroads: two glowing paths, you pick
+    const r = g.createLinearGradient(0, 0, 0, 800); r.addColorStop(0, '#0c0a24'); r.addColorStop(1, '#2a1e4e'); g.fillStyle = r; g.fillRect(0, 0, 800, 800); moon(400, 170, 60);
+    for (const [s, c] of [[-1, '255,77,94'], [1, '198,255,58']]) { g.save(); g.globalCompositeOperation = 'lighter'; const lg = g.createLinearGradient(0, 760, 0, 470); lg.addColorStop(0, `rgba(${c},0.75)`); lg.addColorStop(1, `rgba(${c},0)`); g.fillStyle = lg; g.beginPath(); g.moveTo(400 + s * 40, 800); g.lineTo(400 + s * 170, 800); g.lineTo(400 + s * 330, 480); g.lineTo(400 + s * 270, 480); g.fill(); g.restore(); }
+    g.save(); g.translate(400 - 300 * 0.62, 760 - 975 * 0.62); g.scale(0.62, 0.62); whiteStick({ g }, { beanie: '#2a2a36', expr: 'worried', look: 0 }); g.restore(); },
+  F() { // minimal icon: the beanie with two eyes peeking out of the dark
+    g.fillStyle = '#0c0818'; g.fillRect(0, 0, 800, 800);
+    const cx = 400, hc = 520, R = 190; g.fillStyle = '#2a2a36'; g.strokeStyle = '#000'; g.lineWidth = 14;
+    g.beginPath(); g.moveTo(cx - R - 10, hc - 40); g.bezierCurveTo(cx - R + 10, hc - R - 120, cx + R - 10, hc - R - 120, cx + R + 10, hc - 40); g.closePath(); g.fill(); g.stroke();
+    g.beginPath(); g.roundRect(cx - R - 26, hc - 90, 2 * R + 52, 80, 30); g.fill(); g.stroke();
+    g.strokeStyle = '#1a1a22'; g.lineWidth = 8; for (let k = -4; k <= 4; k++) { g.beginPath(); g.moveTo(cx + k * 40, hc - 80); g.lineTo(cx + k * 40, hc - 20); g.stroke(); }
+    g.save(); g.shadowColor = 'rgba(255,255,255,0.8)'; g.shadowBlur = 30; g.fillStyle = '#f4f2ee'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 70, hc + 70, 30, 40, 0, 0, 7); g.fill(); } g.restore();
+    g.fillStyle = '#0c0818'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 70 + 6, hc + 76, 14, 20, 0, 0, 7); g.fill(); } },
+  G() { // under-lit face (phone light from below), classic horror
+    g.fillStyle = '#05040a'; g.fillRect(0, 0, 800, 800);
+    g.save(); g.translate(400 - 300 * 2.3, 470 - 495 * 2.3); g.scale(2.3, 2.3); whiteStick({ g }, { beanie: '#2a2a36', expr: 'scared', look: 0 }); g.restore();
+    const r = g.createLinearGradient(0, 800, 0, 150); r.addColorStop(0, 'rgba(120,160,255,0)'); r.addColorStop(0.35, 'rgba(10,8,30,0.05)'); r.addColorStop(1, 'rgba(5,4,10,0.85)'); g.fillStyle = r; g.fillRect(0, 0, 800, 800);
+    g.save(); g.globalCompositeOperation = 'lighter'; const q = g.createRadialGradient(400, 820, 20, 400, 820, 520); q.addColorStop(0, 'rgba(140,170,255,0.55)'); q.addColorStop(1, 'rgba(140,170,255,0)'); g.fillStyle = q; g.fillRect(0, 0, 800, 800); g.restore();
+    g.fillStyle = '#1b1730'; g.strokeStyle = '#000'; g.lineWidth = 8; g.beginPath(); g.roundRect(300, 700, 200, 140, 24); g.fill(); g.stroke(); g.fillStyle = '#aac4ff'; g.fillRect(316, 716, 168, 120); },
 };
-window.renderFrame = (k) => { g.setTransform(1, 0, 0, 1, 0, 0); OPT['ABC'[k]](); };
+window.renderFrame = (k) => { g.setTransform(1, 0, 0, 1, 0, 0); OPT['ABCDEFG'[k]](); };
 window.ready = true;
 </script></body></html>
