@@ -18,7 +18,7 @@ Cast: white stickman with dark beanie (narrator) | Biscuit - small brown dachshu
 13 | I looked at her text again. No "love you." She ALWAYS writes "love you."     | Zoom on the 3:34 reply, then the phone dies
 14 | The voice got "honey" wrong. The text forgot "love you." | Split: door / dead phone
 14b| Then Biscuit crept out from under the bed... and stared at the back door.   | Biscuit walks into the hall, stops, looks at the back door
-15 | So... do you trust Mom and open the door? Or follow Biscuit and sneak out the back? | Choice cards OPEN THE DOOR / FOLLOW BISCUIT, "PART 1"
+15 | So... do you trust Mom and open the door? Or follow Biscuit and sneak out the back? | Choice cards OPEN THE DOOR / BACK DOOR WITH BISCUIT, "PART 1"
 
-Pinned comment: DOOR or BISCUIT? The most-liked answer decides Part 2.
+Pinned comment: OPEN THE DOOR or BACK DOOR WITH BISCUIT? The most-liked answer decides Part 2.
 Clues: against the voice = "honey" | against the text = no "love you" | also against the voice = Biscuit hides under the bed.
