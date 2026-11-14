@@ -24,6 +24,9 @@ Final MP4s were in the old session's scratchpad (not in git); re-render from sou
 - Lesson: a catchy, absurd topic brings views (Emu); one clear tension line that builds to a single climax near the end (Vasa) keeps them watching. Aim for both in one video.
 - Rules for new videos: keep the middle (20-40 s) tight with a visual change or twist there; end on a loop back to the opening or a last punch; finish with one simple question to the viewer (e.g. "What's the biggest mistake in history?").
 
+## New videos: use the research + script skill
+- `.claude/skills/factopia-research-script/SKILL.md`: landscape scan -> facts + audience -> 3-5 angles (user picks) -> script with the hard retention rules -> self-review + upload package. Then build with `cartoon-audio-short`.
+
 ## Rendering speed (new style)
 - New style renders at 2x supersampling (2160x3840, downscaled with lanczos) + detail pass: ~8-14 s/frame on this CPU-only container.
 - Always render in 2 processes: one forward (`RESUME=1 node render.mjs frames "a-b"`), one backward with a reversed comma list of the same frames. They meet in the middle; RESUME skips frames already done.
