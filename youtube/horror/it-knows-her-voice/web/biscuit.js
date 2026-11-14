@@ -77,3 +77,47 @@ const eyes = (g, x, y, o, glow) => {
   g.fillStyle = '#fff'; g.beginPath(); g.arc(x + 5 + lx, y - 3, 2.5, 0, 7); g.fill();
   if (o.worried || o.shake) { g.strokeStyle = O; g.lineWidth = 5; g.beginPath(); g.moveTo(x - 12, y - 14); g.lineTo(x + 10, y - 22); g.stroke(); }
 };
+
+// Front view (looking at the camera), for under the bed. Origin = midpoint between the eyes.
+// o: { t, shake (0..1: body, ears and paws tremble; head and eyes stay still), dark (0..1: 1 = only the eye glints) }
+export const biscuitFront = (g, o = {}) => {
+  const t = o.t || 0, sh = o.shake || 0, dark = o.dark ?? 0;
+  const q = (f, ph = 0) => sh * Math.sin(t * f + ph);
+  g.save(); g.lineJoin = 'round'; g.lineCap = 'round';
+  if (dark < 1) {
+    g.save(); g.globalAlpha = 1 - dark;
+    // body lying behind the head (trembles)
+    g.save(); g.translate(q(57) * 3, q(43, 1) * 2);
+    g.fillStyle = FUR; g.strokeStyle = O; g.lineWidth = 8;
+    g.beginPath(); g.ellipse(0, 84, 128, 46, 0, 0, 7); g.fill(); g.stroke();
+    g.fillStyle = 'rgba(255,255,255,0.08)'; g.beginPath(); g.ellipse(-20, 62, 80, 10, 0, 0, 7); g.fill();
+    for (const s of [-1, 1]) { g.fillStyle = FUR; g.beginPath(); g.ellipse(s * 42 + q(71, s) * 2, 124, 26, 14, 0, 0, 7); g.fill(); g.stroke(); }
+    g.restore();
+    // ears (tremble)
+    for (const s of [-1, 1]) {
+      g.save(); g.translate(s * 46, -30); g.rotate(s * (0.12 + 0.06 * q(64, s)));
+      g.fillStyle = FUR_D; g.strokeStyle = O; g.lineWidth = 8;
+      g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(s * 40, 10, s * 30, 78); g.quadraticCurveTo(s * 12, 92, s * 2, 60); g.closePath(); g.fill(); g.stroke(); g.restore();
+    }
+    // head (still)
+    g.fillStyle = FUR; g.strokeStyle = O; g.lineWidth = 8;
+    g.beginPath(); g.ellipse(0, 4, 58, 52, 0, 0, 7); g.fill(); g.stroke();
+    g.fillStyle = BELLY; g.beginPath(); g.ellipse(0, 34, 30, 22, 0, 0, 7); g.fill();
+    g.fillStyle = NOSE; g.beginPath(); g.ellipse(0, 24, 13, 10, 0, 0, 7); g.fill();
+    g.fillStyle = 'rgba(255,255,255,0.5)'; g.beginPath(); g.arc(-4, 21, 3, 0, 7); g.fill();
+    g.strokeStyle = O; g.lineWidth = 4; g.beginPath(); g.moveTo(0, 34); g.lineTo(0, 42); g.moveTo(-10, 46); g.quadraticCurveTo(0, 40, 10, 46); g.stroke();
+    // worried brows
+    g.lineWidth = 5; for (const s of [-1, 1]) { g.beginPath(); g.moveTo(s * 6, -16); g.lineTo(s * 24, -10); g.stroke(); }
+    // tremble marks
+    if (sh > 0 && Math.floor(t * 12) % 2 === 0) { g.strokeStyle = 'rgba(230,220,255,0.7)'; g.lineWidth = 5; for (const s of [-1, 1]) for (const k of [0, 1]) { g.beginPath(); g.moveTo(s * (150 + k * 16), 60 + k * 8); g.lineTo(s * (160 + k * 16), 96 + k * 8); g.stroke(); } }
+    g.restore();
+  }
+  // eyes: same place in the dark and in the light
+  for (const s of [-13, 13]) {
+    if (dark < 1) { g.save(); g.globalAlpha = 1 - dark; g.fillStyle = '#f4f2ee'; g.strokeStyle = O; g.lineWidth = 4; g.beginPath(); g.ellipse(s, 0, 11, 13, 0, 0, 7); g.fill(); g.stroke(); g.restore(); }
+    g.save(); g.shadowColor = 'rgba(255,230,160,0.9)'; g.shadowBlur = 18 * dark; g.fillStyle = `rgba(255,233,168,${dark})`; g.beginPath(); g.ellipse(s, 0, 9, 11, 0, 0, 7); g.fill(); g.restore();
+    g.fillStyle = EYE; g.beginPath(); g.ellipse(s, 1, 5, 7, 0, 0, 7); g.fill();
+    g.fillStyle = '#fff'; g.beginPath(); g.arc(s + 2, -3, 2, 0, 7); g.fill();
+  }
+  g.restore();
+};

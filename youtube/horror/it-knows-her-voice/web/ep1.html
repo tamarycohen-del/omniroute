@@ -3,7 +3,7 @@
 <script type="module">
 // "It Knows Her Voice" - Part 1. 30 fps, timings from words.json (voice.py output).
 import { capCard, chapterCard, whiteStick } from './stick.js';
-import { biscuit } from './biscuit.js';
+import { biscuit, biscuitFront } from './biscuit.js';
 const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920, P = { g };
 const rr = (x, y, w, h, r, fill) => { g.beginPath(); g.roundRect(x, y, w, h, r); g.fillStyle = fill; g.fill(); };
 const lin = (x0, y0, x1, y1, stops) => { const gr = g.createLinearGradient(x0, y0, x1, y1); stops.forEach(([o, c]) => gr.addColorStop(o, c)); return gr; };
@@ -169,8 +169,9 @@ const SCENES = {
     g.fillStyle = lin(0, 890, 0, 1600, [[0, '#05040a'], [1, '#120c20']]); g.fillRect(-200, 890, 1480, 900);
     floor(1520, '#1a1230', '#0a0614');
     add(() => { g.fillStyle = lin(0, 1520, 0, 1300, [[0, 'rgba(120,120,255,0.18)'], [1, 'rgba(120,120,255,0)']]); g.fillRect(-200, 1300, 1480, 220); });
-    if (u < 3.3) dog(560, 1500, 0.95, { eyesOnly: true, pose: 'crouch', look: -1 });
-    else { const a = sm((u - 3.3) / 0.3); g.save(); g.globalAlpha = 0.55 + 0.45 * a; dog(560, 1500, 0.95, { pose: 'crouch', shake: 1, worried: true, t: u, look: -1 }); g.restore(); darken(0.35 * (1 - a) + 0.15); }
+    const a = sm((u - 3.3) / 0.35);
+    g.save(); g.translate(540, 1240); g.scale(1.6, 1.6); biscuitFront(g, { t: u, shake: u > 3.3 ? 1 : 0, dark: 1 - a }); g.restore();
+    darken(0.12 + 0.2 * (1 - a));
   },
   lock(u, t) { // 30.4-33.2: his hand stops at the lock
     cam(1.0 + 0.06 * sm(u / 2.8), 640, 960);
@@ -277,7 +278,7 @@ window.renderFrame = (f) => {
   const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
   if (!/^(choice|end|phone)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: t < 41.6 ? '3:33' : t < 58.6 ? '3:34' : '3:35', title: 'NIGHT ONE' }); g.restore(); }
   const ks = knockAmt(t);
-  if (ks > 0) { g.save(); g.translate(540, 780); g.rotate((Math.floor(t * 10) % 2 ? 1 : -1) * 0.1); g.font = '900 130px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineJoin = 'round'; g.lineWidth = 18; g.strokeStyle = '#0a0610'; g.strokeText('KNOCK', 0, 0); g.fillStyle = '#ffffff'; g.fillText('KNOCK', 0, 0); g.restore(); }
+  // (no KNOCK text: the knocks are heard, not written)
   if (shot !== 'choice') captions(t, shot.startsWith('phone'));
   if (shot === 'choice') { g.save(); g.fillStyle = 'rgba(216,208,232,0.85)'; g.font = '700 36px "DejaVu Sans Mono", monospace'; g.fillText('PART 1', 40, 90); g.restore(); }
   return true;
