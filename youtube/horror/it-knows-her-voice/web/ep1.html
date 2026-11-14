@@ -57,9 +57,10 @@ const bedroomBase = (o = {}) => {
   if (o.lamp) { rr(200, 930, 50, 80, 8, '#3a2c58'); add(() => { const r = g.createRadialGradient(225, 930, 10, 225, 930, 360); r.addColorStop(0, `rgba(255,210,140,${0.5 * o.lamp})`); r.addColorStop(1, 'rgba(255,210,140,0)'); g.fillStyle = r; g.fillRect(-200, 500, 900, 900); }); }
   rr(260, 880, 640, 120, 30, '#33245a'); rr(300, 1040, 200, 80, 30, '#8a82c8');
 };
-const bedFront = () => {
+const bedFront = (knee = 0) => {
   rr(270, 1090, 700, 230, 24, '#3c2a6a'); rr(262, 1290, 716, 150, 10, '#20163a'); for (const lx of [280, 940]) rr(lx, 1420, 26, 60, 4, '#160f28');
-  g.fillStyle = lin(0, 1110, 0, 1330, [[0, '#6a54b8'], [1, '#3e2c78']]); g.beginPath(); g.moveTo(330, 1150); g.quadraticCurveTo(640, 1100, 980, 1140); g.lineTo(980, 1330); g.lineTo(330, 1330); g.closePath(); g.fill();
+  g.fillStyle = lin(0, 1110, 0, 1330, [[0, '#6a54b8'], [1, '#3e2c78']]); g.beginPath(); g.moveTo(290, 1150); g.lineTo(470, 1146); g.quadraticCurveTo(560, 1146 - 90 * knee, 650, 1146 - 70 * knee); g.quadraticCurveTo(720, 1146 - 40 * knee, 790, 1140); g.quadraticCurveTo(900, 1136, 980, 1140); g.lineTo(980, 1330); g.lineTo(290, 1330); g.closePath(); g.fill();
+  if (knee > 0) { g.strokeStyle = 'rgba(255,255,255,0.10)'; g.lineWidth = 6; g.beginPath(); g.moveTo(480, 1140); g.quadraticCurveTo(560, 1146 - 86 * knee, 645, 1150 - 70 * knee); g.stroke(); }
   g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 6; for (const x of [520, 690, 840]) { g.beginPath(); g.moveTo(x, 1135); g.quadraticCurveTo(x + 30, 1230, x + 10, 1325); g.stroke(); }
 };
 const rug = () => { g.fillStyle = 'rgba(80,60,140,0.45)'; g.beginPath(); g.ellipse(560, 1640, 380, 90, 0, 0, 7); g.fill(); g.setLineDash([26, 18]); g.strokeStyle = 'rgba(160,140,230,0.45)'; g.lineWidth = 6; g.beginPath(); g.ellipse(560, 1640, 340, 72, 0, 0, 7); g.stroke(); g.setLineDash([]); };
@@ -122,8 +123,8 @@ const SCENES = {
     cam(zoom, 560 + (u > 2.1 && u < 5 ? 180 * sm((u - 2.1) / 0.6) * (1 - sm((u - 4.4) / 0.6)) : 0), 1060);
     bedroomBase({ shake: knockAmt(t), t: u, lamp: 0 });
     const sit = sm((u - 2.4) / 0.5), look = u > 2.3 ? sm((u - 2.3) / 0.3) : 0;
-    g.save(); g.beginPath(); g.rect(-600, -600, 2400, 1760); g.clip(); hero(330, 600 + 140 * (1 - sit), 0.82, { expr: u > 2.3 ? 'scared' : 'neutral', look }); g.restore();
-    bedFront(); rug();
+    g.save(); g.beginPath(); g.rect(-600, -600, 2400, 1760); g.clip(); hero(160, 510 + 230 * (1 - sit), 0.82, { expr: u > 2.3 ? 'scared' : 'neutral', look }); g.restore();
+    bedFront(sit); rug();
     const up = sm((u - 5.1) / 0.5);
     dog(560, 1660, 0.62, { pose: up > 0.5 ? 'stand' : 'crouch', look: up > 0.5 ? 1 : 0, ears: up > 0.5 ? 'up' : 'down', t });
   },
