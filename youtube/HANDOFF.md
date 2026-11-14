@@ -66,3 +66,4 @@ Final MP4s were in the old session's scratchpad (not in git); re-render from sou
 - User notes for the look: no KNOCK text; no "the voice" label; label top-left = time + episode name ("HER VOICE") + small "CHAPTER ONE"; both choice cards the same colour (red); Biscuit = small brown long dog, short snout, front view under the bed (narrow body, eyes don't move, only trembles).
 - Part 1 ends with the choice OPEN THE DOOR / BACK DOOR WITH BISCUIT; Part 2 follows the most-liked comment.
 - ElevenLabs free tier: one call once failed with "unusual activity... free tier disabled" (proxy); a retry later worked.
+- Upload time: user used to upload daily at 08:45 Israel time. From Part 1 on: a fixed evening slot, about 22:00 Israel (15:00 New York / 12:00 LA). Part 1 itself went up ~00:40 Israel on Nov 15. Use YouTube Studio "Schedule" when the user isn't free at that time.
