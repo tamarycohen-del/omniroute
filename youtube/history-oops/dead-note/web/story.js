@@ -21,11 +21,11 @@ for (let k = 0; k < PH.length; k++) {
 }
 export const SZ_FRAMES = [SZ0, sf(SZ_END)];
 // ---- NOTEBOOK SHORT (frames 9000+): phrase times (s) from the voice; shots generated from these ----
-export const DPH = [[0, 5.0], [5.4, 8.0], [8.3, 10.1], [10.5, 15.5], [15.9, 17.9], [18.3, 19.5], [19.9, 22.1], [22.5, 25.0], [25.4, 26.9], [27.3, 30.1], [30.5, 32.8], [33.3, 34.1], [34.6, 40.6]];
-export const DN0 = 9000, DN_END = 41.0;
+export const DPH = [[0, 5.07], [5.69, 8.7], [9.36, 10.96], [11.57, 16.23], [16.75, 18.6], [19.19, 20.24], [20.72, 22.58], [23.06, 25.41], [25.85, 27.42], [27.94, 30.75], [31.32, 33.36], [34.06, 34.42], [34.92, 40.61]];
+export const DN0 = 9000, DN_END = 41.2, DLAND = 4.55, DDIE = { 4: 16.95, 6: 22.31, 7: 25.09, 8: 26.82 };
 const df = (t) => DN0 + Math.round(t * 30);
 const DE = (k) => (k === 0 ? 0 : (DPH[k - 1][1] + DPH[k][0]) / 2), DEND = (k) => (k === DPH.length - 1 ? DN_END : (DPH[k][1] + DPH[k + 1][0]) / 2);
-const DNSHOTS = [], dsplit = { 0: 0.5, 3: 0.55, 9: 0.55 };
+const DNSHOTS = [], dsplit = { 0: 0.62, 3: 0.3, 9: 0.55 };
 const DLIGHT = (k) => (k <= 0 ? 'storm' : k === 6 ? 'cin' : k === 7 ? 'plane' : k === 8 ? 'class' : 'night');
 for (let k = 0; k < DPH.length; k++) {
   const a = DE(k), b = DEND(k);
@@ -153,7 +153,7 @@ const CAMS = {
   end: [{ f: 1557, pos: [-1.0, 1.4, CZ + 2.8], look: [-1.2, 1.25, CZ + 0.65], fov: 40 }, { f: 1675, pos: [-1.05, 1.4, CZ + 2.4], look: [-1.2, 1.3, CZ + 0.65], fov: 36 }],
 };
 const KICKS = [{ f: 457, a: 0.03 }, { f: 490, a: 0.02 }, { f: 1250, a: 0.05 }];
-const FLASH = [Math.round(DN0 + (DPH[0][0] + (DPH[0][1] - DPH[0][0]) * 0.5 + 0.25) * 30), Math.round(DN0 + (DPH[11][0] + 0.1) * 30), 1217, Math.round(SZ0 + PH[6][0] * 30 + 2)];
+const FLASH = [Math.round(DN0 + DLAND * 30), Math.round(DN0 + (DPH[11][0] + 0.1) * 30), 1217, Math.round(SZ0 + PH[6][0] * 30 + 2)];
 export const camAt = (f) => { const S = shotAt(f); const c = camFromKeys(CAMS[S.id], f, { kicks: KICKS }); c.flash = 0; for (const a of FLASH) if (f >= a && f < a + 6) c.flash = (1 - (f - a) / 6) * 0.5; return c; };
 const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 const FOCUS = { d0b: [0, 0.6, 0], d1: [2.6, 1.3, -602.35], d3a: [2.6, 1.4, -602.35], d4: [-3.6, 1.2, -600.2], d5: [2.6, 1.45, -602.35], d6: [0.35, 0.95, -1801.2], d7: [-0.55, 1.15, -1899.6], d8: [3.2, 1.2, -902.6], d9a: [2.6, 1.45, -602.35], d11: [2.6, 1.5, -602.35], z0: [0, 1.5, -1600], z1: [0, 1.45, -1600], z2: [0, 1.5, -1600], z3: [0, 1.5, -1600], z9: [0, 1.5, -1600], z10: [0, 1.5, -1600], s1: [0, 1.5, -1600], s4: [0, 1.5, -1600], n1: [-1.2, 1.0, NZ - 1.0], n2: [0, 0.9, NZ - 3.55], n4: [-1.55, 1.2, NZ - 1.0], h3a: [0.2, 1.1, CZ - 2.6], h3b: [0.2, 1.25, CZ - 2.6], h3c: [0.2, 1.0, CZ - 2.6], h3d: [0.2, 1.2, CZ - 2.6], hq: [0.2, 1.4, CZ - 2.6], hook: [1.05, 1.7, CZ - 4.45], waited: [2.0, 1.75, CZ - 4.2], turn: [2.0, 1.8, CZ - 4.2], world: [2.0, 1.8, CZ - 4.2], quote: [2.4, 1.7, CZ - 4.2], end: [-1.2, 1.25, CZ + 0.65], laugh: [0, 1.1, CZ + 1] };
@@ -163,14 +163,14 @@ export const dofAt = (f) => { const S = shotAt(f), C = camAt(f); if (FOCUS[S.id]
 const ROWT = [145, 206, 271, 350, 360, 370, 380, 390, 398, 457];
 export const worldAt = (f) => { const S = shotAt(f);
   if (/^d\d/.test(S.id)) { const t = (f - DN0) / 30, k = parseInt(S.id.slice(1)), W = { lift: 0, fall: 0, space: false, board: { rows: 10, red: true, stamp: 0 } };
-    if (k === 0) { const land = DPH[0][0] + (DPH[0][1] - DPH[0][0]) * 0.5 + 0.25, u = Math.min(1, Math.max(0, (t - 0.2) / (land - 0.2))), y = 12 * (1 - u * u) + 0.03;
+    if (k === 0) { const land = DLAND, u = Math.min(1, Math.max(0, (t - 0.2) / (land - 0.2))), y = 12 * (1 - u * u) + 0.03;
       W.nb = { fall: [0.1 + 0.25 * u, y, -1.5 + 1.9 * u, u < 1 ? t * 5 : 0, u < 1 ? t * 3 : 0.4, 0] }; }
     else { const list = (n, w) => ({ page: 'list', n, write: w });
-      W.nb = k <= 2 ? { page: 'rule', glow: 0.7 + 0.3 * Math.sin(f * 0.4), pen: false } : k === 3 ? (S.id === 'd3b' ? list(1, Math.min(1, (t - DPH[3][0] - (DPH[3][1] - DPH[3][0]) * 0.55) / 1.6)) : { page: 'rule', glow: 0.6, pen: false })
+      W.nb = k <= 2 ? { page: 'rule', glow: 0.7 + 0.3 * Math.sin(f * 0.4), pen: false } : k === 3 ? (S.id === 'd3b' ? list(1, Math.min(1, Math.max(0, (t - 13.2) / 2.4))) : { page: 'rule', glow: 0.6, pen: false })
         : k <= 5 ? list(1, 1) : k === 6 ? list(2, 1) : k === 7 ? list(3, 1) : k === 8 ? list(4, 1)
         : S.id === 'd9b' ? { ...list(4, 1), turn: Math.min(1, (t - DPH[9][0] - (DPH[9][1] - DPH[9][0]) * 0.55) / 0.6), pen: false }
         : k === 10 ? { page: 'his', n: 4, write: 1, reveal: Math.min(1, (t - DPH[10][0]) / 1.2), pen: false } : k === 11 ? { page: 'his', n: 4, pen: false } : { page: 'blank', pen: true, write: 0, n: 1, cta: Math.min(1, Math.max(0, (t - DPH[12][0] - 0.3) / 0.8)) }; }
-    W.cinema = k === 6; W.bossSpin = k === 8 ? Math.max(0, t - (DPH[8][0] + (DPH[8][1] - DPH[8][0]) * 0.6) - 0.3) * 6 : 0;
+    W.cinema = k === 6; W.bossSpin = k === 8 ? Math.max(0, t - DDIE[8] - 0.3) * 6 : 0;
     return W; }
   if (/^z[4-8]/.test(S.id) || S.id === 'z0b') { const t = (f - SZ0) / 30, popA = SZ0 + PH[6][0] * 30 + 2;
     const pr = S.id === 'z4' ? 0.1 : S.id.startsWith('z5') ? Math.min(1, E.easeIn(Math.max(0, (t - PH[5][0]) / (PH[5][1] - PH[5][0])))) : 0.3;
@@ -193,15 +193,15 @@ export const actorsAt = (f, T) => {
     if (id === 'd0b') add_('host', life(f, 11, { expr: pk < 0.15 ? 'neutral' : 'shock', look: 0, headTilt: 4 }), [0, 0, 0], 0.92);
     if (id === 'd1') add_('host', life(f, 11, { expr: 'nervous', L: 'hang', R: 'hang' }), HP, 0.92);
     if (id === 'd3a') add_('host', life(f, 11, { expr: 'dazed', bob: q(0.004 * Math.sin(f * 2.3), 3) }), HP, 0.92);
-    if (id === 'd4') { const at = DPH[4][0] + 0.7, d = die(at); add_(NEI, life(f, 21, { expr: d > 0 ? 'shock' : 'grin', R: 'reach', L: 'hang', bob: d ? 0 : q(0.006 * Math.sin(f * 3.1), 3) }), [-3.6, 0, -600.2], 0.92, d, -1); }
+    if (id === 'd4') { const at = DDIE[4], d = die(at); add_(NEI, life(f, 21, { expr: d > 0 ? 'shock' : 'grin', R: 'reach', L: 'hang', bob: d ? 0 : q(0.006 * Math.sin(f * 3.1), 3) }), [-3.6, 0, -600.2], 0.92, d, -1); }
     if (id === 'd5') add_('host', life(f, 11, { expr: 'scheme' }), HP, 0.92);
-    if (id === 'd6') { const at = DPH[6][0] + (DPH[6][1] - DPH[6][0]) * 0.72, d = die(at);
+    if (id === 'd6') { const at = DDIE[6], d = die(at);
       add_(SPO, life(f, 31, { expr: d > 0 ? 'shock' : 'grin', R: d ? 'hang' : 'point' }), [0, -0.35, -1801.2], 0.9, d, -1);
       add_('host', life(f, 11, { expr: d > 0.5 ? 'scheme' : 'stern' }), [0.75, -0.35, -1801.2], 0.9); }
-    if (id === 'd7') { const at = DPH[7][0] + (DPH[7][1] - DPH[7][0]) * 0.75, d = die(at), kick = d ? 0 : Math.max(0, Math.sin(f * 0.9));
+    if (id === 'd7') { const at = DDIE[7], d = die(at), kick = d ? 0 : Math.max(0, Math.sin(f * 0.9));
       add_('host', life(f, 11, { expr: d > 0.5 ? 'scheme' : 'pained', bob: q(0.02 * kick, 3) }), [-0.55, -0.12, -1900.0], 0.9);
       add_(KIDO, life(f, 41, { expr: 'grin', L: d ? 'hang' : 'up', R: 'hang' }), [-0.55, 0.55, -1899.05], 0.62, d, 1); }
-    if (id === 'd8') { const at = DPH[8][0] + (DPH[8][1] - DPH[8][0]) * 0.6, d = die(at);
+    if (id === 'd8') { const at = DDIE[8], d = die(at);
       add_(BOS, life(f, 51, { expr: d > 0 ? 'shock' : 'stern', R: d ? 'hang' : 'point', L: 'hip' }), [3.2, -0.12, -902.55], 0.94, d, 1);
       }
     if (id === 'd9a') add_('host', life(f, 11, { expr: 'laugh', bob: q(0.012 * Math.abs(Math.sin(f * 0.6)), 3) }), HP, 0.92);
@@ -263,17 +263,17 @@ export const fxAt = (f, T) => {
     const ghost = (at, pos) => { const g = (t - at - 0.25) / 1.4; if (g > 0) out.push(FX('ghost' + Math.round(g * 20), (p) => ghostCard(p, { k: Math.min(1, g), t: f }), [pos[0], pos[1] + 0.5 + 0.5 * Math.min(1, g), pos[2]], 0.32, { order: 9 })); };
     if (S.id === 'd0a' || S.id === 'd0b') { const P = front(C, 0.9); out.push(FX('rain' + (f % 12), (p) => rainCard(p, { t: f }), [P[0], P[1] - 0.95 * 0.5, P[2]], 0.85, { order: 10 })); }
     if (S.id === 'd3a' && Math.floor(f / 4) % 3 !== 0) { const P = front(C, 1.3); out.push(FX('brrr' + (f % 2), (p) => wordCard(p, { t: 'BRRRRR!', col: '#ffd23a', size: 120, rot: -0.12 + (f % 2) * 0.05 }), [P[0] - 0.12, P[1] + 0.25, P[2]], 0.2, { order: 9 })); }
-    if (S.id === 'd4' && t < DPH[4][0] + 0.7) out.push(FX('drill' + (f % 2), (p) => drillCard(p), [-3.15 + (f % 2) * 0.01, 0.62, -600.0], 0.32, { order: 9, roll: (f % 2) * 0.03 }));
-    if (S.id === 'd4') ghost(DPH[4][0] + 0.7, [-3.6, 0.8, -600.2]);
-    if (S.id === 'd6') { const at = DPH[6][0] + (DPH[6][1] - DPH[6][0]) * 0.72; if (t < at) out.push(FX('bub', (p) => bubbleCard(p, { t: 'HE DIES AT\nTHE END—', size: 58 }), [-0.35, 1.2, -1801.5], 0.26, { order: 9 })); ghost(at, [0, 0.35, -1801.2]); }
-    if (S.id === 'd7') ghost(DPH[7][0] + (DPH[7][1] - DPH[7][0]) * 0.75, [-0.55, 0.75, -1899.05]);
-    if (S.id === 'd8') ghost(DPH[8][0] + (DPH[8][1] - DPH[8][0]) * 0.6, [3.2, 0.6, -902.55]);
+    if (S.id === 'd4' && t < DDIE[4]) out.push(FX('drill' + (f % 2), (p) => drillCard(p), [-3.15 + (f % 2) * 0.01, 0.62, -600.0], 0.32, { order: 9, roll: (f % 2) * 0.03 }));
+    if (S.id === 'd4') ghost(DDIE[4], [-3.6, 0.8, -600.2]);
+    if (S.id === 'd6') { const at = DDIE[6]; if (t < at) out.push(FX('bub', (p) => bubbleCard(p, { t: 'HE DIES AT\nTHE END—', size: 58 }), [-0.35, 1.2, -1801.5], 0.26, { order: 9 })); ghost(at, [0, 0.35, -1801.2]); }
+    if (S.id === 'd7') ghost(DDIE[7], [-0.55, 0.75, -1899.05]);
+    if (S.id === 'd8') ghost(DDIE[8], [3.2, 0.6, -902.55]);
     if (S.id === 'd11' && t > DPH[11][0] + 0.15) { const kk = Math.min(1, (t - DPH[11][0] - 0.15) / 0.3); out.push(FX('halo' + Math.round(kk * 6), (p) => { const g = p.g; g.save(); g.globalAlpha = kk; g.strokeStyle = '#f2c230'; g.lineWidth = 26; g.shadowColor = '#fff2a0'; g.shadowBlur = 30; g.beginPath(); g.ellipse(300, 500, 170, 44, 0, 0, 7); g.stroke(); g.restore(); }, [2.6, 1.42, -602.3], 0.3, { order: 9 })); }
   }
   if (/^z\d/.test(S.id)) { const t = (f - SZ0) / 30;
-    if (S.id === 'z5a' || S.id === 'z5b') { const P = front(C, 1.6), v = Math.min(1, E.easeIn(Math.max(0, (t - PH[5][0]) / (PH[5][1] - PH[5][0])))), sh = v > 0.7 ? Math.sin(f * 2.1) * 0.05 : 0;
-      out.push(FX('gauge' + Math.round(v * 60) + (sh > 0), (p) => gaugeCard(p, { v, shake: sh }), [P[0], P[1] + 0.06, P[2]], 0.3, { order: 9 })); }
-    if (S.id === 'z6') { const a = Math.round(SZ0 + PH[6][0] * 30 + 2); if (f >= a) { const P = front(C, 1.5); out.push(FX('pop', (p) => burstWord(p, { t: 'POP!', size: 170 }), [P[0], P[1] + 0.2, P[2]], 0.28 * pop(a), { order: 9 })); } }
+    if (S.id === 'z5a' || S.id === 'z5b') { const nd = S.id === 'z5b' ? 0.7 : 1.6, P = front(C, nd), v = Math.min(1, E.easeIn(Math.max(0, (t - PH[5][0]) / (PH[5][1] - PH[5][0])))), sh = v > 0.7 ? Math.sin(f * 2.1) * 0.05 : 0;
+      out.push(FX('gauge' + Math.round(v * 60) + (sh > 0), (p) => gaugeCard(p, { v, shake: sh }), [P[0], P[1] + 0.06 * nd / 1.6, P[2]], 0.3 * nd / 1.6, { order: 9 })); }
+    if (S.id === 'z6') { const a = Math.round(SZ0 + PH[6][0] * 30 + 2); if (f >= a) { const P = front(C, 0.7); out.push(FX('pop', (p) => burstWord(p, { t: 'POP!', size: 170 }), [P[0], P[1] + 0.09, P[2]], 0.13 * pop(a), { order: 9 })); } }
     if (S.id === 'z8') { const P = front(C, 1.5), a = Math.round(SZ0 + PH[8][0] * 30 + 20); if (f >= a) out.push(FX('healed', (p) => burstWord(p, { t: 'HEALED', size: 120, bg: '#c8f5c0', col: '#1f8a3a' }), [P[0], P[1] + 0.22, P[2]], 0.26 * pop(a), { order: 9 })); }
     if (S.id === 'z9' && t > PH[9][0] + 0.4) { const P = front(C, 1.4); out.push(FX('ahah' + (t > PH[9][0] + 1.2), (p) => wordCard(p, { t: t > PH[9][0] + 1.2 ? 'AH... AH...' : 'AH...', col: '#ffffff', size: 92, rot: -0.08 }), [P[0] - 0.05, P[1] + 0.3, P[2]], 0.22, { order: 9 })); }
     if (S.id === 'z10') { const a = Math.round(SZ0 + CHOO_T * 30), P = front(C, 1.2);
