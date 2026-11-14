@@ -128,7 +128,7 @@ const SCENES = {
     const up = sm((u - 5.1) / 0.5);
     dog(560, 1660, 0.62, { pose: up > 0.5 ? 'stand' : 'crouch', look: up > 0.5 ? 1 : 0, ears: up > 0.5 ? 'up' : 'down', t });
   },
-  phone1(u, t) { cam(1.22 + 0.05 * sm(u / 5.7), 540, 900); phone(u, { msgs: [{ ...MSG_TEN, at: 2.9 }], batt: 41, clock: '10:02' }); },
+  phone1(u, t) { cam(1.22 + 0.05 * sm(u / 5.7), 540, 900); phone(u, { msgs: [{ ...MSG_TEN, at: 2.9 }], batt: 5, clock: '10:02' }); },
   window(u, t) { // 12.7-17.4: house lamp off, street lights die one by one
     cam(1.05 + 0.06 * sm(u / 4.7), 540, 980);
     wall('#120e28', '#1c1638');
