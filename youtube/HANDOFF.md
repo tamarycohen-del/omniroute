@@ -25,6 +25,12 @@ Final MP4s were in the old session's scratchpad (not in git); re-render from sou
 - Length rule (user): every video 45-60 s, never under 45 s.
 - Rules for new videos: keep the middle (20-40 s) tight with a visual change or twist there; end on a loop back to the opening or a last punch; finish with one simple question to the viewer (e.g. "What's the biggest mistake in history?").
 
+## Direction change (in planning, Nov 14 2026)
+- User wants to move the channel (visual + niche + identity) to an **apocalypse series in parts**.
+- Chosen format: **"Day 1 / Day 2…" survival diary** with our host as the survivor; each part ends on a cliffhanger.
+- NOT the CELL-217 "choose A or B in the comments" format - the user does not want to repeat it. End each part with an open question instead ("What would you have done?").
+- Open decisions: which apocalypse; keep or hide the existing fact videos; new channel name (the Factopia rename reminder on Nov 23 may change).
+
 ## New videos: use the research + script skill
 - `.claude/skills/factopia-research-script/SKILL.md`: landscape scan -> facts + audience -> 3-5 angles (user picks) -> script with the hard retention rules -> self-review + upload package. Then build with `cartoon-audio-short`.
 
