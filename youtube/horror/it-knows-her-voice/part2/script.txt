@@ -1,4 +1,4 @@
-HER VOICE - PART 2  (draft v5)
+HER VOICE - PART 2  (draft v6)
 Cast: narrator (Clancy) | Biscuit | Mrs. Hale - neighbor who died three years ago (new voice) | Mom's hand: pale, thin, fingers too long, Mom's ring (our own design; not shown in Part 2 - saved for later)
 
 #  | narration                                                                                   | on screen
@@ -17,5 +17,5 @@ Cast: narrator (Clancy) | Biscuit | Mrs. Hale - neighbor who died three years ag
 13 | Then Mrs. Hale smiled and said:                                                             | Her smile, a little too wide    [CLIMAX ~70%]
 14 | (Mrs. Hale) "Don't worry. Your mom is already here with me."                                | Behind her, deep in the lit hallway, a shape stands still
 15 | But Mom was at work. She said so herself.                                                   | Quick flash of the "No. I'm at work." text from Part 1
-16 | So... do you go inside with Mrs. Hale? Or hide in the shed with Biscuit?                   | Choice cards INSIDE WITH MRS. HALE / SHED WITH BISCUIT (both red)
+16 | So... do you go to Mrs. Hale? Or keep running into the woods with Biscuit?                 | Choice cards GO TO MRS. HALE / INTO THE WOODS WITH BISCUIT (both red)
 17 | Comment your choice. Part 3 follows you.                                                    | Comment arrow, "PART 2"
