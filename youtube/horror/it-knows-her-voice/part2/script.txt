@@ -1,22 +1,21 @@
-HER VOICE - PART 2  (draft v9)
+HER VOICE - PART 2  (draft v10)
 Cast: narrator (Clancy) | Biscuit | Mrs. Hale - neighbor who died three years ago (new voice) | Mom's hand: pale, thin, fingers too long, Mom's ring (our own design; not shown in Part 2 - saved for later)
 
 #  | narration                                                                                   | on screen
 1  | Imagine your mom knocks at the door at 3:33 a.m.... while you're escaping with Biscuit from the back door. | Back door opens, he and Biscuit slip out; knocking on the front door inside
-2  | In the comments, you said: escape with Biscuit.                                             | 4 real viewer comments pop up one by one (text only - no usernames, no platform)
+2  | In the comments, you said: escape with Biscuit.                                             | 4 real viewer comments pop up one by one, each with a message sound (hold ~3 s longer so they can be read) (text only - no usernames, no platform)
 2b | Smart call.                                                                                 | A big check mark slams onto the screen
 3  | So... we made it into the backyard. Then the knocking stopped.                              | Dark yard, he freezes, silence; the dark woods visible behind the yard
 4  | Then the back door clicked behind us. Someone locked it... from inside.                    | Close on the back door handle; the lock turns by itself. Nobody visible
 5  | That's when I saw Mrs. Hale's house next door.                                             | He turns; over the low fence, the neighbor's house
 6  | It was the only house on the street with the lights on.                                     | One lit house on the dark street
-8  | And Mrs. Hale... died three years ago. Her house has been empty ever since.                 | Slow push on her lit window; overgrown yard
+8  | And Mrs. Hale... died three years ago. Her house has been empty ever since.                 | Slow zoom on her lit window (~3 s longer, no narration), a shadow moves behind the curtain; overgrown yard
 9  | Then her back door opened. She stood there with her cane... and waved us over.             | Mrs. Hale in the doorway, warm light behind her
 10 | (Mrs. Hale) "Quick! Get inside before it sees you."                                         | Close on her face, kind smile
 11 | I started walking. But Biscuit didn't. He stopped... and growled at her.                    | He steps forward; Biscuit stays back, teeth showing
 12 | Suddenly, behind us, inside my house, the knocking started again. Louder. Faster.          | House behind them, knocks speeding up
-13 | Then Mrs. Hale smiled and said:                                                             | Her smile, a little too wide    [CLIMAX ~70%]
-14 | (Mrs. Hale) "Don't worry. Your mom is already here with me."                                | Behind her, deep in the lit hallway, a shape stands still
-15 | But Mom was at work. She said so herself.                                                   | Quick flash of the "No. I'm at work." text from Part 1
+13 | Then Mrs. Hale smiled and said:                                                             | Warm, kind smile    [CLIMAX ~70%]
+14 | (Mrs. Hale) "Don't worry. I made some cookies... if you want."                             | She lifts a plate of cookies into the warm light (she looks safe - a green flag)
 16 | So... do you go to Mrs. Hale? Or keep running into the woods with Biscuit?                 | Choice cards GO TO MRS. HALE / INTO THE WOODS WITH BISCUIT (both red)
 17 | Comment your choice. Part 3 follows you.                                                    | Comment arrow, "PART 2"
 
