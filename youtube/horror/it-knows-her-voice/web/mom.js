@@ -2,7 +2,7 @@
 // Looks like a normal mom in her night-shift scrubs from far away, but too tall and too thin, and her arms can stretch.
 // momThing(g, o) draws in a 600 x 1000 card (cx 300, feet at 975) like whiteStick, but the body is taller (head above the card).
 // o: { tall (1 = normal mom, 1.6 = wrong), reach (0..1 arm stretch), face ('smile'|'blank'|'dark'), t }
-const O = '#121018', SKIN = '#ece8f0', SCRUB = '#5f8f9a', SCRUB_D = '#4a7280', HAIR = '#2a1e1c', RING = '#e8c860';
+const O = '#121018', SKIN = '#e0dce6', SCRUB = '#5f8f9a', SCRUB_D = '#4a7280', HAIR = '#2a1e1c', RING = '#e8c860';
 
 export const momThing = (g, o = {}) => {
   const k = o.tall ?? 1.6, t = o.t || 0, reach = o.reach || 0, cx = 300, sole = 975;
@@ -24,6 +24,7 @@ export const momThing = (g, o = {}) => {
     limb([[cx + s * 40, sh], [ex, ey], [hx, hy]], 24 - 6 * reach, 12 - 4 * reach);
     hand(g, hx, hy, s, reach);
   }
+  g.save(); g.translate(cx, hc + 40); g.rotate(-0.07); g.translate(-cx, -(hc + 40)); // head tilted a little
   // head: shoulder-length hair (open at the bottom, neck and chin visible), side part
   g.fillStyle = HAIR; g.strokeStyle = O; g.lineWidth = 8;
   g.beginPath(); g.moveTo(cx - headR - 14, hc + 70); g.lineTo(cx - headR - 14, hc); g.bezierCurveTo(cx - headR - 14, hc - headR - 30, cx + headR + 14, hc - headR - 30, cx + headR + 14, hc); g.lineTo(cx + headR + 14, hc + 70);
@@ -33,15 +34,21 @@ export const momThing = (g, o = {}) => {
   g.lineWidth = 8; g.beginPath(); g.arc(cx, hc + 8, headR - 4, 0, 7); g.fill(); g.stroke();
   // fringe swept to one side
   g.fillStyle = HAIR; g.beginPath(); g.moveTo(cx - headR + 2, hc + 4); g.bezierCurveTo(cx - headR + 6, hc - headR - 8, cx + headR - 6, hc - headR - 8, cx + headR - 2, hc + 4); g.quadraticCurveTo(cx + 20, hc - 26, cx - 10, hc - 20); g.quadraticCurveTo(cx - 40, hc - 12, cx - headR + 2, hc + 4); g.fill();
+  g.strokeStyle = HAIR; g.lineWidth = 4; for (const [x0, y0, x1, y1] of [[cx + 30, hc - 20, cx + 44, hc + 30], [cx - 36, hc - 14, cx - 46, hc + 40], [cx + 8, hc - 24, cx + 14, hc + 10]]) { g.beginPath(); g.moveTo(x0, y0); g.quadraticCurveTo((x0 + x1) / 2 + 8, (y0 + y1) / 2, x1, y1); g.stroke(); }
   const f = o.face || 'smile', ey = hc + 12;
   if (f === 'dark') { g.fillStyle = 'rgba(8,6,14,0.85)'; g.beginPath(); g.arc(cx, hc + 8, headR - 6, 0, 7); g.fill();
     g.save(); g.shadowColor = '#fff'; g.shadowBlur = 14; g.fillStyle = '#f4f2ee'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 20, ey, 8, 11, 0, 0, 7); g.fill(); } g.restore(); }
   else {
-    g.fillStyle = O; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 20, ey, 7, 10, 0, 0, 7); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.arc(cx + s * 20 + 2, ey - 3, 2, 0, 7); g.fill(); g.fillStyle = O; }
+    for (const s of [-1, 1]) {
+      g.fillStyle = 'rgba(60,40,80,0.35)'; g.beginPath(); g.ellipse(cx + s * 21, ey + 13, 13, 6, 0, 0, 7); g.fill();   // dark rings
+      g.fillStyle = '#f8f6fa'; g.strokeStyle = O; g.lineWidth = 3.5; g.beginPath(); g.ellipse(cx + s * 21, ey, 11, 12, 0, 0, 7); g.fill(); g.stroke();
+      g.fillStyle = O; g.beginPath(); g.arc(cx + s * 21, ey + 1, 4, 0, 7); g.fill();                                     // tiny staring pupils
+    }
     g.strokeStyle = O; g.lineWidth = 5; g.beginPath();
-    if (f === 'smile') { g.moveTo(cx - 20, ey + 30); g.quadraticCurveTo(cx, ey + 42, cx + 20, ey + 30); } else { g.moveTo(cx - 16, ey + 34); g.lineTo(cx + 16, ey + 34); }
+    if (f === 'smile') { g.moveTo(cx - 24, ey + 30); g.quadraticCurveTo(cx, ey + 44, cx + 24, ey + 30); } else { g.moveTo(cx - 18, ey + 34); g.lineTo(cx + 18, ey + 34); }
     g.stroke();
   }
+  g.restore(); // head tilt
   g.restore();
 };
 
