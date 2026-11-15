@@ -77,7 +77,7 @@ const SCENES = {
   comments(u, t) { // four viewer comments pop up, then a big check mark
     g.fillStyle = lin(0, 0, 0, H, [[0, '#120c26'], [1, '#05040a']]); g.fillRect(0, 0, W, H);
     const C = ['Follow biscuit', 'Back door with biscuit', 'Listen to biscuit!!', 'Biscuit'];
-    C.forEach((c, i) => { const a = sm((u - 0.15 - i * 0.55) / 0.2); if (a <= 0) return; const y = 560 + i * 210, x = i % 2 ? 160 : 120;
+    C.forEach((c, i) => { const a = sm((u - 0.3 - i * 1.0) / 0.2); if (a <= 0) return; const y = 560 + i * 210, x = i % 2 ? 160 : 120;
       g.save(); g.globalAlpha = a; g.translate(x + 380, y + 60); g.scale(0.8 + 0.2 * a, 0.8 + 0.2 * a); g.translate(-(x + 380), -(y + 60));
       rr(x, y, 760, 130, 34, '#ffffff'); g.fillStyle = '#d8d0e8'; g.beginPath(); g.arc(x + 62, y + 65, 38, 0, 7); g.fill(); g.fillStyle = '#7a6aa8'; g.beginPath(); g.arc(x + 62, y + 52, 15, 0, 7); g.fill(); g.beginPath(); g.ellipse(x + 62, y + 90, 24, 14, 0, Math.PI, 0); g.fill();
       g.fillStyle = '#121018'; g.font = '700 46px "DejaVu Sans", sans-serif'; g.textAlign = 'left'; g.fillText(c, x + 124, y + 82); g.restore(); });
@@ -149,7 +149,7 @@ const SCENES = {
   },
   end() { g.fillStyle = '#000'; g.fillRect(0, 0, W, H); },
 };
-const o2 = {};
+const o2 = { checkAt: 5.7 };
 const choiceCard = (x, y, txt, a, col = '#ff4d5e') => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(0.85 + 0.15 * a, 0.85 + 0.15 * a);
   g.font = '900 54px "DejaVu Sans", sans-serif'; const w = g.measureText(txt).width + 70; rr(-w / 2, -58, w, 104, 26, 'rgba(10,6,16,0.88)'); g.strokeStyle = col; g.lineWidth = 6; g.beginPath(); g.roundRect(-w / 2, -58, w, 104, 26); g.stroke();
   g.fillStyle = col; g.textAlign = 'center'; g.fillText(txt, 0, 14); g.restore(); };
@@ -160,5 +160,30 @@ window.renderScene = (name, u = 1, t = u) => { g.setTransform(1, 0, 0, 1, 0, 0);
   if (!/^(choice|end|comments|flashback)/.test(name)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: '3:35', title: 'HER VOICE', sub: 'CHAPTER TWO' }); g.restore(); }
   return true; };
 window.SCENE_NAMES = Object.keys(SCENES);
-window.ready = true;
+
+// ---------- timeline (seconds, from part2/audio/timeline.json + words.json) ----------
+const SHOTS = [[0, 'backExit'], [6.2, 'comments'], [13.2, 'yard'], [17.35, 'lock'], [21.7, 'heart'], [24.3, 'haleView'], [29.2, 'haleWindow'],
+  [37.4, 'haleDoor'], [42.0, 'haleClose'], [49.6, 'growl'], [54.4, 'knocks'], [62.45, 'cookies'], [68.5, 'flashback'], [72.1, 'doorOpens'], [76.4, 'choice'], [83.9, 'end']];
+const KN = [1.05, 1.35, 1.65]; { let k = 55.0, d = 0.6; while (k < 62.3) { KN.push(+k.toFixed(2)); k += d; d = Math.max(0.16, d * 0.86); } }
+export const KNOCKS = KN;
+const knockAmt = (t) => KNOCKS.reduce((m, k) => (t >= k && t < k + 0.12 ? Math.max(m, 1 - (t - k) / 0.12) : m), 0);
+const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0]]; };
+let CHUNKS = [];
+const buildChunks = () => { CHUNKS = []; let cur = []; WORDS.forEach((w, i) => { cur.push(w); const end = /[.?!:,]$|\.\.\.$/.test(w.w) || cur.length >= 4 || (WORDS[i + 1] && WORDS[i + 1].who !== w.who); if (end) { CHUNKS.push(cur); cur = []; } }); if (cur.length) CHUNKS.push(cur); };
+const captions = (t, low) => {
+  const ch = CHUNKS.find((c, i) => t >= c[0].s - 0.05 && t < (CHUNKS[i + 1] ? Math.min(CHUNKS[i + 1][0].s - 0.05, c[c.length - 1].e + 0.6) : c[c.length - 1].e + 0.6)); if (!ch) return;
+  const hale = ch[0].who === 'h', hi = ch.findIndex((w) => t >= w.s && t < w.e + 0.08);
+  g.save(); g.translate(240, low ? 1240 : 880); capCard(P, { words: ch.map((w) => w.w.toUpperCase()), hi: hi < 0 ? ch.length - 1 : hi, color: hale ? '#ffe2b8' : undefined }); g.restore(); };
+window.renderFrame = (f) => {
+  const t = f / 30; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
+  const [shot, u] = shotAt(t), ks = knockAmt(t);
+  g.save(); SCENES[shot](u, t, ks); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
+  if (shot !== 'flashback' && shot !== 'comments') { const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H); }
+  if (!/^(choice|end|comments|flashback)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: t < 40 ? '3:35' : '3:36', title: 'HER VOICE', sub: 'CHAPTER TWO' }); g.restore(); }
+  if (shot !== 'choice' && shot !== 'comments') captions(t, false);
+  if (shot === 'choice') { g.save(); g.fillStyle = 'rgba(216,208,232,0.85)'; g.font = '700 36px "DejaVu Sans Mono", monospace'; g.fillText('PART 2', 40, 90); g.restore(); }
+  if (shot === 'choice' && u > 4.3) { const c = sm((u - 4.3) / 0.3); g.save(); g.globalAlpha = c; g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#0a0610'; g.strokeText('COMMENT YOUR CHOICE', 540, 1080); g.fillText('COMMENT YOUR CHOICE', 540, 1080); const bob = Math.sin(t * 6) * 10; g.fillStyle = '#c6ff3a'; g.beginPath(); g.moveTo(510, 1110 + bob); g.lineTo(570, 1110 + bob); g.lineTo(540, 1150 + bob); g.fill(); g.restore(); }
+  return true;
+};
+fetch('./words2.json').then((r) => r.json()).then((w) => { WORDS = w; buildChunks(); window.ready = true; });
 </script></body></html>
