@@ -282,5 +282,20 @@ window.renderFrame = (f) => {
   if (shot === 'choice') { g.save(); g.fillStyle = 'rgba(216,208,232,0.85)'; g.font = '700 36px "DejaVu Sans Mono", monospace'; g.fillText('PART 1', 40, 90); g.restore(); }
   return true;
 };
+
+// Cover / thumbnail for the profile grid (text kept inside the centre 1080x1440 so a 3:4 crop keeps it).
+window.renderCover = (part = 1) => {
+  g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
+  g.save(); cam(1.12, 820, 1120); hallway({ frontGlow: 1, feet: 1, backGlow: 0.15 }); hero(300, 500, 1.15, { expr: 'shock', look: 1 }); darken(0.15); g.restore();
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = g.createRadialGradient(W / 2, H * 0.55, H * 0.2, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.8)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  g.textAlign = 'center'; g.lineJoin = 'round';
+  g.font = '900 104px "DejaVu Sans", sans-serif'; g.lineWidth = 22; g.strokeStyle = '#0a0610';
+  for (const [t, y, c] of [['WOULD YOU', 420, '#ffffff'], ['OPEN THE DOOR?', 540, '#ff4d5e']]) { g.strokeText(t, W / 2, y); g.fillStyle = c; g.fillText(t, W / 2, y); }
+  g.save(); g.translate(W / 2, 1620); g.rotate(-0.04); g.font = '900 120px "DejaVu Sans", sans-serif'; const tw = g.measureText(`PART ${part}`).width + 80;
+  g.fillStyle = '#c6ff3a'; g.strokeStyle = '#0a0610'; g.lineWidth = 12; g.beginPath(); g.roundRect(-tw / 2, -110, tw, 150, 28); g.fill(); g.stroke();
+  g.fillStyle = '#0a0610'; g.fillText(`PART ${part}`, 0, 8); g.restore();
+  return true;
+};
 fetch('./words.json').then((r) => r.json()).then((w) => { WORDS = w; buildChunks(); window.ready = true; });
 </script></body></html>
