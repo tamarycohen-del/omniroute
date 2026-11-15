@@ -154,7 +154,7 @@ const SCENES = {
   },
   comments(u, t) { // four viewer comments, no check mark; they slide away at the end
     g.fillStyle = lin(0, 0, 0, H, [[0, '#120c26'], [1, '#05040a']]); g.fillRect(0, 0, W, H);
-    const C = ["It's will always be biscuit", 'runnig with busquit', 'gotta go with biscuit fs', 'Go with biscuit'];
+    const C = ["It's will always be biscuit", 'IN TO THE WOODS WITH BISCUIT!', 'runnig with busquit', 'Biscuit againnnn'];
     const out = sm((u - 3.3) / 0.3);
     C.forEach((c, i) => { const a = sm((u - 0.15 - i * 0.55) / 0.18); if (a <= 0) return; const y = 560 + i * 210, x = (i % 2 ? 140 : 100) - out * 1200 * (i % 2 ? -1 : 1);
       g.save(); g.globalAlpha = a; g.translate(x + 380, y + 60); g.scale(0.8 + 0.2 * a, 0.8 + 0.2 * a); g.translate(-(x + 380), -(y + 60));
