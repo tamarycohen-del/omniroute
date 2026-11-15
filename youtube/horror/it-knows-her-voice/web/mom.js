@@ -1,0 +1,53 @@
+// "Mom" (the thing that copies her): our own design, same flat style as whiteStick.
+// Looks like a normal mom in her night-shift scrubs from far away, but too tall and too thin, and her arms can stretch.
+// momThing(g, o) draws in a 600 x 1000 card (cx 300, feet at 975) like whiteStick, but the body is taller (head above the card).
+// o: { tall (1 = normal mom, 1.6 = wrong), reach (0..1 arm stretch), face ('smile'|'blank'|'dark'), t }
+const O = '#121018', SKIN = '#ece8f0', SCRUB = '#5f8f9a', SCRUB_D = '#4a7280', HAIR = '#2a1e1c', RING = '#e8c860';
+
+export const momThing = (g, o = {}) => {
+  const k = o.tall ?? 1.6, t = o.t || 0, reach = o.reach || 0, cx = 300, sole = 975;
+  const legTop = sole - 230 * k, waist = legTop - 20, neck = waist - 250 * k * 0.8, headR = 62, hc = neck - headR + 6;
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  const limb = (pts, a = 26, b = 14, col = SKIN) => { for (const [w, c] of [[a, O], [b, col]]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke(); } };
+  // legs (scrub pants), too long
+  for (const s of [-1, 1]) { limb([[cx + s * 16, legTop], [cx + s * 20, sole - 14]], 40, 26, SCRUB_D); g.fillStyle = '#e8e4ee'; g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.ellipse(cx + s * 24, sole - 6, 26, 11, 0, 0, 7); g.fill(); g.stroke(); }
+  // scrub top (long, thin)
+  g.fillStyle = SCRUB; g.strokeStyle = O; g.lineWidth = 9;
+  g.beginPath(); g.moveTo(cx - 44, neck + 14); g.lineTo(cx + 44, neck + 14); g.lineTo(cx + 54, legTop + 10); g.lineTo(cx - 54, legTop + 10); g.closePath(); g.fill(); g.stroke();
+  g.strokeStyle = SCRUB_D; g.lineWidth = 5; g.beginPath(); g.moveTo(cx - 18, neck + 16); g.lineTo(cx, neck + 50); g.lineTo(cx + 18, neck + 16); g.stroke();
+  rr(g, cx + 14, neck + 90, 34, 44, 4, '#f4f2ee'); g.fillStyle = '#c8c4d0'; g.fillRect(cx + 19, neck + 98, 24, 5); g.fillRect(cx + 19, neck + 108, 18, 4); // ID badge
+  // arms: normal length at reach 0; at reach 1 they slide out sideways, impossibly long and thin
+  const sh = neck + 34, L = 170 + 900 * reach, droop = 120 * (1 - reach);
+  for (const s of [-1, 1]) {
+    const lp = (a, b) => a + (b - a) * reach, sw = Math.sin(t * 1.6 + s * 2);
+    const ex = cx + s * lp(62, 44 + L * 0.45), ey = sh + lp(150, 60) + 10 * sw, hx = cx + s * lp(70, 44 + L), hy = sh + lp(300, 90) + lp(6, 30) * sw;
+    limb([[cx + s * 40, sh], [ex, ey], [hx, hy]], 24 - 6 * reach, 12 - 4 * reach);
+    hand(g, hx, hy, s, reach);
+  }
+  // head: neat mom bob, slight smile; too-still eyes
+  g.fillStyle = HAIR; g.strokeStyle = O; g.lineWidth = 8; g.beginPath(); g.ellipse(cx, hc + 6, headR + 16, headR + 24, 0, 0, 7); g.fill(); g.stroke();
+  g.fillStyle = SKIN; g.beginPath(); g.arc(cx, hc + 8, headR - 4, 0, 7); g.fill(); g.stroke();
+  g.fillStyle = HAIR; g.beginPath(); g.moveTo(cx - headR + 2, hc - 6); g.quadraticCurveTo(cx, hc - headR - 20, cx + headR - 2, hc - 6); g.quadraticCurveTo(cx + 10, hc - 30, cx - headR + 2, hc - 6); g.fill();
+  const f = o.face || 'smile', ey = hc + 12;
+  if (f === 'dark') { g.fillStyle = 'rgba(8,6,14,0.85)'; g.beginPath(); g.arc(cx, hc + 8, headR - 6, 0, 7); g.fill();
+    g.save(); g.shadowColor = '#fff'; g.shadowBlur = 14; g.fillStyle = '#f4f2ee'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 20, ey, 8, 11, 0, 0, 7); g.fill(); } g.restore(); }
+  else {
+    g.fillStyle = O; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 20, ey, 7, 10, 0, 0, 7); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.arc(cx + s * 20 + 2, ey - 3, 2, 0, 7); g.fill(); g.fillStyle = O; }
+    g.strokeStyle = O; g.lineWidth = 5; g.beginPath();
+    if (f === 'smile') { g.moveTo(cx - 20, ey + 30); g.quadraticCurveTo(cx, ey + 42, cx + 20, ey + 30); } else { g.moveTo(cx - 16, ey + 34); g.lineTo(cx + 16, ey + 34); }
+    g.stroke();
+  }
+  g.restore();
+};
+
+const rr = (g, x, y, w, h, r, fill) => { g.beginPath(); g.roundRect(x, y, w, h, r); g.fillStyle = fill; g.fill(); g.strokeStyle = O; g.lineWidth = 4; g.stroke(); };
+
+// pale hand with Mom's ring; fingers grow longer with reach
+export const hand = (g, x, y, s = 1, reach = 0) => {
+  const fl = 34 + 46 * reach;
+  g.save(); g.translate(x, y); g.scale(s, 1); g.lineCap = 'round';
+  g.fillStyle = SKIN; g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.ellipse(0, 0, 20, 16, 0, 0, 7); g.fill(); g.stroke();
+  for (let i = 0; i < 4; i++) { const a = -0.5 + i * 0.32; for (const [w, c] of [[11, O], [5, SKIN]]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(12, -8 + i * 6); g.quadraticCurveTo(12 + fl * 0.6 * Math.cos(a), -8 + i * 6 + fl * 0.4 * Math.sin(a), 14 + fl * Math.cos(a), -6 + i * 7 + fl * Math.sin(a) + 8); g.stroke(); } }
+  g.strokeStyle = RING; g.lineWidth = 5; g.beginPath(); g.moveTo(22, -1); g.lineTo(26, 6); g.stroke(); // the ring
+  g.restore();
+};
