@@ -34,13 +34,11 @@ export const momThing = (g, o = {}) => {
   g.lineWidth = 8; g.beginPath(); g.arc(cx, hc + 8, headR - 4, 0, 7); g.fill(); g.stroke();
   // fringe swept to one side
   g.fillStyle = HAIR; g.beginPath(); g.moveTo(cx - headR + 2, hc + 4); g.bezierCurveTo(cx - headR + 6, hc - headR - 8, cx + headR - 6, hc - headR - 8, cx + headR - 2, hc + 4); g.quadraticCurveTo(cx + 20, hc - 26, cx - 10, hc - 20); g.quadraticCurveTo(cx - 40, hc - 12, cx - headR + 2, hc + 4); g.fill();
-  g.strokeStyle = HAIR; g.lineWidth = 4; for (const [x0, y0, x1, y1] of [[cx + 30, hc - 20, cx + 44, hc + 30], [cx - 36, hc - 14, cx - 46, hc + 40], [cx + 8, hc - 24, cx + 14, hc + 10]]) { g.beginPath(); g.moveTo(x0, y0); g.quadraticCurveTo((x0 + x1) / 2 + 8, (y0 + y1) / 2, x1, y1); g.stroke(); }
   const f = o.face || 'smile', ey = hc + 12;
   if (f === 'dark') { g.fillStyle = 'rgba(8,6,14,0.85)'; g.beginPath(); g.arc(cx, hc + 8, headR - 6, 0, 7); g.fill();
     g.save(); g.shadowColor = '#fff'; g.shadowBlur = 14; g.fillStyle = '#f4f2ee'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 20, ey, 8, 11, 0, 0, 7); g.fill(); } g.restore(); }
   else {
     for (const s of [-1, 1]) {
-      g.fillStyle = 'rgba(60,40,80,0.35)'; g.beginPath(); g.ellipse(cx + s * 21, ey + 13, 13, 6, 0, 0, 7); g.fill();   // dark rings
       g.fillStyle = '#f8f6fa'; g.strokeStyle = O; g.lineWidth = 3.5; g.beginPath(); g.ellipse(cx + s * 21, ey, 11, 12, 0, 0, 7); g.fill(); g.stroke();
       g.fillStyle = O; g.beginPath(); g.arc(cx + s * 21, ey + 1, 4, 0, 7); g.fill();                                     // tiny staring pupils
     }
