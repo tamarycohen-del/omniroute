@@ -74,6 +74,6 @@ const faceIcon = (lit) => {
   g.fillStyle = '#0c0818'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 72 + 6, hc + 46, 15, 21, 0, 0, 7); g.fill(); }
   g.fillStyle = '#fff'; for (const s of [-1, 1]) { g.beginPath(); g.arc(cx + s * 72 + 12, hc + 36, 5, 0, 7); g.fill(); }
 };
-window.renderFrame = (k) => { g.setTransform(1, 0, 0, 1, 0, 0); OPT['ABCDEFGHIJK'[k]](); };
+window.renderFrame = (k, size = 800) => { cv.width = cv.height = size; g.setTransform(size / 800, 0, 0, size / 800, 0, 0); g.imageSmoothingQuality = 'high'; OPT['ABCDEFGHIJK'[k]](); };
 window.ready = true;
 </script></body></html>
