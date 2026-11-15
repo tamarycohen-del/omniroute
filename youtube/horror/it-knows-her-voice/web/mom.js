@@ -24,10 +24,15 @@ export const momThing = (g, o = {}) => {
     limb([[cx + s * 40, sh], [ex, ey], [hx, hy]], 24 - 6 * reach, 12 - 4 * reach);
     hand(g, hx, hy, s, reach);
   }
-  // head: neat mom bob, slight smile; too-still eyes
-  g.fillStyle = HAIR; g.strokeStyle = O; g.lineWidth = 8; g.beginPath(); g.ellipse(cx, hc + 6, headR + 16, headR + 24, 0, 0, 7); g.fill(); g.stroke();
-  g.fillStyle = SKIN; g.beginPath(); g.arc(cx, hc + 8, headR - 4, 0, 7); g.fill(); g.stroke();
-  g.fillStyle = HAIR; g.beginPath(); g.moveTo(cx - headR + 2, hc - 6); g.quadraticCurveTo(cx, hc - headR - 20, cx + headR - 2, hc - 6); g.quadraticCurveTo(cx + 10, hc - 30, cx - headR + 2, hc - 6); g.fill();
+  // head: shoulder-length hair (open at the bottom, neck and chin visible), side part
+  g.fillStyle = HAIR; g.strokeStyle = O; g.lineWidth = 8;
+  g.beginPath(); g.moveTo(cx - headR - 14, hc + 70); g.lineTo(cx - headR - 14, hc); g.bezierCurveTo(cx - headR - 14, hc - headR - 30, cx + headR + 14, hc - headR - 30, cx + headR + 14, hc); g.lineTo(cx + headR + 14, hc + 70);
+  g.quadraticCurveTo(cx + headR, hc + 80, cx + headR - 10, hc + 66); g.lineTo(cx - headR + 10, hc + 66); g.quadraticCurveTo(cx - headR, hc + 80, cx - headR - 14, hc + 70); g.closePath(); g.fill(); g.stroke();
+  // neck + face
+  g.fillStyle = SKIN; g.fillRect(cx - 16, hc + 50, 32, neck - hc - 40); g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.moveTo(cx - 16, hc + 56); g.lineTo(cx - 16, neck + 10); g.moveTo(cx + 16, hc + 56); g.lineTo(cx + 16, neck + 10); g.stroke();
+  g.lineWidth = 8; g.beginPath(); g.arc(cx, hc + 8, headR - 4, 0, 7); g.fill(); g.stroke();
+  // fringe swept to one side
+  g.fillStyle = HAIR; g.beginPath(); g.moveTo(cx - headR + 2, hc + 4); g.bezierCurveTo(cx - headR + 6, hc - headR - 8, cx + headR - 6, hc - headR - 8, cx + headR - 2, hc + 4); g.quadraticCurveTo(cx + 20, hc - 26, cx - 10, hc - 20); g.quadraticCurveTo(cx - 40, hc - 12, cx - headR + 2, hc + 4); g.fill();
   const f = o.face || 'smile', ey = hc + 12;
   if (f === 'dark') { g.fillStyle = 'rgba(8,6,14,0.85)'; g.beginPath(); g.arc(cx, hc + 8, headR - 6, 0, 7); g.fill();
     g.save(); g.shadowColor = '#fff'; g.shadowBlur = 14; g.fillStyle = '#f4f2ee'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 20, ey, 8, 11, 0, 0, 7); g.fill(); } g.restore(); }
