@@ -65,12 +65,63 @@ const haleHouse = (x, y, o = {}) => { const lit = o.lit ?? 1;
 };
 const streetDark = (x, y) => { for (const [dx, w, h] of [[-900, 360, 520], [-480, 300, 460], [1300, 380, 540], [1720, 320, 480]]) { g.fillStyle = '#0c0a18'; g.fillRect(x + dx, y - h, w, h); g.beginPath(); g.moveTo(x + dx - 20, y - h); g.lineTo(x + dx + w / 2, y - h - 140); g.lineTo(x + dx + w + 20, y - h); g.fill(); g.fillStyle = '#141028'; g.fillRect(x + dx + 60, y - h + 120, 60, 80); g.fillRect(x + dx + w - 120, y - h + 120, 60, 80); } };
 
+// ---- Part 1 bedroom (same opening as Part 1) ----
+const wallIn = (top = '#1a1236', bot = '#2a1e4e') => { g.fillStyle = lin(0, 0, 0, 1500, [[0, top], [1, bot]]); g.fillRect(-1400, -900, 4000, 3600); g.fillStyle = 'rgba(255,255,255,0.025)'; for (let x = -1400; x < 2600; x += 90) g.fillRect(x, -900, 40, 3200); };
+const floorIn = (y = 1300, a = '#231838', b = '#100a1c') => { g.fillStyle = lin(0, y, 0, y + 800, [[0, a], [1, b]]); g.fillRect(-1400, y, 4000, 1600); g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(-1400, y, 4000, 14); g.strokeStyle = 'rgba(0,0,0,0.18)'; g.lineWidth = 4; for (let k = 1; k < 7; k++) { g.beginPath(); g.moveTo(-1400, y + k * k * 18); g.lineTo(2600, y + k * k * 18); g.stroke(); } };
+const door = (x, y, w, h, o = {}) => { // o: shake, glow (0..1), glowCol, feet (0..1), big (0..1), knob ('L'|'R')
+  const sh = o.shake || 0, gc = o.glowCol || '170,190,255';
+  g.save(); g.translate(sh * 7, 0);
+  rr(x - 20, y - 20, w + 40, h + 20, 8, '#2a1e44'); rr(x, y, w, h, 6, o.col || '#3c2e62');
+  g.fillStyle = 'rgba(0,0,0,0.14)'; g.fillRect(x + 30, y + 40, w - 60, h * 0.36); g.fillRect(x + 30, y + h * 0.48, w - 60, h * 0.44);
+  g.fillStyle = '#c8b070'; g.beginPath(); g.arc(o.knob === 'R' ? x + w - 34 : x + 34, y + h * 0.52, 14, 0, 7); g.fill();
+  if (o.peep !== false) { g.fillStyle = '#0c0a14'; g.beginPath(); g.arc(x + w / 2, y + h * 0.3, 9, 0, 7); g.fill(); }
+  g.restore();
+  const gl = o.glow ?? 1;
+  if (gl > 0) {
+    g.fillStyle = `rgba(${gc},${0.9 * gl})`; g.fillRect(x, y + h - 6, w, 7);
+    // shadows of what stands outside, cut out of the light strip
+    if (o.feet) { g.fillStyle = `rgba(6,4,14,${o.feet})`; for (const fx of [0.36, 0.58]) g.fillRect(x + w * fx, y + h - 7, w * 0.11, 8); }
+    add(() => { g.fillStyle = lin(0, y + h, 0, y + h + 150, [[0, `rgba(${gc},${0.38 * gl})`], [1, `rgba(${gc},0)`]]); g.beginPath(); g.moveTo(x, y + h); g.lineTo(x + w, y + h); g.lineTo(x + w + 90, y + h + 150); g.lineTo(x - 90, y + h + 150); g.closePath(); g.fill(); });
+    if (o.feet) { g.fillStyle = `rgba(6,4,14,${0.7 * o.feet})`; for (const fx of [0.36, 0.58]) { g.beginPath(); g.moveTo(x + w * fx, y + h); g.lineTo(x + w * (fx + 0.11), y + h); g.lineTo(x + w * (fx + 0.11) + 40, y + h + 150); g.lineTo(x + w * fx - 30, y + h + 150); g.closePath(); g.fill(); } }
+    if (o.big) { g.fillStyle = `rgba(6,4,14,${0.85 * o.big})`; g.fillRect(x + w * 0.12, y + h - 7, w * 0.8 * o.big, 8); g.beginPath(); g.moveTo(x + w * 0.12, y + h); g.lineTo(x + w * (0.12 + 0.8 * o.big), y + h); g.lineTo(x + w * (0.12 + 0.8 * o.big) + 80, y + h + 150); g.lineTo(x + w * 0.12 - 70, y + h + 150); g.closePath(); g.fill(); }
+  }
+};
+const clock = (x, y, txt, on = true, blinkT = 0) => { rr(x - 75, y - 52, 150, 70, 10, '#0a0610'); const b = Math.floor(blinkT * 2) % 2 === 0; g.fillStyle = on ? (b ? '#ff2a3a' : '#8a1420') : '#2a0a10'; g.shadowColor = '#ff2a3a'; g.shadowBlur = on && b ? 22 : 4; g.font = '700 50px "DejaVu Sans Mono", monospace'; g.textAlign = 'center'; g.fillText(txt, x, y); g.shadowBlur = 0; g.textAlign = 'left'; };
+const bedroomBase = (o = {}) => {
+  wallIn(); floorIn();
+  rr(600, 380, 330, 430, 10, '#0c0a1c'); g.fillStyle = lin(600, 380, 930, 810, [[0, '#3a3a7a'], [1, '#141038']]); g.fillRect(612, 392, 306, 406);
+  g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(840, 470, 38, 0, 7); g.fill(); g.fillStyle = '#3a3a7a'; g.beginPath(); g.arc(856, 460, 34, 0, 7); g.fill();
+  g.fillStyle = '#0c0a1c'; g.fillRect(760, 392, 10, 406); g.fillRect(612, 590, 306, 10);
+  for (const [x, w] of [[560, 90], [880, 90]]) { g.fillStyle = lin(x, 0, x + w, 0, [[0, '#2e2050'], [0.5, '#3e2c68'], [1, '#261a44']]); g.fillRect(x, 340, w, 560); }
+  add(() => { g.fillStyle = lin(700, 800, 500, 1500, [[0, 'rgba(150,140,255,0.22)'], [1, 'rgba(150,140,255,0)']]); g.beginPath(); g.moveTo(620, 800); g.lineTo(920, 800); g.lineTo(760, 1650); g.lineTo(260, 1650); g.closePath(); g.fill(); });
+  door(1000, 560, 240, 760, { shake: o.shake || 0, glow: o.doorGlow ?? 0, peep: false });
+  rr(60, 1080, 220, 230, 12, '#24183c'); clock(175, 1062, o.clockTxt || '3:33', o.clockOn !== false, o.t || 0);
+  if (o.lamp) { rr(200, 930, 50, 80, 8, '#3a2c58'); add(() => { const r = g.createRadialGradient(225, 930, 10, 225, 930, 360); r.addColorStop(0, `rgba(255,210,140,${0.5 * o.lamp})`); r.addColorStop(1, 'rgba(255,210,140,0)'); g.fillStyle = r; g.fillRect(-200, 500, 900, 900); }); }
+  rr(260, 880, 640, 120, 30, '#33245a'); rr(300, 1040, 200, 80, 30, '#8a82c8');
+};
+const bedFront = (knee = 0) => {
+  rr(270, 1090, 700, 230, 24, '#3c2a6a'); rr(262, 1290, 716, 150, 10, '#20163a'); for (const lx of [280, 940]) rr(lx, 1420, 26, 60, 4, '#160f28');
+  g.fillStyle = lin(0, 1110, 0, 1330, [[0, '#6a54b8'], [1, '#3e2c78']]); g.beginPath(); g.moveTo(290, 1150); g.lineTo(470, 1146); g.quadraticCurveTo(560, 1146 - 90 * knee, 650, 1146 - 70 * knee); g.quadraticCurveTo(720, 1146 - 40 * knee, 790, 1140); g.quadraticCurveTo(900, 1136, 980, 1140); g.lineTo(980, 1330); g.lineTo(290, 1330); g.closePath(); g.fill();
+  if (knee > 0) { g.strokeStyle = 'rgba(255,255,255,0.10)'; g.lineWidth = 6; g.beginPath(); g.moveTo(480, 1140); g.quadraticCurveTo(560, 1146 - 86 * knee, 645, 1150 - 70 * knee); g.stroke(); }
+  g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 6; for (const x of [520, 690, 840]) { g.beginPath(); g.moveTo(x, 1135); g.quadraticCurveTo(x + 30, 1230, x + 10, 1325); g.stroke(); }
+};
+const rug = () => { g.fillStyle = 'rgba(80,60,140,0.45)'; g.beginPath(); g.ellipse(560, 1640, 380, 90, 0, 0, 7); g.fill(); g.setLineDash([26, 18]); g.strokeStyle = 'rgba(160,140,230,0.45)'; g.lineWidth = 6; g.beginPath(); g.ellipse(560, 1640, 340, 72, 0, 0, 7); g.stroke(); g.setLineDash([]); };
 // ---------- scenes (u = seconds into the shot) ----------
 const SCENES = {
+  bed(u0, t0) { const u = u0 + 1.1, t = t0 + 1.1; // 0-7: knocks, he sits up, Biscuit lifts his head
+    const zoom = 1.0 + 0.04 * sm(u / 7) + (u > 2.1 ? 0.12 * sm((u - 2.1) / 0.6) * (1 - sm((u - 4.6) / 0.8)) : 0);
+    cam(zoom, 560 + (u > 2.1 && u < 5 ? 180 * sm((u - 2.1) / 0.6) * (1 - sm((u - 4.4) / 0.6)) : 0), 1060);
+    bedroomBase({ shake: knockAmt(t0), t: u, lamp: 0 });
+    const sit = sm((u - 2.4) / 0.5), look = u > 2.3 ? sm((u - 2.3) / 0.3) : 0;
+    g.save(); g.beginPath(); g.rect(-600, -600, 2400, 1760); g.clip(); hero(160, 510 + 230 * (1 - sit), 0.82, { expr: u > 2.3 ? 'scared' : 'neutral', look }); g.restore();
+    bedFront(sit); rug();
+    const up = sm((u - 5.1) / 0.5);
+    dog(560, 1660, 0.62, { pose: up > 0.5 ? 'stand' : 'crouch', look: up > 0.5 ? 1 : 0, ears: up > 0.5 ? 'up' : 'down', t });
+  },
   backExit(u, t) { // they slip out the back door; knocking on the front door inside
     cam(1.0 + 0.04 * sm(u / 4), 540, 1150);
     sky(); woods(1150); ground(1500); ourHouse(120, 1500, { open: sm(u / 0.6) });
-    const w = sm((u - 0.5) / 2.5); hero(lerp(190, 470, w), 1500 - 975 * 0.62, 0.62, { expr: 'scared', look: -1, step: Math.sin(u * 8) * (w < 1 ? 0.6 : 0) });
+    const w = sm((u - 0.2) / 2.0); hero(lerp(190, 470, w), 1500 - 975 * 0.62, 0.62, { expr: 'scared', look: -1, step: Math.sin(u * 8) * (w < 1 ? 0.6 : 0) });
     dog(lerp(330, 720, w), 1500, 0.5, { pose: w < 1 ? 'walk' : 'stand', t: u });
     darken(0.18);
   },
@@ -170,7 +221,7 @@ window.renderScene = (name, u = 1, t = u) => { g.setTransform(1, 0, 0, 1, 0, 0);
 window.SCENE_NAMES = Object.keys(SCENES);
 
 // ---------- timeline (seconds, from part2/audio/timeline.json + words.json) ----------
-const SHOTS = [[0, 'backExit'], [6.2, 'comments'], [11.2, 'yard'], [15.35, 'lock'], [19.7, 'heart'], [22.3, 'haleView'], [27.2, 'haleWindow'], [30.4, 'stare'],
+const SHOTS = [[0, 'bed'], [3.7, 'backExit'], [6.2, 'comments'], [11.2, 'yard'], [15.35, 'lock'], [19.7, 'heart'], [22.3, 'haleView'], [27.2, 'haleWindow'], [30.4, 'stare'],
   [32.8, 'haleDoor'], [37.4, 'haleClose'], [45.0, 'growl'], [49.8, 'knocks'], [57.85, 'cookies'], [63.9, 'flashback'], [67.85, 'doorOpens'], [72.15, 'choice'], [79.65, 'end']];
 const KN = [1.05, 1.35, 1.65]; { let k = 50.4, d = 0.6; while (k < 57.7) { KN.push(+k.toFixed(2)); k += d; d = Math.max(0.16, d * 0.86); } }
 export const KNOCKS = KN;
@@ -187,7 +238,7 @@ window.renderFrame = (f) => {
   const [shot, u] = shotAt(t), ks = knockAmt(t);
   g.save(); SCENES[shot](u, t, ks); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
   if (shot !== 'flashback' && shot !== 'comments') { const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H); }
-  if (!/^(choice|end|comments|flashback)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: t < 36 ? '3:35' : '3:36', title: 'HER VOICE', sub: 'CHAPTER TWO' }); g.restore(); }
+  if (!/^(choice|end|comments|flashback)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: t < 3.7 ? '3:33' : t < 36 ? '3:35' : '3:36', title: 'HER VOICE', sub: 'CHAPTER TWO' }); g.restore(); }
   if (shot !== 'choice' && shot !== 'comments') captions(t, false);
   if (shot === 'choice') { g.save(); g.fillStyle = 'rgba(216,208,232,0.85)'; g.font = '700 36px "DejaVu Sans Mono", monospace'; g.fillText('PART 2', 40, 90); g.restore(); }
   if (shot === 'choice' && u > 4.3) { const c = sm((u - 4.3) / 0.3); g.save(); g.globalAlpha = c; g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#0a0610'; g.strokeText('COMMENT YOUR CHOICE', 540, 1080); g.fillText('COMMENT YOUR CHOICE', 540, 1080); const bob = Math.sin(t * 6) * 10; g.fillStyle = '#c6ff3a'; g.beginPath(); g.moveTo(510, 1110 + bob); g.lineTo(570, 1110 + bob); g.lineTo(540, 1150 + bob); g.fill(); g.restore(); }
