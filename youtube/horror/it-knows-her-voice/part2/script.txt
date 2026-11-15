@@ -20,3 +20,9 @@ Cast: narrator (Clancy) | Biscuit | Mrs. Hale - neighbor who died three years ag
 15 | But Mom was at work. She said so herself.                                                   | Quick flash of the "No. I'm at work." text from Part 1
 16 | So... do you go to Mrs. Hale? Or keep running into the woods with Biscuit?                 | Choice cards GO TO MRS. HALE / INTO THE WOODS WITH BISCUIT (both red)
 17 | Comment your choice. Part 3 follows you.                                                    | Comment arrow, "PART 2"
+
+On-screen comments for line 2 (text only, no usernames, no platform), in this order:
+  "Follow biscuit"
+  "Back door with biscuit"
+  "Listen to biscuit!!"
+  "Biscuit"
