@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="2560" height="1440"></canvas>
+<script type="module">
+// YouTube banner 2560x1440. Everything important inside the 1546x423 centre safe area (x 507-2053, y 508-931).
+import { whiteStick } from './stick.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 2560, H = 1440;
+const r = g.createRadialGradient(1280, 720, 100, 1280, 720, 1500); r.addColorStop(0, '#2e2160'); r.addColorStop(1, '#07050f'); g.fillStyle = r; g.fillRect(0, 0, W, H);
+g.fillStyle = 'rgba(255,255,255,0.02)'; for (let x = 0; x < W; x += 110) g.fillRect(x, 0, 48, H);
+// moon
+g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(1770, 570, 40, 0, 7); g.fill(); g.fillStyle = '#2a1e58'; g.beginPath(); g.arc(1786, 558, 36, 0, 7); g.fill();
+// door with light under it (right side)
+const dx = 1880, dy = 605, dw = 150, dh = 320;
+g.fillStyle = '#20163a'; g.fillRect(dx - 12, dy - 12, dw + 24, dh + 12); g.fillStyle = '#3c2e62'; g.fillRect(dx, dy, dw, dh);
+g.fillStyle = 'rgba(0,0,0,0.16)'; g.fillRect(dx + 18, dy + 22, dw - 36, 110); g.fillRect(dx + 18, dy + 160, dw - 36, 140);
+g.fillStyle = '#c8b070'; g.beginPath(); g.arc(dx + 22, dy + 170, 8, 0, 7); g.fill();
+g.fillStyle = 'rgba(200,215,255,0.95)'; g.fillRect(dx, dy + dh - 6, dw, 7);
+g.save(); g.globalCompositeOperation = 'lighter'; const lg = g.createLinearGradient(0, dy + dh, 0, dy + dh + 110); lg.addColorStop(0, 'rgba(170,190,255,0.5)'); lg.addColorStop(1, 'rgba(170,190,255,0)'); g.fillStyle = lg; g.beginPath(); g.moveTo(dx, dy + dh); g.lineTo(dx + dw, dy + dh); g.lineTo(dx + dw + 60, dy + dh + 110); g.lineTo(dx - 60, dy + dh + 110); g.fill(); g.restore();
+g.fillStyle = '#06040c'; for (const fx of [0.34, 0.58]) g.fillRect(dx + dw * fx, dy + dh - 7, dw * 0.11, 8);
+// our character, left side (head + shoulders)
+g.save(); g.translate(640 - 300 * 0.42, 925 - 975 * 0.42); g.scale(0.42, 0.42); whiteStick({ g }, { beanie: '#2a2a36', expr: 'worried', look: 1 }); g.restore();
+g.fillStyle = 'rgba(0,0,0,0.35)'; g.beginPath(); g.ellipse(640, 928, 80, 12, 0, 0, 7); g.fill();
+// name + tagline
+g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+g.font = '900 170px "DejaVu Sans", sans-serif'; g.lineJoin = 'round'; g.lineWidth = 26; g.strokeStyle = '#0a0610'; g.strokeText('VOTEFEAR', 1290, 750); g.fillStyle = '#ffffff'; g.fillText('VOTEFEAR', 1290, 750);
+g.font = '800 54px "DejaVu Sans", sans-serif'; g.lineWidth = 12; const t1 = 'YOU DECIDE. ', t2 = 'HE HAS TO SURVIVE.'; const w1 = g.measureText(t1).width, w2 = g.measureText(t2).width, x0 = 1290 - (w1 + w2) / 2;
+g.textAlign = 'left'; g.strokeText(t1, x0, 840); g.fillStyle = '#c6ff3a'; g.fillText(t1, x0, 840); g.strokeText(t2, x0 + w1, 840); g.fillStyle = '#ffffff'; g.fillText(t2, x0 + w1, 840);
+g.textAlign = 'center'; g.font = '600 34px "DejaVu Sans Mono", monospace'; g.fillStyle = 'rgba(216,208,232,0.85)'; g.fillText('HORROR STORIES IN PARTS  ·  NEW PART EVERY NIGHT', 1290, 905);
+// vignette
+const v = g.createRadialGradient(1280, 720, 600, 1280, 720, 1500); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.6)'); g.fillStyle = v; g.fillRect(0, 0, W, H);
+window.ready = true;
+</script></body></html>
