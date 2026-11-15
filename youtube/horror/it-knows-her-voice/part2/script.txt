@@ -1,4 +1,4 @@
-HER VOICE - PART 2  (draft v13)
+HER VOICE - PART 2  (draft v14)
 Cast: narrator (Clancy) | Biscuit | Mrs. Hale - neighbor who died three years ago (new voice) | Mom's hand: pale, thin, fingers too long, Mom's ring (our own design; not shown in Part 2 - saved for later)
 
 #  | narration                                                                                   | on screen
@@ -20,6 +20,7 @@ Cast: narrator (Clancy) | Biscuit | Mrs. Hale - neighbor who died three years ag
 13 | Then Mrs. Hale smiled and said:                                                             | Warm, kind smile    [CLIMAX ~70%]
 14 | (Mrs. Hale) "Don't worry. I made some cookies... if you want."                             | She lifts a plate of cookies into the warm light (she looks safe - a green flag)
 15 | Mrs. Hale used to give Biscuit cookies every day.                                           | Quick warm flashback: Mrs. Hale handing Biscuit a cookie over the fence, Biscuit wagging
+15b| Then, behind us... CLICK. Our back door was opening.                                       | Hard cut back to night: a loud click, their back door slowly swings open into darkness
 16 | So... do you go to Mrs. Hale? Or keep running into the woods with Biscuit?                 | Choice cards GO TO MRS. HALE / INTO THE WOODS WITH BISCUIT (both red)
 17 | Comment your choice. Part 3 follows you.                                                    | Comment arrow, "PART 2"
 
