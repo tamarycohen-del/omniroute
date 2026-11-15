@@ -159,7 +159,7 @@ const SCENES = {
     C.forEach((c, i) => { const a = sm((u - 0.15 - i * 0.55) / 0.18); if (a <= 0) return; const y = 560 + i * 210, x = (i % 2 ? 140 : 100) - out * 1200 * (i % 2 ? -1 : 1);
       g.save(); g.globalAlpha = a; g.translate(x + 380, y + 60); g.scale(0.8 + 0.2 * a, 0.8 + 0.2 * a); g.translate(-(x + 380), -(y + 60));
       rr(x, y, 840, 130, 34, '#ffffff'); g.fillStyle = '#d8d0e8'; g.beginPath(); g.arc(x + 62, y + 65, 38, 0, 7); g.fill(); g.fillStyle = '#7a6aa8'; g.beginPath(); g.arc(x + 62, y + 52, 15, 0, 7); g.fill(); g.beginPath(); g.ellipse(x + 62, y + 90, 24, 14, 0, Math.PI, 0); g.fill();
-      g.fillStyle = '#121018'; g.font = '700 42px "DejaVu Sans", sans-serif'; g.textAlign = 'left'; g.fillText(c, x + 124, y + 80); g.restore(); });
+      g.fillStyle = '#121018'; let fs = 42; g.font = `700 ${fs}px "DejaVu Sans", sans-serif`; while (g.measureText(c).width > 690 && fs > 24) { fs -= 2; g.font = `700 ${fs}px "DejaVu Sans", sans-serif`; } g.textAlign = 'left'; g.fillText(c, x + 124, y + 66 + fs * 0.35); g.restore(); });
   },
   run2(u, t) { // running deeper; branches whip past; heavy steps behind
     cam(1.08, 540, 1150, Math.sin(u * 17) * 8, Math.abs(Math.sin(u * 8.5)) * 10); forest(800 + u * 1100);
