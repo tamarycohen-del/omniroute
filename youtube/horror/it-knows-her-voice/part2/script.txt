@@ -10,7 +10,7 @@ Cast: narrator (Clancy) | Biscuit | Mrs. Hale - neighbor who died three years ag
 5  | That's when I saw Mrs. Hale's house next door.                                             | He turns; over the low fence, the neighbor's house
 6  | It was the only house on the street with the lights on.                                     | One lit house on the dark street
 8  | And Mrs. Hale... died three years ago. Her house has been empty ever since.                 | Slow push on her lit window; overgrown yard
-9  | Then her back door opened. She stood there with her cane... and waved me over.             | Mrs. Hale in the doorway, warm light behind her
+9  | Then her back door opened. She stood there with her cane... and waved us over.             | Mrs. Hale in the doorway, warm light behind her
 10 | (Mrs. Hale) "Quick! Get inside before it sees you."                                         | Close on her face, kind smile
 11 | I started walking. But Biscuit didn't. He stopped... and growled at her.                    | He steps forward; Biscuit stays back, teeth showing
 12 | Suddenly, behind us, inside my house, the knocking started again. Louder. Faster.          | House behind them, knocks speeding up
