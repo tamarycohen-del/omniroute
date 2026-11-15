@@ -1,0 +1,164 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+// "Her Voice" - Part 2. Scenes first; SHOTS get their times from words.json once the voice is recorded.
+import { capCard, chapterCard, whiteStick } from './stick.js';
+import { biscuit } from './biscuit.js';
+import { mrsHale } from './hale.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920, P = { g };
+const rr = (x, y, w, h, r, fill) => { g.beginPath(); g.roundRect(x, y, w, h, r); g.fillStyle = fill; g.fill(); };
+const lin = (x0, y0, x1, y1, st) => { const q = g.createLinearGradient(x0, y0, x1, y1); st.forEach(([o, c]) => q.addColorStop(o, c)); return q; };
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
+const lerp = (a, b, u) => a + (b - a) * u;
+const add = (fn) => { g.save(); g.globalCompositeOperation = 'lighter'; fn(); g.restore(); };
+const cam = (z, fx, fy, sx = 0, sy = 0) => { g.translate(W / 2 + sx, H / 2 + sy); g.scale(z, z); g.translate(-fx, -fy); };
+const darken = (a) => { g.fillStyle = `rgba(4,2,12,${a})`; g.fillRect(-1400, -900, 4000, 3800); };
+const hero = (x, y, s, o) => { g.save(); g.translate(x, y); g.scale(s, s); whiteStick(P, { beanie: '#2a2a36', ...o }); g.restore(); };
+const dog = (x, y, s, o) => { g.save(); g.translate(x, y); g.scale(s, s); biscuit(g, o); g.restore(); };
+const hale = (x, y, s, o) => { g.save(); g.translate(x, y); g.scale(s, s); mrsHale(g, o); g.restore(); };
+let WORDS = [];
+
+// ---------- exterior set pieces ----------
+const sky = (warm = 0) => { g.fillStyle = lin(0, -400, 0, 1400, [[0, '#0a0a26'], [1, '#1e1a46']]); g.fillRect(-1400, -900, 4000, 2400);
+  g.fillStyle = 'rgba(255,255,255,0.5)'; for (let k = 0; k < 40; k++) { const x = (k * 263) % 2600 - 800, y = (k * 151) % 700 - 300; g.fillRect(x, y, 3, 3); }
+  g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(880, 120, 50, 0, 7); g.fill(); g.fillStyle = '#141236'; g.beginPath(); g.arc(900, 104, 46, 0, 7); g.fill(); };
+const woods = (y = 1150, alpha = 1, eyes = 0) => { g.save(); g.globalAlpha = alpha;
+  g.fillStyle = '#0b0918'; g.beginPath(); g.moveTo(-1400, y); for (let x = -1400; x <= 2600; x += 60) g.lineTo(x, y - 60 - 40 * Math.sin(x * 0.013) - 30 * Math.sin(x * 0.041)); g.lineTo(2600, y + 200); g.lineTo(-1400, y + 200); g.fill();
+  for (let k = 0; k < 34; k++) { const x = -1300 + k * 115 + (k % 3) * 20, h = 260 + (k * 37) % 160; g.fillStyle = k % 2 ? '#0a0816' : '#0e0b1e'; g.fillRect(x - 7, y - h, 14, h); for (let j = 0; j < 4; j++) { const yy = y - h + j * h * 0.22; g.beginPath(); g.moveTo(x, yy - 50); g.lineTo(x - 40 - j * 14, yy + 60); g.lineTo(x + 40 + j * 14, yy + 60); g.fill(); } }
+  if (eyes) { g.save(); g.shadowColor = 'rgba(255,255,255,0.9)'; g.shadowBlur = 14; g.fillStyle = `rgba(244,242,238,${eyes})`; for (const [x, yy] of [[200, y - 80], [760, y - 110]]) for (const s of [-1, 1]) { g.beginPath(); g.ellipse(x + s * 9, yy, 5, 7, 0, 0, 7); g.fill(); } g.restore(); }
+  g.restore(); };
+const ground = (y = 1500) => { g.fillStyle = lin(0, y, 0, y + 900, [[0, '#141026'], [1, '#08060f']]); g.fillRect(-1400, y, 4000, 1600);
+  g.strokeStyle = 'rgba(80,120,90,0.25)'; g.lineWidth = 4; for (let k = 0; k < 120; k++) { const x = -1300 + (k * 97) % 3800, yy = y + 20 + (k * 53) % 500; g.beginPath(); g.moveTo(x, yy); g.lineTo(x - 6, yy - 18); g.moveTo(x + 6, yy); g.lineTo(x + 10, yy - 16); g.stroke(); } };
+const fence = (x0, x1, y) => { g.fillStyle = '#2a2036'; g.strokeStyle = '#121018'; g.lineWidth = 6; for (let x = x0; x < x1; x += 70) { g.beginPath(); g.moveTo(x, y); g.lineTo(x, y - 170); g.lineTo(x + 25, y - 200); g.lineTo(x + 50, y - 170); g.lineTo(x + 50, y); g.closePath(); g.fill(); g.stroke(); } g.fillRect(x0, y - 140, x1 - x0, 18); g.fillRect(x0, y - 60, x1 - x0, 18); };
+// our house, back side: wall, back door, two windows (lit=0 dark)
+const ourHouse = (x, y, o = {}) => { // y = ground line
+  g.fillStyle = '#1c1530'; g.fillRect(x, y - 900, 700, 900); g.fillStyle = '#120e22'; g.beginPath(); g.moveTo(x - 40, y - 900); g.lineTo(x + 350, y - 1180); g.lineTo(x + 740, y - 900); g.fill();
+  g.fillStyle = 'rgba(255,255,255,0.03)'; for (let k = 0; k < 20; k++) g.fillRect(x, y - 900 + k * 45, 700, 4);
+  const win = (wx, wy, lit) => { rr(wx - 10, wy - 10, 160, 200, 6, '#0c0a18'); g.fillStyle = lit ? '#ffd27a' : '#16122c'; g.fillRect(wx, wy, 140, 180); g.fillStyle = '#0c0a18'; g.fillRect(wx + 66, wy, 8, 180); g.fillRect(wx, wy + 86, 140, 8); };
+  win(x + 80, y - 760, o.win1); win(x + 470, y - 760, o.win2);
+  // back door
+  const dx = x + 260, dw = 190, dh = 420, open = o.open || 0;
+  rr(dx - 14, y - dh - 14, dw + 28, dh + 14, 6, '#2a1e44');
+  g.fillStyle = '#05040a'; g.fillRect(dx, y - dh, dw, dh); // dark opening behind
+  g.save(); g.translate(dx, y - dh); g.scale(1 - 0.8 * open, 1); rr(0, 0, dw, dh, 4, '#3c2e62'); g.fillStyle = 'rgba(0,0,0,0.15)'; g.fillRect(22, 30, dw - 44, 150); g.fillRect(22, 210, dw - 44, 180);
+  g.fillStyle = '#c8b070'; g.beginPath(); g.arc(dw - 26, 230, 11, 0, 7); g.fill(); g.restore();
+  // steps
+  rr(dx - 40, y - 10, dw + 80, 30, 4, '#241a3a');
+};
+// Mrs. Hale's house (lit), front-on, with back door at its left side
+const haleHouse = (x, y, o = {}) => { const lit = o.lit ?? 1;
+  g.fillStyle = '#231a36'; g.fillRect(x, y - 760, 640, 760); g.fillStyle = '#17112a'; g.beginPath(); g.moveTo(x - 30, y - 760); g.lineTo(x + 320, y - 1000); g.lineTo(x + 670, y - 760); g.fill();
+  const win = (wx, wy) => { rr(wx - 10, wy - 10, 170, 210, 6, '#0c0a18'); g.fillStyle = lit ? '#ffcf7a' : '#16122c'; g.fillRect(wx, wy, 150, 190);
+    if (lit) { g.fillStyle = 'rgba(200,120,90,0.35)'; g.fillRect(wx, wy, 34, 190); g.fillRect(wx + 116, wy, 34, 190); } g.fillStyle = '#0c0a18'; g.fillRect(wx + 71, wy, 8, 190); g.fillRect(wx, wy + 90, 150, 8);
+    if (lit) add(() => { const r = g.createRadialGradient(wx + 75, wy + 95, 10, wx + 75, wy + 95, 320); r.addColorStop(0, 'rgba(255,200,120,0.28)'); r.addColorStop(1, 'rgba(255,200,120,0)'); g.fillStyle = r; g.fillRect(wx - 300, wy - 300, 750, 800); }); };
+  win(x + 330, y - 620); win(x + 330, y - 340);
+  if (o.shadow) { g.fillStyle = `rgba(30,18,30,${0.7 * o.shadow})`; g.beginPath(); g.ellipse(x + 330 + 40 + 70 * o.shadowX, y - 560, 26, 60, 0, 0, 7); g.fill(); g.beginPath(); g.arc(x + 330 + 40 + 70 * o.shadowX, y - 600, 20, 0, 7); g.fill(); }
+  // back door (left)
+  const dx = x + 70, dw = 180, dh = 400, open = o.open ?? 0;
+  rr(dx - 14, y - dh - 14, dw + 28, dh + 14, 6, '#2a1e44');
+  g.fillStyle = '#ffcf7a'; g.fillRect(dx, y - dh, dw, dh);
+  add(() => { g.fillStyle = lin(0, y, 0, y + 260, [[0, `rgba(255,200,120,${0.45 * open})`], [1, 'rgba(255,200,120,0)']]); g.beginPath(); g.moveTo(dx, y); g.lineTo(dx + dw, y); g.lineTo(dx + dw + 160, y + 260); g.lineTo(dx - 160, y + 260); g.fill(); });
+  g.save(); g.translate(dx, y - dh); g.scale(1 - 0.85 * open, 1); rr(0, 0, dw, dh, 4, '#4a3a6a'); g.fillStyle = 'rgba(0,0,0,0.15)'; g.fillRect(20, 28, dw - 40, 140); g.fillRect(20, 200, dw - 40, 170); g.restore();
+  rr(dx - 40, y - 10, dw + 80, 30, 4, '#2a2040');
+  // overgrown yard tufts
+  g.fillStyle = '#0d1410'; for (let k = 0; k < 14; k++) { const tx = x - 40 + k * 52, th = 40 + (k * 29) % 50; g.beginPath(); g.moveTo(tx, y + 10); g.lineTo(tx + 10, y - th); g.lineTo(tx + 22, y + 10); g.fill(); }
+};
+const streetDark = (x, y) => { for (const [dx, w, h] of [[-900, 360, 520], [-480, 300, 460], [1300, 380, 540], [1720, 320, 480]]) { g.fillStyle = '#0c0a18'; g.fillRect(x + dx, y - h, w, h); g.beginPath(); g.moveTo(x + dx - 20, y - h); g.lineTo(x + dx + w / 2, y - h - 140); g.lineTo(x + dx + w + 20, y - h); g.fill(); g.fillStyle = '#141028'; g.fillRect(x + dx + 60, y - h + 120, 60, 80); g.fillRect(x + dx + w - 120, y - h + 120, 60, 80); } };
+
+// ---------- scenes (u = seconds into the shot) ----------
+const SCENES = {
+  backExit(u, t) { // they slip out the back door; knocking on the front door inside
+    cam(1.0 + 0.04 * sm(u / 4), 540, 1150);
+    sky(); woods(1150); ground(1500); ourHouse(120, 1500, { open: sm(u / 0.6) });
+    const w = sm((u - 0.5) / 2.5); hero(lerp(190, 470, w), 1500 - 975 * 0.62, 0.62, { expr: 'scared', look: -1, step: Math.sin(u * 8) * (w < 1 ? 0.6 : 0) });
+    dog(lerp(330, 720, w), 1500, 0.5, { pose: w < 1 ? 'walk' : 'stand', t: u });
+    darken(0.18);
+  },
+  comments(u, t) { // four viewer comments pop up, then a big check mark
+    g.fillStyle = lin(0, 0, 0, H, [[0, '#120c26'], [1, '#05040a']]); g.fillRect(0, 0, W, H);
+    const C = ['Follow biscuit', 'Back door with biscuit', 'Listen to biscuit!!', 'Biscuit'];
+    C.forEach((c, i) => { const a = sm((u - 0.15 - i * 0.55) / 0.2); if (a <= 0) return; const y = 560 + i * 210, x = i % 2 ? 160 : 120;
+      g.save(); g.globalAlpha = a; g.translate(x + 380, y + 60); g.scale(0.8 + 0.2 * a, 0.8 + 0.2 * a); g.translate(-(x + 380), -(y + 60));
+      rr(x, y, 760, 130, 34, '#ffffff'); g.fillStyle = '#d8d0e8'; g.beginPath(); g.arc(x + 62, y + 65, 38, 0, 7); g.fill(); g.fillStyle = '#7a6aa8'; g.beginPath(); g.arc(x + 62, y + 52, 15, 0, 7); g.fill(); g.beginPath(); g.ellipse(x + 62, y + 90, 24, 14, 0, Math.PI, 0); g.fill();
+      g.fillStyle = '#121018'; g.font = '700 46px "DejaVu Sans", sans-serif'; g.textAlign = 'left'; g.fillText(c, x + 124, y + 82); g.restore(); });
+    const ck = u > (o2.checkAt ?? 2.6) ? sm((u - (o2.checkAt ?? 2.6)) / 0.15) : 0;
+    if (ck > 0) { g.save(); g.translate(540, 960); g.scale(0.4 + 0.6 * ck * (1 + 0.15 * Math.max(0, 1 - (u - (o2.checkAt ?? 2.6)) / 0.3)), 0.4 + 0.6 * ck); g.globalAlpha = ck;
+      g.strokeStyle = '#0a0610'; g.lineWidth = 120; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath(); g.moveTo(-220, 0); g.lineTo(-60, 170); g.lineTo(260, -200); g.stroke();
+      g.strokeStyle = '#c6ff3a'; g.lineWidth = 80; g.beginPath(); g.moveTo(-220, 0); g.lineTo(-60, 170); g.lineTo(260, -200); g.stroke(); g.restore(); }
+  },
+  yard(u, t) { // in the backyard; the woods behind
+    cam(1.0 + 0.05 * sm(u / 4), 640, 1100);
+    sky(); woods(1150); ground(1500); ourHouse(-320, 1500, {}); fence(560, 1500, 1500);
+    hero(600, 1500 - 975 * 0.6, 0.6, { expr: 'worried', look: 1 }); dog(860, 1500, 0.48, { pose: 'stand', t: u, look: 1 });
+    darken(0.2);
+  },
+  lock(u, t) { // the back door lock turns by itself
+    cam(1.0, 540, 960); g.fillStyle = '#3c2e62'; g.fillRect(-200, -200, 1500, 2400); g.fillStyle = 'rgba(0,0,0,0.15)'; g.fillRect(140, 200, 800, 600); g.fillRect(140, 1100, 800, 800);
+    rr(400, 820, 280, 380, 30, '#b39a5e'); g.fillStyle = '#c8b070'; g.beginPath(); g.arc(540, 1080, 70, 0, 7); g.fill(); g.strokeStyle = '#8a7444'; g.lineWidth = 8; g.stroke();
+    const a = sm((u - 0.4) / 0.35) * Math.PI / 2; g.save(); g.translate(540, 930); g.rotate(a); rr(-22, -60, 44, 120, 14, '#8a7444'); rr(-14, -52, 28, 104, 10, '#c8b070'); g.restore();
+    darken(0.25 + 0.1 * Math.sin(t * 3));
+  },
+  heart(u, t) { // his face, pounding heart
+    const b = Math.abs(Math.sin(t * Math.PI * 1.6)) ** 6; cam(2.3 + 0.06 * b, 300, 500); g.fillStyle = '#141030'; g.fillRect(-400, -400, 1400, 1800); hero(0, 0, 1, { expr: 'scared', look: 0.5 }); darken(0.15 + 0.1 * b);
+  },
+  haleView(u, t) { // her house next door, the only light on the street
+    cam(0.9 + 0.08 * sm(u / 5), 900, 1100);
+    sky(); woods(1150, 0.6); streetDark(900, 1500); ground(1500); fence(-300, 640, 1500); haleHouse(680, 1500, { lit: 1 });
+    hero(250, 1500 - 975 * 0.6, 0.6, { expr: 'worried', look: 1 }); dog(500, 1500, 0.48, { pose: 'stand', t: u, look: 1 });
+    darken(0.15);
+  },
+  haleWindow(u, t) { // slow zoom on her lit window, a shadow moves behind the curtain
+    const z = 1.6 + 0.9 * sm(u / 4.5); cam(z, 1085, 975);
+    sky(); ground(1500); haleHouse(680, 1500, { lit: 1, shadow: sm((u - 1.2) / 0.5) * (1 - sm((u - 3.4) / 0.4)), shadowX: sm((u - 1.4) / 2) });
+    darken(0.12);
+  },
+  haleDoor(u, t) { // her back door opens, she waves us over
+    cam(1.25, 900, 1150);
+    sky(); ground(1500); haleHouse(680, 1500, { lit: 1, open: sm(u / 0.6) });
+    if (u > 0.3) { g.save(); g.globalAlpha = sm((u - 0.3) / 0.3); hale(840 - 300 * 0.42, 1500 - 975 * 0.42, 0.42, { arm: u > 1.0 ? 'wave' : 'cane', wave: t * 7 }); g.restore(); }
+    darken(0.08);
+  },
+  haleClose(u, t) { cam(2.1 + 0.05 * sm(u / 2), 300, 520); g.fillStyle = lin(0, 0, 0, 1000, [[0, '#ffcf7a'], [1, '#c08a50']]); g.fillRect(-400, -400, 1400, 1800); mrsHale(g, { arm: 'cane' }); },
+  growl(u, t) { // he steps forward, Biscuit stays back and growls
+    cam(0.92, 760, 1180);
+    sky(); ground(1500); haleHouse(980, 1500, { lit: 1, open: 1 }); hale(1140 - 300 * 0.42, 1500 - 975 * 0.42, 0.42, { arm: 'cane' });
+    const w = sm(u / 1.2); hero(lerp(380, 540, w), 1500 - 975 * 0.6, 0.6, { expr: 'worried', look: u > 1.4 ? -1 : 1, step: Math.sin(u * 8) * (w < 1 ? 0.5 : 0) });
+    dog(330, 1500, 0.5, { pose: 'crouch', t: u, ears: 'down', look: 1, growl: u > 1.3 ? 1 : 0, shake: u > 1.3 ? 0.4 : 0 });
+    darken(0.15);
+  },
+  knocks(u, t, ks) { // knocking starts again inside our house, louder and faster
+    cam(1.0 + 0.06 * sm(u / 3), 420, 1050, ks * 12, 0); sky(); woods(1150); ground(1500); ourHouse(70, 1500, { win1: Math.floor(t * 12) % 7 === 0 ? 1 : 0 }); darken(0.2);
+  },
+  cookies(u, t) { cam(1.6, 890, 1180); sky(); ground(1500); haleHouse(680, 1500, { lit: 1, open: 1 }); hale(840 - 300 * 0.42, 1500 - 975 * 0.42, 0.42, { arm: 'plate' }); darken(0.05); },
+  flashback(u, t) { // warm daytime memory: cookie over the fence
+    cam(1.0, 640, 1150); g.fillStyle = lin(0, -400, 0, 1500, [[0, '#ffd9a0'], [1, '#ffeccc']]); g.fillRect(-1400, -900, 4000, 2400);
+    g.fillStyle = '#9ac27a'; g.fillRect(-1400, 1500, 4000, 1400); fence(300, 1100, 1500);
+    hale(820 - 300 * 0.45, 1500 - 975 * 0.45 - 40, 0.45, { arm: 'plate' }); dog(520, 1500, 0.55, { pose: 'stand', t: u, tail: 1, look: 1 });
+    g.fillStyle = 'rgba(255,220,170,0.25)'; g.fillRect(-1400, -900, 4000, 3800);
+    const v = g.createRadialGradient(540, 960, 300, 540, 960, 1100); v.addColorStop(0, 'rgba(255,200,140,0)'); v.addColorStop(1, 'rgba(120,70,30,0.55)'); g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = v; g.fillRect(0, 0, W, H);
+  },
+  doorOpens(u, t) { // CLICK: our back door swings open into darkness
+    cam(1.4 + 0.1 * sm(u / 2), 470, 1260); sky(); ground(1500); ourHouse(120, 1500, { open: sm((u - 0.3) / 1.6) }); darken(0.25);
+  },
+  choice(u, t) {
+    g.fillStyle = '#05040a'; g.fillRect(0, 0, W, H);
+    g.save(); g.beginPath(); g.rect(0, 0, W, 955); g.clip(); cam(0.7, 880, 1150, 0, -480); sky(); ground(1500); haleHouse(680, 1500, { lit: 1, open: 1 }); hale(840 - 300 * 0.42, 1500 - 975 * 0.42, 0.42, { arm: 'plate' }); darken(0.1); g.restore();
+    g.save(); g.beginPath(); g.rect(0, 965, W, 955); g.clip(); cam(0.7, 540, 1150, 0, 480); sky(); woods(1350, 1, 0.7); ground(1500); dog(540, 1500, 0.6, { pose: 'stare', t: u, look: -1, ears: 'up' }); darken(0.2); g.restore();
+    g.fillStyle = '#c6ff3a'; g.fillRect(0, 955, W, 10);
+    choiceCard(540, 820, 'GO TO MRS. HALE', sm((u - 0.2) / 0.3)); choiceCard(540, 1790, 'INTO THE WOODS WITH BISCUIT', sm((u - 2.0) / 0.3));
+  },
+  end() { g.fillStyle = '#000'; g.fillRect(0, 0, W, H); },
+};
+const o2 = {};
+const choiceCard = (x, y, txt, a, col = '#ff4d5e') => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(0.85 + 0.15 * a, 0.85 + 0.15 * a);
+  g.font = '900 54px "DejaVu Sans", sans-serif'; const w = g.measureText(txt).width + 70; rr(-w / 2, -58, w, 104, 26, 'rgba(10,6,16,0.88)'); g.strokeStyle = col; g.lineWidth = 6; g.beginPath(); g.roundRect(-w / 2, -58, w, 104, 26); g.stroke();
+  g.fillStyle = col; g.textAlign = 'center'; g.fillText(txt, 0, 14); g.restore(); };
+
+// still preview of one scene: window.renderScene('yard', 1.2)
+window.renderScene = (name, u = 1, t = u) => { g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H); g.save(); SCENES[name](u, t, 0); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
+  if (name !== 'flashback' && name !== 'comments') { const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H); }
+  if (!/^(choice|end|comments|flashback)/.test(name)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: '3:35', title: 'HER VOICE', sub: 'CHAPTER TWO' }); g.restore(); }
+  return true; };
+window.SCENE_NAMES = Object.keys(SCENES);
+window.ready = true;
+</script></body></html>

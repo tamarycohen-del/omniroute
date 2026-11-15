@@ -44,6 +44,9 @@ export const biscuit = (g, o = {}) => {
   g.fillStyle = BELLY; g.beginPath(); g.ellipse(52, 22, 20, 7, 0, 0, 7); g.fill();
   g.fillStyle = NOSE; g.beginPath(); g.ellipse(76, 4, 12, 10, 0, 0, 7); g.fill();
   g.fillStyle = 'rgba(255,255,255,0.5)'; g.beginPath(); g.arc(73, 0, 3, 0, 7); g.fill();
+  if (o.growl) { // bared teeth along the snout + wrinkled nose
+    g.fillStyle = '#f4f2ee'; g.strokeStyle = O; g.lineWidth = 3; g.beginPath(); g.moveTo(34, 24); for (let k = 0; k < 6; k++) { g.lineTo(38 + k * 6, 31); g.lineTo(41 + k * 6, 24); } g.lineTo(34, 24); g.closePath(); g.fill(); g.stroke();
+    g.strokeStyle = O; g.lineWidth = 3; for (const k of [0, 1]) { g.beginPath(); g.moveTo(46 + k * 9, -8); g.quadraticCurveTo(50 + k * 9, -14, 54 + k * 9, -8); g.stroke(); } }
   // ear (floppy, or perked when staring)
   const up = (o.ears || (pose === 'stare' ? 'up' : 'down')) === 'up';
   g.fillStyle = FUR_D; g.strokeStyle = O; g.lineWidth = 8;
@@ -75,7 +78,7 @@ const eyes = (g, x, y, o, glow) => {
   g.beginPath(); g.ellipse(x, y, big ? 13 : 11, big ? 15 : 12, 0, 0, 7); g.fill(); g.stroke();
   g.fillStyle = EYE; g.beginPath(); g.ellipse(x + 3 + lx, y + 1, big ? 7 : 6, big ? 9 : 8, 0, 0, 7); g.fill();
   g.fillStyle = '#fff'; g.beginPath(); g.arc(x + 5 + lx, y - 3, 2.5, 0, 7); g.fill();
-  if (o.worried || o.shake) { g.strokeStyle = O; g.lineWidth = 5; g.beginPath(); g.moveTo(x - 12, y - 14); g.lineTo(x + 10, y - 22); g.stroke(); }
+  if (o.worried || o.shake || o.growl) { g.strokeStyle = O; g.lineWidth = 5; g.beginPath(); g.moveTo(x - 12, y - 14); g.lineTo(x + 10, y - 22); g.stroke(); }
 };
 
 // Front view (looking at the camera), for under the bed. Origin = midpoint between the eyes.
