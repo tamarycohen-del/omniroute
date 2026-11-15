@@ -108,8 +108,16 @@ const SCENES = {
     darken(0.15);
   },
   haleWindow(u, t) { // slow zoom on her lit window, a shadow moves behind the curtain
-    const z = 1.6 + 0.9 * sm(u / 4.5); cam(z, 1085, 975);
-    sky(); ground(1500); haleHouse(680, 1500, { lit: 1, shadow: sm((u - 1.2) / 0.5) * (1 - sm((u - 3.4) / 0.4)), shadowX: sm((u - 1.4) / 2) });
+    const z = 1.6 + 0.9 * sm(u / 3.6); cam(z, 1085, 975);
+    sky(); ground(1500); haleHouse(680, 1500, { lit: 1, shadow: sm((u - 0.8) / 0.4) * (1 - sm((u - 3.2) / 0.3)), shadowX: sm((u - 0.9) / 2) });
+    darken(0.12);
+  },
+  stare(u, t) { // reaction: he and Biscuit stare at the lit house, warm light on them
+    cam(1.55 + 0.12 * sm(u / 4.4), 470, 1290);
+    sky(); woods(1150, 0.7); ground(1500); fence(560, 1600, 1500);
+    add(() => { const r = g.createRadialGradient(1150, 1100, 50, 1150, 1100, 900); r.addColorStop(0, 'rgba(255,200,120,0.35)'); r.addColorStop(1, 'rgba(255,200,120,0)'); g.fillStyle = r; g.fillRect(-400, 400, 2400, 1600); });
+    hero(330, 1500 - 975 * 0.62, 0.62, { expr: u > 1.6 ? 'scared' : 'worried', look: 1 });
+    dog(600, 1500, 0.55, { pose: u > 1.0 ? 'crouch' : 'stand', t: u, look: 1, ears: u > 1.0 ? 'down' : 'up', shake: u > 2.2 ? 0.5 : 0 });
     darken(0.12);
   },
   haleDoor(u, t) { // her back door opens, she waves us over
@@ -162,7 +170,7 @@ window.renderScene = (name, u = 1, t = u) => { g.setTransform(1, 0, 0, 1, 0, 0);
 window.SCENE_NAMES = Object.keys(SCENES);
 
 // ---------- timeline (seconds, from part2/audio/timeline.json + words.json) ----------
-const SHOTS = [[0, 'backExit'], [6.2, 'comments'], [13.2, 'yard'], [17.35, 'lock'], [21.7, 'heart'], [24.3, 'haleView'], [29.2, 'haleWindow'],
+const SHOTS = [[0, 'backExit'], [6.2, 'comments'], [13.2, 'yard'], [17.35, 'lock'], [21.7, 'heart'], [24.3, 'haleView'], [29.2, 'haleWindow'], [33.0, 'stare'], [33.0, 'stare'],
   [37.4, 'haleDoor'], [42.0, 'haleClose'], [49.6, 'growl'], [54.4, 'knocks'], [62.45, 'cookies'], [68.5, 'flashback'], [72.1, 'doorOpens'], [76.4, 'choice'], [83.9, 'end']];
 const KN = [1.05, 1.35, 1.65]; { let k = 55.0, d = 0.6; while (k < 62.3) { KN.push(+k.toFixed(2)); k += d; d = Math.max(0.16, d * 0.86); } }
 export const KNOCKS = KN;
