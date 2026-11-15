@@ -88,7 +88,7 @@ def whimper():
     return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.sin(np.pi * x / 0.7) ** 2 * 0.35
 
 
-def S(x): return x - (2.0 if x >= 8.9 else 0) - (2.6 if x >= 34.15 else 0)  # old -> new timeline (shorter holds)
+def S(x): return x - (2.0 if x >= 8.9 else 0) - (2.6 if x >= 34.15 else 0) + (0.33 if x >= 72.1 else 0)  # + cookie line  # old -> new timeline (shorter holds)
 
 # --- drone, swell toward the click, quiet hold before the choice ---
 drone = (np.sin(2 * np.pi * 55 * t) + 0.6 * np.sin(2 * np.pi * 58.3 * t) + 0.3 * np.sin(2 * np.pi * 110.4 * t)) * 0.10

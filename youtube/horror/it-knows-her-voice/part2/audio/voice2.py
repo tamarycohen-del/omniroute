@@ -24,7 +24,7 @@ PLAN = [
     ("n", 40.52, 55.27, "growl"),       # I started walking ... smiled and said:
     ("gap", 0.30, None),
     ("h", 2.56, 6.19, "hale2"),         # "Don't worry. I made some cookies... if you want."
-    ("gap", 0.40, None),
+    ("gap", 0.20, None),
     ("cookie", 3.6),                    # "I remembered... Mrs. Hale used to give Biscuit cookies every day."
     ("n", 58.03, 69.25, "click"),       # Then, behind us... CLICK ... Part 3 follows you.
     ("gap", 0.6, "end"),
@@ -55,7 +55,7 @@ def main():
     hale = load(os.path.join(HERE, "hale.mp3"))
     nw = [w for w in json.load(open(os.path.join(HERE, "narr_words.json")))["words"] if w["type"] == "word" and not w["text"].startswith("[") and not w["text"].endswith("]")]
     cpath = os.path.join(HERE, "cookie_line.mp3")
-    cookie = load(cpath) if os.path.exists(cpath) else None
+    cookie = load(cpath)[int(0.12 * SR): int(4.25 * SR)] if os.path.exists(cpath) else None  # speech 0.16-4.14 s
     parts, words, marks, t = [], [], {}, 0.0
     fade = int(0.03 * SR)
 

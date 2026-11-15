@@ -171,7 +171,7 @@ window.SCENE_NAMES = Object.keys(SCENES);
 
 // ---------- timeline (seconds, from part2/audio/timeline.json + words.json) ----------
 const SHOTS = [[0, 'backExit'], [6.2, 'comments'], [11.2, 'yard'], [15.35, 'lock'], [19.7, 'heart'], [22.3, 'haleView'], [27.2, 'haleWindow'], [30.4, 'stare'],
-  [32.8, 'haleDoor'], [37.4, 'haleClose'], [45.0, 'growl'], [49.8, 'knocks'], [57.85, 'cookies'], [63.9, 'flashback'], [67.5, 'doorOpens'], [71.8, 'choice'], [79.3, 'end']];
+  [32.8, 'haleDoor'], [37.4, 'haleClose'], [45.0, 'growl'], [49.8, 'knocks'], [57.85, 'cookies'], [63.9, 'flashback'], [67.85, 'doorOpens'], [72.15, 'choice'], [79.65, 'end']];
 const KN = [1.05, 1.35, 1.65]; { let k = 50.4, d = 0.6; while (k < 57.7) { KN.push(+k.toFixed(2)); k += d; d = Math.max(0.16, d * 0.86); } }
 export const KNOCKS = KN;
 const knockAmt = (t) => KNOCKS.reduce((m, k) => (t >= k && t < k + 0.12 ? Math.max(m, 1 - (t - k) / 0.12) : m), 0);
