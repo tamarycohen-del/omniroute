@@ -137,6 +137,12 @@ const treehouse = (x, y, o = {}) => { g.fillStyle = '#0e0a1c'; g.fillRect(x - 40
 const road = (y, o = {}) => { g.fillStyle = '#16131e'; g.fillRect(-1400, y - 60, 4000, 120); g.fillStyle = 'rgba(230,220,160,0.35)'; for (let x = -1400; x < 2600; x += 140) g.fillRect(x, y - 4, 70, 8); };
 const headlights = (x, y, a = 1, dir = -1) => { add(() => { for (const s of [-1, 1]) { const hx = x + s * 40; const gr2 = g.createRadialGradient(hx, y, 4, hx, y, 900); gr2.addColorStop(0, `rgba(255,245,210,${0.9 * a})`); gr2.addColorStop(0.2, `rgba(255,240,200,${0.35 * a})`); gr2.addColorStop(1, 'rgba(255,240,200,0)'); g.fillStyle = gr2; g.beginPath(); g.moveTo(hx, y); g.lineTo(hx + dir * 1400, y - 260); g.lineTo(hx + dir * 1400, y + 300); g.closePath(); g.fill();
     g.fillStyle = `rgba(255,250,230,${a})`; g.beginPath(); g.arc(hx, y, 16, 0, 7); g.fill(); } }); };
+// hiding pose: sitting behind the log, knees folded up, arms around Biscuit
+const heroCrouch = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s);
+  g.save(); g.beginPath(); g.rect(-400, -400, 1400, 1340); g.clip(); g.translate(0, 175); whiteStick(P, { beanie: '#2a2a36', arm: 'reach', ...o }); g.restore();
+  g.lineCap = 'round'; g.lineJoin = 'round';
+  for (const [dx, kx] of [[-8, 0], [8, 22]]) for (const [w, c] of [[30, '#121018'], [18, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(300 + dx, 935); g.lineTo(400 + kx, 818); g.lineTo(430 + kx, 968); g.stroke(); }
+  g.restore(); };
 const mom = (x, y, s, o) => { g.save(); g.translate(x, y); g.scale(s, s); momThing(g, { t: T, ...o }); g.restore(); };
 
 // ---------- scenes (u = seconds into the shot) ----------
@@ -189,7 +195,7 @@ const SCENES = {
   },
   hug(u, t) { // close: he hugs Biscuit, Biscuit trembling, eyes wide
     cam(1.9, 470, 1330); g.fillStyle = '#07050f'; g.fillRect(-1400, -900, 4000, 3800); g.fillStyle = '#1a1226'; g.fillRect(-1400, 900, 4000, 260); // trunk above them
-    hero(280, 1520 - 975 * 0.6, 0.6, { expr: 'scared', look: 0.5, arm: 'reach' }); dog(560, 1520, 0.6, { pose: 'crouch', shake: 1, t: u, ears: 'down', worried: true });
+    heroCrouch(250, 1520 - 975 * 0.6, 0.6, { expr: 'scared', look: 0.5 }); dog(540, 1525, 0.5, { pose: 'crouch', shake: 1, t: u, ears: 'down', worried: true });
     darken(0.18);
   },
   dontBreathe(u, t) { cam(3.0, 300, 500); g.fillStyle = '#06040c'; g.fillRect(-400, -400, 1400, 1800); hero(0, 0, 1, { expr: 'scared', look: 0 }); darken(0.3 + 0.1 * Math.sin(t * 2)); },
@@ -215,6 +221,10 @@ const SCENES = {
     const sh = (u > 1.6 && u < 3.0) ? Math.sin(u * 40) * 14 : 0; g.fillStyle = '#0a1210'; g.beginPath(); g.ellipse(1120 + sh, 1420, 150, 90, 0, 0, 7); g.fill();
     const go = sm((u - 3.0) / 3.0); g.save(); g.globalAlpha = 1 - 0.7 * go; mom(lerp(520, 980, go) - 300 * lerp(0.6, 0.4, go), 1480 - 975 * lerp(0.6, 0.4, go), lerp(0.6, 0.4, go), { tall: 1.6, face: 'dark' }); g.restore();
     g.fillStyle = '#05040a'; g.fillRect(-1400, 1480, 4000, 900); fallenTree(-200, 1700, 1700); fog(1450); darken(0.18);
+  },
+  heroLookUp(u, t) { // "Quickly, you look up..." - him behind the log, eyes going up
+    cam(1.9, 420, 1250); forest(2700, { branches: false }); heroCrouch(250, 1520 - 975 * 0.6, 0.6, { expr: 'worried', look: 0.2, lookY: sm((u - 0.2) / 0.4) });
+    dog(540, 1525, 0.5, { pose: 'crouch', t: u, ears: 'down' }); fallenTree(-300, 1700, 1600); darken(0.15);
   },
   lookUp(u, t) { // looking up through the branches: an old treehouse, ladder swaying
     cam(0.9 + 0.08 * sm(u / 5), 560, 900 - 120 * sm(u / 3)); forest(2800, { branches: true }); treehouse(560, 900); fog(1450); darken(0.15);
@@ -249,7 +259,7 @@ window.renderScene = (name, u = 1, t = u) => { T = t; g.setTransform(1, 0, 0, 1,
 
 // ---------- timeline (seconds, from part3/audio/timeline.json + words.json) ----------
 const SHOTS = [[0, 'eyesOpen'], [1.9, 'run1'], [4.1, 'comments'], [7.85, 'run2'], [14.0, 'lookBack'], [16.0, 'momReveal'], [21.05, 'armsStretch'], [26.2, 'dive'],
-  [28.85, 'hug'], [32.8, 'dontBreathe'], [34.1, 'feetStop'], [38.4, 'trunkFingers'], [47.0, 'closer'], [50.4, 'rustle'], [56.4, 'lookUp'], [61.6, 'headlightsShot'],
+  [28.85, 'hug'], [32.8, 'dontBreathe'], [34.1, 'feetStop'], [38.4, 'trunkFingers'], [47.0, 'closer'], [50.4, 'rustle'], [56.4, 'heroLookUp'], [57.75, 'lookUp'], [61.6, 'headlightsShot'],
   [66.5, 'biscuitLook'], [71.0, 'momTurns'], [76.85, 'choice'], [83.47, 'end']];
 const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0]]; };
 let CHUNKS = [];

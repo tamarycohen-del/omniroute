@@ -80,7 +80,7 @@ export const whiteStick = (p, o = {}) => {
   g.fillStyle = Wc; g.strokeStyle = O; g.lineWidth = 9; g.beginPath(); g.arc(cx, hc, headR, 0, 7); g.fill(); g.stroke();
   g.fillStyle = 'rgba(0,0,0,0.06)'; g.beginPath(); g.arc(cx + 18, hc + 14, headR - 14, 0, 7); g.fill();
   // face
-  const lx = (o.look || 0) * 12, ex = cx + 8 + lx, ey = hc + 8, e = o.expr || 'neutral';
+  const lx = (o.look || 0) * 12, ex = cx + 8 + lx, ey = hc + 8 - (o.lookY || 0) * 16, e = o.expr || 'neutral';
   g.fillStyle = O; g.strokeStyle = O;
   const big = e === 'scared' || e === 'shock';
   for (const s of [-1, 1]) { g.beginPath(); g.ellipse(ex + s * 22, ey, big ? 9 : 7, big ? 12 : 9, 0, 0, 7); g.fill(); }
