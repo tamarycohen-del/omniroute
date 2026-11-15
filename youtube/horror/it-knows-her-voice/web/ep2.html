@@ -193,5 +193,19 @@ window.renderFrame = (f) => {
   if (shot === 'choice' && u > 4.3) { const c = sm((u - 4.3) / 0.3); g.save(); g.globalAlpha = c; g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#0a0610'; g.strokeText('COMMENT YOUR CHOICE', 540, 1080); g.fillText('COMMENT YOUR CHOICE', 540, 1080); const bob = Math.sin(t * 6) * 10; g.fillStyle = '#c6ff3a'; g.beginPath(); g.moveTo(510, 1110 + bob); g.lineTo(570, 1110 + bob); g.lineTo(540, 1150 + bob); g.fill(); g.restore(); }
   return true;
 };
+
+// Cover for the profile grid (same layout as Part 1; text inside the centre 1080x1440).
+window.renderCover = (part = 2) => {
+  g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
+  g.save(); cam(1.0, 760, 1230); sky(); ground(1500); haleHouse(980, 1500, { lit: 1, open: 1 }); hale(1140 - 300 * 0.42, 1500 - 975 * 0.42, 0.42, { arm: 'plate' });
+  hero(560, 1500 - 975 * 0.6, 0.6, { expr: 'scared', look: 1 }); dog(470, 1500, 0.6, { pose: 'crouch', ears: 'down', look: 1, growl: 1 }); darken(0.1); g.restore();
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = g.createRadialGradient(W / 2, H * 0.55, H * 0.2, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.8)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  g.textAlign = 'center'; g.lineJoin = 'round'; g.font = '900 104px "DejaVu Sans", sans-serif'; g.lineWidth = 22; g.strokeStyle = '#0a0610';
+  for (const [t, y, c] of [['WOULD YOU', 420, '#ffffff'], ['OPEN THE DOOR?', 540, '#ff4d5e']]) { g.strokeText(t, W / 2, y); g.fillStyle = c; g.fillText(t, W / 2, y); }
+  g.save(); g.translate(W / 2, 1620); g.rotate(-0.04); g.font = '900 120px "DejaVu Sans", sans-serif'; const tw = g.measureText(`PART ${part}`).width + 80;
+  g.fillStyle = '#c6ff3a'; g.strokeStyle = '#0a0610'; g.lineWidth = 12; g.beginPath(); g.roundRect(-tw / 2, -110, tw, 150, 28); g.fill(); g.stroke(); g.fillStyle = '#0a0610'; g.fillText(`PART ${part}`, 0, 8); g.restore();
+  return true;
+};
 fetch('./words2.json').then((r) => r.json()).then((w) => { WORDS = w; buildChunks(); window.ready = true; });
 </script></body></html>
