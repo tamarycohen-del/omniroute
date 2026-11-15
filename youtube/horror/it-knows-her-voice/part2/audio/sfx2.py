@@ -88,31 +88,33 @@ def whimper():
     return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.sin(np.pi * x / 0.7) ** 2 * 0.35
 
 
+def S(x): return x - (2.0 if x >= 8.9 else 0) - (2.6 if x >= 34.15 else 0)  # old -> new timeline (shorter holds)
+
 # --- drone, swell toward the click, quiet hold before the choice ---
 drone = (np.sin(2 * np.pi * 55 * t) + 0.6 * np.sin(2 * np.pi * 58.3 * t) + 0.3 * np.sin(2 * np.pi * 110.4 * t)) * 0.10
-shape = np.minimum(1, t / 1.5) * (1 + 0.5 * np.clip((t - 54.4) / 18, 0, 1))
-shape *= np.where((t > 74.2) & (t < 74.9), 0.1, 1.0)
-shape *= np.where((t > 68.5) & (t < 72.1), 0.35, 1.0)  # warm flashback
+shape = np.minimum(1, t / 1.5) * (1 + 0.5 * np.clip((t - S(54.4)) / 18, 0, 1))
+shape *= np.where((t > S(74.2)) & (t < S(74.9)), 0.1, 1.0)
+shape *= np.where((t > S(68.5)) & (t < S(72.1)), 0.35, 1.0)  # warm flashback
 shape *= np.where(t > DUR - 1.0, np.clip((DUR - t) / 1.0, 0, 1), 1.0)
 bed += drone * shape
 # --- events ---
-knocks = [1.05, 1.35, 1.65]; k, d = 55.0, 0.6
-while k < 62.3: knocks.append(k); k += d; d = max(0.16, d * 0.86)
+knocks = [1.05, 1.35, 1.65]; k, d = S(55.0), 0.6
+while k < S(62.3): knocks.append(k); k += d; d = max(0.16, d * 0.86)
 for i, k in enumerate(knocks): place(knock(), k, 0.6 if i < 3 else min(1.0, 0.7 + 0.03 * i))
-for i in range(4): place(tick(1500, 120), 6.5 + i * 1.0, 0.35)          # comment pops
-place(thunk(70, 8), 11.9, 0.45); place(sting([330, 415, 494], 1.2, 3), 11.9, 0.2)  # check mark
-place(tick(700, 40) * 2, 17.45, 0.5)                                     # lock click
-hb = 21.7
-while hb < 24.2: place(heartbeat(), hb, 0.6); hb += 0.55
-place(sting([220, 262, 330], 2.5, 1.2), 29.3, 0.25)                      # died three years ago
+for i in range(4): place(tick(1500, 120), 6.4 + i * 0.7, 0.35)          # comment pops
+place(thunk(70, 8), S(11.9), 0.45); place(sting([330, 415, 494], 1.2, 3), S(11.9), 0.2)  # check mark
+place(tick(700, 40) * 2, S(17.45), 0.5)                                     # lock click
+hb = S(21.7)
+while hb < S(24.2): place(heartbeat(), hb, 0.6); hb += 0.55
+place(sting([220, 262, 330], 2.5, 1.2), S(29.3), 0.25)                      # died three years ago
 place(whimper() * 0, 0, 0)
 n = int(1.2 * SR); x = np.arange(n) / SR                                  # growl
 gr = (np.sign(np.sin(2 * np.pi * 70 * x)) * 0.5 + rng.standard_normal(n) * 0.3) * np.sin(np.pi * x / 1.2) ** 2
-place(np.convolve(gr, np.ones(30) / 30, "same"), 53.1, 0.45)
-place(tick(600, 30) * 3, 74.2, 0.7); place(thunk(45, 3), 74.25, 0.5)       # CLICK + the door
-place(sting([110, 116.5, 155.6, 233], 3.0, 1.0), 74.3, 0.45)
-place(sting([220, 277, 330], 3.0, 1.2), 76.4, 0.25)                      # choice
-for c in [6.2, 13.2, 21.7, 24.3, 37.4, 49.6, 54.4, 72.1]: place(whoosh(0.4), c - 0.2, 0.12)
+place(np.convolve(gr, np.ones(30) / 30, "same"), S(53.1), 0.45)
+place(tick(600, 30) * 3, S(74.2), 0.7); place(thunk(45, 3), S(74.25), 0.5)       # CLICK + the door
+place(sting([110, 116.5, 155.6, 233], 3.0, 1.0), S(74.3), 0.45)
+place(sting([220, 277, 330], 3.0, 1.2), S(76.4), 0.25)                      # choice
+for c in [6.2, 13.2, 21.7, 24.3, 37.4, 49.6, 54.4, 72.1]: place(whoosh(0.4), S(c) - 0.2, 0.12)
 
 bed *= 0.5 / max(1e-9, np.abs(bed).max())  # about half the voice peak
 save(os.path.join(HERE, "bed.wav"), bed)

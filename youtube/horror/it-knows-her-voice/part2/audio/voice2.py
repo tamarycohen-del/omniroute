@@ -14,9 +14,9 @@ SR = 48000
 HERE = os.path.dirname(os.path.abspath(__file__))
 PLAN = [
     ("n", 0.00, 8.90, "open"),          # opening + "In the comments, you said: escape with Biscuit."
-    ("gap", 2.6, "comments_hold"),      # comments stay on screen
+    ("gap", 0.6, "comments_hold"),      # comments stay on screen
     ("n", 8.90, 31.55, "yard"),         # Smart call ... ever since.
-    ("gap", 3.0, "window_hold"),        # slow zoom on her window
+    ("gap", 0.4, "window_hold"),        # slow zoom on her window
     ("n", 31.55, 40.52, "door"),        # Then her back door opened ... Same smile.
     ("gap", 0.35, None),
     ("h", 0.00, 2.56, "hale1"),         # "Quick! Get inside before it sees you."
