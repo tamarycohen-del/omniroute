@@ -13,10 +13,11 @@ const lerp = (a, b, u) => a + (b - a) * u;
 const add = (fn) => { g.save(); g.globalCompositeOperation = 'lighter'; fn(); g.restore(); };
 const cam = (z, fx, fy, sx = 0, sy = 0) => { g.translate(W / 2 + sx, H / 2 + sy); g.scale(z, z); g.translate(-fx, -fy); };
 const darken = (a) => { g.fillStyle = `rgba(4,2,12,${a})`; g.fillRect(-1400, -900, 4000, 3800); };
-const hero = (x, y, s, o) => { g.save(); g.translate(x, y); g.scale(s, s); whiteStick(P, { beanie: '#2a2a36', ...o }); g.restore(); };
-const dog = (x, y, s, o) => { g.save(); g.translate(x, y); g.scale(s, s); biscuit(g, o); g.restore(); };
-const hale = (x, y, s, o) => { g.save(); g.translate(x, y); g.scale(s, s); mrsHale(g, o); g.restore(); };
-let WORDS = [];
+const hero = (x, y, s, o) => { const br = Math.sin(T * 2.4 + x * 0.01) * 0.012; g.save(); g.translate(x, y + 975 * s * br * 0.5); g.scale(s, s * (1 - br)); g.translate(300 * br * 0.0, 0); whiteStick(P, { beanie: '#2a2a36', ...o }); g.restore(); };
+const dog = (x, y, s, o) => { const br = Math.sin(T * 3.2 + x * 0.02) * 0.02; g.save(); g.translate(x, y); g.scale(s, s * (1 + br)); biscuit(g, { tail: 0.15, ...o, t: o.t ?? T }); g.restore(); };
+const hale = (x, y, s, o) => { const br = Math.sin(T * 1.9) * 0.01; g.save(); g.translate(x + Math.sin(T * 0.9) * 3, y + 975 * s * br * 0.5); g.scale(s, s * (1 - br)); mrsHale(g, o); g.restore(); };
+let WORDS = []; let T = 0; // global time, for idle motion
+const hcam = () => { g.translate(Math.sin(T * 1.3) * 4 + Math.sin(T * 3.1) * 1.5, Math.sin(T * 1.7) * 3); }; // handheld drift
 
 // ---------- exterior set pieces ----------
 const sky = (warm = 0) => { g.fillStyle = lin(0, -400, 0, 1400, [[0, '#0a0a26'], [1, '#1e1a46']]); g.fillRect(-1400, -900, 4000, 2400);
@@ -24,11 +25,13 @@ const sky = (warm = 0) => { g.fillStyle = lin(0, -400, 0, 1400, [[0, '#0a0a26'],
   g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(880, 120, 50, 0, 7); g.fill(); g.fillStyle = '#141236'; g.beginPath(); g.arc(900, 104, 46, 0, 7); g.fill(); };
 const woods = (y = 1150, alpha = 1, eyes = 0) => { g.save(); g.globalAlpha = alpha;
   g.fillStyle = '#0b0918'; g.beginPath(); g.moveTo(-1400, y); for (let x = -1400; x <= 2600; x += 60) g.lineTo(x, y - 60 - 40 * Math.sin(x * 0.013) - 30 * Math.sin(x * 0.041)); g.lineTo(2600, y + 200); g.lineTo(-1400, y + 200); g.fill();
-  for (let k = 0; k < 34; k++) { const x = -1300 + k * 115 + (k % 3) * 20, h = 260 + (k * 37) % 160; g.fillStyle = k % 2 ? '#0a0816' : '#0e0b1e'; g.fillRect(x - 7, y - h, 14, h); for (let j = 0; j < 4; j++) { const yy = y - h + j * h * 0.22; g.beginPath(); g.moveTo(x, yy - 50); g.lineTo(x - 40 - j * 14, yy + 60); g.lineTo(x + 40 + j * 14, yy + 60); g.fill(); } }
+  for (let k = 0; k < 34; k++) { const sway = Math.sin(T * 1.1 + k * 0.7) * 10; const x = -1300 + k * 115 + (k % 3) * 20, h = 260 + (k * 37) % 160; g.fillStyle = k % 2 ? '#0a0816' : '#0e0b1e'; g.fillRect(x - 7, y - h, 14, h); for (let j = 0; j < 4; j++) { const yy = y - h + j * h * 0.22, sw = sway * (1 - j / 4); g.beginPath(); g.moveTo(x + sw, yy - 50); g.lineTo(x - 40 - j * 14 + sw * 0.6, yy + 60); g.lineTo(x + 40 + j * 14 + sw * 0.6, yy + 60); g.fill(); } }
   if (eyes) { g.save(); g.shadowColor = 'rgba(255,255,255,0.9)'; g.shadowBlur = 14; g.fillStyle = `rgba(244,242,238,${eyes})`; for (const [x, yy] of [[200, y - 80], [760, y - 110]]) for (const s of [-1, 1]) { g.beginPath(); g.ellipse(x + s * 9, yy, 5, 7, 0, 0, 7); g.fill(); } g.restore(); }
   g.restore(); };
-const ground = (y = 1500) => { g.fillStyle = lin(0, y, 0, y + 900, [[0, '#141026'], [1, '#08060f']]); g.fillRect(-1400, y, 4000, 1600);
+const ground = (y = 1500) => { setTimeout(() => 0, 0); g.fillStyle = lin(0, y, 0, y + 900, [[0, '#141026'], [1, '#08060f']]); g.fillRect(-1400, y, 4000, 1600);
   g.strokeStyle = 'rgba(80,120,90,0.25)'; g.lineWidth = 4; for (let k = 0; k < 120; k++) { const x = -1300 + (k * 97) % 3800, yy = y + 20 + (k * 53) % 500; g.beginPath(); g.moveTo(x, yy); g.lineTo(x - 6, yy - 18); g.moveTo(x + 6, yy); g.lineTo(x + 10, yy - 16); g.stroke(); } };
+const fog = (y = 1500) => { g.save(); for (let k = 0; k < 5; k++) { const x = ((T * (18 + k * 6) + k * 520) % 3200) - 1400; g.fillStyle = 'rgba(170,160,220,0.06)'; g.beginPath(); g.ellipse(x, y - 30 + k * 26, 520, 70, 0, 0, 7); g.fill(); }
+  g.fillStyle = 'rgba(230,225,255,0.35)'; for (let k = 0; k < 26; k++) { const px = ((k * 397 + T * (12 + k % 5 * 4)) % 2400) - 600, py = 700 + ((k * 211 + T * (8 + k % 3 * 3)) % 900); g.fillRect(px, py, 3, 3); } g.restore(); };
 const fence = (x0, x1, y) => { g.fillStyle = '#2a2036'; g.strokeStyle = '#121018'; g.lineWidth = 6; for (let x = x0; x < x1; x += 70) { g.beginPath(); g.moveTo(x, y); g.lineTo(x, y - 170); g.lineTo(x + 25, y - 200); g.lineTo(x + 50, y - 170); g.lineTo(x + 50, y); g.closePath(); g.fill(); g.stroke(); } g.fillRect(x0, y - 140, x1 - x0, 18); g.fillRect(x0, y - 60, x1 - x0, 18); };
 // our house, back side: wall, back door, two windows (lit=0 dark)
 const ourHouse = (x, y, o = {}) => { // y = ground line
@@ -123,7 +126,7 @@ const SCENES = {
     sky(); woods(1150); ground(1500); ourHouse(120, 1500, { open: sm(u / 0.6) });
     const w = sm((u - 0.2) / 2.0); hero(lerp(190, 470, w), 1500 - 975 * 0.62, 0.62, { expr: 'scared', look: -1, step: Math.sin(u * 8) * (w < 1 ? 0.6 : 0) });
     dog(lerp(330, 720, w), 1500, 0.5, { pose: w < 1 ? 'walk' : 'stand', t: u });
-    darken(0.18);
+    fog(); darken(0.18);
   },
   comments(u, t) { // four viewer comments pop up, then a big check mark
     g.fillStyle = lin(0, 0, 0, H, [[0, '#120c26'], [1, '#05040a']]); g.fillRect(0, 0, W, H);
@@ -141,7 +144,7 @@ const SCENES = {
     cam(1.0 + 0.05 * sm(u / 4), 640, 1100);
     sky(); woods(1150); ground(1500); ourHouse(-320, 1500, {}); fence(560, 1500, 1500);
     hero(600, 1500 - 975 * 0.6, 0.6, { expr: 'worried', look: 1 }); dog(860, 1500, 0.48, { pose: 'stand', t: u, look: 1 });
-    darken(0.2);
+    fog(); darken(0.2);
   },
   lock(u, t) { // the back door lock turns by itself
     cam(1.0, 540, 960); g.fillStyle = '#3c2e62'; g.fillRect(-200, -200, 1500, 2400); g.fillStyle = 'rgba(0,0,0,0.15)'; g.fillRect(140, 200, 800, 600); g.fillRect(140, 1100, 800, 800);
@@ -156,7 +159,7 @@ const SCENES = {
     cam(0.9 + 0.08 * sm(u / 5), 900, 1100);
     sky(); woods(1150, 0.6); streetDark(900, 1500); ground(1500); fence(-300, 640, 1500); haleHouse(680, 1500, { lit: 1 });
     hero(250, 1500 - 975 * 0.6, 0.6, { expr: 'worried', look: 1 }); dog(500, 1500, 0.48, { pose: 'stand', t: u, look: 1 });
-    darken(0.15);
+    fog(); darken(0.15);
   },
   haleWindow(u, t) { // slow zoom on her lit window, a shadow moves behind the curtain
     const z = 1.6 + 0.9 * sm(u / 3.0); cam(z, 1085, 975);
@@ -169,7 +172,7 @@ const SCENES = {
     add(() => { const r = g.createRadialGradient(1150, 1100, 50, 1150, 1100, 900); r.addColorStop(0, 'rgba(255,200,120,0.35)'); r.addColorStop(1, 'rgba(255,200,120,0)'); g.fillStyle = r; g.fillRect(-400, 400, 2400, 1600); });
     hero(330, 1500 - 975 * 0.62, 0.62, { expr: u > 0.9 ? 'scared' : 'worried', look: 1 });
     dog(600, 1500, 0.55, { pose: u > 0.6 ? 'crouch' : 'stand', t: u, look: 1, ears: u > 0.6 ? 'down' : 'up', shake: u > 1.2 ? 0.5 : 0 });
-    darken(0.12);
+    fog(); darken(0.12);
   },
   haleDoor(u, t) { // her back door opens, she waves us over
     cam(1.25, 900, 1150);
@@ -182,13 +185,13 @@ const SCENES = {
     cam(0.92, 760, 1180);
     sky(); ground(1500); haleHouse(980, 1500, { lit: 1, open: 1 }); hale(1140 - 300 * 0.42, 1500 - 975 * 0.42, 0.42, { arm: 'cane' });
     const w = sm(u / 1.2); hero(lerp(380, 540, w), 1500 - 975 * 0.6, 0.6, { expr: 'worried', look: u > 1.4 ? -1 : 1, step: Math.sin(u * 8) * (w < 1 ? 0.5 : 0) });
-    dog(330, 1500, 0.5, { pose: 'crouch', t: u, ears: 'down', look: 1, growl: u > 1.3 ? 1 : 0, shake: u > 1.3 ? 0.4 : 0 });
-    darken(0.15);
+    dog(330, 1500, 0.5, { pose: 'crouch', t: u, ears: 'down', look: 1, growl: u > 1.3 ? 1 : 0, shake: u > 1.3 ? 0.4 + 0.6 * (Math.sin(u * 9) > 0.8 ? 1 : 0) : 0 });
+    fog(); darken(0.15);
   },
   knocks(u, t, ks) { // knocking starts again inside our house, louder and faster
-    cam(1.0 + 0.06 * sm(u / 3), 420, 1050, ks * 12, 0); sky(); woods(1150); ground(1500); ourHouse(70, 1500, { win1: Math.floor(t * 12) % 7 === 0 ? 1 : 0 }); darken(0.2);
+    cam(1.0 + 0.06 * sm(u / 3), 420, 1050, ks * 12, 0); sky(); woods(1150); ground(1500); ourHouse(70, 1500, { win1: Math.floor(t * 12) % 7 === 0 ? 1 : 0 }); fog(); darken(0.2);
   },
-  cookies(u, t) { cam(1.6, 890, 1180); sky(); ground(1500); haleHouse(680, 1500, { lit: 1, open: 1 }); hale(840 - 300 * 0.42, 1500 - 975 * 0.42, 0.42, { arm: 'plate' }); darken(0.05); },
+  cookies(u, t) { cam(1.6, 890, 1180); sky(); ground(1500); haleHouse(680, 1500, { lit: 1, open: 1 }); hale(840 - 300 * 0.42, 1500 - 975 * 0.42, 0.42, { arm: 'plate' }); fog(); darken(0.05); },
   flashback(u, t) { // warm daytime memory: cookie over the fence
     cam(1.0, 640, 1150); g.fillStyle = lin(0, -400, 0, 1500, [[0, '#ffd9a0'], [1, '#ffeccc']]); g.fillRect(-1400, -900, 4000, 2400);
     g.fillStyle = '#9ac27a'; g.fillRect(-1400, 1500, 4000, 1400); fence(300, 1100, 1500);
@@ -197,7 +200,7 @@ const SCENES = {
     const v = g.createRadialGradient(540, 960, 300, 540, 960, 1100); v.addColorStop(0, 'rgba(255,200,140,0)'); v.addColorStop(1, 'rgba(120,70,30,0.55)'); g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = v; g.fillRect(0, 0, W, H);
   },
   doorOpens(u, t) { // CLICK: our back door swings open into darkness
-    cam(1.4 + 0.1 * sm(u / 2), 470, 1260); sky(); ground(1500); ourHouse(120, 1500, { open: sm((u - 0.3) / 1.6) }); darken(0.25);
+    cam(1.4 + 0.1 * sm(u / 2), 470, 1260); sky(); ground(1500); ourHouse(120, 1500, { open: sm((u - 0.3) / 1.6) }); fog(); darken(0.25);
   },
   choice(u, t) {
     g.fillStyle = '#05040a'; g.fillRect(0, 0, W, H);
@@ -236,7 +239,7 @@ const captions = (t, low) => {
 window.renderFrame = (f) => {
   const t = f / 30; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
   const [shot, u] = shotAt(t), ks = knockAmt(t);
-  g.save(); SCENES[shot](u, t, ks); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
+  T = t; g.save(); if (!/^(comments|choice|end)/.test(shot)) hcam(); SCENES[shot](u, t, ks); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
   if (shot !== 'flashback' && shot !== 'comments') { const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H); }
   if (!/^(choice|end|comments|flashback)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: t < 3.7 ? '3:33' : t < 36 ? '3:35' : '3:36', title: 'HER VOICE', sub: 'CHAPTER TWO' }); g.restore(); }
   if (shot !== 'choice' && shot !== 'comments') captions(t, false);
