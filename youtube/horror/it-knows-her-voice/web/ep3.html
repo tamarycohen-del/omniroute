@@ -195,7 +195,7 @@ const SCENES = {
   },
   hug(u, t) { // close: he hugs Biscuit, Biscuit trembling, eyes wide
     cam(1.9, 470, 1330); g.fillStyle = '#07050f'; g.fillRect(-1400, -900, 4000, 3800); g.fillStyle = '#1a1226'; g.fillRect(-1400, 900, 4000, 260); // trunk above them
-    heroCrouch(250, 1520 - 975 * 0.6, 0.6, { expr: 'scared', look: 0.5 }); dog(540, 1525, 0.5, { pose: 'crouch', shake: 1, t: u, ears: 'down', worried: true });
+    heroCrouch(250, 1520 - 975 * 0.6, 0.6, { expr: 'scared', look: 0.5 }); dog(400, 1468, 0.38, { pose: 'crouch', shake: 1, t: u, ears: 'down', worried: true });
     darken(0.18);
   },
   dontBreathe(u, t) { cam(3.0, 300, 500); g.fillStyle = '#06040c'; g.fillRect(-400, -400, 1400, 1800); hero(0, 0, 1, { expr: 'scared', look: 0 }); darken(0.3 + 0.1 * Math.sin(t * 2)); },
@@ -208,12 +208,14 @@ const SCENES = {
       g.fillStyle = '#e8e4ee'; g.strokeStyle = '#121018'; g.lineWidth = 6; g.beginPath(); g.ellipse(lx + s * 50, 1428, 34, 13, 0, 0, 7); g.fill(); g.stroke(); }
     add(() => { g.fillStyle = 'rgba(150,150,230,0.12)'; g.fillRect(-200, 1220, 1500, 300); }); darken(0.15);
   },
-  trunkFingers(u, t) { // her shadow over the trunk; long fingers tap along the top, inches above them
-    cam(1.25, 560, 1200); forest(2600, { branches: false }); fallenTree(-200, 1490, 1600);
-    g.fillStyle = 'rgba(4,3,9,0.55)'; g.beginPath(); g.ellipse(560, 900, 220, 520, 0, 0, 7); g.fill(); // her shadow
-    const x = 200 + 480 * ((u * 0.12) % 1); g.save(); g.translate(x, 1290); g.rotate(-0.15); g.scale(1.9, 1.9); hand(g, 0, 0, 1, 0.85); g.restore();
-    g.fillStyle = 'rgba(244,242,238,0.9)'; g.beginPath(); g.ellipse(420, 1560, 8, 10, 0, 0, 7); g.ellipse(446, 1560, 8, 10, 0, 0, 7); g.fill(); // his eyes in the dark under the trunk
-    fog(1500); darken(0.18);
+  trunkFingers(u, t) { // they hide with their backs to the log; her long fingers reach over the top, right above them
+    cam(1.35, 520, 1150); forest(2600, { branches: false });
+    g.fillStyle = 'rgba(4,3,9,0.5)'; g.beginPath(); g.ellipse(700, 820, 230, 520, 0, 0, 7); g.fill(); // her shadow beyond the log
+    fallenTree(-260, 1460, 1600);
+    heroCrouch(170, 1530 - 975 * 0.6, 0.6, { expr: 'scared', look: 0.3, lookY: 0.6 }); dog(320, 1478, 0.36, { pose: 'crouch', shake: 1, t: u, ears: 'down', worried: true }); // Biscuit held in his arms
+    const x = 330 + 240 * Math.sin(u * 0.35); g.save(); g.translate(x, 1262); g.rotate(1.2); g.scale(1.9, 1.9); hand(g, 0, 0, 1, 0.9); g.restore(); // fingers hanging over the edge
+    g.strokeStyle = '#121018'; g.lineWidth = 22; g.lineCap = 'round'; g.beginPath(); g.moveTo(x - 30, 1150); g.lineTo(x + 6, 1262); g.stroke(); g.strokeStyle = '#e0dce6'; g.lineWidth = 10; g.stroke(); // her wrist over the log
+    fog(1500); darken(0.16);
   },
   closer(u, t) { SCENES.feetStop(u + 2.0, t); const k = sm(u / 2.5); g.save(); g.fillStyle = `rgba(4,3,9,${0.4 * k})`; g.fillRect(-1400, -900, 4000, 3800); g.restore(); },
   rustle(u, t) { // a bush shakes far behind her; she turns and walks away into the fog
@@ -224,7 +226,7 @@ const SCENES = {
   },
   heroLookUp(u, t) { // "Quickly, you look up..." - him behind the log, eyes going up
     cam(1.9, 420, 1250); forest(2700, { branches: false }); heroCrouch(250, 1520 - 975 * 0.6, 0.6, { expr: 'worried', look: 0.2, lookY: sm((u - 0.2) / 0.4) });
-    dog(540, 1525, 0.5, { pose: 'crouch', t: u, ears: 'down' }); fallenTree(-300, 1700, 1600); darken(0.15);
+    dog(400, 1468, 0.38, { pose: 'crouch', shake: 0.6, t: u, ears: 'down' }); fallenTree(-300, 1700, 1600); darken(0.15);
   },
   lookUp(u, t) { // looking up through the branches: an old treehouse, ladder swaying
     cam(0.9 + 0.08 * sm(u / 5), 560, 900 - 120 * sm(u / 3)); forest(2800, { branches: true }); treehouse(560, 900); fog(1450); darken(0.15);

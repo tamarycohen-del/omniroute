@@ -80,7 +80,7 @@ export const whiteStick = (p, o = {}) => {
   g.fillStyle = Wc; g.strokeStyle = O; g.lineWidth = 9; g.beginPath(); g.arc(cx, hc, headR, 0, 7); g.fill(); g.stroke();
   g.fillStyle = 'rgba(0,0,0,0.06)'; g.beginPath(); g.arc(cx + 18, hc + 14, headR - 14, 0, 7); g.fill();
   // face
-  const lx = (o.look || 0) * 12, ex = cx + 8 + lx, ey = hc + 8 - (o.lookY || 0) * 16, e = o.expr || 'neutral';
+  const lx = (o.look || 0) * 12, ex = cx + 8 + lx, ey = hc + 8 - (o.lookY || 0) * 12, e = o.expr || 'neutral';
   g.fillStyle = O; g.strokeStyle = O;
   const big = e === 'scared' || e === 'shock';
   for (const s of [-1, 1]) { g.beginPath(); g.ellipse(ex + s * 22, ey, big ? 9 : 7, big ? 12 : 9, 0, 0, 7); g.fill(); }
@@ -94,9 +94,11 @@ export const whiteStick = (p, o = {}) => {
   else { g.beginPath(); g.moveTo(ex - 10, ey + 30); g.lineTo(ex + 12, ey + 30); g.stroke(); }
   // beanie: dome + folded cuff + small fold lines
   const bc = o.beanie || '#2a2a36', dark = bc === '#f2f0ec' ? '#cfcac2' : '#1a1a22';
+  g.save(); g.translate(0, -(o.lookY || 0) * 28); // looking up: the beanie rides back so the eyes stay clear
   g.fillStyle = bc; g.strokeStyle = O; g.lineWidth = 8;
   g.beginPath(); g.moveTo(cx - headR - 4, hc - 18); g.bezierCurveTo(cx - headR + 4, hc - headR - 46, cx + headR - 4, hc - headR - 46, cx + headR + 4, hc - 18); g.closePath(); g.fill(); g.stroke();
   g.beginPath(); g.roundRect(cx - headR - 10, hc - 34, 2 * headR + 20, 30, 12); g.fillStyle = bc; g.fill(); g.stroke();
   g.strokeStyle = dark; g.lineWidth = 4; for (let k = -3; k <= 3; k++) { g.beginPath(); g.moveTo(cx + k * 18, hc - 30); g.lineTo(cx + k * 18, hc - 8); g.stroke(); }
+  g.restore();
   g.restore();
 };
