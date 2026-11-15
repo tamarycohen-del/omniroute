@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+import { mrsHale } from './hale.js'; import { whiteStick } from './stick.js'; import { biscuit } from './biscuit.js';
+const g = document.getElementById('c').getContext('2d');
+const gr = g.createLinearGradient(0, 0, 0, 1920); gr.addColorStop(0, '#1a1236'); gr.addColorStop(1, '#2a1e4e'); g.fillStyle = gr; g.fillRect(0, 0, 1080, 1920);
+const lab = (s, x, y) => { g.fillStyle = '#d8d0e8'; g.font = '600 34px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText(s, x, y); };
+g.fillStyle = '#fff'; g.font = '900 64px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('MRS. HALE', 540, 110);
+const P = [['cane', 270, 180, {}], ['waving', 790, 180, { arm: 'wave', wave: 0.6 }], ['cookies', 270, 960, { arm: 'plate' }], ['smile (wide)', 790, 960, { smile: 'wide' }]];
+for (const [n, x, y, o] of P) { g.save(); g.translate(x - 300 * 0.62, y); g.scale(0.62, 0.62); mrsHale(g, o); g.restore(); lab(n, x, y + 660); }
+// size next to him and Biscuit
+g.save(); g.translate(330 - 300 * 0.3, 1560); g.scale(0.3, 0.3); whiteStick({ g }, { beanie: '#2a2a36', expr: 'worried', look: 1 }); g.restore();
+g.save(); g.translate(560 - 300 * 0.3, 1572); g.scale(0.3, 0.3); mrsHale(g, { arm: 'wave', wave: 0.6 }); g.restore();
+g.save(); g.translate(800, 1855); g.scale(0.36, 0.36); biscuit(g, { pose: 'stand', flip: true }); g.restore();
+lab('sizes', 540, 1900);
+window.ready = true;
+</script></body></html>
