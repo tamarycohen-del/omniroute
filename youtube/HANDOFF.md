@@ -71,3 +71,7 @@ Final MP4s were in the old session's scratchpad (not in git); re-render from sou
 - Branding (Nov 15): suggested name **Votefear** (no channel found with that name; fallbacks Pickfright, Pickdoom). YouTube description + IG bio drafted ("You decide. He has to survive."). Files in `youtube/horror/branding/`: profile pictures (J = our character's face on dark, 2048px versions), final banner `youtube_banner_2560x1440.png` (purple, character + moon + signpost with lime/red arrows + eyes in the dark, no text) - approved.
 - Part 2 DONE (Nov 15): choice GO TO MRS. HALE / INTO THE WOODS WITH BISCUIT. Folder part2/ (script.txt, audio/voice2.py + sfx2.py, cover_part2.jpg), web/ep2.html (with idle motion: breathing, tree sway, fog/dust, handheld drift, eyes in the dark doorway - the user approved this animation upgrade; use it for the next parts too). Mrs. Hale voice = "Nan" (jVMsZEw3hfmEAe9OUUtS). Opening = same bedroom shot as Part 1 + "Imagine your mom knocks at the door at 3:33 a.m.... while you're <last choice>".
 - Lesson: eleven_v4 voices a narrator line as the character if it follows "X said:" - keep character lines in their own take, and never put narration right after "said:" in the same take.
+
+## Render workflow (user's rule)
+- While working on an episode: render at normal 1080x1920 (`render2d.mjs`) for speed.
+- Only after the user approves the final cut: render once in 2K with `web/render2k.mjs` (1440x2560, same args), encode crf16 / aac 256k, and send that file for upload.
