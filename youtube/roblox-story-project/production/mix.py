@@ -65,7 +65,10 @@ sting(S('S63'), 0.45); [ding(S('S64') + k * (E('S64') - S('S64')) / 3, 2637, 0.1
 # duck music under the voice
 w_ = int(0.25 * SR); cs = np.concatenate([[0], np.cumsum(np.abs(v))]); e = np.empty(N); idx = np.arange(N); lo = np.clip(idx - w_ // 2, 0, N); hi = np.clip(idx + w_ // 2, 0, N); e = (cs[hi] - cs[lo]) / w_; e = e / (e.max() + 1e-9); duck = 1 - 0.75 * np.clip(e * 4, 0, 1)
 mix = v * 1.0 + mus * 0.32 * duck + fx * 0.6
-mix = mix / np.abs(mix).max() * 0.9
+sc = 0.9 / np.abs(mix).max(); mix = mix * sc
+bed = (mus * 0.32 + fx * 0.6) * sc  # music + sfx without the voice (for the Shorts' end card)
+with wave.open(os.path.join(HERE, 'bed.wav'), 'wb') as f:
+    f.setnchannels(1); f.setsampwidth(2); f.setframerate(SR); f.writeframes((np.clip(bed, -1, 1) * 32767).astype(np.int16).tobytes())
 with wave.open(os.path.join(HERE, 'mix.wav'), 'wb') as f:
     f.setnchannels(1); f.setsampwidth(2); f.setframerate(SR); f.writeframes((mix * 32767).astype(np.int16).tobytes())
 print('mix ok', round(N / SR, 1))
