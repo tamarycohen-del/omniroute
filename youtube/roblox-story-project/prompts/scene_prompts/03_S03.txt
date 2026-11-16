@@ -13,7 +13,7 @@ CAMERA: Wide from the street over the crowd, then side close-up on Alex in the d
 No text, no logos, no subtitles. 16:9, 1920x1080.
 
 IMAGE-TO-VIDEO PROMPT
-Animate this image as smooth block-game gameplay footage (third-person game camera). Front door swings open. The whole town fills the lawn with posters, the mayor, a reporter with a camera. Everyone cheers at Xela in the center; Alex in the doorway, shocked then sad. Camera: Wide from the street over the crowd, then side close-up on Alex in the doorway. Keep every character's outfit, colors, cap and proportions exactly the same for the whole clip. Simple stiff-limbed block-game animation (arms and legs swing as rigid blocks), no morphing, no extra characters, no text. Duration 5 seconds.
+Animate this image as smooth block-game gameplay footage (third-person game camera). Front door swings open. The whole town fills the lawn with posters, the mayor, a reporter with a camera. Everyone cheers at Xela in the center; Alex in the doorway, shocked then sad. Camera: Wide from the street over the crowd, then side close-up on Alex in the doorway. Keep every character's outfit, colors, cap and proportions exactly the same for the whole clip. Simple stiff-limbed block-game animation (arms and legs swing as rigid blocks), no morphing, no extra characters, no text. Duration 6 seconds.
 
 NEGATIVE PROMPT
 see prompts/negative_prompt.txt

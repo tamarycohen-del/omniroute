@@ -11,7 +11,7 @@ CAMERA: Two-shot.
 No text, no logos, no subtitles. 16:9, 1920x1080.
 
 IMAGE-TO-VIDEO PROMPT
-Animate this image as smooth block-game gameplay footage (third-person game camera). Alex asks Xela; Xela tilts its head and shrugs. Alex is deadpan. Camera: Two-shot. Keep every character's outfit, colors, cap and proportions exactly the same for the whole clip. Simple stiff-limbed block-game animation (arms and legs swing as rigid blocks), no morphing, no extra characters, no text. Duration 7 seconds.
+Animate this image as smooth block-game gameplay footage (third-person game camera). Alex asks Xela; Xela tilts its head and shrugs. Alex is deadpan. Camera: Two-shot. Keep every character's outfit, colors, cap and proportions exactly the same for the whole clip. Simple stiff-limbed block-game animation (arms and legs swing as rigid blocks), no morphing, no extra characters, no text. Duration 6 seconds.
 
 NEGATIVE PROMPT
 see prompts/negative_prompt.txt

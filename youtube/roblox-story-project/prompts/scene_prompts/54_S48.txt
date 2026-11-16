@@ -11,7 +11,7 @@ CAMERA: Medium, then close-up.
 No text, no logos, no subtitles. 16:9, 1920x1080.
 
 IMAGE-TO-VIDEO PROMPT
-Animate this image as smooth block-game gameplay footage (third-person game camera). Memory: Alex chatting to Xela; close-up on Xela listening with a soft smile. Camera: Medium, then close-up. Keep every character's outfit, colors, cap and proportions exactly the same for the whole clip. Simple stiff-limbed block-game animation (arms and legs swing as rigid blocks), no morphing, no extra characters, no text. Duration 4 seconds.
+Animate this image as smooth block-game gameplay footage (third-person game camera). Memory: Alex chatting to Xela; close-up on Xela listening with a soft smile. Camera: Medium, then close-up. Keep every character's outfit, colors, cap and proportions exactly the same for the whole clip. Simple stiff-limbed block-game animation (arms and legs swing as rigid blocks), no morphing, no extra characters, no text. Duration 5 seconds.
 
 NEGATIVE PROMPT
 see prompts/negative_prompt.txt
