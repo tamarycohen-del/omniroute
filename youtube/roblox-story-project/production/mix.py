@@ -63,7 +63,7 @@ thump(S('S55') + 1.5, 0.4); sting(S('S56'), 0.3); cheer(S('S57') + 2.5, 3.5, 0.3
 put(fx, S('S61') + 0.72 * (E('S61') - S('S61')), lp(rng.standard_normal(int(0.12 * SR)), 0.8) * env(0.12, 0.0005, 0.02), 0.7); chime(S('S61') + 0.75 * (E('S61') - S('S61')), 0.2)
 sting(S('S63'), 0.45); [ding(S('S64') + k * (E('S64') - S('S64')) / 3, 2637, 0.12) for k in range(3)]; sting(E('S65') - 3.0, 0.5)
 # duck music under the voice
-e = np.convolve(np.abs(v), np.ones(int(0.25 * SR)) / int(0.25 * SR), mode='same'); e = e / (e.max() + 1e-9); duck = 1 - 0.75 * np.clip(e * 4, 0, 1)
+w_ = int(0.25 * SR); cs = np.concatenate([[0], np.cumsum(np.abs(v))]); e = np.empty(N); idx = np.arange(N); lo = np.clip(idx - w_ // 2, 0, N); hi = np.clip(idx + w_ // 2, 0, N); e = (cs[hi] - cs[lo]) / w_; e = e / (e.max() + 1e-9); duck = 1 - 0.75 * np.clip(e * 4, 0, 1)
 mix = v * 1.0 + mus * 0.32 * duck + fx * 0.6
 mix = mix / np.abs(mix).max() * 0.9
 with wave.open(os.path.join(HERE, 'mix.wav'), 'wb') as f:
