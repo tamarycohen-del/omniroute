@@ -15,7 +15,7 @@ for i, (a, b) in enumerate(PARTS, 1):
     f0, n = int(s0 * 24), int((s1 - s0) * 24); dur = s1 - s0
     vf = (f"{GRADE},tpad=stop_mode=clone:stop_duration={cd},"
           f"{dt(f'PART {i}', 150, 120, 0, 2.6, '#fff04a')},"
-          f"eq=brightness=0:enable='gte(t,{dur})',drawbox=x=0:y=0:w=iw:h=ih:color=black@0.45:t=fill:enable='gte(t,{dur})',"
+          f"boxblur=14:2:enable='gte(t,{dur})',drawbox=x=0:y=0:w=iw:h=ih:color=black@0.45:t=fill:enable='gte(t,{dur})',"
           f"{dt('FULL STORY', 760, 120, dur, dur + cd, '#fff04a')},{dt('ON MY CHANNEL', 900, 96, dur, dur + cd)}")
     af = (f"[0:a]atrim={s0}:{s1},asetpts=PTS-STARTPTS[n];[1:a]atrim={s1}:{s1 + cd},asetpts=PTS-STARTPTS,volume=1.3[bd];"
           f"[2:a]adelay=300|300,apad=pad_dur=1[c];[bd][c]amix=inputs=2:normalize=0[e];[n][e]concat=n=2:v=0:a=1,loudnorm=I=-14:TP=-1:LRA=11[a]")
