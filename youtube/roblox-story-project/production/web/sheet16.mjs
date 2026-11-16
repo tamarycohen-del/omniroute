@@ -1,0 +1,12 @@
+import { chromium } from 'playwright'; import http from 'http'; import fs from 'fs'; import path from 'path';
+const [,, page, out, ...ts] = process.argv; const root = path.dirname(new URL(import.meta.url).pathname);
+const srv = http.createServer((q, s) => { const p = path.join(root, q.url.split('?')[0]); if (!fs.existsSync(p)) { s.writeHead(404); return s.end(); } s.writeHead(200, { 'Content-Type': p.endsWith('.js') ? 'text/javascript' : 'text/html' }); fs.createReadStream(p).pipe(s); }).listen(0);
+await new Promise((r) => srv.on('listening', r));
+const br = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] }); const pg = await br.newPage({ viewport: { width: 1920, height: 1080 } });
+pg.on('pageerror', (e) => console.log('ERR', e.message));
+await pg.goto(`http://localhost:${srv.address().port}/${page}`); await pg.waitForFunction(() => window.ready, null, { timeout: 30000 });
+const imgs = []; for (const t of ts) imgs.push(await pg.evaluate((t) => { window.renderFrame(Math.round(t * 24)); return document.getElementById('c').toDataURL('image/jpeg', 0.85); }, +t));
+const cols = Math.min(4, imgs.length), rows = Math.ceil(imgs.length / cols);
+const html = `<body style="margin:0;background:#000;display:grid;grid-template-columns:repeat(${cols},480px);gap:0">${imgs.map((d, i) => `<div style="position:relative"><img src="${d}" width=480 height=270><span style="position:absolute;left:8px;top:4px;color:#ff0;font:bold 28px sans-serif;text-shadow:0 0 4px #000">${ts[i]}s</span></div>`).join('')}</body>`;
+const p2 = await br.newPage({ viewport: { width: cols * 480, height: rows * 270 } }); await p2.setContent(html); await p2.waitForTimeout(200); await p2.screenshot({ path: out, type: 'jpeg', quality: 85 });
+console.log('ok'); await br.close(); srv.close();
