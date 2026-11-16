@@ -72,9 +72,13 @@ export const whiteStick = (p, o = {}) => {
   limb([[cx + 4, hipY], [cx + 22 + 14 * step, 870], [cx + 30 + 26 * step, sole - 10]]);
   limb([[cx, neckY + 6], [cx + 2, hipY]]);
   const sh = neckY + 44;
+  const sw = o.swing || 0; // running: arms swing opposite each other
+  if (sw) { limb([[cx, sh], [cx - 30 - 60 * sw, sh + 80], [cx - 10 - 120 * sw, sh + 120 - 30 * Math.abs(sw)]]); limb([[cx, sh], [cx + 30 + 60 * sw, sh + 80], [cx + 10 + 120 * sw, sh + 120 - 30 * Math.abs(sw)]]); }
+  else {
   limb([[cx, sh], [cx - 46, sh + 90], [cx - 52, sh + 170]]);
   if (o.arm === 'reach' || o.arm === 'flash') limb([[cx, sh], [cx + 70, sh + 40], [cx + 140, sh + 30]]);
   else limb([[cx, sh], [cx + 46, sh + 90], [cx + 52, sh + 170]]);
+  }
   if (o.arm === 'flash') { g.save(); g.translate(cx + 150, sh + 28); g.rotate(-0.08); g.fillStyle = '#2a2a32'; g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.roundRect(-10, -16, 64, 32, 6); g.fill(); g.stroke(); g.fillStyle = '#fff2b0'; g.fillRect(52, -18, 10, 36); g.restore(); }
   // head
   g.fillStyle = Wc; g.strokeStyle = O; g.lineWidth = 9; g.beginPath(); g.arc(cx, hc, headR, 0, 7); g.fill(); g.stroke();

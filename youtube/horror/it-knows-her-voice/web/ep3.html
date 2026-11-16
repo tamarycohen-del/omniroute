@@ -120,11 +120,15 @@ const forest = (scroll = 0, o = {}) => { // layered trunks; scroll moves them si
     if (o.branches !== false) { g.strokeStyle = col; g.lineWidth = ww * 0.18; g.beginPath(); g.moveTo(x, y0 - h0 * 0.4); g.lineTo(x + (k % 2 ? 1 : -1) * ww * 2.2 + s, y0 - h0 * 0.62); g.stroke(); } } };
   layer(16, 34, '#100c26', 0.25, 1200, 1500, 4); fog(1350);
   layer(10, 70, '#0b081c', 0.55, 1350, 1700, 6);
+  for (let k = 0; k < 10; k++) { const x = ((k * 260 - scroll * 0.55) % 2600 + 2600) % 2600 - 800; g.strokeStyle = 'rgba(120,110,170,0.08)'; g.lineWidth = 3; for (let j = 0; j < 6; j++) { g.beginPath(); g.moveTo(x - 20 + j * 8, 400 + j * 160); g.lineTo(x - 16 + j * 8, 520 + j * 160); g.stroke(); }
+    g.fillStyle = '#0a0718'; for (let j = 0; j < 4; j++) { g.beginPath(); g.ellipse(x + (j % 2 ? 90 : -90) + Math.sin(T + k + j) * 6, 120 + j * 110, 110, 46, 0, 0, 7); g.fill(); } }
   g.fillStyle = lin(0, 1450, 0, 2200, [[0, '#120e22'], [1, '#05040a']]); g.fillRect(-1400, 1450, 4000, 1400);
   g.fillStyle = '#0d0a1a'; for (let k = 0; k < 40; k++) { const x = ((k * 97 - scroll * 1.0) % 2600 + 2600) % 2600 - 800; g.beginPath(); g.ellipse(x, 1470 + (k * 13) % 40, 30 + k % 4 * 10, 10, 0, 0, 7); g.fill(); } // leaves/roots
 };
 const fgTrunks = (scroll = 0) => { for (let k = 0; k < 3; k++) { let x = ((k * 1100 - scroll * 1.6) % 3300 + 3300) % 3300 - 900; g.fillStyle = '#040309'; g.fillRect(x, -900, 150, 3600); } };
-const fallenTree = (x, y, w = 1300) => { g.fillStyle = '#1a1226'; g.strokeStyle = '#08060f'; g.lineWidth = 10; g.beginPath(); g.roundRect(x, y - 190, w, 190, 90); g.fill(); g.stroke();
+const fallenTree = (x, y, w = 1300) => { g.fillStyle = '#2a1e3a'; g.strokeStyle = '#08060f'; g.lineWidth = 10; g.beginPath(); g.roundRect(x, y - 190, w, 190, 90); g.fill(); g.stroke();
+  g.strokeStyle = 'rgba(190,170,240,0.22)'; g.lineWidth = 8; g.beginPath(); g.moveTo(x + 90, y - 180); g.lineTo(x + w - 90, y - 180); g.stroke(); // moonlight on the top of the log
+  g.fillStyle = '#2f4a2e'; for (let k = 0; k < 6; k++) { g.beginPath(); g.ellipse(x + 160 + k * 210, y - 186, 46, 14, 0, 0, 7); g.fill(); } // moss
   g.strokeStyle = 'rgba(255,255,255,0.05)'; g.lineWidth = 6; for (let k = 0; k < 8; k++) { g.beginPath(); g.moveTo(x + 80 + k * 150, y - 170); g.lineTo(x + 140 + k * 150, y - 30); g.stroke(); }
   g.fillStyle = '#0c0816'; for (const rx of [x - 30, x + w - 30]) { g.beginPath(); g.ellipse(rx + 30, y - 95, 70, 110, 0, 0, 7); g.fill(); } };
 const treehouse = (x, y, o = {}) => { g.fillStyle = '#0e0a1c'; g.fillRect(x - 40, y - 200, 80, 1600); // trunk
@@ -138,7 +142,7 @@ const road = (y, o = {}) => { g.fillStyle = '#16131e'; g.fillRect(-1400, y - 60,
 const headlights = (x, y, a = 1, dir = -1) => { add(() => { for (const s of [-1, 1]) { const hx = x + s * 40; const gr2 = g.createRadialGradient(hx, y, 4, hx, y, 900); gr2.addColorStop(0, `rgba(255,245,210,${0.9 * a})`); gr2.addColorStop(0.2, `rgba(255,240,200,${0.35 * a})`); gr2.addColorStop(1, 'rgba(255,240,200,0)'); g.fillStyle = gr2; g.beginPath(); g.moveTo(hx, y); g.lineTo(hx + dir * 1400, y - 260); g.lineTo(hx + dir * 1400, y + 300); g.closePath(); g.fill();
     g.fillStyle = `rgba(255,250,230,${a})`; g.beginPath(); g.arc(hx, y, 16, 0, 7); g.fill(); } }); };
 // hiding pose: sitting behind the log, knees folded up, arms around Biscuit
-const heroCrouch = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s);
+const heroCrouch = (x, y, s, o = {}) => { const tr = o.tremble ? o.tremble : 0; g.save(); g.translate(x + tr * 3 * Math.sin(T * 47), y + tr * 2 * Math.sin(T * 39)); g.scale(s, s * (1 + 0.015 * Math.sin(T * 7)));
   g.save(); g.beginPath(); g.rect(-400, -400, 1400, 1340); g.clip(); g.translate(0, 175); whiteStick(P, { beanie: '#2a2a36', arm: 'reach', ...o }); g.restore();
   g.lineCap = 'round'; g.lineJoin = 'round';
   for (const [dx, kx] of [[-8, 0], [8, 22]]) for (const [w, c] of [[30, '#121018'], [18, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(300 + dx, 935); g.lineTo(400 + kx, 818); g.lineTo(430 + kx, 968); g.stroke(); }
@@ -154,7 +158,7 @@ const SCENES = {
   },
   run1(u, t) { // they sprint into the trees; a shadow follows
     cam(1.0, 540, 1150, Math.sin(u * 18) * 6, Math.abs(Math.sin(u * 9)) * 8); forest(u * 900);
-    hero(360, 1500 - 975 * 0.6, 0.6, { expr: 'scared', look: 1, step: Math.sin(u * 14) }); dog(620, 1500, 0.5, { pose: 'walk', t: u * 1.6 });
+    hero(360, 1500 - 975 * 0.6 - Math.abs(Math.sin(u * 7)) * 14, 0.6, { expr: 'scared', look: 1, step: Math.sin(u * 14), swing: Math.sin(u * 14) }); dog(620, 1500 - Math.abs(Math.sin(u * 9)) * 26, 0.5, { pose: 'walk', t: u * 1.6 });
     g.save(); g.globalAlpha = 0.85; g.fillStyle = '#020104'; g.beginPath(); g.ellipse(-60 + 30 * Math.sin(u * 3), 1050, 70, 260, 0, 0, 7); g.fill(); g.restore();
     fgTrunks(u * 900); darken(0.12);
   },
@@ -169,7 +173,7 @@ const SCENES = {
   },
   run2(u, t) { // running deeper; branches whip past; heavy steps behind
     cam(1.08, 540, 1150, Math.sin(u * 17) * 8, Math.abs(Math.sin(u * 8.5)) * 10); forest(800 + u * 1100);
-    hero(330, 1500 - 975 * 0.6, 0.6, { expr: 'scared', look: u > 5 ? -1 : 1, step: Math.sin(u * 14) }); dog(600, 1500, 0.5, { pose: 'walk', t: u * 1.6 });
+    hero(330, 1500 - 975 * 0.6 - Math.abs(Math.sin(u * 7)) * 14, 0.6, { expr: 'scared', look: u > 5 ? -1 : 1, step: Math.sin(u * 14), swing: Math.sin(u * 14) }); dog(600, 1500 - Math.abs(Math.sin(u * 9)) * 26, 0.5, { pose: 'walk', t: u * 1.6 });
     fgTrunks(800 + u * 1100);
     if (Math.floor(u * 2.2) % 3 === 0) { g.strokeStyle = '#030206'; g.lineWidth = 22; g.beginPath(); g.moveTo(-200, 300 + (u * 400) % 400); g.quadraticCurveTo(300, 500, 900, 380 + (u * 300) % 300); g.stroke(); } // branch whip
     darken(0.14);
@@ -190,15 +194,15 @@ const SCENES = {
   },
   dive(u, t) { // they dive under a big fallen trunk
     cam(1.05, 560, 1250); forest(2600, { branches: false });
-    const d = sm(u / 0.6); g.save(); g.beginPath(); g.rect(-1400, -900, 4000, 2420); g.clip(); hero(lerp(80, 350, d), 1500 - 975 * 0.55 + 260 * d, 0.55, { expr: 'scared', look: 1 }); dog(lerp(260, 620, d), 1500 + 60 * d, 0.48, { pose: 'crouch', t: u }); g.restore(); fallenTree(-120, 1520, 1400);
+    const d = sm(u / 0.8); g.save(); g.beginPath(); g.rect(-1400, -900, 4000, 2420); g.clip(); hero(lerp(80, 350, d), 1500 - 975 * 0.55 + 62 * d, 0.55, { expr: 'scared', look: 1 - 2 * sm((u - 1) / 0.5), lookY: 0 }); dog(lerp(260, 620, d), 1500 + 60 * d, 0.48, { pose: 'crouch', t: u }); g.restore(); fallenTree(-120, 1520, 1400);
     g.fillStyle = '#05040a'; g.fillRect(-1400, 1500, 4000, 60); fog(1500); darken(0.2);
   },
   hug(u, t) { // close: he hugs Biscuit, Biscuit trembling, eyes wide
     cam(1.9, 470, 1330); g.fillStyle = '#07050f'; g.fillRect(-1400, -900, 4000, 3800); g.fillStyle = '#1a1226'; g.fillRect(-1400, 900, 4000, 260); // trunk above them
-    heroCrouch(250, 1520 - 975 * 0.6, 0.6, { expr: 'scared', look: 0.5 }); dog(400, 1468, 0.38, { pose: 'crouch', shake: 1, t: u, ears: 'down', worried: true });
+    heroCrouch(250, 1520 - 975 * 0.6, 0.6, { expr: 'scared', tremble: 1, look: Math.sin(T * 1.7) * 0.7 }); dog(400, 1468, 0.38, { pose: 'crouch', shake: 1, t: u, ears: 'down', worried: true });
     darken(0.18);
   },
-  dontBreathe(u, t) { cam(3.0, 300, 500); g.fillStyle = '#06040c'; g.fillRect(-400, -400, 1400, 1800); hero(0, 0, 1, { expr: 'scared', look: 0 }); darken(0.3 + 0.1 * Math.sin(t * 2)); },
+  dontBreathe(u, t) { cam(3.0, 300 + Math.sin(t * 45) * 1.5, 500); g.fillStyle = '#06040c'; g.fillRect(-400, -400, 1400, 1800); hero(0, 0, 1, { expr: 'scared', look: Math.sin(t * 2.2) * 0.6 }); darken(0.3 + 0.1 * Math.sin(t * 2)); },
   feetStop(u, t) { // from under the trunk: her long legs stop right beyond it
     cam(1.0, 540, 1150); g.fillStyle = '#05040a'; g.fillRect(-1400, -900, 4000, 3800);
     g.fillStyle = '#1a1226'; g.fillRect(-200, 700, 1500, 520); g.fillStyle = '#0c0816'; g.fillRect(-200, 1180, 1500, 40); // trunk from below
@@ -212,7 +216,7 @@ const SCENES = {
     cam(1.35, 520, 1150); forest(2600, { branches: false });
     g.fillStyle = 'rgba(4,3,9,0.5)'; g.beginPath(); g.ellipse(700, 820, 230, 520, 0, 0, 7); g.fill(); // her shadow beyond the log
     fallenTree(-260, 1460, 1600);
-    heroCrouch(170, 1530 - 975 * 0.6, 0.6, { expr: 'scared', look: 0.3, lookY: 0.6 }); dog(320, 1478, 0.36, { pose: 'crouch', shake: 1, t: u, ears: 'down', worried: true }); // Biscuit held in his arms
+    heroCrouch(170, 1530 - 975 * 0.6, 0.6, { expr: 'scared', tremble: 1, look: Math.sin(T * 1.3) * 0.5, lookY: 0.6 }); dog(320, 1478, 0.36, { pose: 'crouch', shake: 1, t: u, ears: 'down', worried: true }); // Biscuit held in his arms
     const x = 330 + 240 * Math.sin(u * 0.35); g.save(); g.translate(x, 1262); g.rotate(1.2); g.scale(1.9, 1.9); hand(g, 0, 0, 1, 0.9); g.restore(); // fingers hanging over the edge
     g.strokeStyle = '#121018'; g.lineWidth = 22; g.lineCap = 'round'; g.beginPath(); g.moveTo(x - 30, 1150); g.lineTo(x + 6, 1262); g.stroke(); g.strokeStyle = '#e0dce6'; g.lineWidth = 10; g.stroke(); // her wrist over the log
     fog(1500); darken(0.16);
@@ -225,7 +229,7 @@ const SCENES = {
     g.fillStyle = '#05040a'; g.fillRect(-1400, 1480, 4000, 900); fallenTree(-200, 1700, 1700); fog(1450); darken(0.18);
   },
   heroLookUp(u, t) { // "Quickly, you look up..." - him behind the log, eyes going up
-    cam(1.9, 420, 1250); forest(2700, { branches: false }); heroCrouch(250, 1520 - 975 * 0.6, 0.6, { expr: 'worried', look: 0.2, lookY: sm((u - 0.2) / 0.4) });
+    cam(1.9, 420, 1250); forest(2700, { branches: false }); heroCrouch(250, 1520 - 975 * 0.6, 0.6, { expr: 'scared', tremble: 0.7, look: 0.2, lookY: sm((u - 0.2) / 0.4) });
     dog(400, 1468, 0.38, { pose: 'crouch', shake: 0.6, t: u, ears: 'down' }); fallenTree(-300, 1700, 1600); darken(0.15);
   },
   lookUp(u, t) { // looking up through the branches: an old treehouse, ladder swaying
@@ -266,17 +270,17 @@ const SHOTS = [[0, 'eyesOpen'], [1.9, 'run1'], [4.1, 'comments'], [7.85, 'run2']
 const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0]]; };
 let CHUNKS = [];
 const buildChunks = () => { CHUNKS = []; let cur = []; WORDS.forEach((w, i) => { cur.push(w); const end = /[.?!:,]$|\.\.\.$/.test(w.w) || cur.length >= 4 || (WORDS[i + 1] && WORDS[i + 1].who !== w.who); if (end) { CHUNKS.push(cur); cur = []; } }); if (cur.length) CHUNKS.push(cur); };
-const captions = (t) => {
+const captions = (t, top) => {
   const ch = CHUNKS.find((c, i) => t >= c[0].s - 0.05 && t < (CHUNKS[i + 1] ? Math.min(CHUNKS[i + 1][0].s - 0.05, c[c.length - 1].e + 0.6) : c[c.length - 1].e + 0.6)); if (!ch) return;
   const isMom = ch[0].who === 'm', hi = ch.findIndex((w) => t >= w.s && t < w.e + 0.08);
-  g.save(); g.translate(240, 880); capCard(P, { words: ch.map((w) => w.w.toUpperCase()), hi: hi < 0 ? ch.length - 1 : hi, color: isMom ? '#e6dcff' : undefined }); g.restore(); };
+  g.save(); g.translate(240, top ? 230 : 880); capCard(P, { words: ch.map((w) => w.w.toUpperCase()), hi: hi < 0 ? ch.length - 1 : hi, color: isMom ? '#e6dcff' : undefined }); g.restore(); };
 window.renderFrame = (f) => {
   const t = f / 30; T = t; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
   const [shot, u] = shotAt(t);
   g.save(); if (!/^(comments|choice|end)/.test(shot)) hcam(); SCENES[shot](u, t, 0); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
   if (shot !== 'comments') { const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H); }
   if (!/^(choice|end|comments)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: '3:37', title: 'HER VOICE', sub: 'CHAPTER THREE' }); g.restore(); }
-  if (shot !== 'choice' && shot !== 'comments') captions(t);
+  if (shot !== 'choice' && shot !== 'comments') captions(t, /^(hug|trunkFingers|heroLookUp|feetStop|closer|dive)$/.test(shot));
   if (shot === 'choice') { g.save(); g.fillStyle = 'rgba(216,208,232,0.85)'; g.font = '700 36px "DejaVu Sans Mono", monospace'; g.fillText('PART 3', 40, 90); g.restore(); }
   if (shot === 'choice' && u > 3.6) { const c = sm((u - 3.6) / 0.3); g.save(); g.globalAlpha = c; g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#0a0610'; g.strokeText('COMMENT YOUR CHOICE', 540, 1080); g.fillText('COMMENT YOUR CHOICE', 540, 1080); const bob = Math.sin(t * 6) * 10; g.fillStyle = '#c6ff3a'; g.beginPath(); g.moveTo(510, 1110 + bob); g.lineTo(570, 1110 + bob); g.lineTo(540, 1150 + bob); g.fill(); g.restore(); }
   return true;

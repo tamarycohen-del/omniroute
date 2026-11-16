@@ -21,8 +21,12 @@ export const momThing = (g, o = {}) => {
   for (const s of [-1, 1]) {
     const lp = (a, b) => a + (b - a) * reach, sw = Math.sin(t * 1.6 + s * 2);
     const ex = cx + s * lp(62, 44 + L * 0.45), ey = sh + lp(150, 60) + 10 * sw, hx = cx + s * lp(70, 44 + L), hy = sh + lp(300, 90) + lp(6, 30) * sw;
-    limb([[cx + s * 40, sh], [ex, ey], [hx, hy]], 24 - 6 * reach, 12 - 4 * reach);
-    hand(g, hx, hy, s, reach);
+    if (reach > 0.05) { // long, wavy, snake-like arm
+      const pts = []; const N = 18;
+      for (let i = 0; i <= N; i++) { const k = i / N, x = cx + s * 40 + (hx - cx - s * 40) * k, y = sh + (hy - sh) * k + Math.sin(k * 7 + t * 3 * s) * 60 * reach * Math.sin(Math.PI * k); pts.push([x, y]); }
+      limb(pts, 24 - 6 * reach, 12 - 4 * reach);
+    } else limb([[cx + s * 40, sh], [ex, ey], [hx, hy]], 24 - 6 * reach, 12 - 4 * reach);
+    hand(g, hx, hy, s, reach, t);
   }
   g.save(); g.translate(cx, hc + 40); g.rotate(-0.07); g.translate(-cx, -(hc + 40)); // head tilted a little
   // head: shoulder-length hair (open at the bottom, neck and chin visible), side part
@@ -53,8 +57,8 @@ export const momThing = (g, o = {}) => {
 const rr = (g, x, y, w, h, r, fill) => { g.beginPath(); g.roundRect(x, y, w, h, r); g.fillStyle = fill; g.fill(); g.strokeStyle = O; g.lineWidth = 4; g.stroke(); };
 
 // pale hand with Mom's ring; fingers grow longer with reach
-export const hand = (g, x, y, s = 1, reach = 0) => {
-  const fl = 34 + 46 * reach;
+export const hand = (g, x, y, s = 1, reach = 0, t = 0) => {
+  const fl = (34 + 46 * reach) * (0.85 + 0.15 * Math.sin(t * 5)); // fingers slowly curl and open
   g.save(); g.translate(x, y); g.scale(s, 1); g.lineCap = 'round';
   g.fillStyle = SKIN; g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.ellipse(0, 0, 20, 16, 0, 0, 7); g.fill(); g.stroke();
   for (let i = 0; i < 4; i++) { const a = -0.5 + i * 0.32; for (const [w, c] of [[11, O], [5, SKIN]]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(12, -8 + i * 6); g.quadraticCurveTo(12 + fl * 0.6 * Math.cos(a), -8 + i * 6 + fl * 0.4 * Math.sin(a), 14 + fl * Math.cos(a), -6 + i * 7 + fl * Math.sin(a) + 8); g.stroke(); } }
