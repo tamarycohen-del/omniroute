@@ -78,22 +78,48 @@ const faceDraw = (g, skin, f) => { const w = 512; g.fillStyle = skin; g.fillRect
   if (f.yolk) { g.fillStyle = '#ffd23f'; g.beginPath(); g.ellipse(290, 170, 70, 54, 0.3, 0, 7); g.fill(); g.fillStyle = '#fff8ea'; g.beginPath(); g.ellipse(196, 330, 60, 30, -0.2, 0, 7); g.fill(); g.fillStyle = '#ffd23f'; g.beginPath(); g.ellipse(330, 360, 30, 50, 0, 0, 7); g.fill(); }
 };
 const CHARS = [];
-const makeChar = (o) => {
-  const c = { o, root: new THREE.Group() }; S.add(c.root); const skin = M(o.skin);
+const makeChar = (o) => { // classic R6 block avatar: 2x2x1 torso, 1x2x1 arms and legs, rounded head
+  const c = { o, root: new THREE.Group() }; S.add(c.root); const skin = M(o.skin, { r: 0.55 }), shirt = M(o.shirt, { r: o.shirtR ?? 0.55 }), pants = M(o.pants, { r: 0.55 });
   c.body = new THREE.Group(); c.root.add(c.body); c.hip = new THREE.Group(); c.hip.position.y = 2; c.body.add(c.hip);
-  c.legs = [-1, 1].map((s) => { const g = new THREE.Group(); g.position.set(s * 0.5, 0, 0); c.hip.add(g); bx(0.92, 2, 0.92, M(o.pants), 0, -1, 0, g, { rad: 0.18 }); bx(1.0, 0.42, 1.28, M(o.shoes || '#f4f4f4'), 0, -1.8, 0.14, g, { rad: 0.16 }); return g; });
-  c.torso = new THREE.Group(); c.hip.add(c.torso); bx(2, 2.05, 1.05, M(o.shirt, { r: o.shirtR ?? 0.7 }), 0, 1.0, 0, c.torso, { rad: 0.16 });
-  if (o.suit) { const f = bx(0.62, 1.3, 0.04, '#ffffff', 0, 1.45, 0.53, c.torso); bx(0.22, 1.05, 0.05, M(o.tie, { r: 0.4, m: o.tie === '#e0b43c' ? 0.6 : 0 }), 0, 1.38, 0.56, c.torso); for (const s of [-1, 1]) { const l = bx(0.36, 1.2, 0.05, M(o.shirt, { r: o.shirtR ?? 0.7 }), s * 0.42, 1.5, 0.555, c.torso); l.rotation.z = s * 0.35; } if (o.pocket) bx(0.32, 0.18, 0.05, M(o.pocket, { m: 0.6, r: 0.3 }), -0.6, 1.55, 0.555, c.torso); }
-  if (o.badge) bx(0.38, 0.26, 0.05, M('#ffd23f', { m: 0.4, r: 0.3 }), -0.55, 1.5, 0.55, c.torso);
-  if (o.belt) bx(2.04, 0.22, 1.08, '#13306f', 0, 0.12, 0, c.torso);
-  if (o.cardigan) for (const s of [-1, 1]) bx(0.12, 1.9, 0.06, '#ffffff', s * 0.12, 1.0, 0.54, c.torso);
-  c.arms = [-1, 1].map((s) => { const g = new THREE.Group(); g.position.set(s * 1.44, 1.86, 0); c.torso.add(g); bx(0.84, 1.2, 0.84, M(o.shirt, { r: o.shirtR ?? 0.7 }), 0, -0.5, 0, g, { rad: 0.2 }); bx(0.78, 1.0, 0.78, skin, 0, -1.55, 0, g, { rad: 0.28 });
-    if (o.cuff) bx(0.86, 0.14, 0.86, '#ffffff', 0, -1.08, 0, g); if (o.watch && s > 0) bx(0.82, 0.18, 0.82, M('#e0b43c', { m: 0.8, r: 0.25 }), 0, -1.2, 0, g);
+  c.legs = [-1, 1].map((s) => { const g = new THREE.Group(); g.position.set(s * 0.5, 0, 0); c.hip.add(g); bx(0.98, 2, 0.98, pants, 0, -1, 0, g, { rad: 0.04 }); return g; });
+  c.torso = new THREE.Group(); c.hip.add(c.torso); bx(2, 2, 1, shirt, 0, 1.0, 0, c.torso, { rad: 0.04 });
+  if (o.suit) { bx(0.62, 1.3, 0.04, '#ffffff', 0, 1.35, 0.51, c.torso); bx(0.22, 1.05, 0.05, M(o.tie, { r: 0.4 }), 0, 1.28, 0.53, c.torso); for (const s of [-1, 1]) { const l = bx(0.36, 1.2, 0.05, shirt, s * 0.42, 1.4, 0.525, c.torso); l.rotation.z = s * 0.35; } }
+  if (o.cardigan) for (const s of [-1, 1]) bx(0.12, 1.9, 0.06, '#ffffff', s * 0.12, 1.0, 0.52, c.torso);
+  c.arms = [-1, 1].map((s) => { const g = new THREE.Group(); g.position.set(s * 1.5, 1.92, 0); c.torso.add(g);
+    if (o.sleeves) { bx(0.98, 1.0, 0.98, shirt, 0, -0.45, 0, g, { rad: 0.04 }); bx(0.96, 1.0, 0.96, skin, 0, -1.43, 0, g, { rad: 0.04 }); } else bx(0.98, 1.96, 0.98, skin, 0, -0.94, 0, g, { rad: 0.04 });
     const hand = new THREE.Group(); hand.position.set(0, -1.95, 0); g.add(hand); g.userData.hand = hand; return g; });
-  c.neck = new THREE.Group(); c.neck.position.y = 2.05; c.torso.add(c.neck);
+  c.neck = new THREE.Group(); c.neck.position.y = 2.0; c.torso.add(c.neck);
   const fc = document.createElement('canvas'); fc.width = fc.height = 512; c.fctx = fc.getContext('2d'); c.ftex = new THREE.CanvasTexture(fc); c.ftex.colorSpace = THREE.SRGBColorSpace; c.ftex.anisotropy = 8;
-  c.head = bx(1.85, 1.85, 1.85, [skin, skin, skin, skin, new THREE.MeshStandardMaterial({ map: c.ftex, roughness: 0.75 }), skin], 0, 0.95, 0, c.neck, { rad: 0.22 });
+  c.head = bx(1.3, 1.25, 1.3, [skin, skin, skin, skin, new THREE.MeshStandardMaterial({ map: c.ftex, roughness: 0.55 }), skin], 0, 0.66, 0, c.neck, { rad: 0.3 });
   o.build?.(c); c.key = ''; CHARS.push(c); return c;
+};
+// classic block-game face: small black oval eyes and a thin smile, painted straight onto the head
+const faceDrawRB = (g, skin, f) => { g.fillStyle = skin; g.fillRect(0, 0, 512, 512); const ex = f.expr, K = '#111', lx = (f.look?.[0] || 0) * 14, ly = (f.look?.[1] || 0) * 10;
+  if (f.beard) { g.fillStyle = f.beard; g.beginPath(); g.moveTo(60, 300); g.quadraticCurveTo(256, 540, 452, 300); g.lineTo(452, 512); g.lineTo(60, 512); g.fill(); }
+  const ey = 215, EX = [196, 316]; g.fillStyle = K; g.strokeStyle = K; g.lineCap = 'round';
+  const big = ex === 'shocked' || ex === 'amazed';
+  EX.forEach((x, i) => { const side = i ? 1 : -1;
+    if (f.blink || ex === 'laugh' || (ex === 'wink' && i === 1)) { g.lineWidth = 12; g.beginPath(); g.moveTo(x - 24, ey); g.quadraticCurveTo(x, ey + (ex === 'laugh' ? -22 : 14), x + 24, ey); g.stroke(); return; }
+    if (ex === 'dizzy') { g.lineWidth = 9; g.beginPath(); for (let a = 0; a < 12; a += 0.2) g.lineTo(x + Math.cos(a + f.t * 6) * a * 2.6, ey + Math.sin(a + f.t * 6) * a * 2.6); g.stroke(); return; }
+    if (ex === 'smug' && i === 1) { g.beginPath(); g.ellipse(x + lx, ey + 8 + ly, 18, 14, 0, 0, 7); g.fill(); g.fillStyle = skin; g.fillRect(x - 30, ey - 30, 60, 30); g.fillStyle = K; }
+    else { g.beginPath(); g.ellipse(x + lx, ey + ly, big ? 26 : 17, big ? 34 : 30, 0, 0, 7); g.fill(); }
+    if (ex === 'amazed') { g.fillStyle = '#ffd23f'; g.beginPath(); for (let k = 0; k < 10; k++) { const a = k / 10 * PI * 2 - PI / 2, r = k % 2 ? 6 : 14; g.lineTo(x + lx + Math.cos(a) * r, ey + ly + Math.sin(a) * r); } g.fill(); g.fillStyle = K; }
+    else { g.fillStyle = '#fff'; g.beginPath(); g.arc(x + lx + 5, ey + ly - 11, big ? 8 : 5, 0, 7); g.fill(); g.fillStyle = K; }
+    const br = { angry: [22, 10], annoyed: [8, 4], sad: [-20, -4], worried: [-16, -6], shocked: [0, -26], amazed: [0, -24], smug: i ? [-14, -18] : [6, 0], laugh: [0, -10] }[ex];
+    if (br) { g.lineWidth = 11; g.beginPath(); g.moveTo(x - side * 30 * -1 - (side > 0 ? 60 : 0) + (side > 0 ? 0 : 0), 0); g.beginPath(); const inner = x - side * 26, outer = x + side * 26; g.moveTo(outer, ey - 52 + br[1] - br[0] * 0.3); g.lineTo(inner, ey - 52 + br[1] + br[0] * 0.6); g.stroke(); } });
+  if (f.glasses) { g.strokeStyle = f.glasses; g.lineWidth = 10; EX.forEach((x) => { g.beginPath(); g.ellipse(x, ey, 46, 46, 0, 0, 7); g.stroke(); }); g.beginPath(); g.moveTo(242, ey); g.lineTo(270, ey); g.stroke(); g.strokeStyle = K; }
+  if (f.mustache) { g.fillStyle = f.mustache; g.beginPath(); g.ellipse(226, 300, 38, 16, 0.25, 0, 7); g.ellipse(286, 300, 38, 16, -0.25, 0, 7); g.fill(); g.fillStyle = K; }
+  const my = 318; g.lineWidth = 10; g.beginPath();
+  switch (ex) {
+    case 'grin': case 'laugh': case 'amazed': g.moveTo(170, my - 14); g.quadraticCurveTo(256, my + 96, 342, my - 14); g.closePath(); g.fill(); g.fillStyle = '#fff'; g.fillRect(190, my - 12, 132, 14); g.fillStyle = K; break;
+    case 'smug': g.moveTo(196, my + 8); g.quadraticCurveTo(270, my + 40, 336, my - 22); g.stroke(); break;
+    case 'angry': g.moveTo(196, my + 30); g.quadraticCurveTo(256, my - 6, 316, my + 30); g.stroke(); break;
+    case 'sad': g.moveTo(200, my + 30); g.quadraticCurveTo(256, my, 312, my + 30); g.stroke(); g.fillStyle = '#5ab9ea'; g.beginPath(); g.ellipse(170, 270 + ((f.t * 60) % 70), 10, 15, 0, 0, 7); g.fill(); g.fillStyle = K; break;
+    case 'shocked': g.ellipse(256, my + 18, 26 * (f.jaw || 1), 34 * (f.jaw || 1), 0, 0, 7); g.fill(); break;
+    case 'worried': case 'dizzy': g.moveTo(206, my + 16); g.bezierCurveTo(236, my - 4, 276, my + 32, 306, my + 10); g.stroke(); break;
+    case 'annoyed': case 'neutral': g.moveTo(216, my + 10); g.quadraticCurveTo(256, my + 20, 296, my + 10); g.stroke(); break;
+    default: g.moveTo(184, my - 4); g.quadraticCurveTo(256, my + 62, 328, my - 4); g.stroke();
+  }
 };
 const star5 = (r) => { const s = new THREE.Shape(); for (let k = 0; k < 10; k++) { const a = k / 10 * PI * 2 + PI / 2, q = k % 2 ? r * 0.45 : r; k ? s.lineTo(Math.cos(a) * q, Math.sin(a) * q) : s.moveTo(Math.cos(a) * q, Math.sin(a) * q); } return new THREE.ExtrudeGeometry(s, { depth: 0.08, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 2 }); };
 
@@ -106,11 +132,11 @@ const P = (c, p = {}) => { // pose a character for this frame
   c.torso.rotation.set((p.lean || 0) + (p.sit ? -0.15 : 0), p.twist || 0, p.tilt || 0);
   const idle = 0.04 * Math.sin(t * 2.4);
   const aL = p.armL || [-sw * 0.55 - idle, 0, 0], aR = p.armR || [sw * 0.55 + idle, 0, 0];
-  c.arms[0].rotation.set(aL[0], aL[1] || 0, -(aL[2] || 0) - 0.06); c.arms[1].rotation.set(aR[0], aR[1] || 0, (aR[2] || 0) + 0.06);
+  c.arms[0].rotation.set(aL[0], aL[1] || 0, -(aL[2] || 0)); c.arms[1].rotation.set(aR[0], aR[1] || 0, (aR[2] || 0));
   const hd = p.head || [0, 0, 0]; c.neck.rotation.set(hd[0], hd[1], hd[2] || 0);
   const blink = p.blink ?? (((t * 0.37) % 1) < 0.045);
   const f = { ...c.o.face, expr: p.face || 'neutral', look: p.look, blink, yolk: p.yolk, jaw: p.jaw, t: p.face === 'dizzy' || p.face === 'sad' ? T : 0 };
-  const key = JSON.stringify(f); if (key !== c.key) { c.key = key; faceDraw(c.fctx, c.o.skin, f); c.ftex.needsUpdate = true; }
+  const key = JSON.stringify(f); if (key !== c.key) { c.key = key; faceDrawRB(c.fctx, c.o.skin, f); c.ftex.needsUpdate = true; }
 };
 const handPos = (c, side = 1) => { c.arms[side > 0 ? 1 : 0].userData.hand.getWorldPosition(tmp); return tmp.clone(); };
 const holdAt = (pr, c, side = 1, off = [0, 0, 0], rot) => { const h = c.arms[side > 0 ? 1 : 0].userData.hand; S.updateMatrixWorld(); h.getWorldPosition(tmp); pr.visible = true; pr.position.set(tmp.x + off[0], tmp.y + off[1], tmp.z + off[2]); if (rot) pr.rotation.set(...rot); else pr.rotation.set(0, c.root.rotation.y, 0); };
@@ -245,15 +271,15 @@ const fruitsFly = []; { const r = rng(12); for (let k = 0; k < 18; k++) fruitsFl
 const dust = []; for (let k = 0; k < 12; k++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: puffTex, color: '#e6c9a8', transparent: true, depthWrite: false })); s.visible = false; S.add(s); dust.push(s); }
 
 // ================= CHARACTERS =================
-const hairOn = (c, col, style) => { const h = new THREE.Group(); h.position.y = 0.95; c.neck.add(h);
-  if (style === 'cap') { bx(1.98, 0.62, 1.98, '#1f7bff', 0, 0.98, 0, h, { rad: 0.24 }); bx(1.9, 0.14, 1.05, '#1650c2', 0, 0.72, 1.32, h, { rad: 0.06 }); add(star5(0.32), M('#ffd23f', { m: 0.3, r: 0.35, e: '#5a4300', ei: 0.3 }), 0, 0.98, 0.98, h); bx(1.9, 0.5, 0.3, '#5a3a22', 0, 0.55, -0.9, h, { rad: 0.12 }); return h; }
+const hairOn = (c, col, style) => { const h = new THREE.Group(); h.position.y = 0.62; h.scale.setScalar(0.7); c.neck.add(h);
+  if (style === 'cap') { bx(1.98, 0.75, 1.98, '#3498db', 0, 1.0, 0, h, { rad: 0.36 }); bx(1.9, 0.14, 1.1, '#2a7fbf', 0, 0.68, 1.35, h, { rad: 0.06 }); add(star5(0.36), M('#f1c40f', { r: 0.4, e: '#5a4300', ei: 0.25 }), 0, 1.0, 0.98, h); return h; }
   if (style === 'long') { bx(2.0, 0.55, 2.0, col, 0, 0.98, -0.05, h, { rad: 0.25 }); bx(2.0, 2.0, 0.5, col, 0, -0.1, -0.85, h, { rad: 0.2 }); for (const s of [-1, 1]) bx(0.3, 1.6, 1.4, col, s * 0.98, 0.15, -0.3, h, { rad: 0.12 }); return h; }
   if (style === 'bun') { bx(2.0, 0.6, 2.0, col, 0, 0.9, -0.05, h, { rad: 0.28 }); bx(1.0, 1.0, 1.0, col, 0, 1.55, -0.3, h, { rad: 0.45 }); return h; }
   if (style === 'messy') { bx(2.0, 0.6, 2.0, col, 0, 0.95, -0.05, h, { rad: 0.2 }); for (let k = 0; k < 5; k++) { const t = bx(0.5, 0.5, 0.5, col, -0.8 + k * 0.4, 1.25 + (k % 2) * 0.15, -0.2 + (k % 3) * 0.3, h, { rad: 0.15 }); t.rotation.z = (k - 2) * 0.3; } return h; }
   if (style === 'tophat') { bx(2.6, 0.18, 2.6, '#111', 0, 0.98, 0, h); bx(1.7, 1.8, 1.7, '#111', 0, 1.95, 0, h); bx(1.75, 0.3, 1.75, '#ffd23f', 0, 1.25, 0, h); return h; }
   bx(1.98, 0.55, 1.98, col, 0, 0.95, -0.05, h, { rad: 0.22 }); bx(1.98, 0.9, 0.35, col, 0, 0.5, -0.82, h, { rad: 0.12 }); return h; };
 const person = (o) => { const c = makeChar({ ...o, build: (q) => hairOn(q, o.hair, o.style) }); c.o.face = o.faceX || {}; return c; };
-const ALEX_O = { skin: '#f2c9a0', shirt: '#1f7bff', pants: '#1650c2', shoes: '#ffffff', badge: 1, belt: 1, style: 'cap', toff: 0 };
+const ALEX_O = { skin: '#ffcf4d', shirt: '#3498db', pants: '#3498db', style: 'cap', toff: 0 };
 const ALEX = person(ALEX_O), XELA = person({ ...ALEX_O, toff: 0.9 });
 const MIA_O = { skin: '#e8b48f', shirt: '#8e5cd9', pants: '#2b2d42', shoes: '#ff7eb6', hair: '#ff7eb6', style: 'long' };
 const MIA = person(MIA_O), MIAO = person({ ...MIA_O, toff: 1.7 });
@@ -597,7 +623,7 @@ const SC = {
     const k = kk(u, d); if (k < 0.45) camN(u, d, [[0, [BR.x - 1, 7, BR.z + 6], [BR.x - 1.5, 2.4, BR.z - 4.5], 44], [0.45, [BR.x - 1, 6.5, BR.z + 5], [BR.x - 1.5, 2.4, BR.z - 4.5], 42]]);
     else { const hp = V(CORNER[0], 5.0, CORNER[1]); camN(u, d, [[0.45, [hp.x - 3.6, hp.y, hp.z + 3.2], [hp.x, hp.y, hp.z], 30], [1, [hp.x - 2.8, hp.y, hp.z + 2.5], [hp.x, hp.y, hp.z], 28]]); } },
   S63(u, d) { room(true); lamp.intensity = 6; lying(ALEX, 2.1, { face: u < 0.25 ? 'neutral' : 'shocked', blink: u < 0.25, look: [0.6, 0] }); xelaCorner();
-    const hp = V(BR.x - 5.9, 2.6, BR.z - 5); if (u < 0.35) shake(0); camN(u, d, [[0, [hp.x + 0.4, hp.y + 3.6, hp.z + 0.2], [hp.x, hp.y, hp.z], 34], [1, [hp.x + 0.3, hp.y + 3.0, hp.z + 0.1], [hp.x, hp.y, hp.z], 30]]); },
+    const hp = V(BR.x - 4.9, 2.5, BR.z - 5); camN(u, d, [[0, [hp.x + 2.6, hp.y + 2.8, hp.z + 0.3], [hp.x, hp.y, hp.z], 34], [1, [hp.x + 2.1, hp.y + 2.3, hp.z + 0.2], [hp.x, hp.y, hp.z], 30]]); },
   S64(u, d) { room(false); const k = kk(u, d), day = Math.floor(k * 3), lk = (k * 3) % 1; flash.intensity = lk < 0.12 ? (0.12 - lk) * 600 : 0;
     put(XELA, BR.x + 1.4, BR.z - 3.4, -PI / 2 + 0.45, { face: lk < 0.45 ? talk('neutral', 'happy') : 'neutral' });
     if (lk < 0.5) lying(ALEX, 2.1, { blink: lk < 0.2 }); else if (lk < 0.75) sitUp(ALEX, { face: 'neutral' }); else put(ALEX, BR.x - 2.6, BR.z - 2.2, 0.4, { face: day === 2 ? 'worried' : 'neutral', look: day === 2 ? [0.7, 0] : [0, 0] });
@@ -608,7 +634,7 @@ const SC = {
     camN(u, d, [[0, [0, 5.0, 13], [0, 4.6, 1], 40], [0.75, [0, 5.0, 10], [0, 4.8, 1], 36], [1, [-2.6, 6.6, 9], [-2.6, 5.6, -3.4], 34]]); },
 };
 // a third identical figure peeking through Alex's front window for the last beat (same cap and outfit)
-const ghost = new THREE.Group(); S.add(ghost); ghost.visible = false; { const g2 = new THREE.Group(); g2.position.set(-3.4, 2.4, -3.25); ghost.add(g2); bx(1.8, 1.8, 0.4, M('#f2c9a0'), 0, 1.6, 0, g2, { rad: 0.2 }); bx(1.98, 0.62, 0.6, '#1f7bff', 0, 2.75, 0, g2, { rad: 0.2 }); add(star5(0.3), M('#ffd23f'), 0, 2.75, 0.32, g2); for (const s of [-1, 1]) ball(0.16, '#111', s * 0.4, 1.75, 0.22, g2); }
+const ghost = new THREE.Group(); S.add(ghost); ghost.visible = false; { const g2 = new THREE.Group(); g2.position.set(-3.4, 2.4, -3.25); ghost.add(g2); bx(1.3, 1.25, 0.4, M('#ffcf4d'), 0, 1.6, 0, g2, { rad: 0.2 }); bx(1.4, 0.55, 0.6, '#3498db', 0, 2.45, 0, g2, { rad: 0.2 }); add(star5(0.25), M('#f1c40f'), 0, 2.45, 0.32, g2); for (const s of [-1, 1]) ball(0.08, '#111', s * 0.24, 1.7, 0.21, g2); }
 
 // ================= TIMELINE =================
 const TL = {"total": 456.0, "shots": [{"shot": "S01", "s": 0.0, "e": 4.088, "end": 4.508}, {"shot": "S02", "s": 4.508, "e": 8.253, "end": 8.673}, {"shot": "S03", "s": 8.673, "e": 13.62, "end": 14.04}, {"shot": "S04", "s": 14.04, "e": 18.641, "end": 19.061}, {"shot": "S05", "s": 19.061, "e": 28.385, "end": 28.805}, {"shot": "S05B", "s": 28.805, "e": 38.601, "end": 39.021}, {"shot": "S06", "s": 39.021, "e": 41.744, "end": 42.164}, {"shot": "S07", "s": 42.164, "e": 43.211, "end": 43.631}, {"shot": "S08", "s": 43.631, "e": 45.243, "end": 45.663}, {"shot": "S09", "s": 45.663, "e": 48.913, "end": 49.333}, {"shot": "S10", "s": 49.333, "e": 56.898, "end": 57.318}, {"shot": "S11", "s": 57.318, "e": 62.897, "end": 63.317}, {"shot": "S12", "s": 63.317, "e": 69.812, "end": 70.232}, {"shot": "S13", "s": 70.232, "e": 80.082, "end": 80.502}, {"shot": "S14", "s": 80.502, "e": 87.552, "end": 87.972}, {"shot": "S15", "s": 87.972, "e": 94.141, "end": 94.561}, {"shot": "S15B", "s": 94.561, "e": 107.109, "end": 107.529}, {"shot": "S16", "s": 107.529, "e": 109.999, "end": 110.419}, {"shot": "S17", "s": 110.419, "e": 115.016, "end": 115.436}, {"shot": "S18", "s": 115.436, "e": 126.804, "end": 127.224}, {"shot": "S19", "s": 127.224, "e": 128.931, "end": 129.351}, {"shot": "S20", "s": 129.351, "e": 132.648, "end": 133.068}, {"shot": "S21", "s": 133.068, "e": 135.878, "end": 136.298}, {"shot": "S22", "s": 136.298, "e": 139.453, "end": 139.873}, {"shot": "S23", "s": 139.873, "e": 148.769, "end": 149.189}, {"shot": "S24", "s": 149.189, "e": 154.259, "end": 154.679}, {"shot": "S25", "s": 154.679, "e": 159.116, "end": 159.536}, {"shot": "S25B", "s": 159.536, "e": 169.181, "end": 169.601}, {"shot": "S26", "s": 169.601, "e": 174.434, "end": 174.854}, {"shot": "S27", "s": 174.854, "e": 179.03, "end": 179.45}, {"shot": "S28", "s": 179.45, "e": 185.531, "end": 185.951}, {"shot": "S29", "s": 185.951, "e": 191.552, "end": 191.972}, {"shot": "S30", "s": 191.972, "e": 196.977, "end": 197.397}, {"shot": "S31", "s": 197.397, "e": 204.162, "end": 204.582}, {"shot": "S32", "s": 204.582, "e": 209.765, "end": 210.185}, {"shot": "S33", "s": 210.185, "e": 213.733, "end": 214.153}, {"shot": "S34", "s": 214.153, "e": 220.581, "end": 221.001}, {"shot": "S35", "s": 221.001, "e": 223.782, "end": 224.202}, {"shot": "S36", "s": 224.202, "e": 227.03, "end": 227.45}, {"shot": "S37", "s": 227.45, "e": 229.074, "end": 229.494}, {"shot": "S38", "s": 229.494, "e": 232.014, "end": 232.434}, {"shot": "S38B", "s": 232.434, "e": 241.054, "end": 241.474}, {"shot": "S39", "s": 241.474, "e": 249.101, "end": 249.521}, {"shot": "S40", "s": 249.521, "e": 257.649, "end": 258.069}, {"shot": "S40B", "s": 258.069, "e": 265.543, "end": 265.963}, {"shot": "S41", "s": 265.963, "e": 272.759, "end": 273.179}, {"shot": "S42", "s": 273.179, "e": 277.355, "end": 277.775}, {"shot": "S43", "s": 277.775, "e": 281.761, "end": 282.181}, {"shot": "S43B", "s": 282.181, "e": 288.27, "end": 288.69}, {"shot": "S44", "s": 288.69, "e": 295.144, "end": 295.564}, {"shot": "S45", "s": 295.564, "e": 301.259, "end": 301.679}, {"shot": "S46", "s": 301.679, "e": 310.945, "end": 311.365}, {"shot": "S47", "s": 311.365, "e": 319.646, "end": 320.066}, {"shot": "S48", "s": 320.066, "e": 323.945, "end": 324.365}, {"shot": "S49", "s": 324.365, "e": 329.221, "end": 329.641}, {"shot": "S50", "s": 329.641, "e": 336.554, "end": 336.974}, {"shot": "S51", "s": 336.974, "e": 344.334, "end": 344.754}, {"shot": "S52", "s": 344.754, "e": 348.59, "end": 349.01}, {"shot": "S53", "s": 349.01, "e": 354.864, "end": 355.284}, {"shot": "S54", "s": 355.284, "e": 361.314, "end": 361.734}, {"shot": "S54B", "s": 361.734, "e": 371.955, "end": 372.375}, {"shot": "S55", "s": 372.375, "e": 376.366, "end": 376.786}, {"shot": "S56", "s": 376.786, "e": 381.858, "end": 382.278}, {"shot": "S57", "s": 382.278, "e": 388.364, "end": 388.784}, {"shot": "S58", "s": 388.784, "e": 394.755, "end": 395.175}, {"shot": "S58B", "s": 395.175, "e": 399.827, "end": 400.247}, {"shot": "S59", "s": 400.247, "e": 407.102, "end": 407.522}, {"shot": "S60", "s": 407.522, "e": 412.481, "end": 412.901}, {"shot": "S61", "s": 412.901, "e": 419.711, "end": 420.131}, {"shot": "S61B", "s": 420.131, "e": 428.159, "end": 428.579}, {"shot": "S62", "s": 428.579, "e": 435.241, "end": 435.661}, {"shot": "S63", "s": 435.661, "e": 438.495, "end": 438.915}, {"shot": "S64", "s": 438.915, "e": 445.357, "end": 445.777}, {"shot": "S65", "s": 445.777, "e": 454.8, "end": 456.0}]};

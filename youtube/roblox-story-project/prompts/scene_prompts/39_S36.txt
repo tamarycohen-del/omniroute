@@ -2,7 +2,7 @@ IMAGE PROMPT
 High-quality screenshot of a bright, colorful block-building online game (classic Roblox-style look): blocky R6-style avatars with cube heads, rectangular torsos and rigid block arms and legs, smooth plastic materials, simple flat cartoon faces with large round eyes, clean low-poly blocky buildings and props, green baseplate ground with a faint stud grid, saturated primary colors, soft sunny lighting with gentle shadows, third-person gameplay camera at roughly shoulder-to-head height, crisp edges, readable silhouettes, cheerful small-town setting with gabled houses, sidewalks, a town square with a fountain, stage and clock tower. Consistent character designs. 16:9 composition with the action in the center.
 
 CHARACTERS IN THIS SHOT:
-- XELA (Alex's Opposite clone): EXACTLY identical to Alex in every detail — same blue uniform, same blue cap with yellow star, same proportions and colors. Distinguished only by expression and behavior.
+- XELA (Alex's Opposite clone): IDENTICAL to Alex in every detail (yellow skin, blue uniform, blue cap with yellow star, same proportions); only the expression differs: smug smirk, one eye squinted, one eyebrow raised.
 - REPORTER: blocky avatar, dark skin, short black hair, yellow jacket, black pants, holding a microphone or a TV camera.
 
 LOCATION: Town square tree, bright daylight.

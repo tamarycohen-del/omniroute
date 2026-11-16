@@ -2,8 +2,8 @@ IMAGE PROMPT
 High-quality screenshot of a bright, colorful block-building online game (classic Roblox-style look): blocky R6-style avatars with cube heads, rectangular torsos and rigid block arms and legs, smooth plastic materials, simple flat cartoon faces with large round eyes, clean low-poly blocky buildings and props, green baseplate ground with a faint stud grid, saturated primary colors, soft sunny lighting with gentle shadows, third-person gameplay camera at roughly shoulder-to-head height, crisp edges, readable silhouettes, cheerful small-town setting with gabled houses, sidewalks, a town square with a fountain, stage and clock tower. Consistent character designs. 16:9 composition with the action in the center.
 
 CHARACTERS IN THIS SHOT:
-- ALEX: classic blocky block-game avatar (R6-style proportions: cube head, rectangular torso, two arm blocks, two leg blocks), light tan skin, bright blue short-sleeve uniform shirt with a small yellow badge on the left chest, dark blue belt, royal blue pants, white sneakers, blue baseball cap with a yellow five-point star on the front, short brown hair under the cap, simple cartoon face (big round white eyes with black pupils, thin eyebrows, pink cheeks).
-- XELA (Alex's Opposite clone): EXACTLY identical to Alex in every detail — same blue uniform, same blue cap with yellow star, same proportions and colors. Distinguished only by expression and behavior.
+- ALEX: classic Roblox R6 block avatar (rounded-square head, 2x2x1 torso, 1x2x1 arms and legs), yellow skin #FFCF4D on head and arms, blue #3498DB uniform torso and blue legs, blue rounded cap with front brim and a yellow #F1C40F star on the front, classic block-game face: two small black oval eyes and a thin friendly smile.
+- XELA (Alex's Opposite clone): IDENTICAL to Alex in every detail (yellow skin, blue uniform, blue cap with yellow star, same proportions); only the expression differs: smug smirk, one eye squinted, one eyebrow raised.
 
 LOCATION: Kitchen, bright daylight.
 SHOT: Dinner: Alex has a small plate of peas, Xela has a huge plate of fries and signs an autograph for a kid.
