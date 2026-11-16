@@ -75,8 +75,8 @@ shelf(-15, -24, -6, 1); shelf(-8.5, -24, -8, 2); shelf(8.5, -24, -8, 3); shelf(1
 bx(30, 8, 2, M('#e8eef2', { r: 0.4 }), 0, 4, -26.6); for (let k = 0; k < 6; k++) bx(4.4, 6.6, 0.2, M('#bfe6ff', { e: '#9fdcff', ei: 0.7, r: 0.1 }), -12.5 + k * 5, 4.2, -25.5, S, { sh: false });
 // plants + fruit stand near the entrance
 for (const s of [-1, 1]) { const p = new THREE.Group(); p.position.set(s * 6.5, 0, 16); S.add(p); cyl(0.9, 1.6, GOLD, 0, 0.8, 0, p); bx(1.8, 2.6, 1.8, '#3f9b4a', 0, 2.9, 0, p, { rad: 0.6 }); bx(1.2, 1.4, 1.2, '#52b85d', 0.3, 4.5, 0.2, p, { rad: 0.4 }); }
-{ const f = new THREE.Group(); f.position.set(11, 0, 9); S.add(f); bx(5, 2.6, 3, M('#5a3a28', { r: 0.6 }), 0, 1.3, 0, f, { rad: 0.15 }); const r = rng(9);
-  for (let i = 0; i < 26; i++) ball(0.4, ['#e63946', '#f77f00', '#ffd166', '#7cc242'][i % 4], -2 + r() * 4, 2.9 + r() * 0.3, -1.2 + r() * 2.4, f); }
+const standFruits = []; { const f = new THREE.Group(); f.position.set(11, 0, 9); S.add(f); bx(5, 2.6, 3, M('#5a3a28', { r: 0.6 }), 0, 1.3, 0, f, { rad: 0.15 }); const r = rng(9);
+  for (let i = 0; i < 26; i++) standFruits.push(ball(0.4, ['#e63946', '#f77f00', '#ffd166', '#7cc242'][i % 4], -2 + r() * 4, 2.9 + r() * 0.3, -1.2 + r() * 2.4, f)); }
 // checkout counter (long axis along z)
 const CX = -5;
 bx(2.4, 3, 8, M('#3b2a22', { r: 0.5 }), CX, 1.5, 0, S, { rad: 0.08 }); bx(2.7, 0.22, 8.3, M('#fbf7ef', { r: 0.2 }), CX, 3.1, 0, S, { rad: 0.05 });
@@ -104,6 +104,29 @@ const yolks = []; { const r = rng(5); for (let k = 0; k < 7; k++) { const g = pr
 const starTex = canvasTex(128, 128, (g) => { const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64); grd.addColorStop(0, 'rgba(255,255,255,1)'); grd.addColorStop(0.25, 'rgba(255,240,180,0.9)'); grd.addColorStop(1, 'rgba(255,220,120,0)'); g.fillStyle = grd; g.fillRect(0, 0, 128, 128); g.fillStyle = '#fff'; g.beginPath(); g.moveTo(64, 0); g.lineTo(70, 58); g.lineTo(128, 64); g.lineTo(70, 70); g.lineTo(64, 128); g.lineTo(58, 70); g.lineTo(0, 64); g.lineTo(58, 58); g.fill(); });
 const sparkles = []; for (let k = 0; k < 10; k++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: starTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); s.visible = false; S.add(s); sparkles.push(s); }
 const dizzy = new THREE.Group(); S.add(dizzy); for (let k = 0; k < 3; k++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: starTex, color: '#ffe066', depthWrite: false })); s.scale.setScalar(0.7); dizzy.add(s); } dizzy.visible = false;
+
+
+// ---------- props added for the 90 s cut ----------
+const mop = prop((g) => { const st = cyl(0.08, 4.6, '#b07a45', 0, 0, 2.3, g); st.rotation.x = PI / 2; const hd = bx(1.4, 0.25, 0.5, '#8d99ae', 0, 0, 4.6, g, { rad: 0.06 }); hd.rotation.x = PI / 2; for (let k = 0; k < 6; k++) { const q = bx(0.18, 0.08, 0.7, '#f1f1f1', -0.55 + k * 0.22, 0, 4.85, g); } });
+const gun = prop((g) => { bx(0.32, 0.36, 0.85, '#2b2d42', 0, 0, 0.2, g, { rad: 0.08 }); const hd = bx(0.26, 0.6, 0.3, '#2b2d42', 0, -0.35, -0.05, g, { rad: 0.08 }); hd.rotation.x = 0.3; bx(0.22, 0.2, 0.04, M('#ff3b3b', { e: '#ff2222', ei: 1.5 }), 0, 0.02, 0.63, g, { sh: false }); });
+const laser = add(new THREE.BoxGeometry(0.09, 0.09, 1), new THREE.MeshBasicMaterial({ color: '#ff2a2a' }), 0, 0, 0, S, false); laser.visible = false;
+const laserDot = add(new THREE.SphereGeometry(0.12, 10, 8), new THREE.MeshBasicMaterial({ color: '#ff4040' }), 0, 0, 0, S, false); laserDot.visible = false;
+const banana = prop((g) => { for (let k = 0; k < 5; k++) { const b = bx(0.22, 0.24, 0.3, '#ffd23f', Math.sin(k / 4 * PI) * 0.25, 0, -0.6 + k * 0.3, g, { rad: 0.08 }); b.rotation.x = (k - 2) * 0.25; } });
+const puddle = add(new THREE.CircleGeometry(1.6, 28), new THREE.MeshStandardMaterial({ color: '#bfe6ff', roughness: 0.02, metalness: 0.3, transparent: true, opacity: 0.55 }), 0, 0.025, 0, S, false); puddle.rotation.x = -PI / 2; puddle.visible = false;
+const yolkPool = add(new THREE.CircleGeometry(0.9, 24), M('#ffd23f', { r: 0.3 }), 0, 0.03, 0, S, false); yolkPool.rotation.x = -PI / 2; yolkPool.visible = false;
+const cart = prop((g) => { const mt = M('#c9ced6', { r: 0.3, m: 0.7 }); bx(1.9, 0.12, 2.8, mt, 0, 1.0, 0, g); for (const s of [-1, 1]) { bx(0.1, 1.5, 2.8, mt, s * 0.95, 1.75, 0, g); bx(1.9, 1.5, 0.1, mt, 0, 1.75, s * 1.4, g); }
+  for (let k = 0; k < 5; k++) bx(1.9, 0.06, 0.06, mt, 0, 1.2 + k * 0.3, -1.4, g); bx(2.1, 0.14, 0.14, M('#e63946'), 0, 2.9, -1.75, g, { rad: 0.06 }); for (const s of [-1, 1]) bx(0.1, 0.1, 0.5, mt, s * 0.95, 2.6, -1.55, g);
+  for (const [x, z] of [[-0.8, -1.2], [0.8, -1.2], [-0.8, 1.2], [0.8, 1.2]]) { const w = cyl(0.22, 0.18, '#222', x, 0.22, z, g); w.rotation.z = PI / 2; bx(0.06, 0.8, 0.06, mt, x, 0.6, z, g); } });
+const fruits = []; { const r = rng(21); for (let k = 0; k < 26; k++) { const g = prop((q) => ball(0.4, ['#e63946', '#f77f00', '#ffd166', '#7cc242'][k % 4], 0, 0, 0, q)); fruits.push({ g, p0: V(9.4 + r() * 3.4, 2.9, 8 + r() * 2), v: V(-6 + r() * 7, 5 + r() * 7, -2 + r() * 7) }); } }
+const tower = []; { const r = rng(31); const cols = ['#ff6b6b', '#ffd166', '#06d6a0', '#118ab2', '#f77f00', '#8338ec']; for (let k = 0; k < 6; k++) { const g = prop((q) => { bx(1.5, 1.1, 0.7, cols[k], 0, 0, 0, q, { rad: 0.05 }); bx(0.9, 0.5, 0.02, '#ffffff', 0, 0.1, 0.36, q); });
+  tower.push({ g, home: V(1.7 + (k % 2 ? 0.08 : -0.05), 0.55 + k * 1.1, -3.6), v: V(0.8 + r() * 1.8, 1 + r() * 2, 1.4 + r() * 1.6), spin: V(r() * 4 - 2, r() * 3, -2 - r() * 3) }); } }
+const caseOpen = prop((g) => { bx(1.5, 0.3, 1.05, '#141418', 0, 0, 0, g, { rad: 0.06, r: 0.35 }); for (let k = 0; k < 3; k++) bx(0.36, 0.18, 0.8, M('#ffcf3f', { m: 1, r: 0.15, e: '#a87a00', ei: 0.6 }), -0.45 + k * 0.45, 0.2, 0, g);
+  const lid = new THREE.Group(); lid.position.set(0, 0.15, -0.52); g.add(lid); bx(1.5, 0.12, 1.05, '#141418', 0, 0, 0.52, lid, { rad: 0.05, r: 0.35 }); for (const s of [-1, 1]) bx(0.12, 0.14, 1.07, GOLD, s * 0.5, 0, 0.52, lid); g.userData.lid = lid;
+  const L = new THREE.PointLight('#ffc845', 0, 9, 1.5); L.position.set(0, 1.0, 0.3); g.add(L); g.userData.light = L; });
+const puffTex = canvasTex(128, 128, (g) => { const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64); grd.addColorStop(0, 'rgba(255,255,255,0.95)'); grd.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = grd; g.fillRect(0, 0, 128, 128); });
+const puffs = []; for (let k = 0; k < 8; k++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: puffTex, color: '#e8e8ee', transparent: true, depthWrite: false })); s.visible = false; S.add(s); puffs.push(s); }
+const dizzyAt = (pos, u) => { dizzy.visible = true; dizzy.children.forEach((s, i) => { const a = u * 5 + i * 2.09; s.position.set(pos.x + Math.cos(a) * 1.2, pos.y + 0.2 * Math.sin(a * 2), pos.z + Math.sin(a) * 1.2); }); };
+const aim = (obj, from, to) => { obj.position.copy(from); obj.lookAt(to); };
 
 // ---------- characters ----------
 const faceDraw = (g, skin, f) => { const w = 512; g.fillStyle = skin; g.fillRect(0, 0, w, w);
@@ -212,6 +235,95 @@ const tBL = faceTo(BL, CU, 0) , tCU = faceTo(CU, BL, 0);
 const atCounterCam = (u, keys) => camK(u, keys || [[0, [-3.6, 5.6, 14.5], [-5, 4.1, 0], 40]]);
 let T = 0;
 const SC = {
+
+  scanner(u) { // he scans groceries... then her handbag... then her forehead
+    const beeps = [0.9, 2.2, 3.3];
+    P(CUSTOMER, { x: CU[0], z: CU[1], ry: tCU + 0.55, face: u < 2.0 ? 'neutral' : u < 3.2 ? 'annoyed' : 'angry', look: [-0.3, 0], lean: u > 3.6 ? 0.18 * ease(u, 3.6, 3.9) : 0, head: u > 3.3 ? [0, 0, 0] : [0, 0, 0] });
+    const target = u < 1.5 ? V(CX, 3.35, -1.5) : u < 2.6 ? handPos(CUSTOMER, -1).add(V(0, -0.4, 0.2)) : (S.updateMatrixWorld(), CUSTOMER.head.getWorldPosition(V(0, 0, 0)).add(V(0, 0.45, 0.6)));
+    P(BLUE, { x: BL[0], z: BL[1], ry: tBL - 0.55, face: u < 3.6 ? 'grin' : 'worried', armR: u < 1.5 ? [-1.1 - 0.3 * Math.sin(u * 3), 0, 0.15] : u < 2.6 ? [-1.45, 0, -0.1] : u < 3.6 ? [-1.75, 0, -0.15] : [lerp(-1.75, -0.4, ease(u, 3.6, 4.0)), 0, 0], lean: u > 1.5 && u < 3.6 ? 0.08 : 0 });
+    S.updateMatrixWorld(); const hp = handPos(BLUE, 1); gun.visible = true; aim(gun, hp.clone().add(V(0, 0.15, 0)), target);
+    const on = beeps.some((b) => u > b - 0.35 && u < b + 0.15) && u < 3.6; if (on) { laser.visible = laserDot.visible = true; const a = hp.clone().add(V(0, 0.2, 0)); const d = a.distanceTo(target); laser.position.copy(a).lerp(target, 0.5); laser.lookAt(target); laser.scale.set(1, 1, d); laserDot.position.copy(target); }
+    if (u < 1.5) { banana.visible = true; banana.position.set(CX, 3.55, lerp(1.5, -2.2, ease(u, 0.3, 1.3))); banana.rotation.set(0, 0, 0); }
+    atCounterCam(u, [[0, [-4.2, 6.2, 16.5], [-5, 4.0, 0.6], 50], [2.0, [-4.0, 6.0, 15.0], [-4.6, 4.4, 0.6], 46], [3.0, [-3.0, 5.6, 11.5], [-3.6, 5.0, 0.6], 38], [4.0, [-3.0, 5.6, 11.5], [-3.6, 5.0, 0.6], 38], [5.0, [-3.6, 5.8, 13.5], [-4.2, 4.6, 0.6], 42]]);
+  },
+  mop(u) { // he mops the melon mess, slips, and bowls the manager over
+    const sp = V(-4.6, 0, 4.1); const take = 1.0, slip = 3.4, hit = 4.15;
+    splatDecal.visible = true; splatDecal.position.set(sp.x, 0.03, sp.z); splatDecal.scale.setScalar(lerp(1, 0.25, ease(u, 1.2, 3.2)));
+    chunks.forEach((ch, i) => { if (i % 2) return; ch.g.visible = true; ch.g.position.copy(fly(V(-4.6, 0.3, 4.1), ch.v, 3, -22, 0.12, 0.25)); ch.g.rotation.set(ch.spin.x, ch.spin.y, 0); });
+    puddle.visible = u > 1.3; puddle.position.set(sp.x + 1.4, 0.025, sp.z + 0.4); puddle.scale.setScalar(ease(u, 1.3, 3.0) * 1.2 + 0.01);
+    const mP = [1.4, 5.0], fallM = ease(u, hit, hit + 0.35);
+    P(MANAGER, { x: mP[0], z: mP[1], ry: -PI / 2 + 0.55, face: u < hit ? (u < take ? 'angry' : 'annoyed') : 'dizzy', armR: u < take ? [-1.3, 0, -0.2] : u < hit ? [-0.5, 0, 0.9] : undefined, armL: u > take && u < hit ? [-0.5, 0, 0.9] : undefined, bodyRz: fallM * 1.45, bodyY: fallM * 0.6, legL: u > hit ? -0.4 : undefined });
+    const slide = ease(u, slip, hit), lying = u > slip;
+    const bx0 = lerp(-2.6, -3.2, Math.sin(u * 9) * 0.5 + 0.5);
+    P(BLUE, { x: lying ? lerp(-3.4, -0.6, slide) : (u < take ? -2.8 : bx0), z: 4.6, y: lying ? 0.55 : 0, ry: lying ? PI / 2 : 0.15, face: u < slip ? (u < take ? 'happy' : 'grin') : u < hit + 0.6 ? 'shocked' : 'worried', jaw: 1.2,
+      bodyRx: lying ? -1.45 * ease(u, slip, slip + 0.2) : 0, armL: lying ? [-2.8, 0, -0.5] : [-1.1, 0, -0.2], armR: lying ? [-2.8, 0, 0.5] : [-1.0, 0, 0.1], legL: lying ? -0.9 : undefined, legR: lying ? -0.6 : undefined, head: lying ? [-0.5, 0, 0] : [0, 0, 0] });
+    S.updateMatrixWorld();
+    if (u < take) { const g0 = handPos(MANAGER, 1); mop.visible = true; aim(mop, g0, V(g0.x - 1.2, 0.2, g0.z + 1.0)); }
+    else if (u < slip) { const g0 = handPos(BLUE, 1); mop.visible = true; aim(mop, g0.clone().add(V(0, 0.2, 0)), V(g0.x - 0.6 + Math.sin(u * 9) * 0.9, 0.15, g0.z + 1.6)); }
+    else { mop.visible = true; const t = u - slip; mop.position.copy(fly(V(-3.0, 4.0, 4.8), V(-1.5, 5, 0.5), t, -22, 0.2)); mop.rotation.set(0.3 + t * 6, 0, t * 4); }
+    if (u > hit + 0.4) { S.updateMatrixWorld(); dizzyAt(MANAGER.head.getWorldPosition(V(0, 0, 0)).add(V(0, 0.8, 0)), u); }
+    camK(u, [[0, [-2.4, 7.0, 15.5], [-2.8, 2.8, 4.4], 52], [3.1, [-2.0, 7.4, 16.0], [-2.4, 2.6, 4.4], 52], [3.35, [-1.0, 14.5, 15.0], [-1.0, 0.5, 4.2], 56], [6.5, [-1.0, 13.8, 14.2], [-0.8, 0.5, 4.4], 54]]);
+    if (u > hit && u < hit + 0.3) shake(0.1);
+  },
+  cart(u) { // shopping-cart joyride straight into the fruit stand
+    const A = V(-1.5, 0, -15), B = V(8.0, 0, 6.6), dir = B.clone().sub(A).normalize(), crash = 3.3, ry = Math.atan2(dir.x, dir.z);
+    const k = clamp(u / crash), cp = A.clone().lerp(B, k * k * (1.6 - 0.6 * k));
+    cart.visible = true; cart.position.copy(cp); cart.rotation.set(0, ry, u > crash ? -0.45 * ease(u, crash, crash + 0.3) : 0);
+    let bp, sit = false, by = 0.75;
+    if (u < crash) { bp = cp.clone().sub(dir.clone().multiplyScalar(2.0)); by = 0.35; }
+    else { const p0 = B.clone().sub(dir.clone().multiplyScalar(0.6)); const f = fly(V(p0.x, 1.2, p0.z), dir.clone().multiplyScalar(-3.2).add(V(0, 7, 0)), u - crash, -22, 0); bp = V(f.x, 0, f.z); by = f.y; sit = u > crash + 0.6; }
+    P(BLUE, { x: bp.x, z: bp.z, y: sit ? 0 : by, ry: u < crash ? ry : ry, face: u < crash ? 'grin' : u < crash + 0.6 ? 'shocked' : 'dizzy', jaw: 1.2, sit, armL: u < crash ? [-2.6, 0, -0.5 + Math.sin(u * 10) * 0.2] : sit ? [-0.6, 0, 1.0] : [-2.8, 0, -0.8], armR: u < crash ? [-2.6, 0, 0.5] : sit ? [-0.6, 0, 1.0] : [-2.8, 0, 0.8], legL: u < crash ? -0.25 : undefined, legR: u < crash ? 0.1 : undefined, lean: u < crash ? -0.12 : 0 });
+    standFruits.forEach((f) => (f.visible = u < crash));
+    fruits.forEach((f, i) => { f.g.visible = u >= crash; if (u >= crash) f.g.position.copy(fly(f.p0, f.v, u - crash - i * 0.004, -22, 0.4)); });
+    if (u > crash + 1.2) { const o = fruits[3].g; o.position.set(bp.x, 6.2 - 1.35 + 0.95 + 0.4 + 0.75 * Math.max(0, Math.sin((u - crash - 1.2) * 6)) * Math.exp(-(u - crash - 1.2) * 2), bp.z); }
+    if (sit) dizzyAt(V(bp.x, 5.0, bp.z), u);
+    const look = u < crash ? cp.clone().add(V(0, 3.2, 0)) : V(lerp(8.0, bp.x, 0.5) + 0.6, 2.4, lerp(7.4, bp.z, 0.5));
+    camK(0, [[0, [lerp(-6, 0.5, ease(u, 0, crash)), lerp(7.5, 6.8, ease(u, 0, crash)), lerp(2, 17.6, ease(u, 0, crash))], [look.x, look.y, look.z], 50]]);
+    if (u > crash && u < crash + 0.35) shake(0.14);
+  },
+  shelf(u) { // the box tower he built comes down on the manager
+    const fall = 3.4, mStop = 3.0, mP0 = [7.5, 0.8], mP1 = [2.6, -1.6];
+    const w = ease(u, 1.4, mStop), mx = lerp(mP0[0], mP1[0], w), mz = lerp(mP0[1], mP1[1], w), buried = u > fall + 0.45;
+    P(BLUE, { x: -0.6 - (u > 4.6 ? (u - 4.6) * 0.9 : 0), z: -2.4, ry: u < 1.4 ? 0.6 : u < 4.6 ? 0.25 : 0.4, face: u < fall ? (u < 1.4 ? 'grin' : 'happy') : u < 4.4 ? 'shocked' : 'worried', jaw: 1.2,
+      armR: u < 1.2 ? [-2.9, 0, -0.35] : undefined, armL: u > fall && u < 4.4 ? [-2.6, 0, -0.4] : undefined, walk: u > 4.6 ? 0.6 : 0, ph: -u * 8 });
+    P(MANAGER, { x: mx, z: mz, ry: u < mStop ? -PI / 2 + 0.2 : -0.7, walk: u > 1.4 && u < mStop ? 1 : 0, ph: u * 10, face: buried ? 'angry' : 'annoyed', sit: buried, armR: !buried && u > mStop - 0.4 ? [-1.6, 0, -0.1 + Math.sin(u * 14) * 0.12] : buried ? [-0.6, 0, 1.1] : undefined, armL: buried ? [-0.6, 0, 1.1] : undefined, head: buried ? [0.1, 0, 0.15] : [0, 0, 0] });
+    tower.forEach((b, k) => { b.g.visible = true; const top = k === 5;
+      if (u < fall) { const wob = u > 1.2 ? Math.sin(u * 9) * 0.03 * k * ease(u, 1.2, fall) : 0; b.g.position.copy(b.home).add(V(wob * 3, 0, 0)); b.g.rotation.set(0, 0, -wob);
+        if (top && u < 1.2) { S.updateMatrixWorld(); const h = handPos(BLUE, 1); b.g.position.copy(h.add(V(0, 0.4, 0)).lerp(b.home, ease(u, 0.4, 1.15))); } return; }
+      const t = u - fall - (5 - k) * 0.04; if (t < 0) { b.g.position.copy(b.home); return; }
+      if (k === 4 && buried) { b.g.position.set(mP1[0], 6.2 - 1.35 + 0.95 + 0.55 + 0.4, mP1[1]); b.g.rotation.set(0, 0.3, 0.25); return; }
+      b.g.position.copy(fly(b.home, b.v, t, -22, 0.4, 0.2)); b.g.rotation.set(b.spin.x * Math.min(t, 0.6), b.spin.y * Math.min(t, 0.6), b.spin.z * Math.min(t, 0.6)); });
+    camK(u, [[0, [0.2, 6.6, 15.5], [0.6, 4.2, -2.6], 50], [3.2, [0.8, 6.2, 14.5], [1.4, 4.0, -2.4], 48], [4.0, [1.6, 5.0, 11.0], [2.2, 3.0, -1.8], 44], [7.0, [1.2, 5.0, 11.5], [1.6, 3.2, -1.8], 46]]);
+    if (u > fall + 0.3 && u < fall + 0.6) shake(0.1);
+  },
+  rant(u) { // the manager loses it and holds out the box: you're fired... DING
+    const bP = [-2.8, 3.2], m0 = [4.5, 6.5], m1 = [0.2, 3.6], w = ease(u, 0, 1.3), mp = [lerp(m0[0], m1[0], w), lerp(m0[1], m1[1], w)], ding = 4.7, look = ease(u, ding, ding + 0.3);
+    P(MANAGER, { x: mp[0], z: mp[1], ry: lerp(faceTo(mp, bP) + 0.5, 0.3, look), walk: u < 1.3 ? 1.2 : 0, ph: u * 12, face: u < ding ? 'angry' : 'shocked', jaw: 1.1,
+      armR: u > 1.3 && u < 3.0 ? [-1.6, 0, Math.sin(u * 16) * 0.25] : undefined, armL: u > 3.0 && u < ding ? [-1.3, 0, -0.1] : undefined, ...(u > 3.0 ? { armR: [-1.3, 0, -0.1] } : {}), squash: u < 1.3 ? 0 : 0.02 * Math.sin(u * 20), head: [0, look * 0.4, 0] });
+    P(BLUE, { x: bP[0], z: bP[1], ry: lerp(faceTo(bP, mp) - 0.55, 0.2, look), face: u < 3.0 ? 'worried' : u < ding ? 'sad' : 'shocked', head: [u < ding ? 0.15 : 0, -look * 0.3, 0] });
+    if (u > 3.0) { S.updateMatrixWorld(); const a = handPos(MANAGER, 1), b = handPos(MANAGER, -1); box.visible = true; box.position.copy(a.add(b).multiplyScalar(0.5).add(V(0, -0.35, 0))); box.rotation.set(0, MANAGER.root.rotation.y, 0); }
+    S.updateMatrixWorld(); const hp = MANAGER.head.getWorldPosition(V(0, 0, 0)); puffs.forEach((p, k) => { const t = (u * 1.2 + k / 8) % 1; p.visible = u > 1.0 && u < ding; p.position.set(hp.x + (k % 2 ? 0.6 : -0.6) * (1 + t), hp.y + 1.2 + t * 2.2, hp.z); p.scale.setScalar(0.4 + t * 1.2); p.material.opacity = 0.8 * (1 - t); });
+    if (u > ding) { outsideMat.color.set('#fff6dc').lerp(new THREE.Color('#ffd27a'), look * 0.6); }
+    camK(u, [[0, [-0.8, 6.4, 17.5], [-1.2, 3.8, 3.2], 52], [2.4, [-1.0, 6.2, 16.0], [-1.2, 4.2, 3.2], 48], [4.7, [-1.0, 6.0, 15.0], [-1.2, 4.4, 3.2], 46], [5.4, [-1.2, 6.2, 16.5], [-1.0, 4.2, 3.4], 50]]);
+  },
+  open(u) { // he opens the golden briefcase
+    const bP = [-2.6, 1.5], op = ease(u, 0.5, 1.2);
+    P(BLUE, { x: bP[0], z: bP[1], ry: 0.25, face: u < 1.1 ? 'happy' : 'smug', armL: [-1.25, 0, -0.2], armR: [-1.25, 0, 0.0] });
+    S.updateMatrixWorld(); const a = handPos(BLUE, 1), b = handPos(BLUE, -1); caseOpen.visible = true; caseOpen.position.copy(a.add(b).multiplyScalar(0.5).add(V(0, 0.35, 0.3))); caseOpen.rotation.set(0, BLUE.root.rotation.y, 0);
+    caseOpen.userData.lid.rotation.x = -1.9 * op; caseOpen.userData.light.intensity = 14 * op;
+    for (let i = 0; i < 6; i++) spark(i, caseOpen.position.clone().add(V(Math.cos(i * 1.1 + u * 2) * 1.1, 0.6 + Math.sin(i * 1.9 + u * 3) * 0.7, 0.4)), op * 0.5 * Math.abs(Math.sin(u * 4 + i)));
+    P(BOSS, { x: 1.9, z: 1.7, ry: faceTo([1.9, 1.7], bP) + 0.55, face: 'happy', lean: 0.5, head: [-0.3, 0, 0] }); BOSS.shades.position.set(0, 0.01, 1.06);
+    P(MANAGER, { x: 2.6, z: -5.5, ry: faceTo([2.6, -5.5], bP) - 0.7, face: 'shocked', jaw: 1.8, squash: 0.03 * Math.sin(u * 30) * ease(u, 1.2, 1.5) });
+    camK(u, [[0, [-1.6, 5.6, 10.5], [-2.4, 4.4, 1.5], 44], [4.0, [-1.9, 5.4, 8.8], [-2.4, 4.6, 1.5], 40]]);
+  },
+  callback(u) { // the ex-manager is the new guy now: mopping the floor
+    yolkPool.visible = true; yolkPool.position.set(-1.6, 0.03, 4.4);
+    P(MANAGER, { x: -0.6, z: 5.6, ry: -0.5 + Math.sin(u * 3) * 0.12, face: 'sad', head: [0.25, 0, 0], armL: [-0.9, 0, -0.2], armR: [-0.7, 0, 0.1] });
+    S.updateMatrixWorld(); const g0 = handPos(MANAGER, 1); mop.visible = true; aim(mop, g0.clone().add(V(0, 0.4, 0)), V(-1.6 + Math.sin(u * 4) * 0.8, 0.15, 4.4));
+    P(BLUE, { x: 2.6, z: -3.0, ry: -0.35, face: u < 2.5 ? 'laugh' : 'happy', lean: u < 2.5 ? -0.08 + Math.sin(u * 16) * 0.04 : 0, armR: [-0.4, 0, 0.1] }); holdAt(briefcase, BLUE, 1, [0, -0.25, 0], [0, BLUE.root.rotation.y + PI / 2, 0]);
+    P(BOSS, { x: 5.4, z: -3.2, ry: -0.6, face: 'laugh', lean: -0.06 + Math.sin(u * 16 + 1) * 0.04 }); BOSS.shades.position.set(0, 0.01, 1.06);
+    camK(u, [[0, [-2.0, 5.8, 17.0], [0.6, 3.6, 1.8], 48], [5.0, [-1.6, 5.4, 14.5], [0.4, 3.6, 2.2], 44]]);
+  },
   arrive(u) { // the new guy walks into the luxury store, amazed
     setDoors(ease(u, 0.15, 1.0)); const w = ease(u, 0.6, 2.9), z = lerp(24, 13.5, w), walking = u > 0.6 && u < 2.9;
     P(BLUE, { x: 0, z, ry: PI, walk: walking ? 1 : 0, ph: u * 10, face: u > 2.6 ? 'amazed' : 'happy', head: u > 2.9 ? [-0.18, Math.sin((u - 2.9) * 3) * 0.5, 0] : [0, 0, 0] });
@@ -286,7 +398,7 @@ const SC = {
     const mx = lerp(-10, -3.8, ease(u, 1.5, 2.3)), bow = ease(u, 2.4, 2.8);
     P(MANAGER, { x: mx, z: 14.2, ry: u < 2.3 ? PI / 2 + 0.6 : lerp(PI / 2 + 0.6, faceTo([-3.8, 14.2], [0.4, z], 0) - 0.3, ease(u, 2.2, 2.4)), walk: u > 1.5 && u < 2.3 ? 1.3 : 0, ph: u * 16, face: u < 2.4 ? 'shocked' : 'grin', jaw: 1.1,
       lean: bow * 0.85, head: [-0.35 * bow, 0, 0], armL: bow > 0 ? [-0.4 * bow, 0, 0.9 * bow] : undefined, armR: bow > 0 ? [-1.2 * bow, 0, -0.2] : undefined });
-    if (u > 2.3) clipboard.visible = false;
+    if (u < 2.0) { S.updateMatrixWorld(); const a = handPos(MANAGER, 1), b = handPos(MANAGER, -1); box.visible = true; box.position.copy(a.add(b).multiplyScalar(0.5)); box.rotation.set(0, MANAGER.root.rotation.y, 0); } else if (u < 3.0) { box.visible = true; const p = fly(V(mx - 0.5, 4.0, 14.2), V(-6, 6, -2), u - 2.0, -22, 0.6); box.position.copy(p); box.rotation.set(0, (u - 2) * 4, (u - 2) * 6); }
     S.updateMatrixWorld(); BOSS.shades.getWorldPosition(tmp); spark(0, tmp.clone().add(V(0.45, 0.15, -0.3)), u > 2.0 && u < 2.6 ? 1.6 * Math.sin((u - 2.0) / 0.6 * PI) : 0);
     camK(u, [[0, [1.6, 2.6, 1.0], [-0.4, 5.4, 18], 48], [3.4, [1.0, 3.0, 3.5], [-1.2, 5.0, 16], 50], [4.0, [0.9, 3.1, 4.0], [-1.2, 5.0, 16], 50]]);
   },
@@ -328,7 +440,7 @@ const SC = {
     holdAt(briefcase, BLUE, 1, [0, -0.25, 0], [0, BLUE.root.rotation.y + PI / 2, 0]);
     P(BOSS, { x: kP[0], z: kP[1], ry: -0.3, face: 'smug', armL: [-0.5, 0, 0.9], armR: [-0.5, 0, 0.9] });
     BOSS.shades.position.set(0, 0.01, 1.06);
-    const w = ease(u, 0.8, 4.0), mp = [lerp(-0.2, 4.8, w), lerp(-2.0, 13.5, w)];
+    const w = ease(u, 0.8, 4.9), mp = [lerp(-0.2, 4.8, w), lerp(-2.0, 13.5, w)];
     P(MANAGER, { x: mp[0], z: mp[1], ry: u < 0.8 ? -0.3 : 0.32, walk: u > 0.8 ? 0.7 : 0, ph: u * 7, face: 'sad', head: [0.3, 0, 0], armL: [-0.95, 0, -0.15], armR: [-0.95, 0, -0.15], lean: 0.1 });
     S.updateMatrixWorld(); const a = handPos(MANAGER, 1), b = handPos(MANAGER, -1); box.visible = true; box.position.copy(a.add(b).multiplyScalar(0.5).add(V(0, -0.15, 0))); box.rotation.set(0, MANAGER.root.rotation.y, 0);
     setDoors(ease(u, 1.8, 2.6));
@@ -346,9 +458,9 @@ const SC = {
     if (u > 0.45 && u < 0.6) shake(0.06);
   },
 };
-const SHOTS = [['arrive', 0, 3.6], ['manager', 3.6, 7.6], ['melon', 7.6, 12.0], ['cans', 12.0, 16.4], ['eggs', 16.4, 20.4], ['boss', 20.4, 24.4], ['brag', 24.4, 28.6], ['reveal', 28.6, 32.6], ['fired', 32.6, 36.6], ['end', 36.6, 39.4]];
-window.SHOTS = SHOTS; window.__cam = () => [cam.position.toArray(), cam.fov]; window.TOTAL = 39.4;
-const resetAll = () => { for (const c of CHARS) { c.root.visible = false; } for (const p of [melon, clipboard, briefcase, carton, bag, box, splatDecal, dizzy]) p.visible = false; for (const c of cans) c.g.visible = false; for (const c of chunks) c.g.visible = false; for (const y of yolks) y.g.visible = false; for (const s of sparkles) s.visible = false;
+const SHOTS = [['arrive', 0, 4.2], ['manager', 4.2, 8.8], ['scanner', 8.8, 13.8], ['melon', 13.8, 18.8], ['mop', 18.8, 25.3], ['cans', 25.3, 30.3], ['cart', 30.3, 37.3], ['shelf', 37.3, 44.3], ['eggs', 44.3, 48.9], ['rant', 48.9, 54.9], ['boss', 54.9, 60.9], ['brag', 60.9, 66.4], ['reveal', 66.4, 71.4], ['open', 71.4, 75.4], ['fired', 75.4, 80.4], ['callback', 80.4, 85.4], ['end', 85.4, 89.4]];
+window.SHOTS = SHOTS; window.__cam = () => [cam.position.toArray(), cam.fov]; window.TOTAL = 89.4;
+const resetAll = () => { for (const c of CHARS) { c.root.visible = false; } for (const p of [melon, clipboard, briefcase, carton, bag, box, splatDecal, dizzy, mop, gun, laser, laserDot, banana, puddle, yolkPool, cart, caseOpen]) p.visible = false; for (const f of fruits) f.g.visible = false; for (const b of tower) b.g.visible = false; for (const q of puffs) q.visible = false; standFruits.forEach((f) => (f.visible = true)); caseOpen.userData.light.intensity = 0; for (const c of cans) c.g.visible = false; for (const c of chunks) c.g.visible = false; for (const y of yolks) y.g.visible = false; for (const s of sparkles) s.visible = false;
   setDoors(0); rayMat.opacity = 0; outsideMat.color.set('#fff6dc'); BOSS.shades.position.set(0, 0.25, 0.98); bag.scale.set(1, 1, 1); };
 window.renderFrame = (f) => { const t = f / 30; T = t; resetAll(); let s = SHOTS[0]; for (const x of SHOTS) if (t >= x[1]) s = x; SC[s[0]](t - s[1]); R.render(S, cam); };
 window.ready = true;

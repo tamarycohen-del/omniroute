@@ -1,4 +1,4 @@
-# "The New Guy" — blocky 3D supermarket comedy short (39.4 s, 9:16, no voice, no on-screen text)
+# "The New Guy" — blocky 3D supermarket comedy short (89.4 s, 9:16, no voice, no on-screen text)
 
 Original designs in a Roblox-inspired blocky style (no Roblox assets, faces or logos).
 - `web/market.html`: whole short in three.js (needs three@0.160.0 unpacked as `web/package/` and a node_modules link with playwright).

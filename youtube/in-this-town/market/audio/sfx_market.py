@@ -8,7 +8,7 @@ import sys, wave
 import numpy as np
 
 SR = 48000
-DUR = 39.4
+DUR = 89.4
 N = int(DUR * SR)
 rng = np.random.default_rng(7)
 mus = np.zeros(N)
@@ -83,11 +83,13 @@ def boss_theme(t0, t1):
     tt = t_(t1 - t0); put(mus, t0, np.sin(2 * np.pi * 1760 * tt) * 0.5 * (0.5 + 0.5 * np.sin(2 * np.pi * 6 * tt)) * np.minimum(1, tt / 1.0) * np.exp(-tt / 3), 0.03)  # shimmer
 
 
-comedy(0.0, 20.4)
-boss_theme(20.4, 24.4)
-comedy(24.4, 28.6, 0.8)
-comedy(36.6, 39.0, 1.0)
-for n in [60, 64, 67, 72]: put(mus, 39.0, note(hz(n), 0.4, "tri", 0.25), 0.18)
+T0 = dict(arrive=0, manager=4.2, scanner=8.8, melon=13.8, mop=18.8, cans=25.3, cart=30.3, shelf=37.3, eggs=44.3, rant=48.9, boss=54.9, brag=60.9, reveal=66.4, open=71.4, fired=75.4, callback=80.4, end=85.4)
+comedy(0.0, 48.9)
+comedy(48.9, 54.6, 0.6)
+boss_theme(54.9, 60.9)
+comedy(60.9, 66.4, 0.8)
+comedy(80.4, 89.0, 0.9)
+for n in [60, 64, 67, 72]: put(mus, 89.0, note(hz(n), 0.4, "tri", 0.25), 0.18)
 
 # ---------- sfx ----------
 def whoosh(at, d=0.45, g=0.5, up=True):
@@ -144,54 +146,84 @@ def sad_trombone(at, g=0.35):
 def slap(at, g=0.9): put(fx, at, lp(noise(0.12), 0.8) * env(0.12, 0.0005, 0.02) + note(220, 0.12, "sine", 0.03), g)
 
 
-# 1 arrive
+def at(shot, dt): return T0[shot] + dt
+# arrive
 whoosh(0.15, 0.8, 0.35)
 for k in range(8): step(0.6 + k * 0.314, 0.3)
 sparkle(2.9, 0.7)
-# 2 manager
-whoosh(3.6, 0.6, 0.25, up=False)
-for k in range(6): whoosh(5.0 + k * 0.18, 0.12, 0.08)
-ding(6.62, 1318, 0.25)
-for k in range(5): step(7.1 + k * 0.26, 0.28)
-# 3 melon
-thump(8.32, 0.6)
-whoosh(8.95, 0.3, 0.25)
-whoosh(9.36, 0.5, 0.35)
-splat(9.93, 1.0)
-for k in range(4): put(fx, 9.98 + k * 0.07, lp(noise(0.06), 0.4) * env(0.06, 0.001, 0.015), 0.4)
-stinger(10.6, 0.25)
-# 4 cans
-put(fx, 13.35, lp(noise(0.35), 0.7) * env(0.35, 0.01, 0.15) * 0.5, 0.4)
-for k in range(28): clink(13.75 + rng.uniform(0, 1.3), 0.22)
-thump(13.8, 0.5); thump(14.2, 0.9)
-for k in range(10): chirp(14.4 + k * 0.2)
-# 5 eggs
-whoosh(16.8, 0.5, 0.3)
-thump(17.55, 0.9)
-for k in range(5): put(fx, 17.56 + k * 0.03, note(rng.uniform(900, 1500), 0.08, "sine", 0.02), 0.25)
-splat(17.92, 0.6)
-stinger(18.1, 0.18)
-for k in range(6): step(18.75 + k * 0.224, 0.45, heavy=True)
-# 6 boss
-whoosh(20.4, 1.0, 0.35)
-for k in range(5): step(21.0 + k * 0.7, 0.5, heavy=True)
-sparkle(22.35, 0.4, 0.3); ding(22.45, 2093, 0.3)
-for k in range(5): step(21.9 + k * 0.17, 0.3)
-whoosh(22.85, 0.4, 0.3, up=False)
-# 7 brag
-scratch(27.3, 0.55)
-put(fx, 27.5, lp(noise(0.3), 0.8) * env(0.3, 0.005, 0.1), 0.15)
-# 8 reveal
-for k in range(4): step(28.7 + k * 0.314, 0.4, heavy=True)
-whoosh(29.9, 0.4, 0.3, up=False)
-sparkle(30.6, 0.9, 0.25); ding(30.95, 1568, 0.35)
-stinger(31.35, 0.75)
-# 9 fired
-sad_trombone(32.9, 0.4)
-for k in range(8): step(33.6 + k * 0.45, 0.3)
-# 10 end
-whoosh(36.75, 0.3, 0.3); slap(37.05, 1.0); sparkle(37.05, 0.5, 0.25)
-ding(38.0, 2637, 0.3)
+# manager
+whoosh(at("manager", 0), 0.6, 0.25, up=False)
+for k in range(6): whoosh(at("manager", 1.4) + k * 0.18, 0.12, 0.08)
+ding(at("manager", 3.02), 1318, 0.25)
+for k in range(6): step(at("manager", 3.5) + k * 0.26, 0.28)
+# scanner
+for b in [0.9, 2.2, 3.3]: put(fx, at("scanner", b), note(2400, 0.14, "sq", 0.1), 0.18)
+whoosh(at("scanner", 3.6), 0.3, 0.15)
+# melon
+thump(at("melon", 0.72), 0.6); whoosh(at("melon", 1.35), 0.3, 0.25); whoosh(at("melon", 1.76), 0.5, 0.35)
+splat(at("melon", 2.33), 1.0)
+for k in range(4): put(fx, at("melon", 2.38) + k * 0.07, lp(noise(0.06), 0.4) * env(0.06, 0.001, 0.015), 0.4)
+stinger(at("melon", 3.0), 0.25)
+# mop
+for k in range(10): put(fx, at("mop", 1.1) + k * 0.23, lp(noise(0.18), 0.25) * env(0.18, 0.02, 0.06), 0.25)
+whoosh(at("mop", 3.4), 0.3, 0.3)
+d = 0.75; tt = t_(d); put(fx, at("mop", 3.4), np.sin(2 * np.pi * np.cumsum(500 + 900 * tt / d) / SR) * env(d, 0.01, 0.4), 0.12)  # slide whistle
+thump(at("mop", 4.15), 1.0); thump(at("mop", 4.4), 0.7)
+for k in range(10): chirp(at("mop", 4.6) + k * 0.2)
+# cans
+put(fx, at("cans", 1.35), lp(noise(0.35), 0.7) * env(0.35, 0.01, 0.15) * 0.5, 0.4)
+for k in range(28): clink(at("cans", 1.75) + rng.uniform(0, 1.3), 0.22)
+thump(at("cans", 1.8), 0.5); thump(at("cans", 2.2), 0.9)
+for k in range(12): chirp(at("cans", 2.4) + k * 0.2)
+# cart
+r_ = t_(3.3); put(fx, at("cart", 0), lp(noise(3.3), 0.2) * np.minimum(1, r_ / 2) * 0.6 + np.sin(2 * np.pi * 30 * r_) * 0.1, 0.35)
+for k in range(30): clink(at("cart", 0.3) + k * 0.1, 0.05)
+thump(at("cart", 3.3), 1.0); put(fx, at("cart", 3.3), lp(noise(0.6), 0.6) * env(0.6, 0.001, 0.2), 0.5)
+for k in range(14): put(fx, at("cart", 3.6) + rng.uniform(0, 1.4), note(rng.uniform(120, 220), 0.12, "sine", 0.04), 0.5)
+for k in range(10): chirp(at("cart", 4.0) + k * 0.25)
+# shelf
+whoosh(at("shelf", 0.4), 0.4, 0.2)
+for k in range(5): step(at("shelf", 1.4) + k * 0.31, 0.3)
+for k in range(4): put(fx, at("shelf", 1.4) + k * 0.4, note(330, 0.15, "tri", 0.06), 0.1)
+for k in range(6): thump(at("shelf", 3.45) + k * 0.06, 0.45)
+stinger(at("shelf", 4.2), 0.2)
+# eggs
+whoosh(at("eggs", 0.4), 0.5, 0.3); thump(at("eggs", 1.15), 0.9)
+for k in range(5): put(fx, at("eggs", 1.16) + k * 0.03, note(rng.uniform(900, 1500), 0.08, "sine", 0.02), 0.25)
+splat(at("eggs", 1.52), 0.6); stinger(at("eggs", 1.7), 0.18)
+for k in range(10): step(at("eggs", 2.35) + k * 0.224, 0.45, heavy=True)
+# rant
+for k in range(5): step(at("rant", 0.1) + k * 0.26, 0.5, heavy=True)
+for k in range(9): put(fx, at("rant", 1.3) + k * 0.19, lp(noise(0.12), 0.5) * env(0.12, 0.01, 0.04), 0.12)
+whoosh(at("rant", 1.0), 1.8, 0.12)
+thump(at("rant", 3.0), 0.5)
+ding(at("rant", 4.7), 1568, 0.45); ding(at("rant", 4.95), 1245, 0.4)
+# boss
+whoosh(at("boss", 0), 1.0, 0.35)
+for k in range(7): step(at("boss", 0.6) + k * 0.7, 0.5, heavy=True)
+whoosh(at("boss", 2.0), 0.4, 0.3); thump(at("boss", 2.6), 0.4)
+sparkle(at("boss", 1.95), 0.4, 0.3); ding(at("boss", 2.05), 2093, 0.3)
+for k in range(5): step(at("boss", 1.5) + k * 0.17, 0.3)
+whoosh(at("boss", 2.45), 0.4, 0.3, up=False)
+# brag
+scratch(at("brag", 2.9), 0.55); put(fx, at("brag", 3.1), lp(noise(0.3), 0.8) * env(0.3, 0.005, 0.1), 0.15)
+# reveal
+for k in range(4): step(at("reveal", 0.1) + k * 0.314, 0.4, heavy=True)
+whoosh(at("reveal", 1.3), 0.4, 0.3, up=False)
+sparkle(at("reveal", 2.0), 0.9, 0.25); ding(at("reveal", 2.35), 1568, 0.35)
+stinger(at("reveal", 2.75), 0.75)
+# open
+put(fx, at("open", 0.5), lp(noise(0.12), 0.6) * env(0.12, 0.001, 0.03), 0.4)
+tt = t_(3.2); put(fx, at("open", 0.6), (np.sin(2 * np.pi * 523 * tt) + np.sin(2 * np.pi * 659 * tt) + np.sin(2 * np.pi * 784 * tt)) * np.minimum(1, tt / 0.6) * np.exp(-tt / 2.2), 0.08)
+sparkle(at("open", 0.7), 2.0, 0.22)
+# fired
+sad_trombone(at("fired", 0.3), 0.4)
+for k in range(9): step(at("fired", 1.0) + k * 0.45, 0.3)
+# callback
+for k in range(12): put(fx, at("callback", 0.2) + k * 0.4, lp(noise(0.2), 0.25) * env(0.2, 0.03, 0.07), 0.2)
+# end
+whoosh(at("end", 0.15), 0.3, 0.3); slap(at("end", 0.45), 1.0); sparkle(at("end", 0.45), 0.5, 0.25)
+ding(at("end", 1.4), 2637, 0.3)
 
 mix = mus * 0.55 + fx * 1.0
 mix = mix / np.abs(mix).max() * 0.9
