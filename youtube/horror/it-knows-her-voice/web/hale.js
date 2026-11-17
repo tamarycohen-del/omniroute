@@ -40,12 +40,12 @@ export const mrsHale = (g, o = {}) => {
   g.strokeStyle = O; g.lineWidth = 5; for (const s of [-1, 1]) { g.beginPath(); g.arc(cx + 8 + s * 24, ey, 18, 0, 7); g.stroke(); } g.beginPath(); g.moveTo(cx + 2, ey); g.lineTo(cx + 14, ey); g.stroke();
   g.fillStyle = O; for (const s of [-1, 1]) { if (o.smile === 'kind' || !o.smile) { g.lineWidth = 5; g.beginPath(); g.arc(cx + 8 + s * 24, ey + 4, 7, Math.PI * 1.1, Math.PI * 1.9); g.stroke(); } else { g.beginPath(); g.ellipse(cx + 8 + s * 24, ey, 6, 8, 0, 0, 7); g.fill(); } }
   // cheeks + smile
-  g.fillStyle = 'rgba(255,140,160,0.35)'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + 8 + s * 40, ey + 30, 12, 7, 0, 0, 7); g.fill(); }
+  if (o.smile !== 'toowide') { g.fillStyle = 'rgba(255,140,160,0.35)'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + 8 + s * 40, ey + 30, 12, 7, 0, 0, 7); g.fill(); } }
   g.strokeStyle = O; g.lineWidth = 6; g.beginPath();
-  if (o.smile === 'toowide') { // a little too wide (but inside the face): thin line of teeth, eyes not smiling
-    g.fillStyle = '#2a0f1e'; g.beginPath(); g.moveTo(cx - 30, ey + 30); g.quadraticCurveTo(cx, ey + 60, cx + 30, ey + 30); g.quadraticCurveTo(cx, ey + 46, cx - 30, ey + 30); g.fill();
-    g.fillStyle = '#f4f2ee'; g.beginPath(); g.moveTo(cx - 23, ey + 34); g.quadraticCurveTo(cx, ey + 47, cx + 23, ey + 34); g.quadraticCurveTo(cx, ey + 51, cx - 23, ey + 34); g.fill();
-    g.lineWidth = 5; g.beginPath(); g.moveTo(cx - 30, ey + 30); g.quadraticCurveTo(cx, ey + 60, cx + 30, ey + 30); g.moveTo(cx - 30, ey + 30); g.lineTo(cx - 34, ey + 26); g.moveTo(cx + 30, ey + 30); g.lineTo(cx + 34, ey + 26); } else if (o.smile === 'wide') { g.moveTo(cx - 26, ey + 34); g.quadraticCurveTo(cx + 8, ey + 62, cx + 42, ey + 34); } else { g.moveTo(cx - 12, ey + 36); g.quadraticCurveTo(cx + 8, ey + 50, cx + 28, ey + 36); }
+  if (o.smile === 'toowide') { // a little too wide: stretched further than a normal smile, thin line of teeth, eyes not smiling
+    g.fillStyle = '#2a0f1e'; g.beginPath(); g.moveTo(cx - 34, ey + 30); g.quadraticCurveTo(cx + 8, ey + 64, cx + 50, ey + 30); g.quadraticCurveTo(cx + 8, ey + 48, cx - 34, ey + 30); g.fill();
+    g.fillStyle = '#f4f2ee'; g.beginPath(); g.moveTo(cx - 26, ey + 34); g.quadraticCurveTo(cx + 8, ey + 50, cx + 42, ey + 34); g.quadraticCurveTo(cx + 8, ey + 54, cx - 26, ey + 34); g.fill();
+    g.lineWidth = 6; g.beginPath(); g.moveTo(cx - 34, ey + 30); g.quadraticCurveTo(cx + 8, ey + 64, cx + 50, ey + 30); g.moveTo(cx - 34, ey + 30); g.lineTo(cx - 39, ey + 25); g.moveTo(cx + 50, ey + 30); g.lineTo(cx + 55, ey + 25); } else if (o.smile === 'wide') { g.moveTo(cx - 26, ey + 34); g.quadraticCurveTo(cx + 8, ey + 62, cx + 42, ey + 34); } else { g.moveTo(cx - 12, ey + 36); g.quadraticCurveTo(cx + 8, ey + 50, cx + 28, ey + 36); }
   g.stroke();
   g.restore();
 };
