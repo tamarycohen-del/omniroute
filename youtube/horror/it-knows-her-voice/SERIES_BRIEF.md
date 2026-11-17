@@ -13,15 +13,61 @@ Upload: every day at 22:00 Israel time.
 - "Mom" (the thing): sounds and looks exactly like Mom, but taller, way taller; pale skin, white staring eyes, a slightly wide smile, scrubs and ID badge, her ring on her hand. Her arms stretch longer and longer. Her lines: "Honey…".
 - Mrs. Hale: the old neighbor who died three years ago. Do not describe her appearance. She used to give Biscuit cookies every day.
 
-=== STORY SO FAR ===
-PART 1: 3:33 AM, home alone with Biscuit, phone at 9%. Mom's voice knocks on the front door: "Honey, open the door… I'm freezing." Then: "Open the door… something is behind me." Mom texts that she is at work. Biscuit was shaking under the bed, then came out and stared at the back door. The phone died.
-Choice: OPEN THE DOOR / BACK DOOR WITH BISCUIT. Viewers chose: escape with Biscuit.
+=== STORY SO FAR (full detail) ===
+PART 1 (78 s) — home alone, 3:33 AM
+- 3:33 AM, someone knocks; the kid is home alone with Biscuit. Mom is on night shift; at 10:02 PM she texted: "Back at 8. Lock the door. Love you."
+- Suddenly the power goes out on the whole street (streetlights die one by one). Then three knocks.
+- Mom's voice through the front door: "Honey? It's me. I forgot my keys. Let me in, it's freezing." (light under the door)
+- Biscuit does NOT run to the door; he hides under the bed, shaking (only his eyes visible, facing front).
+- The kid freezes, hand above the lock. Clue #1: Mom never calls him "honey".
+- He texts her (battery shown as 9% on screen): "Mom... are you outside?" She answers right away: "No. I'm at work. DON'T open the door."
+- Peephole: nobody, just the dark.
+- The voice again, right against the door: "Honey... that's not me texting you. Someone took my phone. Please, open the door... something's behind me."
+- Clue #2: her text has no "love you" — she ALWAYS writes "love you". (So nobody knows which one is the real Mom.) Then the phone dies.
+- Biscuit creeps out from under the bed and stares at the back door.
+- Choice: "Do you trust Mom and open the door? Or follow Biscuit and sneak out the back?" Cards: OPEN THE DOOR / BACK DOOR WITH BISCUIT.
+- Result: BACK DOOR WITH BISCUIT (won on YouTube and Instagram).
 
-PART 2: Out the back door into the yard. The only house with a light on is Mrs. Hale's (dead for 3 years). Her back door opens and she waves them over: "Quick! Get inside before it sees you." "Don't worry. I made some cookies… if you want." The narrator remembers she used to give Biscuit cookies every day. Biscuit doesn't go near her; he growls. Then, behind us… CLICK. Our back door opened.
-Choice: GO TO MRS. HALE / INTO THE WOODS WITH BISCUIT. Viewers chose: the woods with Biscuit (narrator said "Brave call").
+PART 2 (80 s) — the neighbor
+- Opens: "Imagine your mom knocks at the door at 3:33 a.m.... while you're escaping with Biscuit from the back door." (reuses the Part 1 bedroom/hall look)
+- "In the comments, you said: escape with Biscuit." Comments on screen: "Follow biscuit" / "Back door with biscuit" / "Listen to biscuit!!" / "Biscuit". Then "Smart call." with a big check mark.
+- Backyard; the knocking stops. Heart pounding. Mrs. Hale's house next door is the only house on the street with the lights on — and Mrs. Hale died three years ago; her house has been empty ever since (slow zoom on her lit window, a shadow behind the curtain).
+- Her back door opens; she stands there with her cane and waves them over. She looks exactly like he remembered: same cane, same smile.
+- Mrs. Hale: "Quick! Get inside before it sees you."
+- He starts walking, but Biscuit stops and growls at her.
+- Behind them, inside his house, the knocking starts again — louder, faster; every knock feels closer.
+- Mrs. Hale smiles: "Don't worry. I made some cookies... if you want." (She looks safe — a green flag to make the choice hard.)
+- Narrator: "I remembered... Mrs. Hale used to give Biscuit cookies every day." (warm flashback)
+- Then, behind us... CLICK. Our back door opened.
+- Choice: "Do you go to Mrs. Hale? Or keep running into the woods with Biscuit?" Cards: GO TO MRS. HALE / INTO THE WOODS WITH BISCUIT.
+- Result: INTO THE WOODS WITH BISCUIT (decisive; some viewers said "Mrs Hale looks reliable").
 
-PART 3: Running into the woods, something chasing. The narrator looks back once: she looks exactly like Mom, but taller, way taller, and her arms keep stretching between the trees. They dive behind a fallen tree. Biscuit is shaking so hard he can feel his heart. Narrator to viewer: "Don't breathe." Her long fingers reach over the log: "Honey… come out. I won't hurt you." "It's so cold out here. Don't you want to come home with Mommy?" She steps closer… then a rustle behind her, and she goes back into the trees, searching. They see an old treehouse with a rope ladder above them, and headlights of a car on the old road.
-Choice: THE TREEHOUSE / THE ROAD. Viewers chose: THE ROAD (top comment: "The road. Her arms can still get us in the tree house", 9 likes). The most-liked comment overall: "Damn I wanna pick biscuit" (13 likes), so viewers want a Biscuit option.
+PART 3 (83 s) — the woods
+- Opens on a new scary image (eyes blinking in the dark back doorway), then: "Imagine your mom chasing you... while you're running into the woods with Biscuit."
+- "In the comments, you said: into the woods with Biscuit." Comments: "It's will always be biscuit" / "IN TO THE WOODS WITH BISCUIT!" / "runnig with busquit" / "Biscuit againnnn". "Brave call." (no check mark this time).
+- "So we ran. Past the fence, into the trees. And something was running behind us." He looks back, just once.
+- "She looked exactly like Mom... but taller. Way taller." Her arms keep stretching, longer and longer, reaching between the trees (wavy, snake-like arms, fingers feeling the bark).
+- They dive behind a fallen tree and press into the mud. He holds Biscuit tight; Biscuit shakes so hard he can feel his heart. The kid is scared too (darting eyes).
+- Narrator whispers to the viewer: "Don't breathe."
+- The footsteps stop right on the other side of the tree. Her long fingers hang over the log above them.
+- Mom: "Honey... come out. I won't hurt you." / "It's so cold out here. Don't you want to come home with Mommy?"
+- She takes one step closer... then another. A rustle somewhere behind her; she turns and goes back into the trees, searching.
+- "Quickly, you look up... and see an old treehouse, right above us. A rope ladder hanging down." Past the trees: headlights — a car on the old road. Someone who could help.
+- Biscuit looks up at the ladder, then at the road. Even he doesn't know.
+- Deep in the woods she stops searching and slowly turns back toward them.
+- Choice: "Do you climb up to the treehouse? Or run for the road?" Cards: THE TREEHOUSE / THE ROAD.
+- Result: THE ROAD — 7 comments / 20 likes (top: "The road. Her arms can still get us in the tree house", 9 likes; "The road because she's tall", 4). Treehouse: 3 comments / 8 likes. "Damn I wanna pick biscuit" got the most likes of the post (13) + "no I want to pick biscuit!!!!" (3): viewers want a Biscuit option.
+
+OPEN MYSTERIES (not explained yet — use them, don't solve them all at once)
+- Which Mom is real: the one at the door or the one texting? Who took her phone?
+- Who locked/opened our back door from inside?
+- Is Mrs. Hale real? Why did Biscuit growl at her when she used to give him cookies?
+- What made the rustle that drew "Mom" away?
+- Saved but not shown yet: Mom's real hand — pale, thin, fingers too long, wearing Mom's ring.
+
+NUMBERS
+- Part 2 on Instagram after 4 hours: 2,116 views, 119 likes, avg watch ~30 s of 80 s. Part 3: 108 likes, 14 comments the first night.
+- About half of viewers leave in the first 10 seconds, so the first image and first line must be new and scary.
 
 === EPISODE STRUCTURE (keep it) ===
 1. Hook line that recaps the danger, often "Imagine…" (strong first 3 seconds; ~50% of viewers leave in the first 10 s).
