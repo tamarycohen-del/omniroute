@@ -162,7 +162,7 @@ const carSide = (x, y, s, o = {}) => { g.save(); g.translate(x + (o.shake || 0) 
   // windows: rear (left) + driver (right)
   const winR = [[-262, -245], [-215, -380], [-30, -380], [-30, -245]], winF = [[0, -245], [0, -380], [140, -380], [232, -245]];
   for (const w of [winR, winF]) { g.fillStyle = GLASS; g.beginPath(); w.forEach(([a, b], i) => (i ? g.lineTo(a, b) : g.moveTo(a, b))); g.closePath(); g.fill(); g.strokeStyle = O_; g.lineWidth = 7; g.stroke(); }
-  if (o.hale) { g.save(); g.beginPath(); winF.forEach(([a, b], i) => (i ? g.lineTo(a, b) : g.moveTo(a, b))); g.closePath(); g.clip(); g.fillStyle = '#2a2140'; g.fill(); hale(-55, -600, 0.56, { arm: o.wave ? 'wave' : 'cane', wave: o.wave || 0, smile: o.smile || 'kind', t: T }); g.restore(); }
+  if (o.hale) { g.save(); g.beginPath(); winF.forEach(([a, b], i) => (i ? g.lineTo(a, b) : g.moveTo(a, b))); g.closePath(); g.clip(); g.fillStyle = '#2a2140'; g.fill(); hale(-55, -600, 0.56, { arm: o.wave ? 'wave' : 'cane', wave: o.wave || 0, smile: o.smile || 'toowide', t: T }); g.restore(); }
   const wd = o.win ?? 0; if (wd < 1) { g.fillStyle = 'rgba(120,110,170,0.28)'; g.beginPath(); g.moveTo(0, -245); g.lineTo(0, -380 + 135 * wd); g.lineTo(140 + 60 * wd, -380 + 135 * wd); g.lineTo(232, -245); g.closePath(); g.fill(); g.strokeStyle = 'rgba(220,210,255,0.25)'; g.lineWidth = 4; g.beginPath(); g.moveTo(10, -370 + 135 * wd); g.lineTo(130, -370 + 135 * wd); g.stroke(); }
   g.fillStyle = 'rgba(200,190,255,0.1)'; g.beginPath(); g.moveTo(-200, -370); g.lineTo(-120, -370); g.lineTo(-180, -255); g.lineTo(-250, -255); g.closePath(); g.fill();
   // body
@@ -281,7 +281,7 @@ const SCENES = {
     cam(1.8, 644, 1230); sky(); forest(6600, { branches: false }); road(1480); carSide(540, 1480, 0.9, { win: sm(u / 1.6), hale: true, lights: 0.8 }); darken(0.12);
   },
   haleFace(u, t) { // it was Mrs. Hale; slow push on her face lit by the dashboard
-    const z = 2.8 + 1.0 * sm(u / 4.4); cam(z, 650, 1170 - 10 * sm(u / 4.4)); sky(); forest(6600, { branches: false }); road(1480); carSide(540, 1480, 0.9, { win: 1, hale: true, smile: u > 2.5 ? 'wide' : 'kind', lights: 0.8 });
+    const z = 2.8 + 1.0 * sm(u / 4.4); cam(z, 650, 1170 - 10 * sm(u / 4.4)); sky(); forest(6600, { branches: false }); road(1480); carSide(540, 1480, 0.9, { win: 1, hale: true, smile: 'toowide', lights: 0.8 });
     add(() => { g.fillStyle = 'rgba(80,220,200,0.08)'; g.fillRect(-1400, -900, 4000, 3800); }); darken(0.08 + 0.08 * sm((u - 2) / 2));
   },
   haleWave(u, t) { // she waves them in, fast; the back door swings open
