@@ -13,8 +13,10 @@ export const momThing = (g, o = {}) => {
   for (const s of [-1, 1]) { // o.run = running phase (legs swing like scissors); undefined = standing
     const len = sole - 14 - legTop, sw = o.run === undefined || o.runFront ? 0 : Math.sin(o.run + (s > 0 ? Math.PI : 0)) * 0.55;
     if (o.runFront) { // running toward the camera: legs pump forward/back = knees lift up, feet come off the ground in turn
-      const ph = Math.sin(o.run + (s > 0 ? Math.PI : 0)), lift = Math.max(0, ph) * len * 0.6, back = Math.max(0, -ph);
-      const fx = cx + s * (20 + 6 * back), fy = sole - 14 - lift * 0.55 - back * len * 0.08, kx = cx + s * (26 + 10 * lift / len), ky = legTop + len * 0.5 - lift * 0.75;
+      const ph = Math.sin(o.run + (s > 0 ? Math.PI : 0)), up = Math.max(0, ph), back = Math.max(0, -ph), lift = up * len;
+      // big strides: the front knee drives up almost to the hip (shin hangs short, foreshortened toward us);
+      // the back leg pushes off and its foot kicks up behind her
+      const ky = legTop + len * 0.5 - up * len * 0.5, kx = cx + s * (28 + 40 * up), fx = cx + s * (24 + 14 * up + 20 * back), fy = up > 0 ? ky + len * (0.5 - 0.28 * up) : sole - 14 - back * len * 0.5;
       limb([[cx + s * 16, legTop], [kx, ky], [fx, fy]], 40 + 10 * lift / len, 26 + 6 * lift / len, SCRUB_D);
       g.fillStyle = '#e8e4ee'; g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.ellipse(fx + s * 4, fy + 8, 26 + 10 * lift / len, 11 + 8 * lift / len, 0, 0, 7); g.fill(); g.stroke(); continue; }
     const fx = cx + s * 16 + Math.sin(sw) * len, fy = legTop + Math.cos(sw) * len, kx = cx + s * 16 + Math.sin(sw) * len * 0.5 + (o.run === undefined ? 0 : 30 * Math.max(0, -Math.sin(o.run + (s > 0 ? Math.PI : 0)))), ky = legTop + Math.cos(sw) * len * 0.5;
@@ -27,7 +29,7 @@ export const momThing = (g, o = {}) => {
   // arms: normal length at reach 0; at reach 1 they slide out sideways, impossibly long and thin
   const sh = neck + 34, L = 170 + 900 * reach, droop = 120 * (1 - reach);
   for (const s of [-1, 1]) {
-    const lp = (a, b) => a + (b - a) * reach, sw = Math.sin(t * 1.6 + s * 2);
+    const lp = (a, b) => a + (b - a) * reach, sw = o.runFront ? Math.sin(o.run + (s > 0 ? 0 : Math.PI)) * 12 * (1 - reach) : Math.sin(t * 1.6 + s * 2);
     const ex = cx + s * lp(62, 44 + L * 0.45), ey = sh + lp(150, 60) + 10 * sw, hx = cx + s * lp(70, 44 + L), hy = sh + lp(300, 90) + lp(6, 30) * sw;
     if (reach > 0.05) { // long, wavy, snake-like arm
       const pts = []; const N = 18;

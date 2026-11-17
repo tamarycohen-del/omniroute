@@ -224,7 +224,7 @@ const rearView = (u, o = {}) => { const sh = o.shake || 0; g.save(); g.translate
   g.fillStyle = '#16131e'; g.beginPath(); g.moveTo(500, vy); g.lineTo(580, vy); g.lineTo(1100, 1180); g.lineTo(-20, 1180); g.closePath(); g.fill();
   g.fillStyle = 'rgba(230,220,160,0.55)'; for (let k = 0; k < 7; k++) { const q = 1 - ((k / 7 + T * 0.9) % 1); const yy = vy + q * q * 420, w = 3 + q * 22; g.fillRect(540 - w / 2, yy, w, 3 + q * 18); }
   add(() => { const rg = g.createRadialGradient(540, 1200, 10, 540, 1150, 520); rg.addColorStop(0, 'rgba(255,40,50,0.4)'); rg.addColorStop(1, 'rgba(255,40,50,0)'); g.fillStyle = rg; g.fillRect(0, 700, 1080, 600); });
-  if (o.mom !== undefined) { const d = o.mom, sc = 0.08 + 0.62 * (1 - d) ** 2.2, my = vy + 30 + (1 - d) ** 2 * 470; mom(540 - 300 * sc + (o.sway || 0), my - 975 * sc - Math.abs(Math.sin(T * 11)) * 18 * sc, sc, { tall: o.tall ?? 1.8, reach: o.reach || 0, face: o.face || 'dark', run: T * 11, runFront: true, t: T }); }
+  if (o.mom !== undefined) { const d = o.mom, sc = 0.08 + 0.62 * (1 - d) ** 2.2, my = vy + 30 + (1 - d) ** 2 * 470; mom(540 - 300 * sc + (o.sway || 0), my - 975 * sc - Math.abs(Math.sin(T * 7.5)) * 60 * sc, sc, { tall: o.tall ?? 1.8, reach: o.reach || 0, face: o.face || 'dark', run: T * 7.5, runFront: true, t: T }); }
   if (o.fog !== false) fog(vy + 60);
   g.restore();
   g.strokeStyle = '#020104'; g.lineWidth = 34; g.beginPath(); WIN.forEach(([a, b], i) => (i ? g.lineTo(a, b) : g.moveTo(a, b))); g.closePath(); g.stroke();
@@ -318,8 +318,8 @@ const SCENES = {
     const d = 1 - 0.62 * sm(u / 5.5); rearView(u, { mom: u < 0.6 ? 1.05 : d, face: 'dark', sway: Math.sin(T * 5.5) * 12 });
   },
   momLegs(u, t) { // side view: her legs stretch longer with every stride
-    const tall = 1.6 + 1.0 * sm(u / 2.4); cam(1.0, 540, 960, Math.sin(T * 9) * 6, Math.abs(Math.sin(T * 9)) * 6); sky(); forest(7000, { branches: false }); road(1760);
-    const sc = 0.62 + 0.1 * sm(u / 2.4); mom(540 - 300 * sc, 1820 - 975 * sc - Math.abs(Math.sin(T * 9)) * 24, sc, { tall, reach: 0.15, face: 'dark', run: T * 9, runFront: true }); darken(0.15);
+    const tall = 1.6 + 1.0 * sm(u / 2.4); cam(1.0, 540, 960, Math.sin(T * 7) * 8, Math.abs(Math.sin(T * 7)) * 10); sky(); forest(7000, { branches: false }); road(1840);
+    const sc = 0.95 + 0.1 * sm(u / 2.4); mom(540 - 300 * sc, 1900 - 975 * sc - Math.abs(Math.sin(T * 7)) * 80, sc, { tall, reach: 0.0, face: 'dark', run: T * 7, runFront: true }); darken(0.15);
   },
   rearReach(u, t) { // she reaches out; her arms stretch toward the window, closer and closer
     rearView(u, { mom: 0.36 - 0.18 * sm(u / 5.5), reach: 0.15 + 0.85 * sm((u - 0.4) / 3.5), tall: 2.0, face: 'dark', sway: Math.sin(T * 5.5) * 10 });
