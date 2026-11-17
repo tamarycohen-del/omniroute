@@ -10,7 +10,10 @@ export const momThing = (g, o = {}) => {
   g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
   const limb = (pts, a = 26, b = 14, col = SKIN) => { for (const [w, c] of [[a, O], [b, col]]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke(); } };
   // legs (scrub pants), too long
-  for (const s of [-1, 1]) { limb([[cx + s * 16, legTop], [cx + s * 20, sole - 14]], 40, 26, SCRUB_D); g.fillStyle = '#e8e4ee'; g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.ellipse(cx + s * 24, sole - 6, 26, 11, 0, 0, 7); g.fill(); g.stroke(); }
+  for (const s of [-1, 1]) { // o.run = running phase (legs swing like scissors); undefined = standing
+    const len = sole - 14 - legTop, sw = o.run === undefined ? 0 : Math.sin(o.run + (s > 0 ? Math.PI : 0)) * 0.55;
+    const fx = cx + s * 16 + Math.sin(sw) * len, fy = legTop + Math.cos(sw) * len, kx = cx + s * 16 + Math.sin(sw) * len * 0.5 + (o.run === undefined ? 0 : 30 * Math.max(0, -Math.sin(o.run + (s > 0 ? Math.PI : 0)))), ky = legTop + Math.cos(sw) * len * 0.5;
+    limb([[cx + s * 16, legTop], [kx, ky], [fx, fy]], 40, 26, SCRUB_D); g.fillStyle = '#e8e4ee'; g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.ellipse(fx + 8, fy + 8, 26, 11, 0, 0, 7); g.fill(); g.stroke(); }
   // scrub top (long, thin)
   g.fillStyle = SCRUB; g.strokeStyle = O; g.lineWidth = 9;
   g.beginPath(); g.moveTo(cx - 44, neck + 14); g.lineTo(cx + 44, neck + 14); g.lineTo(cx + 54, legTop + 10); g.lineTo(cx - 54, legTop + 10); g.closePath(); g.fill(); g.stroke();

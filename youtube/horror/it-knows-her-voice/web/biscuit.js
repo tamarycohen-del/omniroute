@@ -47,6 +47,10 @@ export const biscuit = (g, o = {}) => {
   if (o.growl) { // bared teeth along the snout + wrinkled nose
     g.fillStyle = '#f4f2ee'; g.strokeStyle = O; g.lineWidth = 3; g.beginPath(); g.moveTo(34, 24); for (let k = 0; k < 6; k++) { g.lineTo(38 + k * 6, 31); g.lineTo(41 + k * 6, 24); } g.lineTo(34, 24); g.closePath(); g.fill(); g.stroke();
     g.strokeStyle = O; g.lineWidth = 3; for (const k of [0, 1]) { g.beginPath(); g.moveTo(46 + k * 9, -8); g.quadraticCurveTo(50 + k * 9, -14, 54 + k * 9, -8); g.stroke(); } }
+  if (o.bark) { // open mouth while barking: dark mouth wedge + lower jaw drops
+    const j = o.bark; g.fillStyle = '#3a0f18'; g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.moveTo(30, 22); g.lineTo(76, 14); g.lineTo(66, 22 + 30 * j); g.lineTo(30, 30 + 6 * j); g.closePath(); g.fill(); g.stroke();
+    g.fillStyle = '#ff7a8a'; g.beginPath(); g.ellipse(48, 24 + 16 * j, 12, 5 * j + 1, 0.3, 0, 7); g.fill();
+    g.fillStyle = '#f4f2ee'; g.beginPath(); g.moveTo(66, 16); g.lineTo(70, 24); g.lineTo(73, 15); g.fill(); }
   // ear (floppy, or perked when staring)
   const up = (o.ears || (pose === 'stare' ? 'up' : 'down')) === 'up';
   g.fillStyle = FUR_D; g.strokeStyle = O; g.lineWidth = 8;
