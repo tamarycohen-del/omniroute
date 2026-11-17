@@ -206,7 +206,11 @@ const interior = (o = {}) => { const sh = (o.shake || 0); g.save(); g.translate(
   g.strokeStyle = '#05040a'; g.lineWidth = 30; g.beginPath(); g.ellipse(330, 900, 170, 70, 0, Math.PI, 0); g.stroke();
   // driver seat + Mrs. Hale from behind (grey bun, no face)
   g.fillStyle = '#1e1830'; g.beginPath(); g.roundRect(140, 880, 380, 900, 60); g.fill(); g.fillStyle = '#251d3a'; g.beginPath(); g.roundRect(220, 760, 220, 160, 30); g.fill();
-  const hx = 330 + (o.turn || 0) * 18, hy = 700; g.fillStyle = '#cfcbd6'; g.strokeStyle = O_; g.lineWidth = 8; g.beginPath(); g.arc(hx, hy, 92, 0, 7); g.fill(); g.stroke(); g.fillStyle = '#a8a2b4'; g.beginPath(); g.arc(hx, hy - 80, 44, 0, 7); g.fill(); g.stroke();
+  const hx = 330, hy = 700, tf = o.faceTurn || 0;
+  if (tf < 0.5) { const w = Math.cos(tf * Math.PI); g.save(); g.translate(hx, hy); g.scale(Math.max(0.05, w), 1); g.fillStyle = '#cfcbd6'; g.strokeStyle = O_; g.lineWidth = 8; g.beginPath(); g.arc(0, 0, 92, 0, 7); g.fill(); g.stroke(); g.fillStyle = '#a8a2b4'; g.beginPath(); g.arc(0, -80, 44, 0, 7); g.fill(); g.stroke(); g.restore(); }
+  else { // she turns all the way around to face the back seat, with that smile
+    const w = Math.max(0.05, -Math.cos(tf * Math.PI)); g.save(); g.translate(hx, hy); g.scale(w, 1); g.translate(-hx, -hy); hale(hx - 300 * 1.4, hy - 513 * 1.4, 1.4, { arm: 'cane', smile: 'toowide', t: T }); g.restore();
+    g.fillStyle = '#1e1830'; g.beginPath(); g.roundRect(140, 880, 380, 900, 60); g.fill(); g.fillStyle = '#251d3a'; g.beginPath(); g.roundRect(220, 790, 220, 130, 30); g.fill(); }
   // passenger seat
   g.fillStyle = '#1a152a'; g.beginPath(); g.roundRect(640, 860, 360, 900, 60); g.fill(); g.fillStyle = '#211a33'; g.beginPath(); g.roundRect(720, 760, 200, 150, 30); g.fill();
   g.restore(); };
@@ -350,7 +354,7 @@ const SCENES = {
   },
   choice(u, t) {
     g.fillStyle = '#05040a'; g.fillRect(0, 0, W, H);
-    g.save(); g.beginPath(); g.rect(0, 0, W, 955); g.clip(); g.translate(0, -230); interior({ speed: 1 }); g.restore();
+    g.save(); g.beginPath(); g.rect(0, 0, W, 955); g.clip(); g.translate(0, -230); { const z = 1 + 0.45 * sm((u - 0.9) / 3.5); g.translate(330, 700); g.scale(z, z); g.translate(-330, -700); } interior({ speed: 1, faceTurn: sm((u - 0.6) / 1.1) }); g.restore();
     g.save(); g.beginPath(); g.rect(0, 965, W, 955); g.clip(); cam(0.75, 540, 1250, 0, 480); sky(); forest(6600, { branches: false }); road(1480); carSide(500, 1480, 0.9, { win: 0, door: 1, lights: 1 });
     dog(860 + 40 * Math.sin(u * 3), 1500 - Math.abs(Math.sin(u * 8)) * 20, 0.6, { pose: 'walk', t: u * 1.5 }); darken(0.08); g.restore();
     g.fillStyle = '#c6ff3a'; g.fillRect(0, 955, W, 10);
