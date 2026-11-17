@@ -275,11 +275,11 @@ const SCENES = {
   carComing(u, t) { // they stand on the road; the car rushes toward us
     cam(1.0, 540, 1150, Math.sin(u * 30) * 2 * sm(u / 2)); sky(); forest(6400, { branches: false }); road(1480);
     const k = sm(u / 2.4); carFront(540, 1480 + 30 * k, 0.25 + 0.6 * k, { driver: false, glare: 1 });
-    heroSeat(120, 1540 - 975 * 0.7, 0.7, { expr: 'shocked', look: 1 }); dog(860, 1560, 0.55, { pose: 'stare', look: -1, t: u, flip: true });
+    hero(-40, 1600 - 975 * 0.62, 0.62, { expr: 'shocked', look: 1 }); dog(300, 1610, 0.5, { pose: 'stare', look: 1, t: u, ears: 'up' });
   },
   carStops(u, t) { // it stops a few steps from them; just the engine
     cam(1.0, 540, 1150, Math.sin(T * 45) * 1.5 * (1 - sm(u / 0.5))); sky(); forest(6400, { branches: false }); road(1480); carFront(540, 1510, 0.85, { driver: true, glare: 0.85 });
-    heroSeat(120, 1540 - 975 * 0.7, 0.7, { expr: 'scared', look: 1 }); dog(860, 1560, 0.55, { pose: 'stare', look: -1, t: u, flip: true }); darken(0.08);
+    hero(-40, 1600 - 975 * 0.62, 0.62, { expr: 'scared', look: 1 }); dog(300, 1610, 0.5, { pose: 'stare', look: 1, t: u, ears: 'up' }); darken(0.08);
   },
   windowDown(u, t) { // close on the driver window rolling down
     cam(1.8, 644, 1230); sky(); forest(6600, { branches: false }); road(1480); carSide(540, 1480, 0.9, { win: sm(u / 1.6), hale: true, lights: 0.8 }); darken(0.12);
@@ -290,7 +290,7 @@ const SCENES = {
   },
   haleWave(u, t) { // she waves them in, fast; the back door swings open
     cam(1.25, 560, 1220); sky(); forest(6600, { branches: false }); road(1480); carSide(560, 1480, 0.9, { win: 1, hale: true, wave: (u * 3.2) % 1, door: sm((u - 0.6) / 0.6), lights: 0.8 });
-    heroSeat(40, 1560 - 975 * 0.6, 0.6, { expr: 'scared', look: 1 }); dog(250, 1560, 0.45, { pose: 'stare', look: 1, t: u }); darken(0.1);
+    hero(110, 1580 - 975 * 0.6, 0.6, { expr: 'scared', look: 1 }); dog(420, 1590, 0.45, { pose: 'stare', look: 1, t: u }); darken(0.1);
   },
   growl(u, t) { // Biscuit: teeth out, ears back, growling at her
     cam(1.9, 800, 1470); sky(); road(1480); carSide(560, 1480, 0.9, { win: 1, hale: true, door: 1, lights: 0.8 }); dog(860, 1560, 0.6, { pose: 'crouch', growl: true, ears: 'down', shake: 0.4, t: u, flip: true, look: -1 }); darken(0.1);
@@ -298,7 +298,7 @@ const SCENES = {
   getIn(u, t) { // he scoops Biscuit up and climbs in; the door slams
     cam(1.25, 560, 1220); sky(); forest(6600, { branches: false }); road(1480); const k = sm(u / 1.4);
     carSide(560, 1480, 0.9, { win: 1, hale: true, door: 1 - sm((u - 1.5) / 0.25), lights: 0.8 });
-    if (u < 1.5) { heroSeat(lerp(60, 250, k), 1560 - 975 * 0.6, 0.6, { expr: 'scared', look: 1, arm: 'reach', step: Math.sin(u * 10) * (1 - k) }); dog(lerp(300, 400, k), 1440 - 60 * k, 0.4, { pose: 'crouch', shake: 0.4, t: u }); }
+    if (u < 1.5) { hero(lerp(110, 230, k), 1580 - 975 * 0.6, 0.6, { expr: 'scared', look: 1, arm: 'reach', step: Math.sin(u * 10) * (1 - k) }); dog(lerp(300, 400, k), 1440 - 60 * k, 0.4, { pose: 'crouch', shake: 0.4, t: u }); }
     if (u > 1.5 && u < 1.62) { g.fillStyle = 'rgba(255,255,255,0.08)'; g.fillRect(-1400, -900, 4000, 3800); } darken(0.1);
   },
   silentRide(u, t) { // from the back seat: only the back of her head. She doesn't turn around.
