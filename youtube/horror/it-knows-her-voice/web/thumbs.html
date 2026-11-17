@@ -282,10 +282,11 @@ const THUMBS = {
     heroCrouch(110, 1010, 0.82, { expr: 'scared', tremble: 1 }); dog(470, 1760, 0.85, { pose: 'crouch', shake: 1, ears: 'down', look: -1 }); fallenTree(-160, 1900, 1500);
     g.restore(); grade(540, 760, '255,30,50', 0.2);
     hook([["DON'T", '#ff2a3a', 150], ['BREATHE.', '#ffffff', 130]], 220); logo(); badge(3, 860, 1400); },
-  4() { T = 1.0; g.save(); cam(1.5, 420, 860); interior({ faceTurn: 1 }); g.restore();
-    g.save(); g.translate(0, 0); hand(g, 1000, 560, -1.6, 1, 0.4); hand(g, 1030, 760, -1.4, 1, 1.1); g.restore();
-    grade(400, 760, '255,30,50', 0.22);
-    hook([["WHO'S DRIVING", '#ffffff', 104], ['THIS CAR?!', '#ff2a3a', 128]], 210); arrow(980, 1240, 640, 960); logo(); badge(4, 540, 1720); },
+  4() { T = 1.0; g.save(); sky(); forest(6600, { branches: false }); road(1580); fog(1530);
+    mom(-190, 1580 - 975 * 1.05, 1.05, { tall: 1.85, reach: 0.75, face: 'blank', run: 0.9 });
+    add(() => { const rg = g.createRadialGradient(753, 1266, 10, 753, 1266, 330); rg.addColorStop(0, 'rgba(255,60,70,0.35)'); rg.addColorStop(1, 'rgba(255,60,70,0)'); g.fillStyle = rg; g.fillRect(300, 800, 800, 800); });
+    carSide(640, 1580, 1.0, { win: 1, hale: true, smile: 'toowide', lights: 1 }); g.restore(); grade(700, 1200, '255,30,50', 0.18);
+    hook([["SHE'S BEEN DEAD", '#ffffff', 100], ["...AND SHE'S DRIVING", '#ff2a3a', 104]], 220); ring(753, 1262, 110); arrow(1040, 880, 870, 1150); logo(); badge(4, 300, 1790); },
 };
 window.renderThumb = (n, k = 2) => { cv.width = W * k; cv.height = H * k; g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, W, H); THUMBS[n](); return true; };
 document.fonts.load('900 92px "Inter Display"').then(() => { window.ready = true; });
