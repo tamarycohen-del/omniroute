@@ -122,3 +122,40 @@ if __name__ == '__main__':
     with wave.open(os.path.join(here, 'dog_test.wav'), 'wb') as f:
         f.setnchannels(1); f.setsampwidth(2); f.setframerate(SR); f.writeframes((demo * 32767).astype(np.int16).tobytes())
     print('ok', round(len(demo) / SR, 2))
+
+
+def bark2(seed=0, style='woof', room=0.18):
+    """Rougher, more realistic bark. style: 'yap' (small, high), 'woof' (dachshund, deeper), 'rough' (woof + chaos)."""
+    rng = np.random.default_rng(3000 + seed)
+    P = {'yap': dict(d=0.13, p0=650, pk=980, pe=560, F1=(700, 1500), F2=(1900, 2700), jit=0.04, noise=0.12, sub=0.35),
+         'woof': dict(d=0.19, p0=360, pk=560, pe=300, F1=(450, 1100), F2=(1300, 2000), jit=0.05, noise=0.15, sub=0.5),
+         'rough': dict(d=0.2, p0=340, pk=540, pe=280, F1=(450, 1050), F2=(1250, 1950), jit=0.09, noise=0.3, sub=0.8)}[style]
+    d = P['d'] * (0.9 + 0.2 * rng.random()); n = int(d * SR); u = np.linspace(0, 1, n)
+    f0 = np.where(u < 0.18, P['p0'] + (P['pk'] - P['p0']) * np.sin(np.pi / 2 * u / 0.18), P['pk'] + (P['pe'] - P['pk']) * np.clip((u - 0.18) / 0.82, 0, 1) ** 0.8)
+    f0 = f0 * (1 + 0.05 * _smooth_noise(n, 60, rng))
+    src = _glottal(f0, rng, jitter=P['jit'], open_q=0.42)
+    chaos = np.exp(-u / 0.35)                                     # chaotic onset, steadier tail
+    sub = _glottal(f0 / 2, rng, jitter=P['jit'] * 1.5, open_q=0.4) * P['sub'] * chaos
+    # pulse-synchronous noise: turbulence that follows the glottal pulses (makes it harsh, not tonal)
+    pulses = np.abs(src) / (np.max(np.abs(src)) + 1e-9)
+    k = np.exp(-2 * np.pi * 180 / SR); pe_ = np.empty(n); a = 0.0
+    for i in range(n): a = max(pulses[i], a * k); pe_[i] = a
+    turb = rng.standard_normal(n) * pe_ * P['noise'] * (0.6 + 0.8 * chaos)
+    click = np.zeros(n); click[:int(0.004 * SR)] = rng.standard_normal(int(0.004 * SR)) * 0.8   # plosive attack
+    s = src + sub + turb + click
+    open_ = np.clip(np.minimum(u / 0.08, 1) * np.minimum((1 - u) / 0.45, 1), 0, 1)
+    F = np.array([P['F1'][0] + (P['F1'][1] - P['F1'][0]) * open_, P['F2'][0] + (P['F2'][1] - P['F2'][0]) * open_, np.full(n, 3200.0), np.full(n, 4300.0), np.full(n, 260.0)])
+    B = np.array([np.full(n, 260.0), np.full(n, 330.0), np.full(n, 420.0), np.full(n, 520.0), np.full(n, 120.0)])
+    y = _formants(s, F, B, [1.0, 0.8, 0.45, 0.25, 0.35])        # last one = chest/body resonance
+    env = np.minimum(1, u / 0.012) * np.exp(-u * 1.6) * np.minimum(1, (1 - u) / 0.15)
+    y = np.tanh(1.3 * y * env / (np.max(np.abs(y * env)) + 1e-9))   # a little saturation, like a strained throat
+    y = y / (np.max(np.abs(y)) + 1e-9)
+    return _reverb(y, rt=0.22 if room else 0.05, mix=room, rng=rng)
+
+
+def bark2_run(times, style='woof', seed=0, room=0.18):
+    parts = [(t, bark2(seed + i, style, room) * (0.85 + 0.15 * np.cos(i * 1.7))) for i, t in enumerate(times)]
+    n = int((max(t for t, _ in parts) + 0.6) * SR); out = np.zeros(n)
+    for t, b in parts:
+        i = int(t * SR); out[i:i + len(b)] += b[: n - i]
+    return out / (np.max(np.abs(out)) + 1e-9)
