@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Part 4 sound: drone + car + chase SFX (synth), Biscuit's growl and barks (dogvoice.py), mixed with voice.wav.
     python3 sfx4.py -> bed.wav, mix.wav. Times match web/ep4.html SHOTS."""
-import os, wave
+import os, wave, json
 import numpy as np
 
 SR = 48000
@@ -29,7 +29,7 @@ bed = np.zeros(N)
 
 
 def place(sig, at, gain=1.0):
-    i = int(at * SR); j = min(N, i + len(sig))
+    at = R(at); i = int(at * SR); j = min(N, i + len(sig))
     if i < N: bed[i:j] += sig[: j - i] * gain
 
 
@@ -124,9 +124,17 @@ def creak(dur, a=180, b=440):
     return np.convolve(cr, np.ones(20) / 20, "same") * 0.4
 
 
+
+# event times below were written for the first cut; remap them shot-by-shot onto the tightened timing (shots.json)
+OLD = [[0, "coldOpen"], [2.4, "run1"], [7.2, "comments"], [10.92, "treehouseArm"], [13.84, "runRoad"], [17.4, "lightsTrees"], [19.92, "carComing"], [22.32, "carStops"], [24.16, "windowDown"], [26.0, "haleFace"], [30.4, "haleWave"], [32.44, "growl"], [34.36, "getIn"], [36.4, "silentRide"], [38.7, "driveOff"], [40.62, "lookBack"], [42.3, "rearMom"], [47.82, "momLegs"], [50.3, "rearReach"], [55.98, "haleDriving"], [57.74, "rearClose"], [60.19, "grab"], [62.51, "shake"], [64.56, "bark"], [66.03, "lookDoor"], [69.5, "choice"], [78.79, "end"]]
+NEW = json.load(open(os.path.join(HERE, "shots.json")))
+def R(x):
+    i = max(k for k in range(len(OLD)) if OLD[k][0] <= x or k == 0)
+    i = min(i, len(NEW) - 1); return NEW[i][0] + (x - OLD[i][0]) * min(1.0, (NEW[min(i + 1, len(NEW) - 1)][0] - NEW[i][0] + 1e-6) / (OLD[min(i + 1, len(OLD) - 1)][0] - OLD[i][0] + 1e-6))
+
 # --- drone: steady, almost gone in the silent ride, swells in the chase ---
 drone = (np.sin(2 * np.pi * 55 * t) + 0.6 * np.sin(2 * np.pi * 58.3 * t) + 0.3 * np.sin(2 * np.pi * 110.4 * t)) * 0.10
-shape = np.minimum(1, t / 1.0) * (1 + 0.7 * np.clip((t - 42) / 18, 0, 1)) * np.where((t > 36.4) & (t < 38.7), 0.15, 1.0) * np.where(t > DUR - 1.0, np.clip((DUR - t) / 1.0, 0, 1), 1.0)
+shape = np.minimum(1, t / 1.0) * (1 + 0.7 * np.clip((t - R(42)) / (R(60) - R(42)), 0, 1)) * np.where((t > R(36.4)) & (t < R(38.69)), 0.15, 1.0) * np.where(t > DUR - 1.0, np.clip((DUR - t) / 1.0, 0, 1), 1.0)
 bed += drone * shape
 # --- events (seconds = ep4.html SHOTS) ---
 place(tick(900, 90) * 3, 0.55, 0.4); place(engine(1.9, 30, 30, 0.35), 0.5)                       # headlights snap on, engine idles
@@ -158,7 +166,7 @@ bed *= 0.5 / max(1e-9, np.abs(bed).max())  # about half the voice peak
 # Biscuit (kept out of the bed normalization so he is clearly heard)
 dog = np.zeros(N)
 def dplace(sig, at, gain):
-    i = int(at * SR); j = min(N, i + len(sig))
+    i = int(R(at) * SR); j = min(N, i + len(sig))
     if i < N: dog[i:j] += sig[: j - i] * gain
 dplace(dv.growl(1.9, seed=1, room=0.15), 32.5, 0.42)                                                # "Biscuit started growling at her"
 dplace(dv.bark_run([0, 0.3, 0.62, 0.86, 1.2], seed=3, room=0.3), 64.6, 0.6)                         # "Biscuit was barking" (inside the car)

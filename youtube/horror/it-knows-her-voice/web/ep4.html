@@ -364,9 +364,7 @@ const choiceCard = (x, y, txt, a, col = '#ff4d5e') => { if (a <= 0) return; g.sa
 window.renderScene = (name, u = 1, t = u) => { T = t; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H); g.save(); SCENES[name](u, t, 0); g.restore(); return true; };
 
 // ---------- timeline (seconds, from part3/audio/timeline.json + words.json) ----------
-const SHOTS = [[0, 'coldOpen'], [2.4, 'run1'], [7.2, 'comments'], [10.92, 'treehouseArm'], [13.84, 'runRoad'], [17.4, 'lightsTrees'], [19.92, 'carComing'], [22.32, 'carStops'],
-  [24.16, 'windowDown'], [26.0, 'haleFace'], [30.4, 'haleWave'], [32.44, 'growl'], [34.36, 'getIn'], [36.4, 'silentRide'], [38.7, 'driveOff'], [40.62, 'lookBack'], [42.3, 'rearMom'],
-  [47.82, 'momLegs'], [50.3, 'rearReach'], [55.98, 'haleDriving'], [57.74, 'rearClose'], [60.19, 'grab'], [62.51, 'shake'], [64.56, 'bark'], [66.03, 'lookDoor'], [69.5, 'choice'], [78.79, 'end']];
+const SHOTS = [[0.0, "coldOpen"], [2.18, "run1"], [6.51, "comments"], [9.42, "treehouseArm"], [11.88, "runRoad"], [14.95, "lightsTrees"], [17.29, "carComing"], [19.49, "carStops"], [20.7, "windowDown"], [22.28, "haleFace"], [26.01, "haleWave"], [27.69, "growl"], [29.41, "getIn"], [31.11, "silentRide"], [32.84, "driveOff"], [34.42, "lookBack"], [35.75, "rearMom"], [40.84, "momLegs"], [43.34, "rearReach"], [47.93, "haleDriving"], [49.49, "rearClose"], [51.47, "grab"], [53.62, "shake"], [55.41, "bark"], [56.6, "lookDoor"], [59.22, "choice"], [67.64, "end"]];
 const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0]]; };
 let CHUNKS = [];
 const buildChunks = () => { CHUNKS = []; let cur = []; WORDS.forEach((w, i) => { cur.push(w); const end = /[.?!:,]$|\.\.\.$/.test(w.w) || cur.length >= 4 || (WORDS[i + 1] && WORDS[i + 1].who !== w.who); if (end) { CHUNKS.push(cur); cur = []; } }); if (cur.length) CHUNKS.push(cur); };
