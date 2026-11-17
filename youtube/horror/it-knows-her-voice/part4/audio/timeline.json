@@ -1,12 +1,13 @@
 {
  "open": 0.0,
- "comments_hold": 8.98,
- "story": 9.43,
- "silence": 32.4,
- "chase": 32.85,
- "grab": 51.44,
- "choice": 58.93,
- "ask": 59.23,
- "end": 67.04,
- "total": 67.64
+ "comments_line": 6.91,
+ "comments_hold": 9.5,
+ "story": 9.95,
+ "silence": 32.92,
+ "chase": 33.37,
+ "grab": 51.96,
+ "choice": 59.45,
+ "ask": 59.75,
+ "end": 67.56,
+ "total": 68.16
 }

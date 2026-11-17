@@ -4,9 +4,10 @@
 import json, os, subprocess, wave
 import numpy as np
 SR = 48000; HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = {"A": "narrA.mp3", "B": "narrB.mp3"}
+SRC = {"A": "narrA.mp3", "B": "narrB.mp3", "H": "hit.mp3"}  # H = re-recorded "In the comments, you said: hit the road."
 PLAN = [
-    ("A", 0.00, 9.72, "open"),        # hook + "In the comments, you said: the road."
+    ("A", 0.00, 7.16, "open"),        # hook
+    ("H", 0.00, 2.85, "comments_line"),  # "In the comments, you said: hit the road."
     ("gap", 0.45, "comments_hold"),
     ("A", 9.72, 36.62, "story"),      # Good call ... She didn't say a word.
     ("gap", 0.45, "silence"),          # nobody talks, only the engine
