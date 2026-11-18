@@ -329,7 +329,11 @@ const SCENES = {
     const tr = sm((u - 1.2) / 1.2); if (tr > 0) { g.fillStyle = `rgba(200,230,255,${0.8 * tr})`; g.beginPath(); g.ellipse(560, 700 + 60 * tr, 8, 12, 0, 0, 7); g.fill(); } },
   biscuitLook(u, t) { cam(1.6, 540, 1380); sky(); dawn(0.5); bridge(1480, { x0: -400 }); fog(1440); const side = Math.sin(u * 2.4) > 0; dog(540, 1470, 0.9, { pose: 'stare', look: side ? 1 : -1, flip: !side, ears: 'down', t: u, worried: true }); darken(0.1); },
   tallWalk(u, t) { cam(1.0, 540, 1150); sky(); dawn(0.4); ground(1300); road(1330); farHouse(900, 1300, 0.28, { kitchen: 1, porch: 1 });
-    const k = u / 5.4, sc = 0.55; mom(lerp(-80, 260, k) - 300 * sc, 1330 - 975 * sc - Math.abs(Math.sin(T * 2.2)) * 12, sc, { tall: 2.1, reach: 0, face: 'dark', run: T * 2.2 }); fog(1310); fog(1250); darken(0.18); },
+    const k = u / 5.4, sc = 0.55, mx = lerp(-80, 260, k) - 300 * sc, my = 1330 - 975 * sc - Math.abs(Math.sin(T * 2.2)) * 12;
+    g.save(); g.filter = 'brightness(0.08) blur(2px)'; mom(mx, my, sc, { tall: 2.1, reach: 0, face: 'dark', run: T * 2.2 }); g.restore(); // only a black shape in the dark
+    fog(1310); fog(1250); darken(0.55);
+    g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(-1400, -900, 4000, 3800);
+    const blink = (u % 2.6) > 2.45 ? 0 : 1, ex = mx + 300 * sc, ey = my - 4 * sc; add(() => { g.fillStyle = `rgba(235,230,255,${0.85 * blink})`; for (const sx of [-1, 1]) { g.beginPath(); g.ellipse(ex + sx * 9, ey + 4, 3.5, 5, 0, 0, 7); g.fill(); } }); },
   choice(u, t) {
     g.fillStyle = '#05040a'; g.fillRect(0, 0, W, H);
     g.save(); g.beginPath(); g.rect(0, 0, W, 955); g.clip(); cam(0.95, 540, 1250, 0, -430); sky(); dawn(0.5); bridge(1480, { x0: -200 }); fog(1440); dog(560 + 30 * Math.sin(u * 2), 1470, 0.75, { pose: 'stare', look: 1, ears: 'up', t: u }); darken(0.08); g.restore();

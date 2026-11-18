@@ -144,14 +144,14 @@ def crickets(dur):
 # --- drone (swells toward the end), almost gone in the mirror beat ---
 drone = (np.sin(2 * np.pi * 55 * t) + 0.6 * np.sin(2 * np.pi * 58.3 * t) + 0.3 * np.sin(2 * np.pi * 110.4 * t)) * 0.10
 shape = np.minimum(1, t / 1.0) * (1 + 0.6 * np.clip((t - 62) / 12, 0, 1)) * np.where((t > 28.6) & (t < 32.5), 0.4, 1.0) * np.where(t > DUR - 1.0, np.clip((DUR - t) / 1.0, 0, 1), 1.0)
-bed += drone * shape
+bed += drone * shape * 0.35
 # --- events (seconds = ep5.html SHOTS) ---
-place(engine(19.3, 44, 56, 0.6, 0.35), 0.0); place(rattle(3.0), 0.0, 0.4)                          # racing, her hand on the trunk
+place(engine(19.3, 44, 56, 0.28, 0.35), 0.0); place(rattle(3.0), 0.0, 0.25)                          # racing, her hand on the trunk
 place(sting([98, 103.8, 146.8, 207.7], 3.0, 1.0), 3.4, 0.45)                                        # the scariest thing...
 for i in range(4): place(tick(1500, 120), 7.55 + i * 0.55, 0.35)                                     # comment pops
 place(screech(0.8), 17.3, 0.5)                                                                      # she hits the gas
 for i in range(4): place(tick(700, 80) * 2, 19.6 + i * 0.45, 0.3)                                   # fingers slipping, one by one
-place(engine(7.0, 52, 40, 0.45), 19.3)
+place(engine(7.0, 52, 40, 0.25), 19.3)
 place(engine(9.0, 34, 34, 0.25), 26.0)                                                              # quieter cruise
 place(tick(900, 90) * 3, 26.35, 0.5); place(static(6.3, 1.0), 26.35, 0.55)                          # radio clicks on, static
 place(sting([220, 233, 311], 2.5, 1.3), 29.0, 0.3)                                                  # Mom on the radio
@@ -169,7 +169,7 @@ place(sting([98, 103.8, 146.8], 3.0, 0.8), 70.8, 0.45)
 place(sting([220, 277, 330], 3.0, 1.2), 74.3, 0.3)                                                 # choice
 for c in [3.4, 7.4, 12.15, 17.3, 19.25, 22.0, 26.1, 32.7, 35.0, 37.3, 40.7, 44.3, 46.5, 53.0, 57.5, 62.35, 65.85, 68.8, 74.3]: place(whoosh(0.4), c - 0.2, 0.1)
 
-bed *= 0.5 / max(1e-9, np.abs(bed).max())
+bed *= 0.3 / max(1e-9, np.abs(bed).max())
 dog = np.zeros(N)
 def dplace(sig, at, gain):
     i = int(at * SR); j = min(N, i + len(sig))
@@ -177,7 +177,11 @@ def dplace(sig, at, gain):
 dplace(dv.growl(2.6, seed=4, room=0.2), 29.4, 0.4)                                                  # Biscuit growls at the radio
 dplace(dv.growl(1.4, seed=6, room=0.2), 66.0, 0.22)                                                 # uneasy on the bridge
 save(os.path.join(HERE, "bed.wav"), bed + dog)
-mix = voice + bed + dog
+music = load_wav(os.path.join(HERE, "music.wav"))[:N]; music = np.pad(music, (0, N - len(music)))
+venv = np.sqrt(np.convolve(voice ** 2, np.ones(int(0.12 * SR)) / int(0.12 * SR), "same")); duck = 1 - 0.45 * np.clip(venv / 0.08, 0, 1)
+music = music * duck * 0.2
+save(os.path.join(HERE, "bed.wav"), bed + dog + music)
+mix = voice + bed + dog + music
 mix *= 0.95 / np.abs(mix).max()
 save(os.path.join(HERE, "mix.wav"), mix)
 print("mix", round(DUR, 2), "s")
