@@ -263,6 +263,47 @@ const speech = (txt, x, y, rot = 0.04) => { g.save(); g.translate(x, y); g.rotat
   g.shadowColor = 'rgba(200,190,255,0.7)'; g.shadowBlur = 30; rr(-w / 2, -50, w, 100, 50, 'rgba(235,228,255,0.95)'); g.shadowBlur = 0; g.beginPath(); g.moveTo(w * 0.15, 40); g.lineTo(w * 0.32, 40); g.lineTo(w * 0.36, 100); g.closePath(); g.fill();
   g.fillStyle = '#1a1030'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, 0, 2); g.restore(); };
 
+const dawn = (a) => { if (a <= 0) return; add(() => { g.fillStyle = lin(0, -400, 0, 1300, [[0, `rgba(90,70,140,${0.35 * a})`], [0.7, `rgba(200,120,140,${0.25 * a})`], [1, 'rgba(0,0,0,0)']]); g.fillRect(-1400, -900, 4000, 2400); }); };
+// rear-view mirror: Mrs. Hale's eyes (or nobody)
+const mirrorShot = (u, o = {}) => { g.fillStyle = '#07050d'; g.fillRect(-200, -200, 1500, 2400);
+  // windshield + road far below
+  g.save(); g.beginPath(); g.moveTo(-100, 900); g.lineTo(1180, 900); g.lineTo(1180, 1500); g.lineTo(-100, 1500); g.closePath(); g.clip(); g.fillStyle = lin(0, 900, 0, 1500, [[0, '#0d0b22'], [1, '#1b1636']]); g.fillRect(-100, 900, 1300, 600);
+  g.fillStyle = '#16131e'; g.beginPath(); g.moveTo(480, 1100); g.lineTo(600, 1100); g.lineTo(1180, 1500); g.lineTo(-100, 1500); g.closePath(); g.fill(); g.fillStyle = 'rgba(230,220,160,0.6)'; for (let k = 0; k < 6; k++) { const q = (k / 6 + T * 0.6) % 1; g.fillRect(540 - (3 + q * 20) / 2, 1100 + q * q * 400, 3 + q * 20, 4 + q * 14); } g.restore();
+  g.fillStyle = '#120e1e'; g.fillRect(-200, 1500, 1500, 900);
+  const mx = 540, my = 640, mw = 820, mh = 290; g.fillStyle = '#05040a'; g.fillRect(mx - 14, 260, 28, my - mh / 2 - 250); // stem
+  rr(mx - mw / 2 - 22, my - mh / 2 - 22, mw + 44, mh + 44, 60, '#0b0912');
+  g.save(); g.beginPath(); g.roundRect(mx - mw / 2, my - mh / 2, mw, mh, 46); g.clip();
+  g.fillStyle = lin(0, my - mh / 2, 0, my + mh / 2, [[0, '#1a1428'], [1, '#0c0916']]); g.fillRect(mx - mw / 2, my - mh / 2, mw, mh);
+  add(() => { const rg = g.createRadialGradient(mx + 220, my, 10, mx + 220, my, 360); rg.addColorStop(0, 'rgba(255,40,50,0.28)'); rg.addColorStop(1, 'rgba(255,40,50,0)'); g.fillStyle = rg; g.fillRect(mx - mw / 2, my - mh / 2, mw, mh); });
+  g.fillStyle = '#1e1830'; g.beginPath(); g.roundRect(mx - 300, my + 40, 300, 300, 40); g.fill(); // the driver seat headrest
+  if (!o.empty) { const s = 3.0, ex = 300, ey = 510; const look = o.look ?? 0; hale(mx - ex * s + look * 30, my - 525 * s, s, { arm: 'cane', smile: o.smile || 'toowide', t: T }); }
+  add(() => { g.fillStyle = 'rgba(200,190,255,0.10)'; g.beginPath(); g.moveTo(mx - mw / 2 + 60, my - mh / 2); g.lineTo(mx - mw / 2 + 200, my - mh / 2); g.lineTo(mx - mw / 2 + 80, my + mh / 2); g.lineTo(mx - mw / 2 - 60, my + mh / 2); g.closePath(); g.fill(); });
+  g.restore(); g.strokeStyle = '#2a2236'; g.lineWidth = 8; g.beginPath(); g.roundRect(mx - mw / 2, my - mh / 2, mw, mh, 46); g.stroke(); };
+// dashboard radio close-up
+const radioShot = (u, o = {}) => { g.fillStyle = '#07050d'; g.fillRect(-200, -200, 1500, 2400);
+  g.fillStyle = lin(0, 300, 0, 1700, [[0, '#15101f'], [1, '#0a0812']]); g.beginPath(); g.moveTo(-200, 420); g.quadraticCurveTo(540, 300, 1280, 420); g.lineTo(1280, 2200); g.lineTo(-200, 2200); g.fill();
+  rr(140, 640, 800, 470, 40, '#0c0a12'); rr(170, 670, 740, 410, 30, '#16121f');
+  const on = o.on ?? 0; rr(240, 720, 600, 170, 20, on ? '#0b2b2a' : '#0a0a10');
+  if (on) { add(() => { const rg = g.createRadialGradient(540, 805, 10, 540, 805, 420); rg.addColorStop(0, `rgba(80,230,210,${0.35 * on})`); rg.addColorStop(1, 'rgba(80,230,210,0)'); g.fillStyle = rg; g.fillRect(0, 400, 1080, 900); });
+    g.save(); g.globalAlpha = on; g.fillStyle = '#7ff2e0'; g.font = '700 92px "DejaVu Sans Mono", monospace'; g.textAlign = 'center'; g.fillText(o.text || '3:46', 540, 840);
+    if (o.wave) { for (let k = 0; k < 18; k++) { const h = 10 + o.wave * 60 * Math.abs(Math.sin(T * 13 + k * 1.7)); g.fillRect(300 + k * 27, 870 - h, 14, h); } }
+    if (o.static) { g.fillStyle = 'rgba(160,255,240,0.5)'; for (let k = 0; k < 40; k++) g.fillRect(250 + ((k * 137 + T * 900) % 580), 730 + ((k * 61 + T * 700) % 150), 6, 2); }
+    g.restore(); }
+  for (const kx of [330, 750]) { g.fillStyle = '#05040a'; g.beginPath(); g.arc(kx, 990, 62, 0, 7); g.fill(); g.fillStyle = '#2a2436'; g.beginPath(); g.arc(kx, 990, 48, 0, 7); g.fill(); g.strokeStyle = '#8a8496'; g.lineWidth = 6; const a = kx === 330 ? (o.knob || 0) * -1.6 - 0.5 : 0.3; g.beginPath(); g.moveTo(kx, 990); g.lineTo(kx + Math.cos(a) * 40, 990 + Math.sin(a) * 40); g.stroke(); } };
+// the old bridge over black water (x0 = bridge start)
+const bridge = (y = 1480, o = {}) => { g.fillStyle = lin(0, y + 40, 0, y + 900, [[0, '#0b0a1e'], [1, '#030208']]); g.fillRect(-1400, y + 40, 4000, 1200);
+  add(() => { g.fillStyle = 'rgba(200,190,255,0.06)'; for (let k = 0; k < 14; k++) { const xx = ((k * 211 + T * 30) % 2200) - 600; g.fillRect(xx, y + 120 + k * 40, 160, 3); } });
+  const bx0 = o.x0 ?? 300; g.fillStyle = '#2a1e2e'; g.fillRect(bx0, y - 14, 3000, 40); g.fillStyle = '#1a1220'; for (let x = bx0; x < bx0 + 3000; x += 70) g.fillRect(x, y - 14, 6, 40);
+  g.strokeStyle = '#3a2c3e'; g.lineWidth = 12; g.beginPath(); g.moveTo(bx0, y - 120); g.lineTo(bx0 + 3000, y - 120); g.stroke(); for (let x = bx0; x < bx0 + 3000; x += 180) { g.fillStyle = '#3a2c3e'; g.fillRect(x, y - 130, 14, 130); g.fillRect(x - 4, y + 20, 22, 300); } };
+// our house seen from far away across the field: front, porch light, Mom's car in the driveway
+const farHouse = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s);
+  g.fillStyle = '#1c1530'; g.fillRect(-300, -420, 600, 420); g.fillStyle = '#120e22'; g.beginPath(); g.moveTo(-340, -420); g.lineTo(0, -640); g.lineTo(340, -420); g.fill();
+  g.fillStyle = o.kitchen ? '#ffd27a' : '#16122c'; g.fillRect(-230, -330, 130, 150); g.fillStyle = '#16122c'; g.fillRect(100, -330, 130, 150);
+  rr(-60, -260, 120, 260, 6, '#3c2e62');
+  const pl = o.porch ?? 1; g.fillStyle = pl ? '#fff2c0' : '#2a2436'; g.beginPath(); g.arc(-100, -280, 16, 0, 7); g.fill();
+  if (pl) add(() => { const rg = g.createRadialGradient(-100, -280, 4, -100, -280, 320); rg.addColorStop(0, `rgba(255,236,170,${0.75 * pl})`); rg.addColorStop(1, 'rgba(255,236,170,0)'); g.fillStyle = rg; g.fillRect(-600, -700, 1100, 1100); });
+  if (o.kitchen) add(() => { const rg = g.createRadialGradient(-165, -255, 4, -165, -255, 220); rg.addColorStop(0, 'rgba(255,200,120,0.3)'); rg.addColorStop(1, 'rgba(255,200,120,0)'); g.fillStyle = rg; g.fillRect(-500, -600, 800, 800); });
+  g.restore(); if (o.car) carSide(x + 470 * s, y, 0.42 * s, { win: 0, lights: 0 }); };
 const THUMBS = {
   1() { T = 1.3; g.save(); cam(1.0, 540, 960); wallIn(); floorIn(1520); door(300, 430, 520, 1090, { glow: 1, feet: 1, glowCol: '200,210,255' });
     add(() => { const rg = g.createRadialGradient(560, 760, 5, 560, 760, 120); rg.addColorStop(0, 'rgba(255,40,60,0.9)'); rg.addColorStop(1, 'rgba(255,40,60,0)'); g.fillStyle = rg; g.fillRect(400, 600, 320, 320); });
@@ -292,6 +333,12 @@ const THUMBS = {
     hero(-80, 820, 1.0, { expr: 'shock', look: 0.5 }); g.fillStyle = '#16122a'; g.fillRect(-100, 1700, 1300, 400); dog(790, 1720, 1.0, { pose: 'crouch', growl: 1, ears: 'down', flip: true, look: -1 });
     g.restore(); grade(540, 820, '255,30,50', 0.25);
     hook([["SHE'S RIGHT", '#ffffff', 120], ['BEHIND US!', '#ff2a3a', 140]], 210); badge(4, 760, 1780); logo(); },
+  5() { T = 2.0; g.save(); cam(1.0, 540, 1150); sky(); dawn(0.35); ground(1300); road(1330); fog(1300);
+    farHouse(820, 1310, 0.62, { kitchen: 1, porch: 1, car: false });
+    const sc = 0.75, mx = 250 - 300 * sc, my = 700; g.save(); g.filter = 'brightness(0.06)'; mom(mx, my, sc, { tall: 2.15, reach: 0.25, face: 'dark', run: 1.2 }); g.restore();
+    const ex = mx + 300 * sc, ey = my - 4 * sc; add(() => { g.fillStyle = '#f2eeff'; for (const sx of [-1, 1]) { g.beginPath(); g.ellipse(ex + sx * 17, ey + 8, 7, 10, 0, 0, 7); g.fill(); } const rg = g.createRadialGradient(ex, ey, 2, ex, ey, 90); rg.addColorStop(0, 'rgba(255,40,60,0.45)'); rg.addColorStop(1, 'rgba(255,40,60,0)'); g.fillStyle = rg; g.fillRect(ex - 120, ey - 120, 240, 240); });
+    fog(1460); g.restore(); grade(560, 900, '255,30,50', 0.12);
+    hook([["MOM IS HOME...", '#ffffff', 112], ["SO WHAT IS THAT?", '#ff2a3a', 116]], 210); ring(250, 515, 88); arrow(780, 720, 345, 560); logo(); badge(5, 760, 1760); },
 };
 window.renderThumb = (n, k = 2) => { cv.width = W * k; cv.height = H * k; g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, W, H); THUMBS[n](); return true; };
 document.fonts.load('900 92px "Inter Display"').then(() => { window.ready = true; });
