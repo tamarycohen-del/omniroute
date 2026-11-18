@@ -1,0 +1,18 @@
+<!doctype html><html><body style="margin:0"><canvas id="c" width="2160" height="3840" style="width:1080px;height:1920px;display:block"></canvas><script>
+const c = document.getElementById('c'), g = c.getContext('2d'); g.scale(2, 2);
+const load = (s) => new Promise((r) => { const i = new Image(); i.onload = () => r(i); i.src = s; });
+const txt = (t, x, y, fs, col = '#fff', rot = 0) => { g.save(); g.translate(x, y); g.rotate(rot); g.font = `900 ${fs}px "Inter Display", "Noto Color Emoji", sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round';
+  let s = fs; while (g.measureText(t).width > 1020 && s > 30) { s -= 4; g.font = `900 ${s}px "Inter Display", "Noto Color Emoji", sans-serif`; }
+  g.lineWidth = s * 0.22; g.strokeStyle = '#000'; g.strokeText(t, 0, 0); g.fillStyle = col; g.fillText(t, 0, 0); g.restore(); };
+const ring = (x, y, r) => { g.save(); g.strokeStyle = '#000'; g.lineWidth = 22; g.beginPath(); g.ellipse(x, y, r, r * 0.95, 0, 0, 7); g.stroke(); g.strokeStyle = '#ff1e1e'; g.lineWidth = 13; g.stroke(); g.restore(); };
+const arrow = (x0, y0, x1, y1) => { g.save(); const a = Math.atan2(y1 - y0, x1 - x0), L = Math.hypot(x1 - x0, y1 - y0); g.translate(x0, y0); g.rotate(a); g.fillStyle = '#ff1e1e'; g.strokeStyle = '#000'; g.lineWidth = 9;
+  g.beginPath(); g.moveTo(0, -18); g.lineTo(L - 70, -18); g.lineTo(L - 70, -52); g.lineTo(L, 0); g.lineTo(L - 70, 52); g.lineTo(L - 70, 18); g.lineTo(0, 18); g.closePath(); g.stroke(); g.fill(); g.restore(); };
+(async () => { await document.fonts.load('900 80px "Inter Display"'); await document.fonts.load('80px "Noto Color Emoji"');
+  const a = await load('TH1.png'), b = await load('TH2.png');
+  g.drawImage(a, 0, 400, 1080, 960, 0, 0, 1080, 960); g.drawImage(b, 0, 330, 1080, 960, 0, 960, 1080, 960);
+  g.fillStyle = '#000'; g.fillRect(0, 952, 1080, 16);
+  txt('RICHEST GUY: turns into gold', 540, 90, 74); txt('chance: 0% 💀', 540, 860, 96, '#ff3b3b', -0.03);
+  txt('THE NOOB: first try', 540, 1050, 80); txt('1 IN 137,500 🗿', 540, 1845, 100, '#ffe23a', 0.02);
+  ring(762, 1382, 118); arrow(170, 1560, 625, 1430);
+  window.done = true; })();
+</script></body></html>

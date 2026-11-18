@@ -199,4 +199,9 @@ const SC = {
     put(RICH, 119, -9, -0.4, { face: 'shocked', bodyRx: -1.45 * f, bodyY: -0.2 * f, armL: UP, armR: UP, legL: -1.2 * f, legR: -1.0 * f }); put(GGR, 121.6, -9.3, 0.4, { face: 'shocked', bodyY: Math.max(0, Math.sin(u * 7)) * 1.5, armL: UP, armR: UP });
     heroChest(120.3, -6.0, 0.4, 1, 0.8, '#b04dff'); xcAt(0, 113, -12, 0.5, 1, 1); xcAt(1, 127, -13, -0.4, 1, 1); xcAt(2, 116, -3, 1.2, 1, 1); xcAt(3, 125.5, -4, -0.8, 1, 1); xcAt(4, 109, -6, 0.2, 1, 1);
     camN(u, d, [[0, [120.5, 5, -1.5], [120.2, 2.4, -8.8], 44], [1, [120.4, 24, -5.0], [120.2, 0.5, -9.2], 46]]); moonAt(0.38, 0.86, 12); APER = 0.0003; },
+  TH1(u, d) { outdoor(); focus(-62, 8); put(RICHG, ...RICHAT, PI, { face: 'sad', look: [0, 0.4], head: [0.25, 0, 0.12], armL: [0.1, 0, 0.1], armR: [0.1, 0, 0.1] }); put(GG, -66.5, 11, PI + 0.5, { ...bend }); put(GGR, -57.8, 11.2, PI - 0.4, { ...bend });
+    key(-62, 6, 4, 22, '#ffe2b0'); camN(u, d, [[0, [-62.2, 4.6, 4.2], [-62, 4.2, 8.6], 40], [1, [-62.2, 4.6, 4.2], [-62, 4.2, 8.6], 40]]); moonAt(0.38, 0.9, 12); APER = 0.0012; },
+  TH2(u, d) { outdoor(); focus(120, -9); crowdShow2('meadow'); heroChest(120, -9.2, 0, 1, 0.5, '#ffc04a', woodLid); put(NOOB, 120.4, -11.4, 0.15, { face: 'smug', armR: [-2.9, 0, 0.15], armL: [-0.2, 0, 0.5], look: [0.5, -0.3] });
+    S.updateMatrixWorld(); const hp = handPos(NOOB, 1).add(V(0, 0.65, 0.15)); tokenAt(hp, 0.4, 1.3); rayAt(hp.clone().add(V(0, 0, -0.4)), 5, 0.3, 0.8); sparkRing(hp, 1.2, 8, 1.4, 0.5); key(121, 6, -5, 8, '#ffe6b0');
+    camN(u, d, [[0, [121.3, 3.6, -3.4], [120.6, 5.0, -11], 42], [1, [121.3, 3.6, -3.4], [120.6, 5.0, -11], 42]]); moonAt(0.38, 0.9, 12); },
 };
