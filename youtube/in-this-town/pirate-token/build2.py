@@ -36,7 +36,7 @@ const caption = (t) => { let w = null, wi = 0; for (let i = 0; i < WORDS.length;
 window.renderShot = (name, u = 1, d = 2) => { T = 3 + u; resetAll(); SC[name](u, d); cam.updateMatrixWorld(); bokeh.uniforms.focus.value = cam.position.distanceTo(CAMTG); bokeh.uniforms.aperture.value = APER; composer.render(); OG.drawImage(R.domElement, 0, 0, OUTC.width, OUTC.height); return true; };
 window.renderFrame = (f) => { const t = f / 24; T = t; let i = 0; while (i + 1 < TL.shots.length && t >= TL.shots[i + 1].s) i++; const sh = TL.shots[i]; resetAll(i);
   const d = sh.end - sh.s; SC[sh.shot](Math.min(t - sh.s, d), d); cam.updateMatrixWorld(); { const cx = cam.position.x, cz = cam.position.z, dx = CAMTG.x - cx, dz = CAMTG.z - cz, L2 = dx * dx + dz * dz; for (const l of LAMPM) { const t = ((l.x - cx) * dx + (l.z - cz) * dz) / L2, px = cx + dx * t - l.x, pz = cz + dz * t - l.z; const hide = t > -0.05 && t < 1.0 && Math.hypot(px, pz) < 1.8 + 0.6 * t; l.m.forEach((m) => (m.visible = !hide)); } } for (const h of SOUTH) h.visible = !(cam.position.z > 10.5 && Math.abs(h.position.x - cam.position.x) < 26); bokeh.uniforms.focus.value = cam.position.distanceTo(CAMTG); bokeh.uniforms.aperture.value = APER; composer.render(); OG.filter = BLUR > 0.2 ? `blur(${BLUR * (window.__PR || 1)}px)` : 'none'; OG.drawImage(R.domElement, 0, 0, OUTC.width, OUTC.height); OG.filter = 'none'; caption(t); };
-document.fonts.load('900 92px "Inter Display"').then(() => { window.ready = true; });
+Promise.all([document.fonts.load('900 92px "Inter Display"'), window.TOKREADY]).then(() => { window.ready = true; });
 </script></body></html>'''
 tail=tail.replace('__TL__',json.dumps({'total':TOT,'shots':shots})).replace('__WORDS__',json.dumps(out))
 open('pirate.html','w').write(core+body+tail)

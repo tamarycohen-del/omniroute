@@ -266,17 +266,14 @@ const gemTex = canvasTex(512, 512, (g) => { const grd = g.createRadialGradient(2
   const r = rng(17); for (let k = 0; k < 26; k++) { g.fillStyle = `rgba(${r() < 0.5 ? '255,255,220' : '200,90,0'},${0.08 + r() * 0.14})`; g.beginPath(); g.moveTo(r() * 512, r() * 512); g.lineTo(r() * 512, r() * 512); g.lineTo(r() * 512, r() * 512); g.fill(); }
   g.fillStyle = 'rgba(255,255,255,0.55)'; g.beginPath(); g.ellipse(170, 150, 40, 26, -0.6, 0, 7); g.fill();
   g.font = '900 330px "Inter Display", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = 'rgba(120,50,0,0.35)'; g.fillText('F', 268, 282); g.fillStyle = '#ffffff'; g.fillText('F', 256, 268); });
-const token = new THREE.Group(); S.add(token); { const gm = new THREE.MeshStandardMaterial({ map: gemTex, emissive: '#ffffff', emissiveMap: gemTex, emissiveIntensity: 0.55, roughness: 0.25, metalness: 0.1 });
-  const T_ = new THREE.Group(); token.add(T_); T_.scale.setScalar(0.62);
-  // 8-point compass star (gold), behind everything
-  const star = new THREE.Shape(); for (let k = 0; k < 16; k++) { const a = k / 16 * PI * 2 + PI / 2, rr = k % 2 ? 0.34 : (k % 4 === 0 ? 1.55 : 1.05); const x = Math.cos(a) * rr, y = Math.sin(a) * rr; k ? star.lineTo(x, y) : star.moveTo(x, y); }
-  add(new THREE.ExtrudeGeometry(star, { depth: 0.12, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.04, bevelSegments: 2 }), gold, 0, 0, -0.12, T_, false);
-  cyl(0.98, 0.14, '#3a2208', 0, 0, -0.02, T_, { seg: 40 }).rotation.x = PI / 2; // dark ring background
-  for (const [a0, a1] of [[0.25, 2.55], [2.9, 3.55], [3.8, 4.25], [4.55, 5.95]]) { const t = add(new THREE.TorusGeometry(1.0, 0.13, 10, 40, a1 - a0), gold, 0, 0, 0.05, T_, false); t.rotation.z = a0; t.scale.z = 0.6; } // broken gold ring
-  const gemD = cyl(0.66, 0.2, gold, 0, 0, 0.08, T_, { seg: 40 }); gemD.rotation.x = PI / 2; // gold bezel
-  const face = add(new THREE.CircleGeometry(0.58, 48), gm, 0, 0, 0.19, T_, false);
-  const dome = add(new THREE.SphereGeometry(0.58, 32, 16, 0, PI * 2, 0, PI / 2), new THREE.MeshStandardMaterial({ color: '#ffd060', transparent: true, opacity: 0.18, roughness: 0.05, envMap: ENV }), 0, 0, 0.19, T_, false); dome.rotation.x = PI / 2; dome.scale.y = 0.35;
-}
+const token = new THREE.Group(); S.add(token);
+window.TOKREADY = new Promise((res) => { new THREE.TextureLoader().load('./token.png', (tx) => { tx.colorSpace = THREE.SRGBColorSpace; tx.anisotropy = 8;
+  const pg = new THREE.PlaneGeometry(2.0, 2.0);
+  const front = new THREE.MeshStandardMaterial({ map: tx, alphaTest: 0.5, emissive: '#ffffff', emissiveMap: tx, emissiveIntensity: 0.12, roughness: 0.35, metalness: 0.15, side: THREE.FrontSide });
+  const edge = new THREE.MeshStandardMaterial({ map: tx, alphaTest: 0.5, color: '#8a5a12', roughness: 0.4, metalness: 0.6, envMap: ENV, envMapIntensity: 0.4, side: THREE.DoubleSide });
+  for (let k = 0; k < 7; k++) add(pg, edge, 0, 0, -0.06 + k * 0.018, token, false);
+  add(pg, front, 0, 0, 0.065, token, false); const bk = add(pg, front, 0, 0, -0.065, token, false); bk.rotation.y = PI; res(); }); });
+
 const raysTex = canvasTex(512, 512, (g) => { g.translate(256, 256); for (let k = 0; k < 18; k++) { g.rotate(PI * 2 / 18); const grd = g.createLinearGradient(0, 0, 250, 0); grd.addColorStop(0, 'rgba(255,230,140,0.95)'); grd.addColorStop(1, 'rgba(255,200,80,0)'); g.fillStyle = grd; g.beginPath(); g.moveTo(0, 0); g.lineTo(250, -18); g.lineTo(250, 18); g.fill(); } });
 const rays = new THREE.Sprite(new THREE.SpriteMaterial({ map: raysTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false })); S.add(rays);
 const glowS = new THREE.Sprite(new THREE.SpriteMaterial({ map: starTex, color: '#ffe08a', blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false })); S.add(glowS);
@@ -506,10 +503,10 @@ const SC = {
     S.updateMatrixWorld(); holdAt(paper, WOOD, 1, [0.2, 0.75, 0.25], [0, -0.6, 0]); paper.visible = true; key(-28, 6, 6, 30);
     camN(u, d, [[0, [-30.0, 5.1, 5.6], [-30.2, 5.0, 0.3], 30], [1, [-30.05, 5.1, 4.4], [-30.2, 5.05, 0.3], 28]]); moonAt(0.38, 0.88, 12); APER = 0.0014; },
   M(u, d) { outdoor(); focus(40, 6); const k = kk(u, d); WC.visible = true; WC.position.set(40, 0, 7.8); WC.rotation.y = PI; put(KID, 40, 7.8, PI, { y: 0.95, sit: true, face: 'shocked', jaw: 0.7, armR: [-2.4, 0, 0.1], armL: [-0.6, 0, 0], look: [-0.3, -0.6], head: [-0.15, 0, 0] });
-    heroChest(42.8, 7.4, PI + 0.5, 1, 0.3); S.updateMatrixWorld(); const hp = handPos(KID, 1).add(V(0, 0.65, 0)); tokenAt(hp, PI + Math.sin(u * 2) * 0.4, 1.05); rayAt(hp.clone().add(V(0, 0, 0.3)), 2.6, u, 0.5); sparkRing(hp, u, 6, 0.9, 0.35);
+    heroChest(42.8, 7.4, PI + 0.5, 1, 0.3); S.updateMatrixWorld(); const hp = handPos(KID, 1).add(V(0, 0.65, 0)); tokenAt(hp, PI + Math.sin(u * 2) * 0.4, 1.05); rayAt(hp.clone().add(V(0, 0, 0.6)), 2.8, u, 0.22); sparkRing(hp, u, 6, 1.2, 0.3);
     camN(u, d, [[0, [39.8, 4.3, 1.2], [40.0, 4.1, 7.6], 42], [1, [39.9, 4.3, 1.9], [40.0, 4.2, 7.6], 40]]); moonAt(0.3, 0.88, 12); },
   N(u, d) { outdoor(); focus(40, 6); const k = kk(u, d); WC.visible = true; WC.position.set(40, 0, 7.8); WC.rotation.y = PI; put(KID, 40, 7.8, PI - 0.2, { y: 0.95, sit: true, face: 'shocked', jaw: 0.9, armR: [-2.2, 0, 0.5], armL: [-0.4, 0, 0], look: [-0.5, -0.4] });
-    S.updateMatrixWorld(); const hp = handPos(KID, 1).add(V(0, 0.6, 0)); tokenAt(hp, PI + 0.4 + Math.sin(u * 2) * 0.3, 1.05); rayAt(hp.clone().add(V(0, 0, 0.3)), 2.2, u, 0.35); key(39.5, 5, 3, 30, '#ffe0b0');
+    S.updateMatrixWorld(); const hp = handPos(KID, 1).add(V(0, 0.6, 0)); tokenAt(hp, PI + 0.4 + Math.sin(u * 2) * 0.3, 1.05); rayAt(hp.clone().add(V(0, 0, 0.6)), 2.6, u, 0.18); key(39.5, 5, 3, 22, '#ffe0b0');
     camN(u, d, [[0, [39.4, 4.7, 2.6], [38.4, 4.9, 7.8], 42], [1, [39.3, 4.7, 3.2], [38.4, 4.95, 7.8], 40]]); moonAt(-0.3, 0.9, 12); APER = 0.0014; },
   O(u, d) { focus(IX, 0); interior(); const k = kk(u, d); put(WORKER, IX, -2.2, 0, { face: 'laugh', armL: PUMP(u), armR: PUMP(u, 1.1), bodyY: 0.25 * Math.abs(Math.sin(u * 8)) });
     camN(u, d, [[0, [IX + 1.2, 4.4, 5.8], [IX, 4.6, -2], 46], [1, [IX + 0.9, 4.4, 5.0], [IX, 4.7, -2], 44]]); APER = 0.001; },
@@ -579,8 +576,8 @@ const SC = {
   AS(u, d) { outdoor(); focus(120, -9); const k = kk(u, d); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, 1, 0.8, '#ffc04a', woodLid);
     put(NOOB, 119.0, -10.9, 0.25, { face: 'grin', armL: PUMP(u), armR: PUMP(u, 1.2), bodyY: 0.2 * Math.abs(Math.sin(u * 7)) }); key(120, 5, -4, 10, '#ffe2b0'); sparkRing(V(120, 2.4, -8.8), u, 6, 1.3, 0.35);
     camN(u, d, [[0, [120.8, 2.2, -3.4], [119.8, 3.0, -9.6], 44], [1, [120.7, 2.2, -4.0], [119.8, 3.0, -9.6], 42]]); moonAt(0.3, 0.86, 12); },
-  AT(u, d) { outdoor(); focus(120, -9); const k = kk(u, d), r = ease(k, 0, 0.6); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, 1, 0.55, '#ffc04a', woodLid);
-    put(NOOB, 119.0, -10.9, 0.25, { face: 'amazed', armL: PUMP(u), armR: UP, look: [0.3, -0.5] }); const tp = V(120.1, lerp(1.6, 3.6, r), -8.6); tokenAt(tp, (1 - r) * PI * 4 + Math.sin(u * 3) * 0.15, 1.25); rayAt(tp.clone().add(V(0, 0, -0.5)), 2 + 1.5 * r, u, 0.4); sparkRing(tp, u, 8, 1.4, 0.45);
+  AT(u, d) { outdoor(); focus(120, -9); const k = kk(u, d), r = ease(k, 0, 0.6); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, 1, 0.3, '#ffc04a', woodLid);
+    put(NOOB, 119.0, -10.9, 0.25, { face: 'amazed', armL: PUMP(u), armR: UP, look: [0.3, -0.5] }); const tp = V(120.1, lerp(1.6, 3.6, r), -8.6); tokenAt(tp, (1 - r) * PI * 4 + Math.sin(u * 3) * 0.15, 1.25); rayAt(tp.clone().add(V(0, 0, -0.6)), 2.6 + 1.5 * r, u, 0.22); sparkRing(tp, u, 8, 1.6, 0.35);
     camN(u, d, [[0, [120.6, 2.6, -4.0], [120, 3.0, -9], 40], [1, [120.5, 2.7, -4.6], [120, 3.2, -9], 38]]); moonAt(0.3, 0.86, 12); },
   AU(u, d) { outdoor(); focus(19, -8); const k = kk(u, d); put(RICH, 17.6, -9.0, 0.2, { face: 'shocked', jaw: 1.2, armL: [-0.3, 0, 0.3], armR: [-0.3, 0, 0.3] }); put(GGR, 19.9, -9.2, -0.15, { face: 'shocked', jaw: 1.2, armL: [-0.5, 0, 0.4], armR: [-0.5, 0, 0.4] });
     heroChest(18.8, -6.4, 0.1, 1, 0.8, '#b04dff'); key(19, 5, -3, 18); camN(u, d, [[0, [18.9, 4.3, 0.2], [18.8, 4.1, -9], 44], [1, [18.9, 4.3, -0.6], [18.8, 4.1, -9], 42]]); moonAt(0.38, 0.86, 12); },
@@ -591,7 +588,7 @@ const SC = {
   TH1(u, d) { outdoor(); focus(-62, 8); put(RICHG, ...RICHAT, PI, { face: 'sad', look: [0, 0.4], head: [0.25, 0, 0.12], armL: [0.1, 0, 0.1], armR: [0.1, 0, 0.1] }); put(GG, -66.5, 11, PI + 0.5, { ...bend }); put(GGR, -57.8, 11.2, PI - 0.4, { ...bend });
     key(-62, 6, 4, 22, '#ffe2b0'); camN(u, d, [[0, [-62.2, 4.6, 4.2], [-62, 4.2, 8.6], 40], [1, [-62.2, 4.6, 4.2], [-62, 4.2, 8.6], 40]]); moonAt(0.38, 0.9, 12); APER = 0.0012; },
   TH2(u, d) { outdoor(); focus(120, -9); crowdShow2('meadow'); heroChest(120, -9.2, 0, 1, 0.5, '#ffc04a', woodLid); put(NOOB, 120.4, -11.4, 0.15, { face: 'smug', armR: [-2.9, 0, 0.15], armL: [-0.2, 0, 0.5], look: [0.5, -0.3] });
-    S.updateMatrixWorld(); const hp = handPos(NOOB, 1).add(V(0, 0.65, 0.15)); tokenAt(hp, 0.4, 1.3); rayAt(hp.clone().add(V(0, 0, -0.4)), 5, 0.3, 0.8); sparkRing(hp, 1.2, 8, 1.4, 0.5); key(121, 6, -5, 8, '#ffe6b0');
+    S.updateMatrixWorld(); const hp = handPos(NOOB, 1).add(V(0, 0.65, 0.15)); tokenAt(hp.clone().add(V(0, 0.3, 0.3)), -0.08, 1.6); rayAt(hp.clone().add(V(0, 0.3, -0.5)), 5.5, 0.3, 0.3); sparkRing(hp, 1.2, 8, 1.4, 0.5); key(121, 6, -5, 8, '#ffe6b0');
     camN(u, d, [[0, [121.3, 3.6, -3.4], [120.6, 5.0, -11], 42], [1, [121.3, 3.6, -3.4], [120.6, 5.0, -11], 42]]); moonAt(0.38, 0.9, 12); },
 };
 
@@ -611,5 +608,5 @@ const caption = (t) => { let w = null, wi = 0; for (let i = 0; i < WORDS.length;
 window.renderShot = (name, u = 1, d = 2) => { T = 3 + u; resetAll(); SC[name](u, d); cam.updateMatrixWorld(); bokeh.uniforms.focus.value = cam.position.distanceTo(CAMTG); bokeh.uniforms.aperture.value = APER; composer.render(); OG.drawImage(R.domElement, 0, 0, OUTC.width, OUTC.height); return true; };
 window.renderFrame = (f) => { const t = f / 24; T = t; let i = 0; while (i + 1 < TL.shots.length && t >= TL.shots[i + 1].s) i++; const sh = TL.shots[i]; resetAll(i);
   const d = sh.end - sh.s; SC[sh.shot](Math.min(t - sh.s, d), d); cam.updateMatrixWorld(); { const cx = cam.position.x, cz = cam.position.z, dx = CAMTG.x - cx, dz = CAMTG.z - cz, L2 = dx * dx + dz * dz; for (const l of LAMPM) { const t = ((l.x - cx) * dx + (l.z - cz) * dz) / L2, px = cx + dx * t - l.x, pz = cz + dz * t - l.z; const hide = t > -0.05 && t < 1.0 && Math.hypot(px, pz) < 1.8 + 0.6 * t; l.m.forEach((m) => (m.visible = !hide)); } } for (const h of SOUTH) h.visible = !(cam.position.z > 10.5 && Math.abs(h.position.x - cam.position.x) < 26); bokeh.uniforms.focus.value = cam.position.distanceTo(CAMTG); bokeh.uniforms.aperture.value = APER; composer.render(); OG.filter = BLUR > 0.2 ? `blur(${BLUR * (window.__PR || 1)}px)` : 'none'; OG.drawImage(R.domElement, 0, 0, OUTC.width, OUTC.height); OG.filter = 'none'; caption(t); };
-document.fonts.load('900 92px "Inter Display"').then(() => { window.ready = true; });
+Promise.all([document.fonts.load('900 92px "Inter Display"'), window.TOKREADY]).then(() => { window.ready = true; });
 </script></body></html>
