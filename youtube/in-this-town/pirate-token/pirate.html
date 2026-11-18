@@ -8,6 +8,7 @@ import { EffectComposer } from './package/examples/jsm/postprocessing/EffectComp
 import { RenderPass } from './package/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from './package/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from './package/examples/jsm/postprocessing/ShaderPass.js';
+import { BokehPass } from './package/examples/jsm/postprocessing/BokehPass.js';
 import { OutputPass } from './package/examples/jsm/postprocessing/OutputPass.js';
 const W = 1080, H = 1920, PI = Math.PI;
 const R = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -152,9 +153,10 @@ const ang = (a, b, k) => a + (((b - a + PI * 3) % (PI * 2)) - PI) * k;
 const fly = (p0, v, t, g = -22, floor = 0.4, rest = 0.35) => { let p = p0.clone(), vel = v.clone(), tt = t; for (let b = 0; b < 4; b++) { const a = 0.5 * g, bq = vel.y, cq = p.y - floor; const disc = bq * bq - 4 * a * cq; const th = disc > 0 ? (-bq - Math.sqrt(disc)) / (2 * a) : 1e9;
   if (tt < th || th <= 0) { return V(p.x + vel.x * tt, Math.max(floor, p.y + vel.y * tt + a * tt * tt), p.z + vel.z * tt); } p = V(p.x + vel.x * th, floor, p.z + vel.z * th); vel = V(vel.x * 0.55, -(vel.y + g * th) * rest, vel.z * 0.55); tt -= th; if (Math.abs(vel.y) < 1) { const slide = Math.min(tt, 0.4); return V(p.x + vel.x * slide, floor, p.z + vel.z * slide); } } return p; };
 
+const CAMTG = new THREE.Vector3();
 // ---------- camera ----------
 const camK = (u, keys) => { let i = 0; while (i + 1 < keys.length && u >= keys[i + 1][0]) i++; const a = keys[i], b = keys[Math.min(i + 1, keys.length - 1)]; const k = a === b ? 0 : sm((u - a[0]) / (b[0] - a[0]));
-  const p = a[1].map((v, j) => lerp(v, b[1][j], k)), tg = a[2].map((v, j) => lerp(v, b[2][j], k)), fov = lerp(a[3] || 40, b[3] || 40, k);
+  const p = a[1].map((v, j) => lerp(v, b[1][j], k)), tg = a[2].map((v, j) => lerp(v, b[2][j], k)), fov = lerp(a[3] || 40, b[3] || 40, k); CAMTG.set(tg[0], tg[1], tg[2]);
   const n = 0.035; cam.position.set(p[0] + Math.sin(T * 1.3) * n, p[1] + Math.sin(T * 1.7 + 1) * n, p[2]); cam.fov = (() => { const h16 = 2 * Math.atan(Math.tan(fov * PI / 360) * 16 / 9) * 0.8; return 2 * Math.atan(Math.tan(h16 / 2) * 16 / 9) * 180 / PI; })(); cam.updateProjectionMatrix(); cam.lookAt(tg[0] + Math.sin(T * 1.1) * n, tg[1] + Math.cos(T * 1.5) * n, tg[2]); };
 const shake = (amt) => { cam.position.x += (Math.sin(T * 61) + Math.sin(T * 37)) * amt; cam.position.y += Math.sin(T * 53) * amt; };
 const spark = (i, pos, s) => { const sp = sparkles[i]; sp.visible = s > 0.01; sp.position.copy(pos); sp.scale.setScalar(s); sp.material.rotation = T * 2 + i; };
@@ -174,7 +176,7 @@ const keyL = new THREE.PointLight('#ffbf6e', 0, 22, 1.6); S.add(keyL);
 const lampPool = []; for (let k = 0; k < 6; k++) { const l = new THREE.PointLight('#ffb35c', 20, 16, 1.8); S.add(l); lampPool.push(l); }
 const EM = (c, i = 1.6) => new THREE.MeshStandardMaterial({ color: '#000000', emissive: c, emissiveIntensity: i });
 const BASIC = (c) => new THREE.MeshBasicMaterial({ color: c, toneMapped: false });
-const gold = new THREE.MeshStandardMaterial({ color: '#e9a722', metalness: 0.9, roughness: 0.3, emissive: '#140b00', envMap: ENV, envMapIntensity: 0.5 });
+const gold = new THREE.MeshStandardMaterial({ color: '#e9a722', metalness: 0.9, roughness: 0.42, emissive: '#140b00', envMap: ENV, envMapIntensity: 0.28 });
 const goldDark = new THREE.MeshStandardMaterial({ color: '#c98a1c', metalness: 0.85, roughness: 0.35, envMap: ENV, envMapIntensity: 0.6 });
 const gem = new THREE.MeshStandardMaterial({ color: '#b04dff', emissive: '#7a22e0', emissiveIntensity: 1.3, roughness: 0.15, metalness: 0.2, envMap: ENV });
 
@@ -191,13 +193,13 @@ const moonAt = (x = 0.42, y = 0.78, s = 34) => { moon.visible = true; const h = 
 const grassTex = canvasTex(256, 256, (g) => { g.fillStyle = '#3f8a34'; g.fillRect(0, 0, 256, 256); const r = rng(11); for (let k = 0; k < 900; k++) { g.fillStyle = r() < 0.5 ? '#357a2c' : '#4c9a3c'; g.fillRect(r() * 256, r() * 256, 3, 6); } }, 60);
 add(new THREE.PlaneGeometry(400, 400), new THREE.MeshStandardMaterial({ map: grassTex, roughness: 0.95 }), 0, 0, 0, S, false).rotation.x = -PI / 2;
 const roadTex = canvasTex(512, 128, (g) => { g.fillStyle = '#2a2c33'; g.fillRect(0, 0, 512, 128); g.fillStyle = '#f2c43a'; for (let x = 0; x < 512; x += 128) g.fillRect(x + 20, 60, 70, 8); }, 0); roadTex.wrapS = THREE.RepeatWrapping; roadTex.repeat.set(40, 1);
-const road = add(new THREE.PlaneGeometry(320, 8), new THREE.MeshStandardMaterial({ map: roadTex, roughness: 0.55, metalness: 0.1 }), 0, 0.03, 0, S, false); road.rotation.x = -PI / 2;
+const road = add(new THREE.PlaneGeometry(320, 8), new THREE.MeshStandardMaterial({ map: roadTex, roughness: 0.22, metalness: 0.35 }), 0, 0.03, 0, S, false); road.rotation.x = -PI / 2;
 for (const s of [-1, 1]) { bx(320, 0.25, 2, '#8d9099', 0, 0.12, s * 5, S, { sh: false }); }
 for (const s of [-1, 1]) bx(320, 0.26, 0.2, '#b9bcc4', 0, 0.13, s * 4.05, S, { sh: false });
 
 // lamps
 const LAMPS = []; const lampHead = BASIC('#ffd58a');
-const lamp = (x, z) => { cyl(0.13, 6, '#20232a', x, 3, z); bx(0.9, 0.35, 0.9, '#20232a', x, 6.1, z); add(new THREE.BoxGeometry(0.7, 0.3, 0.7), lampHead, x, 5.85, z, S, false); LAMPS.push([x, 5.4, z]); };
+const LAMPM = []; const lamp = (x, z) => { LAMPM.push({ x, z, m: [cyl(0.13, 6, '#20232a', x, 3, z), bx(0.9, 0.35, 0.9, '#20232a', x, 6.1, z), add(new THREE.BoxGeometry(0.7, 0.3, 0.7), lampHead, x, 5.85, z, S, false)] }); LAMPS.push([x, 5.4, z]); };
 for (let x = -96; x <= 96; x += 12) { if (x < -60 || x > -40) lamp(x, -5.6); lamp(x + 6, 5.6); }
 const focus = (x, z, opt = {}) => { moonL.target.position.set(x, 0, z); moonL.position.set(x - 22, 42, z - 26); fill.target.position.set(x, 2, z); fill.position.set(x + 10, 14, z + 30);
   const L = LAMPS.map((p) => [p, (p[0] - x) ** 2 + (p[2] - z) ** 2]).sort((a, b) => a[1] - b[1]); lampPool.forEach((l, i) => { const p = L[i][0]; l.position.set(p[0], p[1], p[2]); l.intensity = opt.lamp ?? 20; });
@@ -233,22 +235,24 @@ const tree = (x, z, s = 1) => { const g = new THREE.Group(); g.position.set(x, 0
 
 // ---- treasure chest ----
 const chainLink = new THREE.TorusGeometry(0.13, 0.045, 6, 12);
-const makeChest = (x = 0, z = 0, ry = 0, s = 1.25) => { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; g.scale.setScalar(s); S.add(g);
+const skullTex = canvasTex(256, 256, (g) => { g.fillStyle = '#f3e6f0'; g.beginPath(); g.arc(128, 110, 78, 0, 7); g.fill(); g.fillRect(84, 150, 88, 60); g.fillStyle = '#c23bff'; g.beginPath(); g.ellipse(98, 112, 24, 28, 0, 0, 7); g.ellipse(158, 112, 24, 28, 0, 0, 7); g.fill(); g.fillStyle = '#3a1046'; g.beginPath(); g.moveTo(128, 140); g.lineTo(116, 166); g.lineTo(140, 166); g.fill(); for (const x of [96, 120, 144]) g.fillRect(x, 182, 14, 30); });
+const skullM = new THREE.MeshStandardMaterial({ map: skullTex, transparent: true, emissive: '#ffffff', emissiveMap: skullTex, emissiveIntensity: 0.35, roughness: 0.4 });
+const makeChest = (x = 0, z = 0, ry = 0, s = 1.25, o = {}) => { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; g.scale.setScalar(s); S.add(g);
   bx(2.2, 1.25, 1.4, goldDark, 0, 0.63, 0, g, { rad: 0.06 }); for (const sx of [-1, 1]) bx(0.8, 0.9, 0.06, '#4a2a6e', sx * 0.55, 0.62, 0.71, g);
   for (const sx of [-1.02, 0, 1.02]) bx(0.18, 1.3, 1.46, gold, sx, 0.64, 0, g); bx(2.26, 0.16, 1.46, gold, 0, 1.2, 0, g); bx(2.26, 0.16, 1.46, gold, 0, 0.1, 0, g);
-  const glow = add(new THREE.PlaneGeometry(2, 1.2), BASIC('#ffdf7e'), 0, 1.23, 0, g, false); glow.rotation.x = -PI / 2; glow.visible = false;
+  const glow = add(new THREE.PlaneGeometry(2, 1.2), BASIC('#ffdf7e'), 0, 1.23, 0, g, false); glow.material = BASIC('#ffdf7e'); glow.rotation.x = -PI / 2; glow.visible = false;
   const lid = new THREE.Group(); lid.position.set(0, 1.28, -0.7); g.add(lid);
-  const lg = new THREE.CylinderGeometry(0.7, 0.7, 2.2, 20, 1, false, 0, PI); const lm = add(lg, goldDark, 0, 0, 0.7, lid); lm.rotation.set(0, 0, PI / 2); lm.rotation.order = 'ZXY'; lm.rotation.x = PI / 2;
+  const lg = new THREE.CylinderGeometry(0.7, 0.7, 2.2, 20, 1, false, 0, PI); const lm = add(lg, o.lid || goldDark, 0, 0, 0.7, lid); lm.rotation.set(0, 0, PI / 2); lm.rotation.order = 'ZXY'; lm.rotation.x = PI / 2;
   for (const sx of [-1.02, 1.02]) { const b = add(new THREE.CylinderGeometry(0.74, 0.74, 0.2, 20, 1, false, 0, PI), gold, sx, 0, 0.7, lid); b.rotation.set(0, 0, PI / 2); b.rotation.order = 'ZXY'; b.rotation.x = PI / 2; }
-  ball(0.16, gem, 0, 0.62, 0.78, g); for (const sx of [-0.55, 0.55]) ball(0.11, gem, sx, 0.62, 0.76, g); ball(0.13, gem, 0, 0.35, 1.38, lid);
+  if (o.skull !== false) add(new THREE.PlaneGeometry(0.7, 0.7), skullM, 0, 0.66, 0.745, g, false); else ball(0.16, o.gem || gem, 0, 0.62, 0.78, g); for (const sx of [-0.55, 0.55]) ball(0.11, gem, sx, 0.62, 0.76, g); const lg2 = ball(o.lidGem ? 0.2 : 0.13, o.lidGem || gem, 0, 0.35, 1.38, lid);
   for (let k = 0; k < 9; k++) { const l = add(chainLink, gold, -1.05 + k * 0.26, 0.42 + Math.sin(k / 8 * PI) * -0.18, 0.76, g, false); l.rotation.y = k % 2 ? PI / 2 : 0; }
   bx(0.3, 0.36, 0.12, gold, 0, 1.12, 0.74, g);
-  g.userData = { lid, glow }; return g; };
+  g.userData = { lid, glow, lm }; return g; };
 const chestOpen = (c, a, glow = 0) => { c.userData.lid.rotation.x = -a * 1.95; c.userData.glow.visible = glow > 0; };
 const BGCH = []; { const r = rng(5); for (let k = 0; k < 34; k++) { const side = r() < 0.65 ? -1 : 1, x = -95 + r() * 190; if (x > -62 && x < -38) continue; const c = makeChest(x, side * (6.6 + r() * 3.6), (r() - 0.5) * 1.2 + (side > 0 ? PI : 0), 1.0 + r() * 0.3); chestOpen(c, r() < 0.5 ? 0.6 + r() * 0.4 : 0); BGCH.push(c); } }
 const HC = makeChest(0, 0, 0, 1.3); const hcLight = new THREE.PointLight('#ffc04a', 0, 12, 1.6); HC.add(hcLight); hcLight.position.set(0, 2.2, 0.4);
 const hcGlowS = new THREE.Sprite(new THREE.SpriteMaterial({ map: starTex, color: '#ffd36a', blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); HC.add(hcGlowS); hcGlowS.position.set(0, 1.6, 0);
-const heroChest = (x, z, ry, open, glow = 0) => { HC.visible = true; HC.position.set(x, 0, z); HC.rotation.y = ry; chestOpen(HC, open, glow); hcLight.intensity = glow * 18; hcGlowS.visible = glow > 0.02; hcGlowS.scale.setScalar(2.6 * glow); hcGlowS.material.opacity = 0.45 * glow; };
+const heroChest = (x, z, ry, open, glow = 0, col = '#ffc04a', lidM = goldDark) => { HC.visible = true; hcLight.color.set(col); HC.userData.glow.material.color.set(col); hcGlowS.material.color.set(col); HC.userData.lm.material = lidM; HC.position.set(x, 0, z); HC.rotation.y = ry; chestOpen(HC, open, glow); hcLight.intensity = glow * 18; hcGlowS.visible = glow > 0.02; hcGlowS.scale.setScalar(2.6 * glow); hcGlowS.material.opacity = 0.45 * glow; };
 
 // ---- pirate token ----
 const tokenFace = canvasTex(512, 512, (g) => { const grd = g.createRadialGradient(220, 200, 20, 256, 256, 256); grd.addColorStop(0, '#fff2a8'); grd.addColorStop(0.6, '#f2b52c'); grd.addColorStop(1, '#b77712'); g.fillStyle = grd; g.fillRect(0, 0, 512, 512);
@@ -258,8 +262,21 @@ const tokenFace = canvasTex(512, 512, (g) => { const grd = g.createRadialGradien
   g.fillStyle = '#fff6dc'; g.beginPath(); g.arc(256, 238, 86, 0, 7); g.fill(); g.fillRect(208, 270, 96, 70); g.fillStyle = '#5a3606'; g.beginPath(); g.ellipse(222, 238, 24, 28, 0, 0, 7); g.ellipse(290, 238, 24, 28, 0, 0, 7); g.fill();
   g.beginPath(); g.moveTo(256, 266); g.lineTo(244, 290); g.lineTo(268, 290); g.fill(); for (const x of [226, 250, 274]) g.fillRect(x, 312, 10, 28);
   g.fillStyle = '#5a3606'; for (let k = 0; k < 24; k++) { const a = k / 24 * PI * 2; g.beginPath(); g.arc(256 + Math.cos(a) * 232, 256 + Math.sin(a) * 232, 7, 0, 7); g.fill(); } });
-const token = new THREE.Group(); S.add(token); { const fm = new THREE.MeshStandardMaterial({ map: tokenFace, metalness: 0.75, roughness: 0.3, envMap: ENV, emissive: '#5a3a00', emissiveMap: tokenFace, emissiveIntensity: 0.6 });
-  const m = add(new THREE.CylinderGeometry(0.62, 0.62, 0.14, 40), [gold, fm, fm], 0, 0, 0, token); m.rotation.x = PI / 2; }
+const gemTex = canvasTex(512, 512, (g) => { const grd = g.createRadialGradient(200, 170, 20, 256, 256, 260); grd.addColorStop(0, '#fff3a0'); grd.addColorStop(0.45, '#ffc42a'); grd.addColorStop(1, '#f07a10'); g.fillStyle = grd; g.fillRect(0, 0, 512, 512);
+  const r = rng(17); for (let k = 0; k < 26; k++) { g.fillStyle = `rgba(${r() < 0.5 ? '255,255,220' : '200,90,0'},${0.08 + r() * 0.14})`; g.beginPath(); g.moveTo(r() * 512, r() * 512); g.lineTo(r() * 512, r() * 512); g.lineTo(r() * 512, r() * 512); g.fill(); }
+  g.fillStyle = 'rgba(255,255,255,0.55)'; g.beginPath(); g.ellipse(170, 150, 40, 26, -0.6, 0, 7); g.fill();
+  g.font = '900 330px "Inter Display", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = 'rgba(120,50,0,0.35)'; g.fillText('F', 268, 282); g.fillStyle = '#ffffff'; g.fillText('F', 256, 268); });
+const token = new THREE.Group(); S.add(token); { const gm = new THREE.MeshStandardMaterial({ map: gemTex, emissive: '#ffffff', emissiveMap: gemTex, emissiveIntensity: 0.55, roughness: 0.25, metalness: 0.1 });
+  const T_ = new THREE.Group(); token.add(T_); T_.scale.setScalar(0.62);
+  // 8-point compass star (gold), behind everything
+  const star = new THREE.Shape(); for (let k = 0; k < 16; k++) { const a = k / 16 * PI * 2 + PI / 2, rr = k % 2 ? 0.34 : (k % 4 === 0 ? 1.55 : 1.05); const x = Math.cos(a) * rr, y = Math.sin(a) * rr; k ? star.lineTo(x, y) : star.moveTo(x, y); }
+  add(new THREE.ExtrudeGeometry(star, { depth: 0.12, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.04, bevelSegments: 2 }), gold, 0, 0, -0.12, T_, false);
+  cyl(0.98, 0.14, '#3a2208', 0, 0, -0.02, T_, { seg: 40 }).rotation.x = PI / 2; // dark ring background
+  for (const [a0, a1] of [[0.25, 2.55], [2.9, 3.55], [3.8, 4.25], [4.55, 5.95]]) { const t = add(new THREE.TorusGeometry(1.0, 0.13, 10, 40, a1 - a0), gold, 0, 0, 0.05, T_, false); t.rotation.z = a0; t.scale.z = 0.6; } // broken gold ring
+  const gemD = cyl(0.66, 0.2, gold, 0, 0, 0.08, T_, { seg: 40 }); gemD.rotation.x = PI / 2; // gold bezel
+  const face = add(new THREE.CircleGeometry(0.58, 48), gm, 0, 0, 0.19, T_, false);
+  const dome = add(new THREE.SphereGeometry(0.58, 32, 16, 0, PI * 2, 0, PI / 2), new THREE.MeshStandardMaterial({ color: '#ffd060', transparent: true, opacity: 0.18, roughness: 0.05, envMap: ENV }), 0, 0, 0.19, T_, false); dome.rotation.x = PI / 2; dome.scale.y = 0.35;
+}
 const raysTex = canvasTex(512, 512, (g) => { g.translate(256, 256); for (let k = 0; k < 18; k++) { g.rotate(PI * 2 / 18); const grd = g.createLinearGradient(0, 0, 250, 0); grd.addColorStop(0, 'rgba(255,230,140,0.95)'); grd.addColorStop(1, 'rgba(255,200,80,0)'); g.fillStyle = grd; g.beginPath(); g.moveTo(0, 0); g.lineTo(250, -18); g.lineTo(250, 18); g.fill(); } });
 const rays = new THREE.Sprite(new THREE.SpriteMaterial({ map: raysTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false })); S.add(rays);
 const glowS = new THREE.Sprite(new THREE.SpriteMaterial({ map: starTex, color: '#ffe08a', blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false })); S.add(glowS);
@@ -336,20 +353,21 @@ const faceWood = (g, skin, f) => { g.drawImage(woodTex.image, 0, 0, 512, 512); c
   else { g.moveTo(176, my - 30); g.quadraticCurveTo(256, my + 70, 336, my - 30); g.closePath(); g.fill(); g.fillStyle = '#c94a4a'; g.beginPath(); g.ellipse(256, my + 14, 40, 14, 0, 0, 7); g.fill(); } };
 const recolorArms = (c, mat) => c.arms.forEach((a) => (a.children[0].material = mat));
 const ME = makeChar({ skin: '#c98c5c', shirt: '#1c1c21', pants: '#141418', build: (c) => { recolorArms(c, M('#1c1c21', { r: 0.6 }));
-  bx(1.7, 1.2, 0.6, '#16161a', 0, 0.35, -0.75, c.neck, { rad: 0.25 }); for (const s of [-0.3, 0.3]) bx(0.07, 0.8, 0.07, '#e8e8e8', s, 1.45, 0.54, c.torso, { sh: false }); bx(1.2, 0.5, 0.08, '#141418', 0, 0.55, 0.53, c.torso);
-  const r = rng(12), hm = M('#141011', { r: 0.85 }); for (let k = 0; k < 70; k++) { const a = r() * PI * 2, e = r() * 1.25; const x = Math.cos(a) * Math.cos(e) * 0.78, z = Math.sin(a) * Math.cos(e) * 0.78, y = 0.66 + 0.42 + Math.sin(e) * 0.42;
+  bx(1.7, 1.2, 0.6, '#16161a', 0, 0.35, -0.75, c.neck, { rad: 0.25 }); for (const s of [-0.3, 0.3]) bx(0.07, 0.8, 0.07, '#e8e8e8', s, 1.45, 0.54, c.torso, { sh: false }); bx(0.05, 1.9, 0.06, '#8a8a90', 0, 1.0, 0.53, c.torso, { sh: false }); bx(1.2, 0.5, 0.08, '#141418', 0, 0.55, 0.53, c.torso);
+  const r = rng(12), hm = M('#3a2416', { r: 0.8 }); for (let k = 0; k < 70; k++) { const a = r() * PI * 2, e = r() * 1.25; const x = Math.cos(a) * Math.cos(e) * 0.78, z = Math.sin(a) * Math.cos(e) * 0.78, y = 0.66 + 0.42 + Math.sin(e) * 0.42;
     if (z > 0.3 && y < 1.2) continue; ball(0.2 + r() * 0.08, hm, x, y, z - 0.05, c.neck); } } });
 const WOOD = makeChar({ skin: '#d98a33', shirt: '#d98a33', pants: '#d98a33', faceFn: faceWood, build: (c) => { c.root.traverse((m) => { if (m.isMesh && m !== c.head) m.material = woodM; }); c.head.material = c.head.material.map((mm, i) => (i === 4 ? mm : woodM)); c.head.scale.set(1.05, 1.5, 1.05); c.head.position.y = 0.96; } });
 const KID = makeChar({ skin: '#7a4a2e', shirt: '#a6e8c0', pants: '#cfae7c', sleeves: true, face: { glasses: '#111' }, build: (c) => { bx(1.38, 0.34, 1.38, '#15110f', 0, 1.3, 0, c.neck, { rad: 0.14 }); bx(1.38, 0.8, 0.3, '#15110f', 0, 0.95, -0.55, c.neck, { rad: 0.1 }); } });
+const vestTex = canvasTex(128, 128, (g) => { g.fillStyle = '#26282a'; g.fillRect(0, 0, 128, 128); const r = rng(9); for (let k = 0; k < 160; k++) { g.fillStyle = ['#1a1b1c', '#3a3d40', '#4a4d50'][(r() * 3) | 0]; g.fillRect(((r() * 16) | 0) * 8, ((r() * 16) | 0) * 8, 8, 8); } });
 const camoTex = canvasTex(256, 256, (g) => { g.fillStyle = '#c4232b'; g.fillRect(0, 0, 256, 256); const r = rng(8); for (let k = 0; k < 40; k++) { g.fillStyle = r() < 0.5 ? '#7a1016' : '#e0474c'; g.beginPath(); g.ellipse(r() * 256, r() * 256, 10 + r() * 22, 6 + r() * 14, r() * 3, 0, 7); g.fill(); } });
-const richBuild = (golden) => (c) => { const camo = golden ? gold : new THREE.MeshStandardMaterial({ map: camoTex, roughness: 0.7 }), blk = golden ? goldDark : M('#151515', { r: 0.5 }), vest = golden ? goldDark : M('#353b2b', { r: 0.8 });
+const richBuild = (golden) => (c) => { const camo = golden ? gold : new THREE.MeshStandardMaterial({ map: camoTex, roughness: 0.7 }), blk = golden ? goldDark : M('#151515', { r: 0.5 }), vest = golden ? goldDark : new THREE.MeshStandardMaterial({ map: vestTex, roughness: 0.85 });
   bx(1.4, 0.42, 1.4, camo, 0, 1.36, -0.02, c.neck, { rad: 0.18 }); bx(1.3, 0.09, 0.75, camo, 0, 1.18, 0.82, c.neck, { rad: 0.03 });
   const band = add(new THREE.TorusGeometry(0.82, 0.08, 8, 24, PI), blk, 0, 0.72, -0.05, c.neck); for (const s of [-1, 1]) { const e = cyl(0.36, 0.3, blk, s * 0.75, 0.62, 0, c.neck); e.rotation.z = PI / 2; }
-  for (const s of [-1, 1]) bx(0.42, 0.26, 0.06, golden ? M('#e8c547', { m: 0.5, r: 0.2 }) : M('#0d0d12', { m: 0.6, r: 0.15 }), s * 0.3, 0.76, 0.67, c.neck, { rad: 0.06 }); bx(0.2, 0.05, 0.05, blk, 0, 0.8, 0.67, c.neck);
-  bx(2.1, 1.85, 1.1, vest, 0, 1.0, 0, c.torso, { rad: 0.06 }); for (const s of [-0.55, 0, 0.55]) bx(0.5, 0.45, 0.14, golden ? gold : M('#2b3022'), s, 0.7, 0.58, c.torso);
+  c.userData = {}; c.userData.lenses = [-1, 1].map((s) => { const l = add(RB(0.3, 0.3, 0.03, 0.05), new THREE.MeshStandardMaterial({ color: golden ? '#e8c547' : '#9b3cff', transparent: true, opacity: 0.55, emissive: golden ? '#7a5a00' : '#5a10a0', roughness: 0.1 }), s * 0.155, 0.78, 0.67, c.neck, false); l.visible = golden; return l; });
+  bx(2.1, 1.85, 1.1, vest, 0, 1.0, 0, c.torso, { rad: 0.06 }); for (const s of [-0.55, 0, 0.55]) bx(0.5, 0.45, 0.14, golden ? gold : M('#1c1d1f'), s, 0.7, 0.58, c.torso); for (const s of [-0.62, 0.62]) bx(0.3, 2.0, 1.2, golden ? goldDark : M('#3a3226', { r: 0.8 }), s, 1.05, 0, c.torso); bx(1.7, 1.6, 0.7, golden ? goldDark : M('#3a3226', { r: 0.8 }), 0, 1.1, -0.85, c.torso, { rad: 0.12 });
   if (golden) { c.root.traverse((m) => { if (m.isMesh && m !== c.head && !m.geometry.parameters?.depth?.toFixed?.call) {} }); c.root.traverse((m) => { if (m.isMesh && m.material !== gold && m.material !== goldDark && m !== c.head && !(m.material.color && m.material.color.getHexString() === 'e8c547')) m.material = gold; }); c.head.material = c.head.material.map((mm, i) => (i === 4 ? mm : gold)); } };
-const RICH = makeChar({ skin: '#e7b98c', shirt: '#1d1d1f', pants: '#1a1a1a', sleeves: true, face: { beard: '#4a3426' }, build: richBuild(false) });
-const RICHG = makeChar({ skin: '#f0b43a', shirt: '#f2b632', pants: '#f2b632', sleeves: true, face: { beard: '#b47812' }, build: richBuild(true) });
+const RICH = makeChar({ skin: '#e7b98c', shirt: '#1d1d1f', pants: '#1a1a1a', sleeves: true, face: { beard: '#4a3426', glasses: '#111' }, build: richBuild(false) });
+const RICHG = makeChar({ skin: '#f0b43a', shirt: '#f2b632', pants: '#f2b632', sleeves: true, face: { beard: '#b47812', glasses: '#6a4206' }, build: richBuild(true) });
 const NOOB = makeChar({ skin: '#f5cd30', shirt: '#1f6fd6', pants: '#93c13a' });
 const GRAN = makeChar({ skin: '#f0cfa8', shirt: '#9b5fb8', pants: '#5b4a6e', cardigan: true, build: (c) => { const h = M('#d9d9df', { r: 0.9 }); bx(1.4, 0.3, 1.4, h, 0, 1.3, 0, c.neck, { rad: 0.14 }); ball(0.38, h, 0, 1.45, -0.55, c.neck); } });
 const COP = makeChar({ skin: '#c98c5c', shirt: '#26428f', pants: '#1a2440', sleeves: true, build: (c) => { bx(1.45, 0.4, 1.45, '#1a2440', 0, 1.36, 0, c.neck, { rad: 0.1 }); bx(1.4, 0.08, 0.6, '#111', 0, 1.18, 0.8, c.neck); bx(0.3, 0.3, 0.06, gold, 0, 1.38, 0.74, c.neck); bx(0.3, 0.36, 0.06, gold, 0.55, 1.5, 0.52, c.torso); } });
@@ -369,131 +387,229 @@ const potion = new THREE.Group(); S.add(potion); { ball(0.42, new THREE.MeshStan
 const flashL = new THREE.SpotLight('#fff3d0', 0, 30, 0.45, 0.6, 1.2); S.add(flashL); S.add(flashL.target); const flashBody = new THREE.Group(); S.add(flashBody); { const m = cyl(0.14, 0.7, '#222', 0, 0, 0, flashBody); m.rotation.x = PI / 2; add(new THREE.CircleGeometry(0.13, 16), BASIC('#fffbe6'), 0, 0, 0.36, flashBody, false); }
 const flashS = new THREE.Sprite(new THREE.SpriteMaterial({ map: starTex, color: '#fff2c0', blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); S.add(flashS);
 
+// ---- extra set dressing (matched to the original video) ----
+// party at the pink house: bunting and balloons
+const PARTY = new THREE.Group(); S.add(PARTY);
+{ const cols = ['#ff5fa2', '#ffd23f', '#45d0ff', '#9b6bff', '#5fe06a', '#ff8a3d'], tri = new THREE.Shape(); tri.moveTo(-0.28, 0); tri.lineTo(0.28, 0); tri.lineTo(0, -0.62); tri.lineTo(-0.28, 0);
+  const tg = new THREE.ShapeGeometry(tri); const string = (a, b, sag, n) => { for (let i = 0; i <= n; i++) { const k = i / n, x = lerp(a[0], b[0], k), y = lerp(a[1], b[1], k) - Math.sin(k * PI) * sag, z = lerp(a[2], b[2], k);
+    const f = add(tg, new THREE.MeshStandardMaterial({ color: cols[i % 6], side: THREE.DoubleSide, emissive: cols[i % 6], emissiveIntensity: 0.25 }), x, y, z, PARTY, false); f.rotation.y = Math.atan2(b[0] - a[0], b[2] - a[2]) - PI / 2; } };
+  string([-5.6, 5.4, -11.5], [5.6, 5.4, -11.5], 0.9, 16); string([4.4, 6.0, -12.2], [6.0, 5.9, -5.8], 0.8, 9); string([-4.4, 6.0, -12.2], [-6.0, 5.9, -5.8], 0.8, 9);
+  for (const [x, y, z, c] of [[-5.2, 3.6, -10.6, '#ff6fb5'], [-4.5, 4.1, -10.9, '#b06cff'], [-5.6, 4.4, -11.0, '#4fd6ff'], [5.1, 3.7, -10.6, '#ffd24a'], [4.4, 4.2, -10.9, '#ff6fb5'], [5.6, 4.5, -11.0, '#9b6bff']]) {
+    const b = ball(0.42, new THREE.MeshStandardMaterial({ color: c, roughness: 0.25, emissive: c, emissiveIntensity: 0.25 }), x, y, z, PARTY); b.scale.y = 1.18; bx(0.02, y - 1.1, 0.02, '#eeeeee', x, (y - 0.45) / 2 + 0.2, z, PARTY, { sh: false }); } }
+const redLid = M('#b3182b', { r: 0.35 }), cyanGem = new THREE.MeshStandardMaterial({ color: '#5ff3ff', emissive: '#18b8e0', emissiveIntensity: 1.2, roughness: 0.1 });
+const PCH = [[-2.7, -8.5, 0.15], [0, -8.2, 0], [2.7, -8.6, -0.15]].map(([x, z, r]) => makeChest(x, z, r, 1.25, { lid: redLid, lidGem: cyanGem, skull: false, gem: cyanGem }));
+PCH[1].userData.glow.material.color.set('#ff8a2a'); const pLight = new THREE.PointLight('#ff9a3a', 0, 10, 1.6); pLight.position.set(0, 2.4, -8); S.add(pLight);
+// movable dressing chests
+const XC = [0, 1, 2, 3, 4].map(() => makeChest(0, 0, 0, 1.25)); const xcAt = (i, x, z, ry, open = 0, glow = 0, col = '#b04dff') => { const c = XC[i]; c.visible = true; c.position.set(x, 0, z); c.rotation.y = ry; chestOpen(c, open, glow); c.userData.glow.material.color.set(col); };
+const woodLid = M('#7a4320', { r: 0.6 });
+// cars
+const makeCar = (c) => { const g = new THREE.Group(); S.add(g); bx(5.2, 1.2, 2.4, c, 0, 0.95, 0, g, { rad: 0.25 }); bx(3, 1, 2.2, c, -0.3, 2, 0, g, { rad: 0.25 }); bx(2.8, 0.75, 2.26, '#203040', -0.3, 2.05, 0, g, { rad: 0.15 });
+  for (const [x, z] of [[-1.7, 1.1], [1.7, 1.1], [-1.7, -1.1], [1.7, -1.1]]) { const w = cyl(0.5, 0.4, '#151515', x, 0.5, z, g); w.rotation.x = PI / 2; } for (const z of [-0.8, 0.8]) add(new THREE.BoxGeometry(0.1, 0.35, 0.5), BASIC('#fff6d0'), 2.62, 1.05, z, g, false); return g; };
+const CAR2 = makeCar('#5cb83c'), CAR3 = makeCar('#4aa838');
+// wheelchair
+const WC = new THREE.Group(); S.add(WC); { const m = M('#2c2f36', { r: 0.4, m: 0.4 }); bx(2.3, 0.3, 2.0, '#3a3d44', 0, 1.45, 0, WC); bx(2.3, 2.2, 0.25, '#3a3d44', 0, 2.6, -1.0, WC);
+  for (const s of [-1, 1]) { const w = add(new THREE.TorusGeometry(1.15, 0.11, 8, 28), m, s * 1.3, 1.2, -0.1, WC); w.rotation.y = PI / 2; const h = cyl(0.14, 0.3, '#9aa0a8', s * 1.3, 1.2, -0.1, WC); h.rotation.z = PI / 2;
+    const fw = cyl(0.28, 0.16, '#1a1a1a', s * 0.9, 0.28, 1.0, WC); fw.rotation.z = PI / 2; bx(0.12, 1.2, 0.12, m, s * 1.2, 0.9, 0.9, WC); bx(0.12, 0.12, 2.1, m, s * 1.2, 2.2, -0.05, WC); } }
+// golden robot-ish avatar with a little antenna
+const GGR = makeChar({ skin: '#f0b43a', shirt: '#f2b632', pants: '#f2b632', toff: 0.4, build: (c) => { c.root.traverse((m) => { if (m.isMesh && m !== c.head) m.material = gold; }); c.head.material = c.head.material.map((mm, i) => (i === 4 ? mm : gold));
+  cyl(0.06, 0.7, gold, 0, 1.6, 0, c.neck); ball(0.14, gold, 0, 1.98, 0, c.neck); for (const s of [-1, 1]) bx(0.12, 0.6, 0.12, gold, s * 0.35, 1.55, 0.2, c.neck); bx(1.6, 0.25, 0.3, goldDark, 0, 1.75, 0.5, c.torso); } });
+// cozy timber-frame house beams
+{ const bm = M('#4a2a14', { r: 0.8 }); for (const x of [-4.4, -1.2, 1.2, 4.4]) bx(0.22, 5, 0.12, bm, x, 2.5, 3.56, cozy); for (const y of [0.15, 2.8, 4.9]) bx(9.2, 0.22, 0.12, bm, 0, y, 3.56, cozy);
+  for (const s of [-1, 1]) { const b = bx(0.22, 5.4, 0.12, bm, s * 2.2, 7.3, 4.06, cozy); b.rotation.z = s * 0.95; } bx(0.22, 3.6, 0.12, bm, 0, 7.0, 4.06, cozy); cozy.children[0].material = M('#f1e2c0', { r: 0.85 }); }
+// smoke cloud
+const CLOUD = []; for (let k = 0; k < 14; k++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: puffTex, color: '#f4f1ee', transparent: true, depthWrite: false })); s.visible = false; S.add(s); CLOUD.push(s); }
+const cloudAt = (pos, k, R1 = 3.5, sc = 6) => { const r = rng(77); CLOUD.forEach((p) => { const a = r() * 7, e = r() * 2 - 0.5, rr = (0.4 + r() * 0.6) * R1 * sm(clamp(k * 3)); p.visible = k > 0; p.position.set(pos.x + Math.cos(a) * rr, pos.y + e * rr * 0.6 + k * 0.6, pos.z + Math.sin(a) * rr * 0.5); p.scale.setScalar(sc * (0.6 + r() * 0.6) * (0.4 + 0.6 * sm(clamp(k * 2.5)))); p.material.opacity = 1; }); };
+// flashlight beam
+{ const cg = new THREE.ConeGeometry(1.7, 7, 24, 1, true); cg.translate(0, -3.5, 0); const beam = add(cg, new THREE.MeshBasicMaterial({ color: '#fff0c0', transparent: true, opacity: 0.16, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false }), 0, 0, 0.3, flashBody, false); beam.rotation.x = -PI / 2; beam.castShadow = false; }
+const flashFrom = (c, side, target, beamOn = true) => { S.updateMatrixWorld(); const hp = handPos(c, side); flashBody.visible = true; flashBody.position.copy(hp); flashBody.lookAt(target); flashBody.children[flashBody.children.length - 1].visible = beamOn;
+  flashL.intensity = 90; flashL.position.copy(hp); flashL.target.position.copy(target); flashS.visible = true; flashS.position.copy(hp).add(target.clone().sub(hp).normalize().multiplyScalar(0.45)); flashS.scale.setScalar(1.1); };
+// wooden bat for the wooden guy
+const bat = new THREE.Group(); S.add(bat); { const m = add(new THREE.CylinderGeometry(0.2, 0.1, 2.6, 12), woodM, 0, -1.2, 0, bat); }
+// restaurant interior (built off to the side)
+const IX = 220; const INTR = new THREE.Group(); S.add(INTR); INTR.visible = false;
+{ const menuTex = canvasTex(512, 256, (g) => { g.fillStyle = '#1b1b1f'; g.fillRect(0, 0, 512, 256); for (let k = 0; k < 3; k++) { const x = 20 + k * 166; g.fillStyle = '#e8a33a'; g.beginPath(); g.ellipse(x + 60, 80, 50, 26, 0, PI, 0); g.fill(); g.fillStyle = '#5a2e14'; g.fillRect(x + 12, 84, 96, 14); g.fillStyle = '#ffcc33'; g.fillRect(x + 8, 98, 104, 8); g.fillStyle = '#e8a33a'; g.fillRect(x + 12, 106, 96, 16);
+    g.fillStyle = '#fff'; g.font = '700 30px "Inter Display", sans-serif'; g.fillText('$' + (3 + k * 2) + '.99', x + 22, 170); g.fillStyle = '#ff3b3b'; g.fillText(['BURGER', 'COMBO', 'FRIES'][k], x + 4, 220); } });
+  const chkTex = canvasTex(128, 96, (g) => { g.fillStyle = '#16323a'; g.fillRect(0, 0, 128, 96); g.fillStyle = '#2ee66a'; g.beginPath(); g.roundRect(24, 14, 80, 68, 10); g.fill(); g.strokeStyle = '#fff'; g.lineWidth = 12; g.beginPath(); g.moveTo(42, 50); g.lineTo(60, 66); g.lineTo(88, 32); g.stroke(); });
+  const fl = add(new THREE.PlaneGeometry(40, 30), M('#5a3a2a', { r: 0.5 }), IX, 0.01, 0, INTR, false); fl.rotation.x = -PI / 2;
+  bx(30, 12, 0.5, '#8e1a22', IX, 6, -7, INTR); bx(30, 0.5, 14, '#2a1a16', IX, 11, 0, INTR);
+  for (const x of [-6, 0, 6]) add(new THREE.PlaneGeometry(5, 2.5), new THREE.MeshBasicMaterial({ map: menuTex, toneMapped: false }), IX + x, 7.6, -6.7, INTR, false);
+  add(new THREE.PlaneGeometry(8, 3.3), signM, IX - 8, 4.2, -6.7, INTR, false);
+  bx(14, 2.8, 1.8, '#c0392b', IX, 1.4, 0, INTR, { rad: 0.06 }); bx(14.4, 0.25, 2.3, '#efe6d8', IX, 2.92, 0, INTR); add(new THREE.BoxGeometry(14.2, 0.12, 0.05), BASIC('#ffb347'), IX, 2.7, 0.92, INTR, false);
+  for (const x of [-2.2, 2.4]) { const r = new THREE.Group(); r.position.set(IX + x, 3.05, 0.4); INTR.add(r); bx(0.5, 0.6, 0.4, '#222', 0, 0.3, 0, r); const sc = bx(1.4, 1.0, 0.12, '#222', 0, 1.1, 0, r); sc.rotation.x = -0.35; const pl = add(new THREE.PlaneGeometry(1.2, 0.85), new THREE.MeshBasicMaterial({ map: chkTex, toneMapped: false }), 0, 1.12, 0.08, r, false); pl.rotation.x = -0.35; }
+  for (const x of [-8, 0, 8]) { const l = new THREE.PointLight('#ffc27a', 45, 22, 1.4); l.position.set(IX + x, 9, 2); INTR.add(l); add(new THREE.SphereGeometry(0.5, 12, 8), BASIC('#ffe2a8'), IX + x, 10.4, 1, INTR, false); }
+  const fill2 = new THREE.PointLight('#ffd9b0', 25, 20, 1.5); fill2.position.set(IX, 5, 9); INTR.add(fill2); }
+const WORKER = makeChar({ skin: '#f5cd30', shirt: '#d01f2c', pants: '#2a2a2a', sleeves: true, build: (c) => { const r = M('#c0161f', { r: 0.5 }); bx(1.42, 0.42, 1.42, r, 0, 1.34, 0, c.neck, { rad: 0.18 }); bx(1.3, 0.09, 0.72, r, 0, 1.16, 0.82, c.neck, { rad: 0.03 });
+  const band = add(new THREE.TorusGeometry(0.8, 0.06, 6, 20, PI), M('#111'), 0, 0.7, 0, c.neck); for (const s of [-1, 1]) { const e = cyl(0.25, 0.22, '#111', s * 0.72, 0.62, 0, c.neck); e.rotation.z = PI / 2; } bx(0.06, 0.06, 0.6, '#111', 0.62, 0.4, 0.35, c.neck);
+  const wl = canvasTex(128, 128, (g) => { g.font = '900 110px "Inter Display", sans-serif'; g.textAlign = 'center'; g.fillStyle = '#ffd23f'; g.fillText('W', 64, 104); }); add(new THREE.PlaneGeometry(0.6, 0.6), new THREE.MeshBasicMaterial({ map: wl, transparent: true }), 0.5, 1.5, 0.52, c.torso, false); } });
+const makeBurger = () => { const g = new THREE.Group(); S.add(g); const bun = M('#e3a24a', { r: 0.5 }); const t = add(new THREE.SphereGeometry(0.55, 16, 10, 0, PI * 2, 0, PI / 2), bun, 0, 0.3, 0, g); cyl(0.58, 0.14, '#4fae35', 0, 0.22, 0, g); cyl(0.56, 0.22, '#5a2e14', 0, 0.06, 0, g); bx(1.0, 0.06, 1.0, '#ffcc33', 0, 0.2, 0, g); cyl(0.55, 0.22, bun, 0, -0.14, 0, g); return g; };
+const makeFries = () => { const g = new THREE.Group(); S.add(g); bx(0.7, 0.75, 0.42, '#d8262c', 0, 0, 0, g); for (let k = 0; k < 9; k++) { const f = bx(0.09, 0.8, 0.09, '#ffd23f', -0.28 + (k % 5) * 0.14, 0.5, (k > 4 ? 0.07 : -0.07), g); f.rotation.z = (k - 4) * 0.05; } return g; };
+const makeCup = () => { const g = new THREE.Group(); S.add(g); add(new THREE.CylinderGeometry(0.36, 0.28, 1.1, 16), M('#d8262c', { r: 0.5 }), 0, 0, 0, g); cyl(0.38, 0.08, '#f2f2f2', 0, 0.58, 0, g); cyl(0.04, 0.6, '#ffffff', 0.08, 0.85, 0, g); return g; };
+const FOODS = [makeBurger(), makeFries(), makeBurger(), makeCup(), makeFries(), makeBurger(), makeCup()];
+// crowd modes
+const CRM = { plaza: CR, street: [], meadow: [] };
+{ const r = rng(55), sk = ['#f5cd30', '#e7b98c', '#c98c5c', '#8a5a3c', '#f2d2b0'], cl = ['#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f39c12', '#1abc9c', '#ecf0f1', '#34495e', '#e84393', '#fdcb6e', '#222222'];
+  for (let k = 0; k < 150; k++) { const side = r() < 0.5 ? -1 : 1; CRM.street.push({ x: -45 + r() * 80, z: side * (7 + r() * 3.5), ry: r() * 7, ph: r() * 7, cols: [cl[(r() * 11) | 0], cl[(r() * 11) | 0], sk[(r() * 5) | 0]] }); }
+  for (let k = 0; k < 70; k++) CRM.meadow.push({ x: 98 + r() * 46, z: -17 - r() * 14, ry: r() * 7, ph: r() * 7, cols: ['#93c13a', '#1f6fd6', '#f5cd30'] }); }
+const crowdShow2 = (mode, crazy = 0) => { const L = CRM[mode]; crowdM.forEach((m) => { m.visible = true; m.count = L.length; }); const o = new THREE.Object3D(), col = new THREE.Color();
+  L.forEach((p, i) => { const j = crazy * Math.abs(Math.sin(T * 9 + p.ph)) * 1.4, dx = crazy * Math.sin(T * 3 + p.ph) * 1.5;
+    [[1, 0], [3, 1], [4.66, 2]].forEach(([y, ci], k) => { o.position.set(p.x + dx, y + j, p.z); o.rotation.set(0, p.ry + crazy * T * 2, 0); o.updateMatrix(); crowdM[k].setMatrixAt(i, o.matrix); crowdM[k].setColorAt(i, col.set(p.cols[ci])); }); });
+  crowdM.forEach((m) => { m.instanceMatrix.needsUpdate = true; m.instanceColor.needsUpdate = true; }); };
+
 // ---- poses ----
-const UP = [-3.0, 0, 0.15], FWD = [-1.5, 0, 0.05], HOLD = [-1.25, 0, -0.2], DOWN = [-0.7, 0, 0.05], PUMP = (u, s = 1) => [-2.6 - 0.35 * Math.sin(u * 14 * s), 0, 0.3];
+const UP = [-3.0, 0, 0.15], PUMP = (u, s = 1) => [-2.6 - 0.35 * Math.sin(u * 14 * s), 0, 0.3], PRAY = [-1.45, 0, -0.62];
 const put = (c, x, z, ry, p = {}) => P(c, { x, z, ry, ...p });
 const camN = (u, d, keys) => camK(u / d, keys);
 const kk = (u, d) => clamp(u / d);
-const facing = (a, b) => Math.atan2(b[0] - a[0], b[1] - a[1]);
 const bend = { lean: 0.5, bodyY: -0.15, armL: [-0.45, 0, -0.08], armR: [-0.45, 0, -0.08], head: [0.3, 0, 0] };
-const PROPS = [HC, token, rays, glowS, paper, calc, dog, potion, flashBody, flashS];
-const resetAll = () => { for (const c of CHARS) c.root.visible = false; for (const p of PROPS) p.visible = false; for (const s of [...sparkles, ...puffs]) s.visible = false; dizzy.visible = false;
-  crowdShow(false); hcLight.intensity = 0; flashL.intensity = 0; keyL.intensity = 0; cam.rotation.z = 0; cam.up.set(0, 1, 0); moonAt(); };
+const crouch = { lean: 0.45, bodyY: -0.75, legL: -1.2, legR: -0.2, head: [-0.25, 0, 0] };
+const PROPS = [HC, token, rays, glowS, paper, calc, dog, potion, flashBody, flashS, WC, bat, CAR2, CAR3, ...XC, ...FOODS];
+let BLUR = 0, APER = 0.0007;
+const resetAll = () => { for (const c of CHARS) c.root.visible = false; for (const p of PROPS) p.visible = false; for (const s of [...sparkles, ...puffs, ...CLOUD]) s.visible = false; dizzy.visible = false;
+  crowdM.forEach((m) => (m.visible = false)); hcLight.intensity = 0; flashL.intensity = 0; keyL.intensity = 0; pLight.intensity = 0; cam.rotation.z = 0; INTR.visible = false; S.background.set('#0a1130'); moonAt(0.38, 0.86, 14);
+  PCH.forEach((c) => chestOpen(c, 0, 0)); RICH.userData.lenses.forEach((l) => (l.visible = false)); BLUR = 0; APER = 0.0007; };
 const sparkRing = (pos, u, n = 8, r = 1.2, s = 0.5) => { for (let i = 0; i < n; i++) { const a = i / n * PI * 2 + u * 1.5, pulse = 0.5 + 0.5 * Math.sin(u * 9 + i * 2.3); spark(i, V(pos.x + Math.cos(a) * r, pos.y + Math.sin(a * 1.7) * r * 0.7, pos.z + Math.sin(a) * r * 0.5), s * pulse); } };
-const puffAt = (pos, k, n = 8, R0 = 1, R1 = 4) => { puffs.forEach((p, i) => { if (i >= n) return; const a = i / n * PI * 2; const r = lerp(R0, R1, sm(k)); p.visible = k > 0 && k < 1; p.position.set(pos.x + Math.cos(a) * r, pos.y + Math.sin(a * 2) * 1.2 + (i % 3) * 0.8, pos.z + Math.sin(a) * r * 0.6 + 0.5); p.scale.setScalar(lerp(2.5, 4.5, k)); p.material.opacity = 0.95 * (1 - sm((k - 0.6) / 0.4)); }); };
-const bgHunters = (list) => list.forEach(([c, x, z, ry, p]) => put(c, x, z, ry, { ...bend, ...(p || {}) }));
+const puffAt = (pos, k, n = 8, R0 = 1, R1 = 4) => { puffs.forEach((p, i) => { if (i >= n) return; const a = i / n * PI * 2; const r = lerp(R0, R1, sm(k)); p.visible = k > 0 && k < 1; p.position.set(pos.x + Math.cos(a) * r, pos.y + Math.sin(a * 2) * 1.2 + (i % 3) * 0.8, pos.z + Math.sin(a) * r * 0.6 + 0.5); p.scale.setScalar(lerp(1.2, 2.2, k)); p.material.opacity = 0.95 * (1 - sm((k - 0.6) / 0.4)); }); };
 const tokenAt = (pos, ry = 0, s = 1) => { token.visible = true; token.position.copy(pos); token.rotation.set(0, ry, 0); token.scale.setScalar(s); };
+const holdBat = () => { S.updateMatrixWorld(); holdAt(bat, WOOD, -1, [0, 0, 0.1], [0.3, 0, 0.2]); };
+const interior = () => { INTR.visible = true; skyG.visible = false; S.background.set('#2a1410'); moonL.intensity = 0; fill.intensity = 0.2; hemi.intensity = 0.6; lampPool.forEach((l) => (l.intensity = 0)); };
+const outdoor = () => { skyG.visible = true; moonL.intensity = 1.5; fill.intensity = 0.55; hemi.intensity = 1.05; };
+const RICHAT = [-62, 8.6];
 
-// ================= SHOTS =================
+// ================= SHOTS (one per beat of the original edit) =================
 const SC = {
-  S01(u, d) { focus(4, -6); const k = kk(u, d);
-    bgHunters([[G1, -4, -8, PI * 0.9], [G3, 10, -8.5, PI * 1.1], [G4, 20, -7.5, PI]]); heroChest(3, -8, 0.3, 0.7, 0.6); put(G2, 5.2, -8.6, -PI / 2 + 0.4, bend);
-    camN(u, d, [[0, [12.5, 8.5, 12], [3, 2.5, -9], 46], [1, [11, 7.2, 9.5], [3, 2.6, -9], 44]]); moonAt(0.35, 0.82, 24); },
-  S02(u, d) { focus(-6, -8); const k = kk(u, d);
-    heroChest(-6, -8.4, 0.1, 0.75, 0.7); put(G4, -6.1, -10.7, 0.1, { ...bend, lean: 0.35, face: 'amazed', look: [0, 0.6] }); put(G1, -11, -9.6, 0.5, { ...bend, armR: [-0.9 + Math.sin(u * 8) * 0.4, 0, 0] }); put(GRAN, -1 + k * 1.5, -5.2, PI / 2, { walk: 0.8, ph: u * 7 });
-    put(G3, lerp(-12, -9, k), 1.8, PI * 0.5, { walk: 1, ph: u * 10 }); key(-6, 5, -2, 18);
-    camN(u, d, [[0, [-8.6, 5.2, 2.6], [-6, 2.4, -8.4], 42], [1, [-7.8, 4.8, 1.4], [-6, 2.4, -8.4], 40]]); moonAt(0.3, 0.8, 24); },
-  S03(u, d) { focus(6, -8); const k = kk(u, d), o = ease(k, 0, 0.6);
-    heroChest(6, -8, 0, 0.15 + o * 0.85, o); put(G2, 8.4, -8.4, -PI / 2 + 0.45, { ...bend, armL: [-0.7 - o * 0.5, 0, 0], armR: [-0.7 - o * 0.5, 0, 0], face: o > 0.5 ? 'amazed' : 'neutral' });
-    sparkRing(V(6, 2.4, -8), u, 6, 1.4, 0.45 * o); camN(u, d, [[0, [5.6, 2.6, -1.0], [7.0, 2.8, -8.2], 42], [1, [5.8, 2.4, -2.0], [7.0, 2.9, -8.2], 38]]); moonAt(-0.2, 0.78, 22); },
-  S04(u, d) { focus(-20, 6); const k = kk(u, d); put(ME, -20, 6.8, 0.15, { face: 'angry', armL: [0.05, 0, 0.05], armR: [0.05, 0, 0.05], head: [0.04, 0, 0] }); key(-18, 6, 11, 30);
-    bgHunters([[G1, -26, 9.5, PI * 0.2], [GG, -14, 10.5, -PI * 0.3]]);
-    camN(u, d, [[0, [-19.4, 4.7, 13.5], [-20, 4.4, 6.8], 26], [1, [-19.5, 4.75, 12.0], [-20, 4.55, 6.8], 24]]); moonAt(0.4, 0.8, 22); },
-  S05(u, d) { focus(30, -8); const k = kk(u, d), o = ease(k, 0.05, 0.4);
-    heroChest(30, -8.2, 0, o, o); put(G3, 32.2, -8.6, -PI / 2 + 0.55, { lean: 0.3, armL: [-0.9, 0, -0.1], armR: [-0.9, 0, -0.1], face: o > 0.5 ? 'amazed' : 'neutral', head: [0.15, 0, 0] });
-    put(COP, 24.5, -8.6, PI * 0.15, bend); put(CHEF, 36.5, -8.8, -PI * 0.2, bend);
-    camN(u, d, [[0, [29.4, 3.6, -0.8], [31.2, 3.4, -8.4], 40], [1, [29.8, 3.5, -1.8], [31.3, 3.6, -8.4], 36]]); moonAt(-0.35, 0.8, 22); },
-  S06(u, d) { focus(-2, 7); const k = kk(u, d), cx = lerp(-12, 8, sm(k));
-    const row = [[GRAN, -12], [COP, -7], [G1, -2], [G4, 3], [KID, 8]]; row.forEach(([c, x], i) => put(c, x, 8.8, PI + 0.2 * Math.sin(u * 3 + i), { face: i % 2 ? 'worried' : 'neutral', head: [0.15, 0.5 * Math.sin(u * 4 + i * 1.7), 0], look: [Math.sin(u * 4 + i * 1.7), 0.3], armR: [-2.7, 0, 0.35], armL: [-0.3, 0, 0.1], lean: 0.12 }));
-    dog.visible = true; dog.position.set(12.5, Math.abs(Math.sin(u * 9)) * 0.3, 8.6); dog.rotation.y = PI / 2 + Math.sin(u * 10) * 0.08;
-    camN(u, d, [[0, [cx - 3, 4.6, 0.2], [cx - 1, 2.6, 8.8], 44], [1, [cx + 3, 4.6, 0.2], [cx + 4, 2.6, 8.8], 44]]); moonAt(0.3, 0.82, 22); },
-  S07(u, d) { focus(-30, -8); const k = kk(u, d), o = ease(k, 0, 0.2), r = ease(k, 0.1, 0.7);
-    heroChest(-30, -8, 0, o, o * 0.8); paper.visible = true; paper.position.set(-30, lerp(1.8, 6.5, back(r)), -8 + 0.6); paper.rotation.set(0, Math.sin(u * 3) * 0.25, Math.sin(u * 2) * 0.08);
-    rayAt(paper.position.clone().add(V(0, 0, -0.3)), 9 * r, u * 0.6, r); put(WOOD, -32.6, -6.5, PI * 0.8, { face: 'shocked', armL: [-0.8, 0, 0.6], armR: [-0.8, 0, 0.6] });
-    camN(u, d, [[0, [-29, 1.2, 1], [-30, 4.4, -8], 46], [1, [-29.3, 1.0, -0.4], [-30, 5.4, -8], 44]]); moonAt(0.3, 0.9, 30); },
-  S08(u, d) { focus(-30, -7); const k = kk(u, d); put(WOOD, -30, -6.5, -0.15, { face: k < 0.3 ? 'shocked' : 'happy', look: [0.4, 0.1], head: [0, -0.15 + 0.1 * Math.sin(u * 2), 0.12 * Math.sin(u * 3)], armR: [-1.9, 0, 0.35], armL: [0, 0, 0.05] });
-    holdAt(paper, WOOD, 1, [0.2, 0.75, 0.25], [0, -0.6, 0]); paper.visible = true; key(-27, 6, -1, 35); bgHunters([[G1, -37, -10, PI], [G4, -22, -12, PI * 0.9]]);
-    camN(u, d, [[0, [-29, 5.6, 1.5], [-30, 5.4, -6.5], 30], [1, [-29.2, 5.7, 0.0], [-30, 5.6, -6.5], 27]]); moonAt(0.38, 0.86, 22); },
-  S09(u, d) { focus(40, 7); const k = kk(u, d); put(KID, 40, 7.5, PI + 0.15, { face: 'shocked', jaw: 0.8, look: [0.6, -0.4], armR: [-2.2, 0, 0.55], armL: [0, 0, 0.05], head: [-0.1, 0.25, 0] });
-    S.updateMatrixWorld(); const hp = handPos(KID, 1).add(V(0, 0.6, 0)); tokenAt(hp, PI + 0.35 + Math.sin(u * 2) * 0.25); rayAt(hp.clone().add(V(0, 0, 0.4)), 2.6, u, 0.35); sparkRing(hp, u, 6, 0.9, 0.35); key(39, 6, 3, 40, '#ffd9a0');
-    camN(u, d, [[0, [38.8, 5.3, 1.2], [40.2, 5.3, 7.5], 36], [1, [39.0, 5.35, 2.0], [40.2, 5.4, 7.5], 33]]); moonAt(-0.4, 0.86, 22); },
-  S10(u, d) { focus(RX, -6); const k = kk(u, d); put(G1, RX - 2 + k * 2, -5, PI, { walk: 1 }); put(G2, RX + 3, -6.5 + k * 1.2, 0, { walk: 1 }); put(CHEF, RX + 1.5, -7.6, 0.2, { face: 'happy', armR: [-2.8, 0, 0.2] }); put(G3, RX - 6 + k * 3, 3.2, PI / 2, { walk: 1 });
-    camN(u, d, [[0, [RX + 9, 11, 13], [RX, 5, -12], 46], [1, [RX + 5, 8, 7], [RX, 5.6, -12], 44]]); moonAt(0.32, 0.84, 24); },
-  S11(u, d) { focus(RX, -6); const k = kk(u, d); put(G4, RX + 1, -6, 0.3, { walk: 0 }); put(CHEF, RX - 2.5, -7.4, 0.1, { face: 'grin', armR: [-2.8, 0, 0.2] });
-    camN(u, d, [[0, [RX - 1.5, 4, 6], [RX, 8.4, -10], 44], [1, [RX - 0.8, 4.6, 2], [RX, 9.2, -10], 40]]); moonAt(0.38, 0.9, 22); },
-  S12(u, d) { focus(-62, 7); const k = kk(u, d), z = lerp(14, 10.5, k); put(RICH, -62, z, PI, { walk: 0.8, ph: u * 7, face: 'neutral', armR: [-1.45, 0, -0.05] });
-    S.updateMatrixWorld(); const hp = handPos(RICH, 1); flashBody.visible = true; flashBody.position.copy(hp).add(V(0, 0, -0.35)); flashBody.rotation.set(0, PI, 0);
-    flashL.intensity = 120; flashL.position.copy(flashBody.position); flashL.target.position.set(-62, 0, z - 9); flashS.visible = true; flashS.position.copy(flashBody.position).add(V(0, 0, -0.45)); flashS.scale.setScalar(1.0); key(-61, 6, z - 4, 20);
-    camN(u, d, [[0, [-61.2, 3.7, 7.6], [-62, 3.8, 14], 38], [1, [-61.3, 3.7, 4.4], [-62, 3.9, 10.5], 38]]); moonAt(0.38, 0.84, 24); },
-  S13(u, d) { focus(-70, -7); const k = kk(u, d); put(RICH, -70.5 + k * 3, -7.6, PI / 2 - 0.3, { walk: 1.1, ph: u * 9, face: 'angry', look: [0.5, 0], lean: 0.12 }); heroChest(-64, -9, -0.3, 0, 0);
-    bgHunters([[GRAN, -75, -9.5, 0.4], [G1, -61, -9.8, -0.4]]); key(-67, 5, -3, 20);
-    camN(u, d, [[0, [-66.2, 2.6, -2.2], [-69.3, 3.8, -7.6], 40], [1, [-65.4, 2.6, -2.6], [-67.6, 4.0, -7.6], 38]]); moonAt(0.3, 0.85, 24); },
-  S14(u, d) { focus(-80, 7); const k = kk(u, d); put(RICH, -80, 7.2, PI + 0.35, { face: k > 0.55 ? 'shocked' : 'worried', look: [-0.6, 0.6], armL: [-1.1, 0, -0.35], armR: [-0.2 + Math.sin(u * 14) * 0.15 * (k < 0.55), 0, 0.1], head: [0.2, -0.2, 0] });
-    calc.visible = true; holdAt(calc, RICH, -1, [0.5, 0.6, -0.3], [-0.4, PI + 0.3, 0]); calc.scale.setScalar(0.42); calcText(k < 0.55 ? (u * 37 % 1 * 9999).toFixed(0) : '0.0000072'); heroChest(-83, 4.5, PI + 0.3, 0.9, 0.3);
-    key(-80, 6, 2, 25); camN(u, d, [[0, [-81.6, 5.0, 1.8], [-80, 4.3, 7.2], 34], [1, [-81.3, 5.0, 2.6], [-80, 4.4, 7.2], 30]]); moonAt(-0.35, 0.85, 22); },
-  S15(u, d) { focus(-80, 7); const k = kk(u, d); put(RICH, -80, 7.2, PI + 0.1, { face: 'shocked', jaw: 1.3, armL: [0, 0, 0.05], armR: [0, 0, 0.05] }); key(-80, 6, 3, 25);
-    camN(u, d, [[0, [-80.1, 4.75, 3.2], [-80, 4.7, 7.2], 32], [0.25, [-80.05, 4.8, 4.3], [-80, 4.75, 7.2], 28], [1, [-80.05, 4.82, 4.45], [-80, 4.75, 7.2], 28]]); shake(0.03 * (1 - k)); moonAt(0.5, 0.95, 18); },
-  S16(u, d) { focus(0, 30); const k = kk(u, d); calc.visible = true; calc.scale.setScalar(1); calc.position.set(0, 3, 30); calc.rotation.set(-0.15, 0, 0);
-    calcText(k > 0.92 ? '1 in 137500' : String(Math.floor(lerp(1, 137500, Math.pow(k, 2.2)) + ((u * 211) % 1) * 0)));
-    camN(u, d, [[0, [-0.6, 4.4, 34.2], [0, 3.2, 30], 36], [1, [-0.2, 4.0, 33.6], [0, 3.4, 30], 34]]); moonAt(0.38, 0.9, 20); },
-  S17(u, d) { focus(0, 30); const k = kk(u, d); calc.visible = true; calc.scale.setScalar(1); calc.position.set(0, 3, 30); calc.rotation.set(-0.12, 0.06, 0); calcText('1 in 137500');
-    camN(u, d, [[0, [0.25, 4.0, 35.2], [0, 3.6, 30], 34], [1, [0.12, 4.0, 34.4], [0, 3.7, 30], 34]]); shake(0.01); moonAt(0.4, 0.92, 18); },
-  S18(u, d) { focus(PX, -20, { lamp: 30 }); const k = kk(u, d); crowdShow(true, 0.08);
-    camN(u, d, [[0, [PX + 3, 34, 14], [PX, 0, -26], 48], [1, [PX + 2, 27, 8], [PX, 0, -27], 48]]); moonAt(0.3, 0.9, 20); },
-  S19(u, d) { focus(-30, -7); const k = kk(u, d), o = ease(k, 0, 0.3); heroChest(-30, -8.2, 0, o, 0); put(WOOD, -27.8, -8.6, -PI / 2 + 0.5, { ...bend, lean: 0.35, face: k > 0.45 ? 'sad' : 'neutral', look: [-0.6, 0.8] });
-    bgHunters([[G1, -36, -9, 0.3], [G4, -23, -9.4, -0.3]]); key(-29, 5, -3, 22);
-    camN(u, d, [[0, [-30.4, 3.8, -2.2], [-28.9, 3.2, -8.3], 38], [1, [-30.0, 3.7, -3.0], [-28.9, 3.3, -8.3], 36]]); moonAt(0.35, 0.86, 22); },
-  S20(u, d) { focus(-30, -7); const k = kk(u, d); heroChest(-30.6, -8.6, 0, 1, 0); put(WOOD, -28.4, -7.4, -0.3, { face: 'angry', armL: [-0.3, 0, 0.35], armR: [-0.3, 0, 0.35], squash: -0.03 * Math.sin(u * 30), tilt: 0.04 * Math.sin(u * 25) });
-    key(-27, 5, -2, 30); camN(u, d, [[0, [-28.0, 4.7, -1.2], [-28.5, 4.4, -7.4], 34], [1, [-28.2, 4.7, -2.2], [-28.6, 4.5, -7.4], 30]]); shake(0.03); moonAt(0.3, 0.86, 22); },
-  S21(u, d) { focus(PX, -2, { lamp: 70 }); const k = kk(u, d); crowdShow(true, 1);
-    put(G1, PX - 4 + k * 6, 2, PI / 2, { walk: 1.6, ph: u * 13, face: 'shocked', armL: UP, armR: UP }); put(GRAN, PX + 3, 3, -PI / 2 + u, { walk: 1.4, ph: u * 12, face: 'angry', armR: PUMP(u) });
-    put(COP, PX + 1, -1, 0.4, { face: 'laugh', bodyY: Math.abs(Math.sin(u * 10)) * 1.2, armL: UP, armR: UP });
-    camN(u, d, [[0, [PX + 2, 7, 18], [PX, 2.5, -2], 46], [1, [PX + 1, 6.5, 15], [PX, 2.6, -2], 46]]); cam.rotation.z += 0.04 * Math.sin(u * 6); moonAt(0.35, 0.86, 22); },
-  S22(u, d) { focus(-80, 7); const k = kk(u, d); put(RICH, -80, 7.2, PI + 0.05, { face: 'laugh', head: [-0.1 + 0.05 * Math.sin(u * 18), 0, 0.12 * Math.sin(u * 6)], armL: [0, 0, 0.05], armR: [0, 0, 0.05] }); key(-80, 6, 3, 30, '#d58aff');
-    camN(u, d, [[0, [-80.5, 4.6, 3.6], [-80, 4.85, 7.2], 32], [1, [-80.3, 4.7, 4.1], [-80, 4.85, 7.2], 30]]); cam.rotation.z += -0.1; moonAt(0.5, 0.95, 16); },
-  S23(u, d) { focus(-90, -7); const k = kk(u, d), lift = ease(k, 0.1, 0.5); put(RICH, -90, -6.6, -0.2, { face: k > 0.5 ? 'smug' : 'grin', look: [0.6, -0.4], armR: [lerp(-0.6, -2.4, lift), 0, 0.2], armL: [0, 0, 0.05] });
-    S.updateMatrixWorld(); const hp = handPos(RICH, 1); potion.visible = true; potion.position.copy(hp).add(V(0, 0.35, 0.2)); rayAt(potion.position, 2.2 * lift, u, 0.6); sparkRing(potion.position, u, 6, 0.8, 0.3 * lift);
-    key(-88, 5, -2, 30); camN(u, d, [[0, [-87.4, 4.2, 0.6], [-90, 5.0, -6.6], 36], [1, [-87.8, 4.1, -0.2], [-90, 5.4, -6.6], 33]]); moonAt(0.35, 0.86, 22); },
-  S24(u, d) { focus(-90, -7); const k = kk(u, d); const c = k < 0.42 ? RICH : RICHG; put(c, -90, -6.6, 0, { face: 'shocked', armL: UP, armR: UP, squash: 0.1 * Math.sin(u * 30) });
-    puffAt(V(-90, 2.6, -6.6), ease(k, 0, 1), 8, 0.6, 3.6); sparkRing(V(-90, 4, -6.6), u, 8, 2, 0.6 * ease(k, 0.3, 0.5));
-    camN(u, d, [[0, [-90, 4.0, 2.8], [-90, 3.6, -6.6], 44], [1, [-90, 4.0, 2.2], [-90, 3.6, -6.6], 44]]); moonAt(0.35, 0.86, 22); },
-  S25(u, d) { focus(-90, -7); const k = kk(u, d); put(RICHG, -90, -6.6, 0, { face: 'grin', armL: [-1.25, 0, -0.45], armR: [-1.25, 0, -0.45], head: [0.05, 0.1 * Math.sin(u * 2), 0] }); sparkRing(V(-90, 4.2, -6.4), u, 8, 2.1, 0.5);
-    bgHunters([[GG, -96, -9.5, 0.3], [GG2, -83, -9.8, -0.3]]);
-    camN(u, d, [[0, [-89.3, 4.4, -0.6], [-90, 4.0, -6.6], 38], [1, [-89.5, 4.5, -1.6], [-90, 4.1, -6.6], 36]]); moonAt(-0.38, 0.86, 22); },
-  S26(u, d) { focus(-90, -7); const k = kk(u, d); put(RICHG, -90, -6.6, -0.2, { face: 'happy', look: [0.2, -0.9], head: [-0.35, 0, 0], armL: [-1.3 + 0.12 * Math.sin(u * 16), 0, -0.5], armR: [-1.3 - 0.12 * Math.sin(u * 16), 0, -0.5] });
-    put(GG, -94, -9.4, 0.4, { face: 'happy', armL: UP, armR: UP }); put(GG2, -85, -9.8, -0.3, { ...bend });
-    camN(u, d, [[0, [-88.2, 2.4, 1.8], [-90, 4.6, -6.6], 44], [1, [-88.5, 2.3, 0.8], [-90, 4.8, -6.6], 42]]); moonAt(-0.1, 0.9, 30); },
-  S27(u, d) { focus(-90, -7); const k = kk(u, d), tl = ease(k, 0, 0.55); put(RICHG, -90, -6.6, 0, { face: k > 0.5 ? 'annoyed' : 'happy', armL: [-0.3, 0, 0.1], armR: [-0.3, 0, 0.1], head: [0.2 * ease(k, 0.4, 0.7), 0, 0] });
-    camN(u, d, [[0, [-90, 4.2, 0.5], [-90, 15, -30], 34], [0.55, [-90, 4.4, 0.0], [-90, 4.4, -6.6], 36], [1, [-90, 4.5, -0.6], [-90, 4.4, -6.6], 34]]); moonAt(0.05, lerp(0.35, 1.5, tl), lerp(70, 40, tl)); },
-  S28(u, d) { focus(16, -10, { lamp: 18 }); const k = kk(u, d); put(NOOB, 16 + k * 1.5, -7.6, PI * 0.5 - 0.3, { walk: 0.6, ph: u * 6, face: 'sad', head: [0.25, 0, 0] });
-    camN(u, d, [[0, [19.6, 3.8, 1.8], [16.6, 4.6, -9], 42], [1, [19.2, 3.7, 0.6], [16.9, 4.7, -9], 40]]); moonAt(0.38, 0.88, 22); },
-  S29(u, d) { focus(18, -7); const k = kk(u, d); put(NOOB, 18.8, -7.3, 0.15, { face: 'sad', head: [0.3, 0, 0], armL: [0.05, 0, 0.05], armR: [0.05, 0, 0.05] });
-    put(RICHG, 15.6, -8.4, 0.6, { face: 'laugh', armR: [-1.6, 0.2, 0.3], armL: [-0.6, 0, -0.5], bodyRz: 0.06 * Math.sin(u * 16), head: [-0.1, 0, 0.05 * Math.sin(u * 16)] });
-    key(18, 5, -2, 26); camN(u, d, [[0, [18.4, 3.7, 2.4], [17.2, 4.0, -7.8], 40], [1, [18.1, 3.8, 1.4], [17.2, 4.1, -7.8], 38]]); moonAt(0.4, 0.87, 20); },
-  S30(u, d) { focus(120, -9); const k = kk(u, d), o = ease(k, 0.25, 0.6); heroChest(120, -9, 0, o, o * 0.5); put(NOOB, 120.2, -11.4, 0, { lean: 0.25, face: o > 0.4 ? 'amazed' : 'neutral', look: [0, 0.6], armL: [-0.5 - o * 0.4, 0, 0.1], armR: [-0.5 - o * 0.4, 0, 0.1], head: [0.25, 0, 0] });
-    key(120, 4, -6, 18); sparkRing(V(120, 2.8, -9), u, 6, 1.4, 0.45 * o); camN(u, d, [[0, [120.9, 4.0, -1.8], [120.1, 3.2, -10.4], 40], [1, [120.7, 3.8, -2.8], [120.1, 3.3, -10.4], 36]]); moonAt(-0.35, 0.85, 22); },
-  S31(u, d) { focus(120, -9); const k = kk(u, d), lift = ease(k, 0, 0.45); heroChest(120, -9.2, 0, 1, 0.45); put(NOOB, 120.4, -11.4, 0.1, { face: 'grin', armR: [lerp(-1.4, -2.9, lift), 0, 0.1], armL: [-0.6, 0, 0.4], look: [0.4, -0.7] });
-    S.updateMatrixWorld(); const hp = handPos(NOOB, 1).add(V(0, 0.6, 0.15)); tokenAt(hp, u * 2.4, 1.1); rayAt(hp.clone().add(V(0, 0, -0.4)), 5.5 * lift + 1, u * 0.7, 0.75); sparkRing(hp, u, 8, 1.3, 0.5); key(121, 6, -5, 6, '#ffe6b0');
-    camN(u, d, [[0, [121.0, 3.2, -2.6], [120.5, 5.0, -11], 42], [1, [121.2, 3.0, -1.6], [120.5, 5.3, -11], 42]]); moonAt(0.38, 0.9, 22); },
-  S32(u, d) { focus(121, -8); const k = kk(u, d), jp = Math.max(0, Math.sin(u * 7)); heroChest(119, -10.5, 0.3, 1, 0.6);
-    put(NOOB, 121, -8, 0, { face: 'laugh', bodyY: jp * 1.6, armL: UP, armR: UP, legL: -0.3 * jp, legR: 0.3 * jp }); S.updateMatrixWorld(); const hp = handPos(NOOB, 1).add(V(0, 0.6, 0)); tokenAt(hp, u * 3, 1); rayAt(hp, 3, u, 0.7);
-    const f = ease(k, 0.1, 0.4); put(RICHG, 125.5, -7, -0.9, { face: 'shocked', bodyRx: -1.45 * f, bodyY: -0.2 * f, armL: UP, armR: UP, legL: -1.2 * f, legR: -1.0 * f });
-    camN(u, d, [[0, [121.5, 5, 1.5], [122, 3, -8], 44], [1, [121.5, 12, 5], [122.5, 1.5, -8], 50]]); moonAt(0.38, 0.9, 20); },
+  A(u, d) { outdoor(); focus(0, -6); const k = kk(u, d); CAR2.visible = true; CAR2.position.set(7 - k * 3, 0, -1.9); CAR2.rotation.y = PI; CAR3.visible = true; CAR3.position.set(-9 + k * 3, 0, -2.0);
+    put(GRAN, -2.7, -6.4, PI, bend); put(G3, 0.2, -6.2, PI, bend); put(G4, 2.8, -6.6, PI, bend); put(G1, 5.5, -7.8, -PI / 2, { walk: 0.8 }); put(G2, -5, -8.6, PI * 0.8, bend);
+    camN(u, d, [[0, [4.2, 2.6, 7.4], [0.3, 2.6, -9], 46], [1, [3.4, 2.7, 4.6], [0.2, 2.8, -9], 44]]); moonAt(0.0, 0.84, 12); },
+  B(u, d) { outdoor(); focus(0, -8); const k = kk(u, d); put(GRAN, -2.6, -6.5, PI + 0.1, bend); put(G3, 0.3, -6.1, PI, { ...bend, armR: [-0.8 + 0.3 * Math.sin(u * 9), 0, 0] }); put(G4, 2.9, -6.7, PI - 0.1, bend);
+    camN(u, d, [[0, [-2.2, 4.6, 1.6], [0.4, 3.0, -9], 44], [1, [-1.6, 4.4, 0.6], [0.5, 3.0, -9], 42]]); moonAt(-0.1, 0.9, 12); },
+  C(u, d) { outdoor(); focus(0, -8); const k = kk(u, d), o = ease(k, 0.35, 0.75); chestOpen(PCH[1], o, o); pLight.intensity = 22 * o;
+    camN(u, d, [[0, [0.9, 2.9, -2.4], [0.1, 1.7, -8.4], 40], [1, [0.7, 2.7, -3.2], [0.1, 1.8, -8.4], 38]]); moonAt(0.3, 0.95, 10); APER = 0.0012; },
+  D(u, d) { outdoor(); focus(-20, 6); const k = kk(u, d); put(ME, -20, 6.8, 0.1, { face: 'angry', armL: [0.05, 0, 0.05], armR: [0.05, 0, 0.05], head: [0.04, 0, 0] }); key(-18, 6, 11, 30);
+    camN(u, d, [[0, [-19.6, 4.5, 12.6], [-20, 4.2, 6.8], 26], [0.45, [-19.7, 4.6, 11.8], [-20, 4.4, 6.8], 25], [0.55, [-19.85, 4.72, 9.9], [-20, 4.65, 6.8], 25], [1, [-19.86, 4.72, 9.7], [-20, 4.66, 6.8], 25]]); moonAt(0.4, 0.8, 12); APER = 0.0012; },
+  F(u, d) { outdoor(); focus(-16, 4); const k = kk(u, d), o = ease(k, 0.0, 0.3); put(ME, -16.3, 7.3, PI, { lean: 0.45, bodyY: -0.1, face: 'angry', armL: [-0.8 - o * 0.4, 0, 0], armR: [-0.8 - o * 0.4, 0, 0], head: [0.2, 0, 0] });
+    heroChest(-16, 5.0, PI, o, o * 0.45); xcAt(0, -19.6, 5.2, PI + 0.1, 0.9, 0.6, '#ffc04a'); xcAt(1, -12.5, 5.0, PI - 0.1, 0); xcAt(2, -9.2, 5.1, PI, 0.8);
+    camN(u, d, [[0, [-14.6, 2.4, -0.6], [-16.1, 2.8, 5.8], 42], [1, [-14.9, 2.3, 0.4], [-16.1, 2.9, 5.8], 40]]); moonAt(0.3, 0.86, 12); APER = 0.001; },
+  G(u, d) { outdoor(); const k = kk(u, d), cx = lerp(-36, 14, Math.pow(k, 1.4)); focus(cx, -6); crowdShow2('street');
+    put(G1, -26, -8.4, PI, bend); put(G2, -14, -8.0, PI, bend); put(G4, -4, -8.6, PI, bend); put(COP, 6, -8.2, PI, bend); put(CHEF, -20, 8.4, 0, bend);
+    for (let i = 0; i < 4; i++) xcAt(i, -24 + i * 10, -10, 0, 0.8, 0.5, '#ffc04a');
+    camN(u, d, [[0, [cx - 2, 3.4, 1.5], [cx - 6, 2.4, -8], 44], [1, [cx + 2, 3.4, 1.5], [cx + 8, 2.4, -8], 44]]); BLUR = 1.5 + 12 * ease(k, 0.7, 1); moonAt(0.3, 0.86, 12); },
+  I(u, d) { outdoor(); focus(-29, 0); const k = kk(u, d), o = ease(k, 0.0, 0.35), r = ease(k, 0.55, 1);
+    put(WOOD, -30.6, 0.3, 0.35, { face: 'grin', armR: [-1.2 - o * 0.6, 0, 0.3], armL: [-0.4, 0, 0.3], lean: 0.1, bodyY: 0.15 * Math.abs(Math.sin(u * 9)) }); holdBat(); heroChest(-28.3, 0.9, -0.25, o, o);
+    paper.visible = r > 0; paper.position.set(-28.3, lerp(1.8, 4.5, r), 1.2); paper.rotation.set(0, Math.sin(u * 3) * 0.3, 0); rayAt(paper.position.clone().add(V(0, 0, -0.2)), 5 * r, u, r);
+    camN(u, d, [[0, [-28.4, 2.4, 7.4], [-29.3, 2.6, 0.6], 40], [1, [-28.6, 2.3, 6.6], [-29.2, 2.8, 0.6], 38]]); moonAt(0.3, 0.86, 12); },
+  J(u, d) { outdoor(); focus(-29, 0); const k = kk(u, d); paper.visible = true; paper.position.set(-28.4, lerp(4.8, 5.4, k), 1.2); paper.rotation.set(0, Math.sin(u * 3) * 0.2, 0.05); rayAt(paper.position.clone().add(V(0, 0, -0.3)), 6.5, u * 0.8, 1);
+    camN(u, d, [[0, [-28.4, 4.4, 6.2], [-28.4, 5.3, 1.2], 38], [1, [-28.4, 4.5, 5.8], [-28.4, 5.5, 1.2], 36]]); moonAt(0.5, 0.98, 30); },
+  K(u, d) { outdoor(); focus(-29, 0); const k = kk(u, d); put(WOOD, -30.2, 0.3, 0.3, { face: 'happy', look: [0.5, 0], armR: [-1.6, 0, 0.3], armL: [-0.2, 0, 0.3] }); holdBat(); heroChest(-28.0, 1.2, -0.3, 1, 0.3);
+    S.updateMatrixWorld(); holdAt(paper, WOOD, 1, [0.2, 0.75, 0.3], [0, -0.3, 0]); paper.visible = true;
+    camN(u, d, [[0, [-28.6, 3.0, 7.0], [-29.3, 3.2, 0.6], 42], [1, [-28.8, 3.0, 6.4], [-29.3, 3.3, 0.6], 40]]); moonAt(0.3, 0.86, 12); },
+  L(u, d) { outdoor(); focus(-29, 0); const k = kk(u, d); put(WOOD, -30.2, 0.3, 0.05, { face: k < 0.12 ? 'shocked' : 'happy', look: [0.3, 0.1], head: [0, -0.1 + 0.08 * Math.sin(u * 2), 0.1 * Math.sin(u * 3)], armR: [-1.9, 0, 0.35], armL: [0, 0, 0.05] });
+    S.updateMatrixWorld(); holdAt(paper, WOOD, 1, [0.2, 0.75, 0.25], [0, -0.6, 0]); paper.visible = true; key(-28, 6, 6, 30);
+    camN(u, d, [[0, [-30.0, 5.1, 5.6], [-30.2, 5.0, 0.3], 30], [1, [-30.05, 5.1, 4.4], [-30.2, 5.05, 0.3], 28]]); moonAt(0.38, 0.88, 12); APER = 0.0014; },
+  M(u, d) { outdoor(); focus(40, 6); const k = kk(u, d); WC.visible = true; WC.position.set(40, 0, 7.8); WC.rotation.y = PI; put(KID, 40, 7.8, PI, { y: 0.95, sit: true, face: 'shocked', jaw: 0.7, armR: [-2.4, 0, 0.1], armL: [-0.6, 0, 0], look: [-0.3, -0.6], head: [-0.15, 0, 0] });
+    heroChest(42.8, 7.4, PI + 0.5, 1, 0.3); S.updateMatrixWorld(); const hp = handPos(KID, 1).add(V(0, 0.65, 0)); tokenAt(hp, PI + Math.sin(u * 2) * 0.4, 1.05); rayAt(hp.clone().add(V(0, 0, 0.3)), 2.6, u, 0.5); sparkRing(hp, u, 6, 0.9, 0.35);
+    camN(u, d, [[0, [39.8, 4.3, 1.2], [40.0, 4.1, 7.6], 42], [1, [39.9, 4.3, 1.9], [40.0, 4.2, 7.6], 40]]); moonAt(0.3, 0.88, 12); },
+  N(u, d) { outdoor(); focus(40, 6); const k = kk(u, d); WC.visible = true; WC.position.set(40, 0, 7.8); WC.rotation.y = PI; put(KID, 40, 7.8, PI - 0.2, { y: 0.95, sit: true, face: 'shocked', jaw: 0.9, armR: [-2.2, 0, 0.5], armL: [-0.4, 0, 0], look: [-0.5, -0.4] });
+    S.updateMatrixWorld(); const hp = handPos(KID, 1).add(V(0, 0.6, 0)); tokenAt(hp, PI + 0.4 + Math.sin(u * 2) * 0.3, 1.05); rayAt(hp.clone().add(V(0, 0, 0.3)), 2.2, u, 0.35); key(39.5, 5, 3, 30, '#ffe0b0');
+    camN(u, d, [[0, [39.4, 4.7, 2.6], [38.4, 4.9, 7.8], 42], [1, [39.3, 4.7, 3.2], [38.4, 4.95, 7.8], 40]]); moonAt(-0.3, 0.9, 12); APER = 0.0014; },
+  O(u, d) { focus(IX, 0); interior(); const k = kk(u, d); put(WORKER, IX, -2.2, 0, { face: 'laugh', armL: PUMP(u), armR: PUMP(u, 1.1), bodyY: 0.25 * Math.abs(Math.sin(u * 8)) });
+    camN(u, d, [[0, [IX + 1.2, 4.4, 5.8], [IX, 4.6, -2], 46], [1, [IX + 0.9, 4.4, 5.0], [IX, 4.7, -2], 44]]); APER = 0.001; },
+  P(u, d) { focus(IX, 0); interior(); const k = kk(u, d); WC.visible = true; WC.position.set(IX - 3, 0, 2.9); WC.rotation.y = PI * 0.92; put(KID, IX - 3, 2.9, PI * 0.92, { y: 0.95, sit: true, face: 'amazed', armL: UP, armR: UP, look: [0.5, -0.5] });
+    put(WORKER, IX + 1, -2.2, -0.3, { face: 'grin', armR: [-1.6, 0, 0.2], armL: [-0.3, 0, 0.2] });
+    FOODS.forEach((f, i) => { const t0 = i * 0.11, tt = Math.max(0, u - t0); f.visible = true; const p0 = V(IX + 0.5 - i * 0.2, 3.4, -0.8), v = V(-2.4 - (i % 3) * 0.5, 5.2 + (i % 2), 2.2 + (i % 3) * 0.6); const p = p0.clone().add(v.clone().multiplyScalar(tt)); p.y += -6 * tt * tt; f.position.copy(p); f.rotation.set(tt * (2 + i), tt * 3, tt * (1 + i)); });
+    camN(u, d, [[0, [IX + 3.8, 4.4, 7.0], [IX - 1.6, 3.8, 1.4], 44], [1, [IX + 3.4, 4.4, 6.4], [IX - 1.6, 3.9, 1.4], 42]]); APER = 0.001; },
+  Q(u, d) { outdoor(); focus(RX, -6); const k = kk(u, d); CAR2.visible = true; CAR2.position.set(RX - 14 + k * 14, 0, 2.0); CAR2.rotation.y = 0; xcAt(0, RX + 5.5, 6.6, PI + 0.4, 0.8, 0.8);
+    put(G1, RX - 2 + k * 2, -5, PI, { walk: 1 }); put(G2, RX + 3, -6.5 + k * 1.2, 0, { walk: 1 }); put(G3, RX - 5, -6.8, 0.2, { walk: 0 });
+    camN(u, d, [[0, [RX + 3.5, 8.5, 18], [RX, 5, -12], 46], [1, [RX + 2, 7.4, 13.5], [RX, 5.4, -12], 44]]); moonAt(0.22, lerp(0.84, 0.97, ease(k, 0.4, 0.75)), lerp(12, 46, ease(k, 0.4, 0.75))); BLUR = 12 * ease(k, 0.88, 1); APER = 0.0004; },
+  S(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICH, -63.2, 8.2, PI - 0.6, { ...crouch, face: 'neutral', look: [0.6, 0.5], armR: [-1.5, 0, 0.1], armL: [-0.3, 0, 0.1] });
+    heroChest(-61.0, 7.2, PI - 0.3, 1, 0.9, '#b04dff'); flashFrom(RICH, 1, V(-61, 1.2, 7.2)); put(GGR, -59.6, 10.6, PI + 0.3, { ...bend, face: 'happy' }); xcAt(0, -59.8, 9.0, PI + 0.3, 0.9, 0.5);
+    camN(u, d, [[0, [-65.8, 3.2, 0.6], [-62, 2.6, 8.4], 44], [1, [-65.4, 3.1, 1.4], [-62, 2.6, 8.4], 42]]); moonAt(0.3, 0.86, 12); },
+  T(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d), z = lerp(12.5, 10.2, k); put(RICH, -62, z, PI, { walk: 0.8, ph: u * 7, face: 'neutral', armR: [-1.4, 0, -0.05] }); flashFrom(RICH, 1, V(-62.5, 0, z - 7));
+    xcAt(0, -65.5, 9.5, PI + 0.4, 0.8, 0.5); camN(u, d, [[0, [-61.2, 3.6, 5.2], [-62, 3.6, 12], 40], [1, [-61.3, 3.6, 3.8], [-62, 3.7, 10.2], 40]]); moonAt(0.38, 0.86, 12); },
+  U(u, d) { outdoor(); focus(-66, 8); const k = kk(u, d); heroChest(-66, 9, PI, 0, 0); put(RICH, -66, 9.0, PI + 0.5, { y: 2.55, face: 'neutral', look: [-0.6, 0], armR: [-1.5, 0, 0.1], head: [0, 0.3, 0] }); flashFrom(RICH, 1, V(-72, 1, 6));
+    camN(u, d, [[0, [-65.2, 1.6, 2.6], [-66, 4.4, 9], 44], [1, [-65.4, 1.6, 3.2], [-66, 4.5, 9], 42]]); moonAt(0.38, 0.86, 12); },
+  V(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICH, -62, 8.2, PI, { ...crouch, face: 'neutral', look: [0, 0.2], armR: [-1.5, 0, 0], armL: [-0.3, 0, 0.1] }); flashFrom(RICH, 1, V(-62.6, 2.2, 2.8));
+    camN(u, d, [[0, [-61.6, 2.4, 3.0], [-62, 2.5, 8.2], 40], [1, [-61.6, 2.4, 3.6], [-62, 2.5, 8.2], 40]]); moonAt(0.38, 0.86, 12); },
+  W(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICH, -64.4 + k * 0.8, 8.2, PI / 2 + 0.3, { ...crouch, walk: 0.3, ph: u * 6, face: 'neutral', look: [0.3, 0.6], armR: [-1.2, 0, 0], armL: [-0.3, 0, 0.1] }); flashFrom(RICH, 1, V(-60, 0, 7.6));
+    camN(u, d, [[0, [-61.8, 3.2, 1.0], [-63.4, 2.4, 8.2], 44], [1, [-61.7, 3.2, 1.5], [-63.2, 2.4, 8.2], 44]]); moonAt(0.38, 0.86, 12); },
+  X(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICH, -62, 8.4, PI + 0.2, { face: 'neutral', look: [0.3, -0.6], head: [-0.3, 0, 0], armR: [-2.8, 0, 0.2], armL: [-0.2, 0, 0.1] }); flashFrom(RICH, 1, V(-58, 18, 6));
+    camN(u, d, [[0, [-61.0, 1.6, 1.4], [-62, 4.0, 8.4], 44], [1, [-61.1, 1.6, 2.0], [-62, 4.1, 8.4], 44]]); moonAt(0.4, 0.84, 12); },
+  Y(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICH, ...RICHAT, PI, { face: 'shocked', jaw: 1.2, armL: [-3.05, 0, -0.3], armR: [-3.05, 0, -0.3], head: [0.06 * Math.sin(u * 20), 0, 0] }); key(-62, 6, 4, 22);
+    camN(u, d, [[0, [-62.2, 4.4, 3.4], [-62, 4.1, 8.6], 40], [1, [-62.1, 4.5, 4.4], [-62, 4.3, 8.6], 34]]); moonAt(0.38, 0.86, 12); },
+  Z(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICH, ...RICHAT, PI, { face: k < 0.45 ? 'sad' : 'worried', look: [-0.3, 0.2], armL: [0, 0, 0.05], armR: [0, 0, 0.05] }); key(-62, 6, 4, 26);
+    camN(u, d, [[0, [-62.05, 4.75, 5.4], [-62, 4.72, 8.6], 30], [1, [-62.05, 4.76, 5.9], [-62, 4.72, 8.6], 30]]); moonAt(0.38, 0.92, 10); APER = 0.0016; },
+  AA(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICH, ...RICHAT, PI, { face: k > 0.3 ? 'dizzy' : 'worried', armR: [-1.25, 0, -0.35], armL: [-0.9, 0, -0.5], head: [0.15, -0.15, 0] });
+    calc.visible = true; calc.scale.setScalar(0.45); S.updateMatrixWorld(); holdAt(calc, RICH, 1, [0.1, 0.75, -0.3], [-0.25, PI + 0.35, 0]); calcText(((u * 7) | 0) % 2 ? (u * 3717 % 9999).toFixed(0) : '0.00' + ((u * 91) | 0) % 99);
+    heroChest(-60.4, 6.4, PI + 0.4, 0.3, 0.4, '#b04dff'); key(-62, 6, 4, 22);
+    camN(u, d, [[0, [-62.6, 4.6, 3.9], [-61.9, 4.0, 8.6], 38], [1, [-62.5, 4.6, 4.5], [-61.9, 4.1, 8.6], 36]]); moonAt(0.38, 0.86, 12); APER = 0.0012; },
+  AB(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICH, ...RICHAT, PI, { face: 'shocked', jaw: 1.1, armL: [0, 0, 0.05], armR: [0, 0, 0.05], look: [0.3, 0] }); key(-62, 6, 4, 26);
+    camN(u, d, [[0, [-61.5, 4.5, 5.8], [-62, 4.75, 8.6], 30], [1, [-61.6, 4.55, 6.0], [-62, 4.75, 8.6], 30]]); cam.rotation.z += 0.12; shake(0.02); moonAt(0.38, 0.92, 10); APER = 0.0016; },
+  AC(u, d) { outdoor(); focus(0, 30); const k = kk(u, d); calc.visible = true; calc.scale.setScalar(1); calc.position.set(0, 3, 30); calc.rotation.set(-0.15, 0.25, 0.05); calcText(k < 0.12 ? '1 in 13' : '1 in 137500');
+    camN(u, d, [[0, [-0.5, 4.2, 34.0], [0.15, 3.7, 30], 34], [1, [-0.4, 4.15, 33.6], [0.15, 3.7, 30], 34]]); moonAt(0.38, 0.95, 10); APER = 0.0018; },
+  AD(u, d) { outdoor(); focus(PX, -20, { lamp: 30 }); const k = kk(u, d); crowdShow2('plaza', 0.08);
+    camN(u, d, [[0, [PX + 4, 30, 12], [PX, 0, -26], 48], [0.7, [PX + 2, 22, 4], [PX, 0, -28], 48], [1, [PX + 2, 10, 2], [PX, 5, -38], 46]]); moonAt(0.32, lerp(0.86, 0.96, ease(k, 0.6, 0.85)), lerp(12, 46, ease(k, 0.6, 0.85))); APER = 0.0002; },
+  AE(u, d) { outdoor(); focus(-29, 0); const k = kk(u, d); heroChest(-28.4, 0.9, -0.4, 1, 0.2); put(WOOD, -30.4, 0.4, 0.9, { ...bend, lean: 0.55, face: k > 0.5 ? 'sad' : 'neutral', look: [0.5, 0.7], armR: [-0.7, 0, 0], armL: [-0.2, 0, 0.2] }); holdBat();
+    camN(u, d, [[0, [-27.2, 3.2, 7.8], [-29.4, 2.6, 0.6], 42], [1, [-27.4, 3.1, 7.2], [-29.4, 2.6, 0.6], 40]]); moonAt(0.38, 0.86, 12); },
+  AF(u, d) { outdoor(); focus(-29, 0); const k = kk(u, d); heroChest(-28.2, 0.9, -0.4, 1, 0.2); put(WOOD, -30.4, 0.4, 0.25, { face: 'angry', armL: [-0.3, 0, 0.35], armR: [-0.5, 0, 0.35], squash: -0.03 * Math.sin(u * 30), tilt: 0.04 * Math.sin(u * 25) }); holdBat();
+    key(-29, 5, 5, 26); camN(u, d, [[0, [-29.6, 3.9, 7.0], [-29.8, 3.6, 0.4], 38], [1, [-29.7, 3.9, 6.2], [-29.8, 3.7, 0.4], 36]]); shake(0.02); moonAt(0.38, 0.86, 12); },
+  AG(u, d) { outdoor(); focus(-70, 8); const k = kk(u, d), z = lerp(12.5, 10.4, k); put(RICH, -70, z, PI, { walk: 0.8, ph: u * 7, face: 'neutral', armR: [-1.4, 0, -0.05] }); flashFrom(RICH, 1, V(-70.5, 0, z - 7));
+    camN(u, d, [[0, [-69.2, 3.4, 4.6], [-70, 3.6, 12], 40], [1, [-69.3, 3.5, 4.0], [-70, 3.7, 10.4], 38]]); moonAt(0.38, 0.86, 12); },
+  AH(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); RICH.userData.lenses.forEach((l) => (l.visible = true)); put(RICH, ...RICHAT, PI, { face: k < 0.2 ? 'smug' : 'grin', head: [-0.05 + 0.04 * Math.sin(u * 14), 0, 0.05 * Math.sin(u * 5)], armL: [0, 0, 0.05], armR: [0, 0, 0.05] }); key(-62, 6, 4, 26, '#e0b0ff');
+    camN(u, d, [[0, [-62.0, 4.7, 5.9], [-62, 4.75, 8.6], 32], [1, [-62.0, 4.72, 6.2], [-62, 4.75, 8.6], 32]]); moonAt(0.38, 0.92, 10); APER = 0.0016; },
+  AI(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICH, lerp(-65, -62, k), 8.6, PI / 2 + 0.4, { ...crouch, legL: undefined, legR: undefined, bodyY: -0.4, walk: 1.2, ph: u * 12, face: 'angry' });
+    camN(u, d, [[0, [-62.4, 2.4, 3.0], [-63.6, 2.4, 8.6], 40], [1, [-62.2, 2.4, 3.2], [-62.8, 2.4, 8.6], 40]]); moonAt(0.38, 0.86, 12); },
+  AJ(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICH, ...RICHAT, PI, { face: 'shocked' }); cloudAt(V(-62, 3.4, 7.6), 0.35 + k, 3.2, 7.5);
+    camN(u, d, [[0, [-62, 3.6, 2.6], [-62, 3.4, 8.6], 42], [1, [-62, 3.6, 3.2], [-62, 3.4, 8.6], 42]]); moonAt(0.38, 0.86, 12); APER = 0.0004; },
+  AK(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICHG, ...RICHAT, PI, { face: 'shocked', armL: [0.1, 0, 0.35], armR: [0.1, 0, 0.35], look: [0.4, 0] }); puffAt(V(-62, 3.2, 8.4), 0.4 + k * 0.6, 8, 2.2, 3.6); sparkRing(V(-62, 4.2, 8.4), u, 6, 2.0, 0.4);
+    camN(u, d, [[0, [-62, 3.6, 2.4], [-62, 3.2, 8.6], 42], [1, [-62, 3.6, 2.8], [-62, 3.2, 8.6], 42]]); moonAt(0.38, 0.86, 12); },
+  AL(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICHG, ...RICHAT, PI, { face: 'happy', look: [0, -0.8], head: [-0.3, 0, 0], armL: PRAY, armR: PRAY }); sparkRing(V(-62, 4.4, 8.4), u, 6, 2.0, 0.3);
+    camN(u, d, [[0, [-62.3, 4.4, 1.6], [-62, 3.8, 8.6], 44], [1, [-62.2, 4.5, 2.6], [-62, 3.9, 8.6], 42]]); moonAt(0.3, lerp(0.86, 1.0, ease(k, 0.5, 0.8)), lerp(12, 50, ease(k, 0.5, 0.8))); },
+  AM(u, d) { outdoor(); focus(-62, 8); const k = kk(u, d); put(RICHG, ...RICHAT, PI - 0.3, { bodyY: -1.0, legL: 1.45, legR: 1.45, face: 'happy', look: [0, -0.8], head: [-0.35, 0, 0], armL: PRAY, armR: PRAY });
+    camN(u, d, [[0, [-64.0, 3.0, 2.4], [-62, 2.8, 8.6], 44], [1, [-63.8, 3.0, 2.9], [-62, 2.8, 8.6], 44]]); moonAt(0.3, 0.98, 40); },
+  AN(u, d) { outdoor(); focus(-62, 6); const k = kk(u, d), back_ = k < 0.78; put(RICHG, ...RICHAT, PI, { bodyY: -1.0, legL: 1.45, legR: 1.45, face: back_ ? 'happy' : 'annoyed', look: [0, back_ ? -0.8 : 0.2], head: [back_ ? -0.5 : 0.1, 0, 0], armL: PRAY, armR: PRAY });
+    if (back_) { camN(u, d, [[0, [-62.6, 2.6, 15.6], [-62, 7, -20], 44], [1, [-62.6, 2.6, 15.0], [-62, 7.5, -20], 44]]); moonAt(0.0, lerp(0.55, 0.6, k), 80); } else { camN(u, d, [[0, [-62, 3.8, 3.2], [-62, 3.6, 8.6], 42], [1, [-62, 3.8, 3.5], [-62, 3.6, 8.6], 42]]); moonAt(0.05, 0.97, 60); } APER = 0.0005; },
+  AO(u, d) { outdoor(); focus(19, -8); const k = kk(u, d); put(RICH, 17.4, -9.0, 0.45, { face: 'laugh', armR: [-1.6, 0.25, 0.1], armL: [-0.4, 0, -0.4], bodyRz: 0.05 * Math.sin(u * 16), head: [-0.12, 0, 0.05 * Math.sin(u * 16)] });
+    put(GGR, 19.6, -9.4, 0.5, { face: 'laugh', armR: [-1.7, 0.2, 0.1], armL: [-0.5, 0, -0.5], bodyRz: 0.06 * Math.sin(u * 15 + 1) }); put(NOOB, 22.6, -8.2, -0.5, { face: 'sad', head: [0.25, 0, 0] });
+    heroChest(18.8, -6.4, 0.1, 0, 0, '#b04dff'); camN(u, d, [[0, [19.8, 2.8, -0.4], [19.6, 3.8, -9], 44], [1, [19.6, 2.8, -1.0], [19.6, 3.9, -9], 42]]); moonAt(0.38, 0.86, 12); },
+  AP(u, d) { outdoor(); focus(14, -8, { lamp: 14 }); const k = kk(u, d); put(NOOB, 14.8, lerp(-10.0, -7.6, k), 0, { walk: 0.6, ph: u * 6, face: 'sad', head: [0.3, 0, 0] });
+    put(RICH, 11.4, -10.2, 0.6, { face: 'laugh', armR: [-1.5, 0.3, 0.1], bodyRz: 0.05 * Math.sin(u * 16) }); put(GGR, 12.6, -9.2, 0.5, { face: 'laugh', armL: [-1.4, 0, -0.2], bodyRz: 0.05 * Math.sin(u * 15) }); xcAt(0, 10.0, -7.0, 0.4, 0, 0);
+    camN(u, d, [[0, [15.6, 3.6, -1.6], [14.2, 4.6, -12], 46], [1, [15.4, 3.6, -2.4], [14.2, 4.7, -12], 44]]); moonAt(0.38, 0.88, 12); },
+  AR(u, d) { outdoor(); focus(120, -9); const k = kk(u, d), o = ease(k, 0.55, 0.85); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, o, o * 0.5, '#ffc04a', woodLid);
+    put(NOOB, 117.9, -9.8, 0.7, { lean: 0.15 + 0.2 * o, face: o > 0.4 ? 'amazed' : 'neutral', look: [0.6, 0.5], armR: [-0.4 - o * 0.7, 0, 0], armL: [-0.2, 0, 0.1] }); key(120, 5, -3, 14);
+    camN(u, d, [[0, [121.4, 2.7, -2.8], [119.4, 2.6, -9], 42], [1, [121.2, 2.6, -3.4], [119.4, 2.6, -9], 40]]); moonAt(0.3, 0.86, 12); BLUR = 12 * (1 - ease(k, 0, 0.2)); },
+  AS(u, d) { outdoor(); focus(120, -9); const k = kk(u, d); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, 1, 0.8, '#ffc04a', woodLid);
+    put(NOOB, 119.0, -10.9, 0.25, { face: 'grin', armL: PUMP(u), armR: PUMP(u, 1.2), bodyY: 0.2 * Math.abs(Math.sin(u * 7)) }); key(120, 5, -4, 10, '#ffe2b0'); sparkRing(V(120, 2.4, -8.8), u, 6, 1.3, 0.35);
+    camN(u, d, [[0, [120.8, 2.2, -3.4], [119.8, 3.0, -9.6], 44], [1, [120.7, 2.2, -4.0], [119.8, 3.0, -9.6], 42]]); moonAt(0.3, 0.86, 12); },
+  AT(u, d) { outdoor(); focus(120, -9); const k = kk(u, d), r = ease(k, 0, 0.6); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, 1, 0.55, '#ffc04a', woodLid);
+    put(NOOB, 119.0, -10.9, 0.25, { face: 'amazed', armL: PUMP(u), armR: UP, look: [0.3, -0.5] }); const tp = V(120.1, lerp(1.6, 3.6, r), -8.6); tokenAt(tp, (1 - r) * PI * 4 + Math.sin(u * 3) * 0.15, 1.25); rayAt(tp.clone().add(V(0, 0, -0.5)), 2 + 1.5 * r, u, 0.4); sparkRing(tp, u, 8, 1.4, 0.45);
+    camN(u, d, [[0, [120.6, 2.6, -4.0], [120, 3.0, -9], 40], [1, [120.5, 2.7, -4.6], [120, 3.2, -9], 38]]); moonAt(0.3, 0.86, 12); },
+  AU(u, d) { outdoor(); focus(19, -8); const k = kk(u, d); put(RICH, 17.6, -9.0, 0.2, { face: 'shocked', jaw: 1.2, armL: [-0.3, 0, 0.3], armR: [-0.3, 0, 0.3] }); put(GGR, 19.9, -9.2, -0.15, { face: 'shocked', jaw: 1.2, armL: [-0.5, 0, 0.4], armR: [-0.5, 0, 0.4] });
+    heroChest(18.8, -6.4, 0.1, 1, 0.8, '#b04dff'); key(19, 5, -3, 18); camN(u, d, [[0, [18.9, 4.3, 0.2], [18.8, 4.1, -9], 44], [1, [18.9, 4.3, -0.6], [18.8, 4.1, -9], 42]]); moonAt(0.38, 0.86, 12); },
+  AV(u, d) { outdoor(); focus(120, -9); const k = kk(u, d), f = ease(k, 0.0, 0.35);
+    put(RICH, 119, -9, -0.4, { face: 'shocked', bodyRx: -1.45 * f, bodyY: -0.2 * f, armL: UP, armR: UP, legL: -1.2 * f, legR: -1.0 * f }); put(GGR, 121.6, -9.3, 0.4, { face: 'shocked', bodyY: Math.max(0, Math.sin(u * 7)) * 1.5, armL: UP, armR: UP });
+    heroChest(120.3, -6.0, 0.4, 1, 0.8, '#b04dff'); xcAt(0, 113, -12, 0.5, 1, 1); xcAt(1, 127, -13, -0.4, 1, 1); xcAt(2, 116, -3, 1.2, 1, 1); xcAt(3, 125.5, -4, -0.8, 1, 1); xcAt(4, 109, -6, 0.2, 1, 1);
+    camN(u, d, [[0, [120.5, 5, -1.5], [120.2, 2.4, -8.8], 44], [1, [120.4, 24, -5.0], [120.2, 0.5, -9.2], 46]]); moonAt(0.38, 0.86, 12); APER = 0.0003; },
+  TH1(u, d) { outdoor(); focus(-62, 8); put(RICHG, ...RICHAT, PI, { face: 'sad', look: [0, 0.4], head: [0.25, 0, 0.12], armL: [0.1, 0, 0.1], armR: [0.1, 0, 0.1] }); put(GG, -66.5, 11, PI + 0.5, { ...bend }); put(GGR, -57.8, 11.2, PI - 0.4, { ...bend });
+    key(-62, 6, 4, 22, '#ffe2b0'); camN(u, d, [[0, [-62.2, 4.6, 4.2], [-62, 4.2, 8.6], 40], [1, [-62.2, 4.6, 4.2], [-62, 4.2, 8.6], 40]]); moonAt(0.38, 0.9, 12); APER = 0.0012; },
+  TH2(u, d) { outdoor(); focus(120, -9); crowdShow2('meadow'); heroChest(120, -9.2, 0, 1, 0.5, '#ffc04a', woodLid); put(NOOB, 120.4, -11.4, 0.15, { face: 'smug', armR: [-2.9, 0, 0.15], armL: [-0.2, 0, 0.5], look: [0.5, -0.3] });
+    S.updateMatrixWorld(); const hp = handPos(NOOB, 1).add(V(0, 0.65, 0.15)); tokenAt(hp, 0.4, 1.3); rayAt(hp.clone().add(V(0, 0, -0.4)), 5, 0.3, 0.8); sparkRing(hp, 1.2, 8, 1.4, 0.5); key(121, 6, -5, 8, '#ffe6b0');
+    camN(u, d, [[0, [121.3, 3.6, -3.4], [120.6, 5.0, -11], 42], [1, [121.3, 3.6, -3.4], [120.6, 5.0, -11], 42]]); moonAt(0.38, 0.9, 12); },
 };
 
-const TL = {"total": 61.85, "shots": [{"shot": "S01", "s": 0, "end": 1.16}, {"shot": "S02", "s": 1.16, "end": 2.84}, {"shot": "S03", "s": 2.84, "end": 3.7}, {"shot": "S04", "s": 3.7, "end": 5.14}, {"shot": "S05", "s": 5.14, "end": 6.86}, {"shot": "S06", "s": 6.86, "end": 8.48}, {"shot": "S07", "s": 8.48, "end": 9.6}, {"shot": "S08", "s": 9.6, "end": 12.34}, {"shot": "S09", "s": 12.34, "end": 15.1}, {"shot": "S10", "s": 15.1, "end": 17.8}, {"shot": "S11", "s": 17.8, "end": 19.74}, {"shot": "S12", "s": 19.74, "end": 21.38}, {"shot": "S13", "s": 21.38, "end": 23.56}, {"shot": "S14", "s": 23.56, "end": 25.96}, {"shot": "S15", "s": 25.96, "end": 27.28}, {"shot": "S16", "s": 27.28, "end": 30.14}, {"shot": "S17", "s": 30.14, "end": 33.94}, {"shot": "S18", "s": 33.94, "end": 36.94}, {"shot": "S19", "s": 36.94, "end": 39.18}, {"shot": "S20", "s": 39.18, "end": 40.86}, {"shot": "S21", "s": 40.86, "end": 41.88}, {"shot": "S22", "s": 41.88, "end": 42.96}, {"shot": "S23", "s": 42.96, "end": 44.7}, {"shot": "S24", "s": 44.7, "end": 45.68}, {"shot": "S25", "s": 45.68, "end": 47.34}, {"shot": "S26", "s": 47.34, "end": 49.0}, {"shot": "S27", "s": 49.0, "end": 50.26}, {"shot": "S28", "s": 50.26, "end": 52.04}, {"shot": "S29", "s": 52.04, "end": 54.82}, {"shot": "S30", "s": 54.82, "end": 57.04}, {"shot": "S31", "s": 57.04, "end": 59.5}, {"shot": "S32", "s": 59.5, "end": 61.85}]}; window.TOTAL = TL.total; window.FPS = 24;
+const TL = {"total": 61.85, "shots": [{"shot": "A", "s": 0, "end": 1.0}, {"shot": "B", "s": 1.0, "end": 2.0}, {"shot": "C", "s": 2.0, "end": 3.5}, {"shot": "D", "s": 3.5, "end": 4.5}, {"shot": "F", "s": 4.5, "end": 5.9}, {"shot": "G", "s": 5.9, "end": 8.0}, {"shot": "I", "s": 8.0, "end": 8.9}, {"shot": "J", "s": 8.9, "end": 9.4}, {"shot": "K", "s": 9.4, "end": 10.0}, {"shot": "L", "s": 10.0, "end": 12.3}, {"shot": "M", "s": 12.3, "end": 13.6}, {"shot": "N", "s": 13.6, "end": 14.4}, {"shot": "O", "s": 14.4, "end": 15.4}, {"shot": "P", "s": 15.4, "end": 16.4}, {"shot": "Q", "s": 16.4, "end": 20.0}, {"shot": "S", "s": 20.0, "end": 21.4}, {"shot": "T", "s": 21.4, "end": 22.3}, {"shot": "U", "s": 22.3, "end": 22.9}, {"shot": "V", "s": 22.9, "end": 23.5}, {"shot": "W", "s": 23.5, "end": 24.0}, {"shot": "X", "s": 24.0, "end": 24.4}, {"shot": "Y", "s": 24.4, "end": 25.4}, {"shot": "Z", "s": 25.4, "end": 26.9}, {"shot": "AA", "s": 26.9, "end": 29.4}, {"shot": "AB", "s": 29.4, "end": 30.4}, {"shot": "AC", "s": 30.4, "end": 33.9}, {"shot": "AD", "s": 33.9, "end": 36.9}, {"shot": "AE", "s": 36.9, "end": 38.4}, {"shot": "AF", "s": 38.4, "end": 39.9}, {"shot": "AG", "s": 39.9, "end": 40.8}, {"shot": "AH", "s": 40.8, "end": 42.9}, {"shot": "AI", "s": 42.9, "end": 43.4}, {"shot": "AJ", "s": 43.4, "end": 44.9}, {"shot": "AK", "s": 44.9, "end": 45.9}, {"shot": "AL", "s": 45.9, "end": 48.0}, {"shot": "AM", "s": 48.0, "end": 48.5}, {"shot": "AN", "s": 48.5, "end": 50.3}, {"shot": "AO", "s": 50.3, "end": 51.9}, {"shot": "AP", "s": 51.9, "end": 53.4}, {"shot": "AR", "s": 53.4, "end": 55.9}, {"shot": "AS", "s": 55.9, "end": 57.4}, {"shot": "AT", "s": 57.4, "end": 58.9}, {"shot": "AU", "s": 58.9, "end": 59.9}, {"shot": "AV", "s": 59.9, "end": 61.85}]}; window.TOTAL = TL.total; window.FPS = 24;
 const composer = new EffectComposer(R); composer.setPixelRatio(window.__PR || 1); composer.setSize(W, H); composer.addPass(new RenderPass(S, cam));
+const bokeh = new BokehPass(S, cam, { focus: 10, aperture: 0.0007, maxblur: 0.009 }); composer.addPass(bokeh);
 const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.5, 0.5, 0.8); composer.addPass(bloom);
 composer.addPass(new OutputPass());
 composer.addPass(new ShaderPass({ uniforms: { tDiffuse: { value: null } }, vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
   fragmentShader: 'uniform sampler2D tDiffuse; varying vec2 vUv; void main(){ vec4 c = texture2D(tDiffuse, vUv); vec3 col = c.rgb; float l = dot(col, vec3(0.299, 0.587, 0.114)); col = mix(vec3(l), col, 1.18); col = (col - 0.5) * 1.06 + 0.5; float v = smoothstep(1.0, 0.38, distance(vUv, vec2(0.5))); col *= mix(0.72, 1.0, v); gl_FragColor = vec4(col, c.a); }' }));
 const WORDS = [{"w": "In", "s": 0.0, "e": 0.16}, {"w": "this", "s": 0.16, "e": 0.36}, {"w": "town,", "s": 0.36, "e": 0.81}, {"w": "everybody", "s": 1.16, "e": 1.48}, {"w": "is", "s": 1.48, "e": 1.88}, {"w": "searching", "s": 1.88, "e": 2.12}, {"w": "for", "s": 2.12, "e": 2.38}, {"w": "the", "s": 2.38, "e": 2.5}, {"w": "pirate", "s": 2.5, "e": 2.84}, {"w": "token,", "s": 2.84, "e": 3.29}, {"w": "including", "s": 3.7, "e": 3.78}, {"w": "me.", "s": 3.78, "e": 4.2299999999999995}, {"w": "And", "s": 5.14, "e": 5.82}, {"w": "when", "s": 5.82, "e": 6.42}, {"w": "I", "s": 6.42, "e": 6.6}, {"w": "say", "s": 6.6, "e": 6.86}, {"w": "everybody,", "s": 6.86, "e": 7.5}, {"w": "I", "s": 7.94, "e": 8.14}, {"w": "mean", "s": 8.14, "e": 8.48}, {"w": "everybody.", "s": 8.48, "e": 9.34}, {"w": "ALMOST", "s": 11.0, "e": 12.3}, {"w": "You", "s": 12.34, "e": 12.46}, {"w": "see,", "s": 12.46, "e": 12.91}, {"w": "finding", "s": 13.2, "e": 13.32}, {"w": "the", "s": 13.32, "e": 13.6}, {"w": "pirate", "s": 13.6, "e": 13.98}, {"w": "token", "s": 13.98, "e": 14.4}, {"w": "would", "s": 14.4, "e": 14.6}, {"w": "actually", "s": 14.6, "e": 15.1}, {"w": "grant", "s": 15.1, "e": 15.48}, {"w": "free", "s": 15.48, "e": 15.92}, {"w": "food", "s": 15.92, "e": 16.36}, {"w": "in", "s": 16.36, "e": 16.58}, {"w": "the", "s": 16.58, "e": 16.68}, {"w": "town's", "s": 16.68, "e": 17.24}, {"w": "number", "s": 17.24, "e": 17.38}, {"w": "one", "s": 17.38, "e": 17.8}, {"w": "restaurant,", "s": 17.8, "e": 18.38}, {"w": "W", "s": 18.74, "e": 18.94}, {"w": "CHEWS", "s": 18.94, "e": 19.39}, {"w": "meaning", "s": 19.74, "e": 20.02}, {"w": "that", "s": 20.02, "e": 20.36}, {"w": "even", "s": 20.36, "e": 20.7}, {"w": "the", "s": 20.7, "e": 20.92}, {"w": "richest", "s": 20.92, "e": 21.38}, {"w": "would", "s": 21.38, "e": 21.72}, {"w": "decide", "s": 21.72, "e": 22.1}, {"w": "to", "s": 22.1, "e": 22.3}, {"w": "go", "s": 22.3, "e": 22.44}, {"w": "on", "s": 22.44, "e": 22.62}, {"w": "the", "s": 22.62, "e": 22.72}, {"w": "treasure", "s": 22.72, "e": 22.96}, {"w": "hunt.", "s": 22.96, "e": 23.41}, {"w": "But", "s": 23.56, "e": 23.68}, {"w": "what", "s": 23.68, "e": 23.86}, {"w": "the", "s": 23.86, "e": 24.04}, {"w": "richest", "s": 24.04, "e": 24.36}, {"w": "would", "s": 24.36, "e": 24.66}, {"w": "absolutely", "s": 24.66, "e": 25.34}, {"w": "not", "s": 25.34, "e": 25.96}, {"w": "expect", "s": 25.96, "e": 26.48}, {"w": "is", "s": 26.48, "e": 26.96}, {"w": "that", "s": 26.96, "e": 27.12}, {"w": "the", "s": 27.12, "e": 27.28}, {"w": "chance", "s": 27.28, "e": 27.5}, {"w": "of", "s": 27.5, "e": 27.78}, {"w": "finding", "s": 27.78, "e": 28.06}, {"w": "the", "s": 28.06, "e": 28.32}, {"w": "pirate", "s": 28.32, "e": 28.7}, {"w": "token", "s": 28.7, "e": 29.1}, {"w": "would", "s": 29.1, "e": 29.3}, {"w": "actually", "s": 29.3, "e": 29.86}, {"w": "be", "s": 29.86, "e": 30.14}, {"w": "one", "s": 30.14, "e": 30.56}, {"w": "in", "s": 30.56, "e": 30.84}, {"w": "137,500", "s": 30.84, "e": 33.34}, {"w": "And", "s": 33.94, "e": 34.08}, {"w": "with", "s": 34.08, "e": 34.24}, {"w": "there", "s": 34.24, "e": 34.4}, {"w": "only", "s": 34.4, "e": 34.62}, {"w": "being", "s": 34.62, "e": 34.98}, {"w": "300", "s": 34.98, "e": 35.46}, {"w": "people", "s": 35.46, "e": 36.02}, {"w": "in", "s": 36.02, "e": 36.26}, {"w": "this", "s": 36.26, "e": 36.42}, {"w": "town,", "s": 36.42, "e": 36.870000000000005}, {"w": "this", "s": 36.94, "e": 37.16}, {"w": "would", "s": 37.16, "e": 37.36}, {"w": "make", "s": 37.36, "e": 37.56}, {"w": "finding", "s": 37.56, "e": 37.86}, {"w": "the", "s": 37.86, "e": 38.1}, {"w": "token", "s": 38.1, "e": 38.4}, {"w": "extremely", "s": 38.4, "e": 39.18}, {"w": "hard,", "s": 39.18, "e": 39.8}, {"w": "which", "s": 40.12, "e": 40.22}, {"w": "would", "s": 40.22, "e": 40.4}, {"w": "lead", "s": 40.4, "e": 40.62}, {"w": "to", "s": 40.62, "e": 40.86}, {"w": "everybody", "s": 40.86, "e": 41.46}, {"w": "going", "s": 41.46, "e": 41.88}, {"w": "crazy", "s": 41.88, "e": 42.4}, {"w": "and", "s": 42.4, "e": 42.96}, {"w": "leading", "s": 42.96, "e": 43.2}, {"w": "to", "s": 43.2, "e": 43.48}, {"w": "them", "s": 43.48, "e": 43.6}, {"w": "to", "s": 43.6, "e": 43.78}, {"w": "go", "s": 43.78, "e": 43.94}, {"w": "as", "s": 43.94, "e": 44.1}, {"w": "far", "s": 44.1, "e": 44.46}, {"w": "as", "s": 44.46, "e": 44.7}, {"w": "becoming", "s": 44.7, "e": 45.06}, {"w": "fully", "s": 45.06, "e": 45.68}, {"w": "golden", "s": 45.68, "e": 46.28}, {"w": "in", "s": 46.28, "e": 46.68}, {"w": "an", "s": 46.68, "e": 46.8}, {"w": "attempt", "s": 46.8, "e": 47.1}, {"w": "to", "s": 47.1, "e": 47.34}, {"w": "HIGHER", "s": 47.34, "e": 47.64}, {"w": "their", "s": 47.64, "e": 47.88}, {"w": "chance", "s": 47.88, "e": 48.16}, {"w": "at", "s": 48.16, "e": 48.42}, {"w": "finding", "s": 48.42, "e": 48.72}, {"w": "it", "s": 48.72, "e": 49.0}, {"w": "by", "s": 49.0, "e": 49.2}, {"w": "0%.", "s": 49.2, "e": 50.26}, {"w": "But", "s": 50.26, "e": 50.78}, {"w": "at", "s": 50.78, "e": 50.9}, {"w": "the", "s": 50.9, "e": 51.1}, {"w": "very", "s": 51.1, "e": 51.38}, {"w": "end,", "s": 51.38, "e": 51.9}, {"w": "when", "s": 52.04, "e": 52.22}, {"w": "you", "s": 52.22, "e": 52.38}, {"w": "least", "s": 52.38, "e": 52.74}, {"w": "expect", "s": 52.74, "e": 53.22}, {"w": "it,", "s": 53.22, "e": 53.67}, {"w": "it", "s": 53.7, "e": 53.92}, {"w": "would", "s": 53.92, "e": 54.04}, {"w": "of", "s": 54.04, "e": 54.18}, {"w": "course", "s": 54.18, "e": 54.5}, {"w": "be", "s": 54.5, "e": 54.82}, {"w": "the", "s": 54.82, "e": 54.96}, {"w": "least", "s": 54.96, "e": 55.28}, {"w": "experienced", "s": 55.28, "e": 56.12}, {"w": "treasure", "s": 56.12, "e": 56.38}, {"w": "hunter", "s": 56.38, "e": 56.76}, {"w": "to", "s": 56.76, "e": 57.04}, {"w": "find", "s": 57.04, "e": 57.5}, {"w": "the", "s": 57.5, "e": 57.76}, {"w": "great", "s": 57.76, "e": 58.14}, {"w": "pirate", "s": 58.14, "e": 58.58}, {"w": "token.", "s": 58.58, "e": 59.03}, {"w": "Yeah!", "s": 59.6, "e": 59.98}];
-const CAPC = ['#45f0ff', '#ffffff', '#ffe53b', '#45f0ff', '#ffffff', '#45f0ff', '#ffe53b', '#ffffff'];
+const CAPC = ['#45f0ff', '#ffffff', '#ffe53b', '#5dff6a', '#45f0ff', '#ffffff', '#ffe53b', '#45f0ff'];
 const caption = (t) => { let w = null, wi = 0; for (let i = 0; i < WORDS.length; i++) { const x = WORDS[i]; if (t >= x.s - 0.02 && t < x.e + 0.04) { w = x; wi = i; } if (x.s > t) break; } if (!w) return;
   const txt = w.w.replace(/[".,!?…]+$/g, '').replace(/^[-"“]+/, '').toUpperCase(); if (!txt) return;
   const P_ = window.__PR || 1, fs = 92 * P_, pop = 1 + 0.14 * Math.max(0, 1 - (t - w.s) / 0.08); OG.save(); OG.translate(OUTC.width / 2, OUTC.height * 0.70); OG.scale(pop, pop); OG.font = `900 ${fs}px "Inter Display", "DejaVu Sans", sans-serif`; OG.textAlign = 'center'; OG.textBaseline = 'middle'; OG.lineJoin = 'round';
   OG.shadowColor = 'rgba(0,0,0,0.6)'; OG.shadowBlur = 14 * P_; OG.shadowOffsetY = 5 * P_; OG.lineWidth = 15 * P_; OG.strokeStyle = '#0b0b0b'; OG.strokeText(txt, 0, 0); OG.shadowColor = 'transparent'; OG.fillStyle = CAPC[(wi * 5 + 3) % CAPC.length]; OG.fillText(txt, 0, 0); OG.restore(); };
+window.renderShot = (name, u = 1, d = 2) => { T = 3 + u; resetAll(); SC[name](u, d); cam.updateMatrixWorld(); bokeh.uniforms.focus.value = cam.position.distanceTo(CAMTG); bokeh.uniforms.aperture.value = APER; composer.render(); OG.drawImage(R.domElement, 0, 0, OUTC.width, OUTC.height); return true; };
 window.renderFrame = (f) => { const t = f / 24; T = t; let i = 0; while (i + 1 < TL.shots.length && t >= TL.shots[i + 1].s) i++; const sh = TL.shots[i]; resetAll(i);
-  const d = sh.end - sh.s; SC[sh.shot](Math.min(t - sh.s, d), d); cam.updateMatrixWorld(); for (const h of SOUTH) h.visible = !(cam.position.z > 10.5 && Math.abs(h.position.x - cam.position.x) < 26); composer.render(); OG.drawImage(R.domElement, 0, 0, OUTC.width, OUTC.height); caption(t); };
+  const d = sh.end - sh.s; SC[sh.shot](Math.min(t - sh.s, d), d); cam.updateMatrixWorld(); { const cx = cam.position.x, cz = cam.position.z, dx = CAMTG.x - cx, dz = CAMTG.z - cz, L2 = dx * dx + dz * dz; for (const l of LAMPM) { const t = ((l.x - cx) * dx + (l.z - cz) * dz) / L2, px = cx + dx * t - l.x, pz = cz + dz * t - l.z; const hide = t > -0.05 && t < 1.0 && Math.hypot(px, pz) < 1.8 + 0.6 * t; l.m.forEach((m) => (m.visible = !hide)); } } for (const h of SOUTH) h.visible = !(cam.position.z > 10.5 && Math.abs(h.position.x - cam.position.x) < 26); bokeh.uniforms.focus.value = cam.position.distanceTo(CAMTG); bokeh.uniforms.aperture.value = APER; composer.render(); OG.filter = BLUR > 0.2 ? `blur(${BLUR * (window.__PR || 1)}px)` : 'none'; OG.drawImage(R.domElement, 0, 0, OUTC.width, OUTC.height); OG.filter = 'none'; caption(t); };
 document.fonts.load('900 92px "Inter Display"').then(() => { window.ready = true; });
 </script></body></html>

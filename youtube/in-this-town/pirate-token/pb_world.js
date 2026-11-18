@@ -98,8 +98,21 @@ const tokenFace = canvasTex(512, 512, (g) => { const grd = g.createRadialGradien
   g.fillStyle = '#fff6dc'; g.beginPath(); g.arc(256, 238, 86, 0, 7); g.fill(); g.fillRect(208, 270, 96, 70); g.fillStyle = '#5a3606'; g.beginPath(); g.ellipse(222, 238, 24, 28, 0, 0, 7); g.ellipse(290, 238, 24, 28, 0, 0, 7); g.fill();
   g.beginPath(); g.moveTo(256, 266); g.lineTo(244, 290); g.lineTo(268, 290); g.fill(); for (const x of [226, 250, 274]) g.fillRect(x, 312, 10, 28);
   g.fillStyle = '#5a3606'; for (let k = 0; k < 24; k++) { const a = k / 24 * PI * 2; g.beginPath(); g.arc(256 + Math.cos(a) * 232, 256 + Math.sin(a) * 232, 7, 0, 7); g.fill(); } });
-const token = new THREE.Group(); S.add(token); { const fm = new THREE.MeshStandardMaterial({ map: tokenFace, metalness: 0.75, roughness: 0.3, envMap: ENV, emissive: '#5a3a00', emissiveMap: tokenFace, emissiveIntensity: 0.6 });
-  const m = add(new THREE.CylinderGeometry(0.62, 0.62, 0.14, 40), [gold, fm, fm], 0, 0, 0, token); m.rotation.x = PI / 2; }
+const gemTex = canvasTex(512, 512, (g) => { const grd = g.createRadialGradient(200, 170, 20, 256, 256, 260); grd.addColorStop(0, '#fff3a0'); grd.addColorStop(0.45, '#ffc42a'); grd.addColorStop(1, '#f07a10'); g.fillStyle = grd; g.fillRect(0, 0, 512, 512);
+  const r = rng(17); for (let k = 0; k < 26; k++) { g.fillStyle = `rgba(${r() < 0.5 ? '255,255,220' : '200,90,0'},${0.08 + r() * 0.14})`; g.beginPath(); g.moveTo(r() * 512, r() * 512); g.lineTo(r() * 512, r() * 512); g.lineTo(r() * 512, r() * 512); g.fill(); }
+  g.fillStyle = 'rgba(255,255,255,0.55)'; g.beginPath(); g.ellipse(170, 150, 40, 26, -0.6, 0, 7); g.fill();
+  g.font = '900 330px "Inter Display", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = 'rgba(120,50,0,0.35)'; g.fillText('F', 268, 282); g.fillStyle = '#ffffff'; g.fillText('F', 256, 268); });
+const token = new THREE.Group(); S.add(token); { const gm = new THREE.MeshStandardMaterial({ map: gemTex, emissive: '#ffffff', emissiveMap: gemTex, emissiveIntensity: 0.55, roughness: 0.25, metalness: 0.1 });
+  const T_ = new THREE.Group(); token.add(T_); T_.scale.setScalar(0.62);
+  // 8-point compass star (gold), behind everything
+  const star = new THREE.Shape(); for (let k = 0; k < 16; k++) { const a = k / 16 * PI * 2 + PI / 2, rr = k % 2 ? 0.34 : (k % 4 === 0 ? 1.55 : 1.05); const x = Math.cos(a) * rr, y = Math.sin(a) * rr; k ? star.lineTo(x, y) : star.moveTo(x, y); }
+  add(new THREE.ExtrudeGeometry(star, { depth: 0.12, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.04, bevelSegments: 2 }), gold, 0, 0, -0.12, T_, false);
+  cyl(0.98, 0.14, '#3a2208', 0, 0, -0.02, T_, { seg: 40 }).rotation.x = PI / 2; // dark ring background
+  for (const [a0, a1] of [[0.25, 2.55], [2.9, 3.55], [3.8, 4.25], [4.55, 5.95]]) { const t = add(new THREE.TorusGeometry(1.0, 0.13, 10, 40, a1 - a0), gold, 0, 0, 0.05, T_, false); t.rotation.z = a0; t.scale.z = 0.6; } // broken gold ring
+  const gemD = cyl(0.66, 0.2, gold, 0, 0, 0.08, T_, { seg: 40 }); gemD.rotation.x = PI / 2; // gold bezel
+  const face = add(new THREE.CircleGeometry(0.58, 48), gm, 0, 0, 0.19, T_, false);
+  const dome = add(new THREE.SphereGeometry(0.58, 32, 16, 0, PI * 2, 0, PI / 2), new THREE.MeshStandardMaterial({ color: '#ffd060', transparent: true, opacity: 0.18, roughness: 0.05, envMap: ENV }), 0, 0, 0.19, T_, false); dome.rotation.x = PI / 2; dome.scale.y = 0.35;
+}
 const raysTex = canvasTex(512, 512, (g) => { g.translate(256, 256); for (let k = 0; k < 18; k++) { g.rotate(PI * 2 / 18); const grd = g.createLinearGradient(0, 0, 250, 0); grd.addColorStop(0, 'rgba(255,230,140,0.95)'); grd.addColorStop(1, 'rgba(255,200,80,0)'); g.fillStyle = grd; g.beginPath(); g.moveTo(0, 0); g.lineTo(250, -18); g.lineTo(250, 18); g.fill(); } });
 const rays = new THREE.Sprite(new THREE.SpriteMaterial({ map: raysTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false })); S.add(rays);
 const glowS = new THREE.Sprite(new THREE.SpriteMaterial({ map: starTex, color: '#ffe08a', blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false })); S.add(glowS);
