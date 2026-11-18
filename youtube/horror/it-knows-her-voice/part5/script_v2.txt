@@ -19,20 +19,20 @@ Time card: 3:46 / CHAPTER FIVE.   ~214 words, ~86 s.
 11  | I looked in the mirror... and Mrs. Hale wasn't in it.                                         | Mirror close-up: only the empty driver's seat
 12  | The car stopped at the old bridge.                                                             | Through the windshield: a narrow wooden bridge over black water, fog
 13  | (MRS. HALE) "This is as far as I can go. Cross before sunrise. She can't follow you over water." | She points at the bridge; the sky is starting to turn grey
-14  | Then my phone lit up. The one that died hours ago.                                            | His dead phone glows in his hand: 1% battery
-15  | A text from Mom. "I'm home. Where are you? Love you."                                         | The text bubble on screen, with the heart. Hold it.
-16  | Love you. She always writes love you.                                                          | Close on his face; callback to Part 1 (the fake text had no "love you")
+14  | Across the field, I could see our house. Mom's car was in the driveway.                       | From the bridge: our house far across a dark field; Mom's car parked outside, kitchen window lit
+15  | Then the porch light blinked. Once. Twice. Three times.                                       | The porch light flicks off and on, three times
+16  | That's what Mom always does... when it's time to come home.                                   | Close on his face, eyes filling up ("that's my mom" moment: every kid knows the porch-light signal)
 17  | Biscuit looked at the bridge... then back toward home.                                         | Biscuit's head turns: bridge, road behind, bridge; ears flat
-18  | And far behind us... something tall was walking down the road.                              | Far back on the road in the fog: a too-tall shape, slowly walking toward the car
+18  | And far behind us... something tall was walking down the road. Toward our house.             | Far back on the road in the fog: a too-tall shape, slowly walking toward the house
 19  | So... do you cross the bridge with Biscuit? Or go home to Mom?                                | Choice cards (both red): CROSS THE BRIDGE WITH BISCUIT / GO HOME TO MOM; Biscuit in the scene
 20  | Comment your choice. Part 6 follows you.                                                       | Comment arrow, "PART 5"
 
 Recording: narration in one take; Mom's radio line (8) and Mrs. Hale's lines (10, 13) as separate takes, never in the same take as a "said:" line.
 Pinned comment: "🌉 CROSS THE BRIDGE WITH BISCUIT or 🏠 GO HOME TO MOM? Like the answer you agree with. The most-liked one decides Part 6. And did you see the mirror at 0:40? 👀"
 
-Growth checklist: hook works for new viewers (dead neighbor + mom) ✓ · promise pays off at 9-10 ✓ · re-hook at the radio ✓ · pause clue in the mirror ✓ · "she always writes love you" = every kid's mom ✓ · hard choice, both risky, one with Biscuit ✓.
+Growth checklist: hook works for new viewers (dead neighbor + mom) ✓ · promise pays off at 9-10 ✓ · re-hook at the radio ✓ · pause clue in the mirror ✓ · the porch-light "come home" signal = every kid's mom ✓ · hard choice, both risky, one with Biscuit ✓.
 
-Plot decisions to confirm with the user before recording:
+Plot decisions (all approved by the user):
  a) Mrs. Hale finally talks and gives a rule: "She learns your voice" and "she can't follow you over water".
  b) Mrs. Hale has no reflection in the mirror.
- c) The dead phone turns on BY ITSELF (no charger, never explained) with a text: "I'm home. Where are you? Love you." Viewers can't tell if it's really Mom. (confirmed by the user: no charger)
+ c) No phone. He knows Mom is home because her car is in the driveway and the porch light blinks three times (their family "come home" signal). Viewers still can't be sure it's really her.
