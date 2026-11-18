@@ -35,4 +35,4 @@ Growth checklist: hook works for new viewers (dead neighbor + mom) ✓ · promis
 Plot decisions to confirm with the user before recording:
  a) Mrs. Hale finally talks and gives a rule: "She learns your voice" and "she can't follow you over water".
  b) Mrs. Hale has no reflection in the mirror.
- c) The dead phone wakes up with a text from the real Mom ("I'm home… love you"), so the real Mom may be home.
+ c) The dead phone turns on BY ITSELF (no charger, never explained) with a text: "I'm home. Where are you? Love you." Viewers can't tell if it's really Mom. (confirmed by the user: no charger)
