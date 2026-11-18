@@ -1,0 +1,18 @@
+{
+ "total": 82.32,
+ "marks": {
+  "open": 0.0,
+  "comments_hold": 10.25,
+  "story": 12.15,
+  "radio": 28.65,
+  "mom_radio": 29.15,
+  "switch_off": 32.81,
+  "hale1": 37.46,
+  "mirror": 40.76,
+  "hale2": 46.66,
+  "house": 53.14,
+  "choice": 74.34,
+  "ask": 74.94,
+  "end": 81.52
+ }
+}
