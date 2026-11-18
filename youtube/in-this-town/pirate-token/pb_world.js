@@ -73,19 +73,45 @@ const tree = (x, z, s = 1) => { const g = new THREE.Group(); g.position.set(x, 0
 const chainLink = new THREE.TorusGeometry(0.13, 0.045, 6, 12);
 const skullTex = canvasTex(256, 256, (g) => { g.fillStyle = '#f3e6f0'; g.beginPath(); g.arc(128, 110, 78, 0, 7); g.fill(); g.fillRect(84, 150, 88, 60); g.fillStyle = '#c23bff'; g.beginPath(); g.ellipse(98, 112, 24, 28, 0, 0, 7); g.ellipse(158, 112, 24, 28, 0, 0, 7); g.fill(); g.fillStyle = '#3a1046'; g.beginPath(); g.moveTo(128, 140); g.lineTo(116, 166); g.lineTo(140, 166); g.fill(); for (const x of [96, 120, 144]) g.fillRect(x, 182, 14, 30); });
 const skullM = new THREE.MeshStandardMaterial({ map: skullTex, transparent: true, emissive: '#ffffff', emissiveMap: skullTex, emissiveIntensity: 0.35, roughness: 0.4 });
-const makeChest = (x = 0, z = 0, ry = 0, s = 1.25, o = {}) => { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; g.scale.setScalar(s); S.add(g);
-  bx(2.2, 1.25, 1.4, goldDark, 0, 0.63, 0, g, { rad: 0.06 }); for (const sx of [-1, 1]) bx(0.8, 0.9, 0.06, '#4a2a6e', sx * 0.55, 0.62, 0.71, g);
-  for (const sx of [-1.02, 0, 1.02]) bx(0.18, 1.3, 1.46, gold, sx, 0.64, 0, g); bx(2.26, 0.16, 1.46, gold, 0, 1.2, 0, g); bx(2.26, 0.16, 1.46, gold, 0, 0.1, 0, g);
-  const glow = add(new THREE.PlaneGeometry(2, 1.2), BASIC('#ffdf7e'), 0, 1.23, 0, g, false); glow.material = BASIC('#ffdf7e'); glow.rotation.x = -PI / 2; glow.visible = false;
-  const lid = new THREE.Group(); lid.position.set(0, 1.28, -0.7); g.add(lid);
-  const lg = new THREE.CylinderGeometry(0.7, 0.7, 2.2, 20, 1, false, 0, PI); const lm = add(lg, o.lid || goldDark, 0, 0, 0.7, lid); lm.rotation.set(0, 0, PI / 2); lm.rotation.order = 'ZXY'; lm.rotation.x = PI / 2;
-  for (const sx of [-1.02, 1.02]) { const b = add(new THREE.CylinderGeometry(0.74, 0.74, 0.2, 20, 1, false, 0, PI), gold, sx, 0, 0.7, lid); b.rotation.set(0, 0, PI / 2); b.rotation.order = 'ZXY'; b.rotation.x = PI / 2; }
-  if (o.skull !== false) add(new THREE.PlaneGeometry(0.7, 0.7), skullM, 0, 0.66, 0.745, g, false); else ball(0.16, o.gem || gem, 0, 0.62, 0.78, g); for (const sx of [-0.55, 0.55]) ball(0.11, gem, sx, 0.62, 0.76, g); const lg2 = ball(o.lidGem ? 0.2 : 0.13, o.lidGem || gem, 0, 0.35, 1.38, lid);
-  for (let k = 0; k < 9; k++) { const l = add(chainLink, gold, -1.05 + k * 0.26, 0.42 + Math.sin(k / 8 * PI) * -0.18, 0.76, g, false); l.rotation.y = k % 2 ? PI / 2 : 0; }
-  bx(0.3, 0.36, 0.12, gold, 0, 1.12, 0.74, g);
+const chestGold = new THREE.MeshStandardMaterial({ color: '#f2b52a', metalness: 0.45, roughness: 0.32, emissive: '#2a1600', envMap: ENV, envMapIntensity: 0.55 });
+const chestGoldDk = new THREE.MeshStandardMaterial({ color: '#c8861a', metalness: 0.5, roughness: 0.38, envMap: ENV, envMapIntensity: 0.45 });
+const panelTex = canvasTex(256, 192, (g) => { g.fillStyle = '#4a2a14'; g.fillRect(0, 0, 256, 192); g.fillStyle = '#2e1a0a'; for (let y = 0; y < 192; y += 38) g.fillRect(0, y, 256, 5);
+  const r = rng(41); g.fillStyle = '#8e8f94'; for (const [x, y, w, h] of [[10, 8, 80, 60], [170, 10, 80, 56], [30, 120, 50, 40]]) { g.beginPath(); g.roundRect(x, y, w, h, 18); g.fill(); }
+  g.strokeStyle = '#5e5f66'; g.lineWidth = 3; for (let k = 0; k < 6; k++) { g.beginPath(); const x = 20 + r() * 220, y = 10 + r() * 170; g.moveTo(x, y); g.lineTo(x + 14, y + 10); g.lineTo(x + 6, y + 22); g.stroke(); }
+  g.fillStyle = '#3f7d2b'; for (let k = 0; k < 7; k++) { g.beginPath(); g.ellipse(r() * 256, r() * 192, 10 + r() * 14, 6 + r() * 8, r() * 3, 0, 7); g.fill(); } });
+const panelM = new THREE.MeshStandardMaterial({ map: panelTex, roughness: 0.85 });
+const stoneTex = canvasTex(256, 256, (g) => { g.fillStyle = '#c3c0b8'; g.fillRect(0, 0, 256, 256); const r = rng(52); for (let k = 0; k < 14; k++) { g.fillStyle = r() < 0.5 ? '#9c998f' : '#d6d3cb'; g.beginPath(); g.ellipse(r() * 256, r() * 256, 18 + r() * 30, 10 + r() * 20, r() * 3, 0, 7); g.fill(); }
+  g.strokeStyle = '#6f6c64'; g.lineWidth = 3; for (let k = 0; k < 5; k++) { g.beginPath(); const x = r() * 256, y = r() * 256; g.moveTo(x, y); g.lineTo(x + 20, y + 14); g.lineTo(x + 12, y + 30); g.stroke(); } });
+const stoneM = new THREE.MeshStandardMaterial({ map: stoneTex, roughness: 0.9 });
+const purpleGem = new THREE.MeshStandardMaterial({ color: '#c36bff', emissive: '#7a20d0', emissiveIntensity: 0.9, roughness: 0.15, metalness: 0.1, flatShading: true, envMap: ENV });
+const redGem = new THREE.MeshStandardMaterial({ color: '#ff4a3a', emissive: '#d01810', emissiveIntensity: 1.0, roughness: 0.2, flatShading: true });
+const cyanGemC = new THREE.MeshStandardMaterial({ color: '#7ff4ff', emissive: '#18b8e0', emissiveIntensity: 0.9, roughness: 0.1, flatShading: true });
+const smallLink = new THREE.TorusGeometry(0.075, 0.024, 6, 12); const gemGeo = new THREE.IcosahedronGeometry(0.17, 0), hexGeo = new THREE.CylinderGeometry(0.17, 0.17, 0.08, 6), hexIn = new THREE.CylinderGeometry(0.075, 0.075, 0.09, 6);
+const octa = (w, h) => { const sh = new THREE.Shape(), c = 0.28; sh.moveTo(-w / 2 + c, -h / 2); sh.lineTo(w / 2 - c, -h / 2); sh.lineTo(w / 2, -h / 2 + c); sh.lineTo(w / 2, h / 2 - c); sh.lineTo(w / 2 - c, h / 2); sh.lineTo(-w / 2 + c, h / 2); sh.lineTo(-w / 2, h / 2 - c); sh.lineTo(-w / 2, -h / 2 + c); sh.closePath(); return new THREE.ExtrudeGeometry(sh, { depth: 0.12, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 1 }); };
+const skullGeo = octa(1.15, 0.95);
+const gemAt = (par, x, y, z, mat = purpleGem, r = 0.2) => { const t = add(new THREE.TorusGeometry(r, 0.055, 8, 20), chestGold, x, y, z, par, false); const gm = add(gemGeo, mat, x, y, z + 0.04, par, false); gm.scale.set(r / 0.17, r / 0.17, 0.55); return gm; };
+const makeChest = (x = 0, z = 0, ry = 0, s = 1.25, o = {}) => { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; g.scale.setScalar(s * 0.9); S.add(g);
+  const Wd = 2.4, BH = 1.45, Dp = 1.6, LH = 0.95, FZ = Dp / 2;
+  bx(Wd, BH, Dp, chestGold, 0, BH / 2, 0, g, { rad: 0.05 }); bx(Wd + 0.08, 0.14, Dp + 0.08, chestGoldDk, 0, 0.07, 0, g);
+  add(new THREE.PlaneGeometry(Wd - 0.6, BH - 0.3), panelM, 0, BH / 2 + 0.05, FZ + 0.012, g, false);
+  for (const sx of [-1, 1]) { bx(0.32, BH, Dp + 0.05, chestGold, sx * (Wd / 2 - 0.14), BH / 2, 0, g); const p = bx(0.34, 0.5, 0.06, chestGoldDk, sx * 0.86, 0.95, FZ + 0.03, g); p.rotation.z = sx * 0.35;
+    if (!o.lite) { const sc = cyl(0.09, 0.05, chestGold, sx * 0.86, 0.95, FZ + 0.07, g); sc.rotation.x = PI / 2; bx(0.13, 0.025, 0.02, '#7a4a0c', sx * 0.86, 0.95, FZ + 0.1, g, { sh: false }); } }
+  gemAt(g, -0.78, 0.36, FZ + 0.06); gemAt(g, 0.78, 0.36, FZ + 0.06);
+  if (o.skull !== false) { const sk = new THREE.Group(); sk.position.set(0, 0.98, FZ + 0.02); g.add(sk); add(skullGeo, stoneM, 0, 0, 0, sk);
+    for (const sx of [-1, 1]) { const e = add(hexGeo, redGem, sx * 0.25, 0.1, 0.16, sk, false); e.rotation.x = PI / 2; const e2 = add(hexIn, BASIC('#fff1e0'), sx * 0.25, 0.1, 0.17, sk, false); e2.rotation.x = PI / 2; }
+    cyl(0.06, 0.04, '#2a1a10', 0, -0.13, 0.16, sk).rotation.x = PI / 2; bx(0.06, 0.12, 0.04, '#2a1a10', 0, -0.21, 0.16, sk, { sh: false });
+    for (let k = 0; k < 4; k++) bx(0.12, 0.24, 0.1, '#e4e0d6', -0.2 + k * 0.135, -0.58, 0.08, sk, { rad: 0.02 }); bx(0.72, 0.2, 0.12, stoneM, 0, -0.82, 0.04, sk, { rad: 0.04 });
+    if (!o.lite) for (const sx of [-1, 1]) for (let k = 0; k < 7; k++) { const q = k / 6, l = add(smallLink, chestGold, sx * lerp(0.36, 1.08, q), lerp(-0.66, -0.36, q) - Math.sin(q * PI) * 0.1, 0.2 + 0.02 * k, sk, false); l.rotation.set(k % 2 ? PI / 2 : 0, 0, sx * -0.4); } }
+  else { const cg = add(gemGeo, o.gem || cyanGemC, 0, 0.85, FZ + 0.1, g, false); cg.scale.set(1.6, 1.6, 0.6); }
+  const glow = add(new THREE.PlaneGeometry(Wd - 0.4, Dp - 0.4), BASIC('#ffdf7e'), 0, BH + 0.01, 0, g, false); glow.material = BASIC('#ffdf7e'); glow.rotation.x = -PI / 2; glow.visible = false;
+  const lid = new THREE.Group(); lid.position.set(0, BH, -Dp / 2); g.add(lid);
+  const lm = add(RB(Wd + 0.04, LH, Dp + 0.04, 0.22), o.lid || chestGold, 0, LH / 2, Dp / 2, lid);
+  add(new THREE.PlaneGeometry(Wd - 1.0, LH - 0.35), panelM, 0, LH / 2 - 0.02, Dp + 0.035, lid, false);
+  gemAt(lid, -0.86, LH * 0.5, Dp + 0.07, purpleGem, 0.24); gemAt(lid, 0.86, LH * 0.5, Dp + 0.07, purpleGem, 0.24);
+  const cy = add(gemGeo, o.lidGem || cyanGemC, 0, LH - 0.06, Dp + 0.02, lid, false); cy.scale.set(1.8, 0.9, 1.0); bx(0.7, 0.12, 0.1, chestGold, 0, LH - 0.2, Dp + 0.03, lid);
   g.userData = { lid, glow, lm }; return g; };
 const chestOpen = (c, a, glow = 0) => { c.userData.lid.rotation.x = -a * 1.95; c.userData.glow.visible = glow > 0; };
-const BGCH = []; { const r = rng(5); for (let k = 0; k < 34; k++) { const side = r() < 0.65 ? -1 : 1, x = -95 + r() * 190; if (x > -62 && x < -38) continue; const c = makeChest(x, side * (6.6 + r() * 3.6), (r() - 0.5) * 1.2 + (side > 0 ? PI : 0), 1.0 + r() * 0.3); chestOpen(c, r() < 0.5 ? 0.6 + r() * 0.4 : 0); BGCH.push(c); } }
+const BGCH = []; { const r = rng(5); for (let k = 0; k < 34; k++) { const side = r() < 0.65 ? -1 : 1, x = -95 + r() * 190; if (x > -62 && x < -38) continue; const c = makeChest(x, side * (6.6 + r() * 3.6), (r() - 0.5) * 1.2 + (side > 0 ? PI : 0), 1.0 + r() * 0.3, { lite: true }); chestOpen(c, r() < 0.5 ? 0.6 + r() * 0.4 : 0); BGCH.push(c); } }
 const HC = makeChest(0, 0, 0, 1.3); const hcLight = new THREE.PointLight('#ffc04a', 0, 12, 1.6); HC.add(hcLight); hcLight.position.set(0, 2.2, 0.4);
 const hcGlowS = new THREE.Sprite(new THREE.SpriteMaterial({ map: starTex, color: '#ffd36a', blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); HC.add(hcGlowS); hcGlowS.position.set(0, 1.6, 0);
 const heroChest = (x, z, ry, open, glow = 0, col = '#ffc04a', lidM = goldDark) => { HC.visible = true; hcLight.color.set(col); HC.userData.glow.material.color.set(col); hcGlowS.material.color.set(col); HC.userData.lm.material = lidM; HC.position.set(x, 0, z); HC.rotation.y = ry; chestOpen(HC, open, glow); hcLight.intensity = glow * 18; hcGlowS.visible = glow > 0.02; hcGlowS.scale.setScalar(2.6 * glow); hcGlowS.material.opacity = 0.45 * glow; };

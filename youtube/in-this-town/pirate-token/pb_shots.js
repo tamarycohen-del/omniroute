@@ -184,13 +184,13 @@ const SC = {
   AP(u, d) { outdoor(); focus(14, -8, { lamp: 14 }); const k = kk(u, d); put(NOOB, 14.8, lerp(-10.0, -7.6, k), 0, { walk: 0.6, ph: u * 6, face: 'sad', head: [0.3, 0, 0] });
     put(RICH, 11.4, -10.2, 0.6, { face: 'laugh', armR: [-1.5, 0.3, 0.1], bodyRz: 0.05 * Math.sin(u * 16) }); put(GGR, 12.6, -9.2, 0.5, { face: 'laugh', armL: [-1.4, 0, -0.2], bodyRz: 0.05 * Math.sin(u * 15) }); xcAt(0, 10.0, -7.0, 0.4, 0, 0);
     camN(u, d, [[0, [15.6, 3.6, -1.6], [14.2, 4.6, -12], 46], [1, [15.4, 3.6, -2.4], [14.2, 4.7, -12], 44]]); moonAt(0.38, 0.88, 12); },
-  AR(u, d) { outdoor(); focus(120, -9); const k = kk(u, d), o = ease(k, 0.55, 0.85); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, o, o * 0.5, '#ffc04a', woodLid);
+  AR(u, d) { outdoor(); focus(120, -9); const k = kk(u, d), o = ease(k, 0.55, 0.85); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, o, o * 0.5, '#ffc04a');
     put(NOOB, 117.9, -9.8, 0.7, { lean: 0.15 + 0.2 * o, face: o > 0.4 ? 'amazed' : 'neutral', look: [0.6, 0.5], armR: [-0.4 - o * 0.7, 0, 0], armL: [-0.2, 0, 0.1] }); key(120, 5, -3, 14);
     camN(u, d, [[0, [121.4, 2.7, -2.8], [119.4, 2.6, -9], 42], [1, [121.2, 2.6, -3.4], [119.4, 2.6, -9], 40]]); moonAt(0.3, 0.86, 12); BLUR = 12 * (1 - ease(k, 0, 0.2)); },
-  AS(u, d) { outdoor(); focus(120, -9); const k = kk(u, d); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, 1, 0.8, '#ffc04a', woodLid);
+  AS(u, d) { outdoor(); focus(120, -9); const k = kk(u, d); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, 1, 0.8, '#ffc04a');
     put(NOOB, 119.0, -10.9, 0.25, { face: 'grin', armL: PUMP(u), armR: PUMP(u, 1.2), bodyY: 0.2 * Math.abs(Math.sin(u * 7)) }); key(120, 5, -4, 10, '#ffe2b0'); sparkRing(V(120, 2.4, -8.8), u, 6, 1.3, 0.35);
     camN(u, d, [[0, [120.8, 2.2, -3.4], [119.8, 3.0, -9.6], 44], [1, [120.7, 2.2, -4.0], [119.8, 3.0, -9.6], 42]]); moonAt(0.3, 0.86, 12); },
-  AT(u, d) { outdoor(); focus(120, -9); const k = kk(u, d), r = ease(k, 0, 0.6); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, 1, 0.3, '#ffc04a', woodLid);
+  AT(u, d) { outdoor(); focus(120, -9); const k = kk(u, d), r = ease(k, 0, 0.6); crowdShow2('meadow'); heroChest(120, -8.8, 0.15, 1, 0.3, '#ffc04a');
     put(NOOB, 119.0, -10.9, 0.25, { face: 'amazed', armL: PUMP(u), armR: UP, look: [0.3, -0.5] }); const tp = V(120.1, lerp(1.6, 3.6, r), -8.6); tokenAt(tp, (1 - r) * PI * 4 + Math.sin(u * 3) * 0.15, 1.25); rayAt(tp.clone().add(V(0, 0, -0.6)), 2.6 + 1.5 * r, u, 0.22); sparkRing(tp, u, 8, 1.6, 0.35);
     camN(u, d, [[0, [120.6, 2.6, -4.0], [120, 3.0, -9], 40], [1, [120.5, 2.7, -4.6], [120, 3.2, -9], 38]]); moonAt(0.3, 0.86, 12); },
   AU(u, d) { outdoor(); focus(19, -8); const k = kk(u, d); put(RICH, 17.6, -9.0, 0.2, { face: 'shocked', jaw: 1.2, armL: [-0.3, 0, 0.3], armR: [-0.3, 0, 0.3] }); put(GGR, 19.9, -9.2, -0.15, { face: 'shocked', jaw: 1.2, armL: [-0.5, 0, 0.4], armR: [-0.5, 0, 0.4] });
@@ -201,7 +201,7 @@ const SC = {
     camN(u, d, [[0, [120.5, 5, -1.5], [120.2, 2.4, -8.8], 44], [1, [120.4, 24, -5.0], [120.2, 0.5, -9.2], 46]]); moonAt(0.38, 0.86, 12); APER = 0.0003; },
   TH1(u, d) { outdoor(); focus(-62, 8); put(RICHG, ...RICHAT, PI, { face: 'sad', look: [0, 0.4], head: [0.25, 0, 0.12], armL: [0.1, 0, 0.1], armR: [0.1, 0, 0.1] }); put(GG, -66.5, 11, PI + 0.5, { ...bend }); put(GGR, -57.8, 11.2, PI - 0.4, { ...bend });
     key(-62, 6, 4, 22, '#ffe2b0'); camN(u, d, [[0, [-62.2, 4.6, 4.2], [-62, 4.2, 8.6], 40], [1, [-62.2, 4.6, 4.2], [-62, 4.2, 8.6], 40]]); moonAt(0.38, 0.9, 12); APER = 0.0012; },
-  TH2(u, d) { outdoor(); focus(120, -9); crowdShow2('meadow'); heroChest(120, -9.2, 0, 1, 0.5, '#ffc04a', woodLid); put(NOOB, 120.4, -11.4, 0.15, { face: 'smug', armR: [-2.9, 0, 0.15], armL: [-0.2, 0, 0.5], look: [0.5, -0.3] });
+  TH2(u, d) { outdoor(); focus(120, -9); crowdShow2('meadow'); heroChest(120, -9.2, 0, 1, 0.5, '#ffc04a'); put(NOOB, 120.4, -11.4, 0.15, { face: 'smug', armR: [-2.9, 0, 0.15], armL: [-0.2, 0, 0.5], look: [0.5, -0.3] });
     S.updateMatrixWorld(); const hp = handPos(NOOB, 1).add(V(0, 0.65, 0.15)); tokenAt(hp.clone().add(V(0, 0.3, 0.3)), -0.08, 1.6); rayAt(hp.clone().add(V(0, 0.3, -0.5)), 5.5, 0.3, 0.3); sparkRing(hp, 1.2, 8, 1.4, 0.5); key(121, 6, -5, 8, '#ffe6b0');
     camN(u, d, [[0, [121.3, 3.6, -3.4], [120.6, 5.0, -11], 42], [1, [121.3, 3.6, -3.4], [120.6, 5.0, -11], 42]]); moonAt(0.38, 0.9, 12); },
 };
