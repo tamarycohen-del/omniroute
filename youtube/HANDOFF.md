@@ -75,3 +75,10 @@ Final MP4s were in the old session's scratchpad (not in git); re-render from sou
 ## Render workflow (user's rule)
 - While working on an episode: render at normal 1080x1920 (`render2d.mjs`) for speed.
 - Only after the user approves the final cut: render once in 2K with `web/render2k.mjs` (1440x2560, same args), encode crf16 / aac 256k, and send that file for upload.
+
+## HER VOICE status (Nov 18 2026)
+- Part 5 published (Nov 18, 22:01 IL): YouTube Yv5IBX7puaE (1080 upload), Instagram reel Df5UIRljm5a (+ question comment posted; user pins it).
+  Choice: CROSS THE BRIDGE WITH BISCUIT / GO HOME TO MOM. Folder part5/ (script_v2.txt approved, audio/ voice5.py sfx5.py music5.py, thumbnail_part5.jpg, upload.txt), web/ep5.html.
+- Script skill: `.claude/skills/her-voice-script/` (yt-script was removed at the user's request).
+- Full-series compilation (planned, user wants it in 4K): render each epN.html with web/render4k.mjs (ROOT-env copy used in the session scratchpad),
+  Part 5 4K render was stopped at 2149/2469 frames (scratchpad only - re-render if it was cleaned). Then join parts 1-5 (+ later parts) into one long video.
