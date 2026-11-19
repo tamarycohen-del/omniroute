@@ -12,3 +12,5 @@ Findings:
   Keep research searches off upload days; uploads first.
 - Zack D. Films (body/how-it-works, 3D, 30-50 s): "Why Your Body Slowly Stops Working" 9.2M, "How Your Bones Make Red Blood Cells" 4.2M (last 4 months).
 - Human-body explainers dominate: "The Amazing Journey Inside Your Digestive System" 17M (51 s), "This Tiny Protein Inside You Walks 100 Steps Per Second" 16.4M (7 s).
+
+STATUS Nov 19: the user dropped this channel; Composio connection youtube_splice-elisha removed. History Oops (youtube_hoist-rumble) is the only and default YouTube account again.
