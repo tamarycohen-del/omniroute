@@ -311,16 +311,33 @@ const bigCheck = (a) => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.tra
 
 // ---------- scenes (u = seconds into the shot) ----------
 const SCENES = {
-  open6(u, t) { // the car stopped at the bridge, driver door creaks open, a pale hand presses flat on the road
-    cam(1.55 - 0.1 * sm(u / 5), -150, 1290); world({ door: sm((u - 0.6) / 2.2) * 0.8 });
-    const k = sm((u - 2.6) / 1.2); if (k > 0) { g.save(); g.translate(lerp(-330, -380, k), GY - 6); g.rotate(-0.1); g.scale(1.6, 1.6); hand(g, 0, 0, 1, 0.2 + 0.7 * k, u); g.restore(); }
+  open6(u, t) { // the driver door flies open, glowing eyes inside, a long white arm slams flat on the road
+    const slam = 1.35, hit = u > slam ? Math.exp(-(u - slam) * 6) : 0;
+    cam(2.3 + 0.25 * sm(u / 3) + 0.15 * hit, -390, 1330, Math.sin(T * 60) * 18 * hit, Math.sin(T * 47) * 14 * hit); world({ door: 0.35 + 0.65 * sm((u - 0.15) / 0.35), lights: 1 });
+    const ex = -455, ey = 1240, eo = (u > 0.5 && u < 0.62) ? 0.1 : 1; // eyes in the dark doorway (blink now and then)
+    if (eo > 0) add(() => { g.shadowColor = '#fff'; g.shadowBlur = 30; g.fillStyle = `rgba(250,250,255,${eo})`; for (const sx of [-1, 1]) { g.beginPath(); g.ellipse(ex + sx * 18, ey, 9, 8, 0, 0, 7); g.fill(); } g.shadowBlur = 0; });
+    const k = sm((u - 0.8) / (slam - 0.8)); if (k > 0) { // the arm: out of the doorway, down to the road
+      const sx = -430, sy = 1275, hx = lerp(-420, -250, k), hy = lerp(1300, GY - 4, k), elx = lerp(-400, -300, k), ely = lerp(1300, 1380 - 110 * k, k);
+      for (const [w, c] of [[34, '#121018'], [22, '#e9e6ee']]) { g.strokeStyle = c; g.lineWidth = w; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath(); g.moveTo(sx, sy); g.lineTo(elx, ely); g.lineTo(hx, hy); g.stroke(); }
+      for (let j = -2; j <= 2; j++) for (const [w, c] of [[12, '#121018'], [6, '#e9e6ee']]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(hx, hy - 4); g.quadraticCurveTo(hx + 30, hy - 10 + j * 5, hx + 62 + Math.abs(j) * -8, hy - 2 + j * 9); g.stroke(); } }
+    if (u > slam && u < slam + 0.08) { g.fillStyle = 'rgba(255,250,235,0.3)'; g.fillRect(-1400, -900, 4000, 3800); }
+    darken(0.1); },
+  open6b(u, t) { // on the bridge he looks back: the eyes are right there behind him
+    const x = 900; cam(1.9, x - 40, 1260, Math.sin(T * 30) * 5); world({ door: 1, lights: 1 });
+    add(() => { g.shadowColor = '#fff'; g.shadowBlur = 20; g.fillStyle = '#fbfbff'; for (const sx of [-1, 1]) { g.beginPath(); g.ellipse(lerp(560, 700, sm(u / 2)) + sx * 11, GY - 120, 6, 5, 0, 0, 7); g.fill(); } g.shadowBlur = 0; });
+    hero(x - 300 * 0.6, GY - 975 * 0.6 - Math.abs(Math.sin(u * 14)) * 12, 0.6, { expr: u > 0.9 ? 'shock' : 'scared', look: -1, step: Math.sin(u * 14), swing: 0 });
+    dog(x + 10, GY - 140 - Math.abs(Math.sin(u * 14)) * 12, 0.36, { pose: 'crouch', ears: 'down', t: u, flip: true, growl: true }); fog(GY - 40); darken(0.1); },
+  promise6(u) { // Mrs. Hale in the mirror... glitches out... then two white eyes
+    cam(1.0 + 0.12 * sm(u / 3.7), 540, 700); const gl = u > 1.55 && u < 1.95, gone = u >= 1.95;
+    mirrorShot(u, { empty: gone || (gl && Math.floor(u * 30) % 2 === 0), look: Math.sin(u * 1.2) * 0.3 });
+    if (gl) { g.fillStyle = `rgba(255,255,255,${0.08 + 0.1 * (Math.floor(u * 30) % 3)})`; g.fillRect(-200, -200, 1500, 2400); g.fillStyle = 'rgba(255,40,60,0.25)'; for (let k = 0; k < 6; k++) g.fillRect(-200, 560 + ((k * 97 + u * 900) % 200), 1500, 8); }
+    const eo = sm((u - 2.9) / 0.12); if (eo > 0) add(() => { g.shadowColor = '#fff'; g.shadowBlur = 40; g.fillStyle = `rgba(250,250,255,${eo})`; for (const sx of [-1, 1]) { g.beginPath(); g.ellipse(560 + sx * 34, 640, 17, 15, 0, 0, 7); g.fill(); } g.shadowBlur = 0; });
     darken(0.12); },
-  promise6(u) { cam(1.0 + 0.12 * sm(u / 4), 540, 700); mirrorShot(u, { empty: true }); darken(0.15); },
   comments(u, t) {
     g.fillStyle = lin(0, 0, 0, H, [[0, '#120c26'], [1, '#05040a']]); g.fillRect(0, 0, W, H);
     const C = ['Biscuit no dog left behind', 'mom is DEAD cross the bridge', 'go with big man biscuit', 'Cross the bridge with Biscuit'];
-    const out = sm((u - 5.0) / 0.3);
-    C.forEach((c, i) => { const a = sm((u - 1.6 - i * 0.55) / 0.18); if (a <= 0) return; const y = 560 + i * 210, x = (i % 2 ? 140 : 100) - out * 1200 * (i % 2 ? -1 : 1);
+    const out = sm((u - 5.0) / 0.25);
+    C.forEach((c, i) => { const a = sm((u - 0.05 - i * 0.75) / 0.15); if (a <= 0) return; const y = 560 + i * 210, x = (i % 2 ? 140 : 100) - out * 1200 * (i % 2 ? -1 : 1);
       g.save(); g.globalAlpha = a; g.translate(x + 380, y + 60); g.scale(0.8 + 0.2 * a, 0.8 + 0.2 * a); g.translate(-(x + 380), -(y + 60));
       rr(x, y, 840, 130, 34, '#ffffff'); g.fillStyle = '#d8d0e8'; g.beginPath(); g.arc(x + 62, y + 65, 38, 0, 7); g.fill(); g.fillStyle = '#7a6aa8'; g.beginPath(); g.arc(x + 62, y + 52, 15, 0, 7); g.fill(); g.beginPath(); g.ellipse(x + 62, y + 90, 24, 14, 0, Math.PI, 0); g.fill();
       g.fillStyle = '#121018'; let fs = 42; g.font = `700 ${fs}px "DejaVu Sans", sans-serif`; while (g.measureText(c).width > 690 && fs > 22) { fs -= 2; g.font = `700 ${fs}px "DejaVu Sans", sans-serif`; } g.textAlign = 'left'; g.fillText(c, x + 124, y + 66 + fs * 0.35); g.restore(); });
@@ -389,7 +406,7 @@ const choiceCard = (x, y, txt, a, col = '#ff4d5e') => { if (a <= 0) return; g.sa
 window.renderScene = (name, u = 1, t = u) => { T = t; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H); g.save(); SCENES[name](u, t, 0); g.restore(); return true; };
 
 // ---------- timeline (seconds, from part6/audio/timeline.json + words.json) ----------
-const SHOTS = [[0.0, 'open6'], [5.1, 'promise6'], [8.8, 'comments'], [14.2, 'check'], [15.5, 'grab'], [18.5, 'planks'], [21.15, 'doorOpen'], [23.5, 'haleOut'], [28.3, 'change'], [32.2, 'eyes'], [35.1, 'smile'], [39.6, 'reveal'], [44.4, 'phone'], [49.6, 'crawl'], [52.65, 'cantCross'], [53.95, 'biscuitCan'], [55.3, 'callout'], [58.6, 'kid'], [63.5, 'wag'], [65.4, 'wagClose'], [67.6, 'middle'], [72.3, 'crack'], [75.1, 'choice'], [82.7, 'end']];
+const SHOTS = [[0.0, 'open6'], [3.0, 'open6b'], [5.1, 'promise6'], [8.8, 'comments'], [14.2, 'check'], [15.5, 'grab'], [18.5, 'planks'], [21.15, 'doorOpen'], [23.5, 'haleOut'], [28.3, 'change'], [32.2, 'eyes'], [35.1, 'smile'], [39.6, 'reveal'], [44.4, 'phone'], [49.6, 'crawl'], [52.65, 'cantCross'], [53.95, 'biscuitCan'], [55.3, 'callout'], [58.6, 'kid'], [63.5, 'wag'], [65.4, 'wagClose'], [67.6, 'middle'], [72.3, 'crack'], [75.1, 'choice'], [82.7, 'end']];
 window.TOTAL = 83.56;
 const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0]]; };
 let CHUNKS = [];
