@@ -94,3 +94,10 @@ Imagine running from your mom at 3 AM… and the only way out is a stranger's ca
 Choice cards: LOCK THE CAR / FOLLOW BISCUIT.
 
 Help me improve the Part 4 script following all of the above. Ask me before changing the plot.
+
+=== FINAL ARC (parts 6-8, approved Nov 19) ===
+- Mrs. Hale = a SKINWALKER: something has been wearing her since she died 3 years ago. Biscuit always smelled it. She took Mom's phone and sent the "DON'T open the door" texts (to push the kid out the back door toward her house), opened our back door, made the rustle in the woods to steal him from the tall thing. No reflection. Can't cross water. Copies voices ("She learns your voice" was about herself).
+- The tall "Mom" = a second creature that copies voices; it said "honey" at the door (Part 1). The two creatures compete for the kid.
+- Real Mom is home (porch light, "love you").
+- Part 6: skinwalker reveal on the bridge. Part 7: the tall thing's secret. Part 8: real Mom, sunrise, Biscuit hero, season-2 hook (3:33 knock in the kid's own voice).
+- Votes: YouTube + Instagram likes are added together; on a tie the Biscuit option wins.
