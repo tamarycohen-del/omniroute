@@ -57,7 +57,7 @@ export const skinwalker = (g, o = {}) => {
   g.save(); g.shadowColor = `rgba(255,255,255,${0.95 * eyes})`; g.shadowBlur = 40 * eyes; g.fillStyle = `rgba(250,250,255,${0.25 + 0.75 * eyes})`;
   for (const ex of [-26, 26]) { g.beginPath(); g.ellipse(ex, 2, 15, 13, 0, 0, 7); g.fill(); } g.restore();
   // wide, curved grin: corners bent up toward the eyes, but it stays inside the face
-  const sm1 = Math.min(1, smile), mw = 30 + 20 * sm1, mh = 6 + 22 * mouth, cy = 34, up = 10 + 16 * sm1;
+  const sm1 = Math.min(1, smile), mw = 30 + 18 * sm1, mh = 5 + 18 * mouth, cy = 46, up = 6 + 8 * sm1;
   g.fillStyle = '#1a0e18'; g.strokeStyle = O; g.lineWidth = 6; g.beginPath();
   g.moveTo(-mw, cy - up); g.bezierCurveTo(-mw * 0.6, cy + mh * 1.6, mw * 0.6, cy + mh * 1.6, mw, cy - up);
   g.bezierCurveTo(mw * 0.5, cy + mh * 0.3, -mw * 0.5, cy + mh * 0.3, -mw, cy - up); g.fill(); g.stroke();
