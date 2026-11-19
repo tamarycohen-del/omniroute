@@ -349,6 +349,14 @@ const THUMBS = {
     g.fillStyle = '#121018'; g.font = '900 30px "Inter Display", sans-serif'; g.textAlign = 'center'; g.fillText('MRS. HALE', 0, 132); g.restore();
     arrow(290, 1250, 500, 1080, '#ffe23a');
     hook([["SHE'S NOT", '#ffffff', 130], ['MRS. HALE.', '#ff2a3a', 140]], 210); ring(668, 1010, 150); logo(); badge(6, 760, 1760); },
+  story6() { T = 0.8; g.save(); cam(2.4, -400, 1270); sky(); woods(1240, 0.9); g.fillStyle = '#0b0a1e'; g.fillRect(-1400, 1480, 4000, 900); road(1480);
+    carSide(-260, 1480, 0.8, { win: 0, lights: 1, door: 1 });
+    add(() => { g.shadowColor = '#fff'; g.shadowBlur = 30; g.fillStyle = '#fbfbff'; for (const sx of [-1, 1]) { g.beginPath(); g.ellipse(-455 + sx * 18, 1240, 9, 8, 0, 0, 7); g.fill(); } g.shadowBlur = 0; });
+    fog(1460); g.restore(); grade(540, 1100, '255,30,50', 0.12);
+    hook([['PART 6', '#ff2a3a', 170], ['TONIGHT', '#ffffff', 130]], 250);
+    g.save(); g.font = 'italic 800 52px "Inter Display", sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fff'; g.shadowColor = 'rgba(0,0,0,0.95)'; g.shadowBlur = 24; g.fillText('You finally see what she really is...', 540, 1560); g.font = '900 60px "Inter Display", sans-serif'; g.fillStyle = '#c6ff3a'; g.fillText('YOUR VOTE WON: THE BRIDGE 🌉', 540, 1650); g.restore();
+    g.save(); g.shadowColor = 'rgba(0,0,0,0.8)'; g.shadowBlur = 24; rr(170, 1715, 740, 110, 55, '#ff0033'); g.shadowBlur = 0; g.fillStyle = '#fff'; g.beginPath(); g.moveTo(240, 1740); g.lineTo(240, 1800); g.lineTo(290, 1770); g.closePath(); g.fill();
+    g.font = '900 46px "Inter Display", sans-serif'; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText('YouTube: @history-oopstv', 315, 1772); g.restore(); logo(); },
 };
 window.renderThumb = (n, k = 2) => { cv.width = W * k; cv.height = H * k; g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, W, H); THUMBS[n](); return true; };
 document.fonts.load('900 92px "Inter Display"').then(() => { window.ready = true; });
