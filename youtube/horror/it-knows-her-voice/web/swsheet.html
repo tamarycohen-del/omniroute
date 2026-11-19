@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="2400" height="1350"></canvas>
+<script type="module">
+import { skinwalker } from './skinwalker.js';
+import { mrsHale } from './hale.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 2400, H = 1350;
+const bg = g.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#0d0a22'); bg.addColorStop(1, '#05040a'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
+const panel = (x, w, title, fn, glow) => { g.save(); g.fillStyle = 'rgba(255,255,255,0.03)'; g.beginPath(); g.roundRect(x + 20, 120, w - 40, 1180, 30); g.fill();
+  if (glow) { const rg = g.createRadialGradient(x + w / 2, 800, 20, x + w / 2, 800, 520); rg.addColorStop(0, glow); rg.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = rg; g.fillRect(x, 120, w, 1180); }
+  fn(); g.fillStyle = '#e8e4f4'; g.font = '700 40px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText(title, x + w / 2, 1285); g.restore(); };
+const at = (x, y, s, f) => { g.save(); g.translate(x, y); g.scale(s, s); f(); g.restore(); };
+g.fillStyle = '#ff2a3a'; g.font = '900 64px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('HER VOICE — THE SKINWALKER', W / 2, 85);
+panel(0, 520, 'BEFORE: MRS. HALE', () => at(110, 210, 1.0, () => mrsHale(g, { arm: 'cane', smile: 'toowide', t: 1 })));
+panel(520, 820, 'ON ALL FOURS (the reveal)', () => at(600, 230, 1.0, () => skinwalker(g, { pose: 'crouch', t: 1, mouth: 0.6, smile: 0.9 })), 'rgba(255,250,235,0.18)');
+panel(1340, 520, 'STANDING', () => at(1370, 200, 0.97, () => skinwalker(g, { pose: 'stand', t: 1, reach: 0.3, mouth: 0.3, smile: 0.7 })));
+panel(1860, 540, "MOM'S PHONE", () => at(1850, 290, 0.88, () => skinwalker(g, { pose: 'crouch', t: 2, reach: 0.8, phone: true, mouth: 0.9, smile: 1, look: -0.5 })), 'rgba(160,170,255,0.12)');
+window.done = true;
+</script></body></html>
