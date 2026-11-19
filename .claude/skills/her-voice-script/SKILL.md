@@ -30,3 +30,6 @@ Simple English, short present-tense sentences, no gore. Never solve all mysterie
 
 ## Output
 `partN/script.txt`: header (vote result, stats lessons, time card, word count) + table `# | narration | on screen` + recording notes + pinned comment + "plot decisions to confirm".
+
+## Upload checklist
+Instagram reels: ALWAYS pass cover_url (the part thumbnail, as a public r2 URL) to INSTAGRAM_POST_IG_USER_MEDIA. The cover cannot be changed via the API after publishing.
