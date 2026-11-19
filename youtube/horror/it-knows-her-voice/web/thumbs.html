@@ -6,6 +6,7 @@ import { capCard, chapterCard, whiteStick } from './stick.js';
 import { biscuit } from './biscuit.js';
 import { mrsHale } from './hale.js';
 import { momThing, hand } from './mom.js';
+import { skinwalker } from './skinwalker.js';
 const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920, P = { g };
 const rr = (x, y, w, h, r, fill) => { g.beginPath(); g.roundRect(x, y, w, h, r); g.fillStyle = fill; g.fill(); };
 const lin = (x0, y0, x1, y1, st) => { const q = g.createLinearGradient(x0, y0, x1, y1); st.forEach(([o, c]) => q.addColorStop(o, c)); return q; };
@@ -339,6 +340,15 @@ const THUMBS = {
     const ex = mx + 300 * sc, ey = my - 4 * sc; add(() => { g.fillStyle = '#f2eeff'; for (const sx of [-1, 1]) { g.beginPath(); g.ellipse(ex + sx * 17, ey + 8, 7, 10, 0, 0, 7); g.fill(); } const rg = g.createRadialGradient(ex, ey, 2, ex, ey, 90); rg.addColorStop(0, 'rgba(255,40,60,0.45)'); rg.addColorStop(1, 'rgba(255,40,60,0)'); g.fillStyle = rg; g.fillRect(ex - 120, ey - 120, 240, 240); });
     fog(1460); g.restore(); grade(560, 900, '255,30,50', 0.12);
     hook([["MOM IS HOME...", '#ffffff', 112], ["SO WHAT IS THAT?", '#ff2a3a', 116]], 210); ring(250, 515, 88); arrow(780, 720, 345, 560); logo(); badge(5, 760, 1760); },
+  6() { T = 1.0; g.save(); cam(1.0, 540, 960); sky(); woods(1500, 0.9); g.fillStyle = '#0b0a1e'; g.fillRect(-200, 1450, 1500, 600);
+    add(() => { const rg = g.createRadialGradient(640, 1000, 20, 540, 1150, 900); rg.addColorStop(0, 'rgba(255,245,215,0.30)'); rg.addColorStop(1, 'rgba(255,245,215,0)'); g.fillStyle = rg; g.fillRect(-200, 0, 1500, 1920); });
+    g.save(); g.translate(452, 1450); g.scale(-1.35, 1.35); g.translate(-300, -975); skinwalker(g, { pose: 'crouch', t: 1.4, eyes: 1, mouth: 0.8, smile: 1, reach: 0.35 }); g.restore();
+    fog(1460); g.restore(); grade(640, 1000, '255,30,50', 0.14);
+    g.save(); g.translate(170, 1330); g.rotate(-0.06); g.shadowColor = 'rgba(0,0,0,0.9)'; g.shadowBlur = 30; rr(-120, -150, 240, 300, 22, '#f4f1ea'); g.shadowBlur = 0; rr(-104, -134, 208, 230, 12, '#2a2140');
+    g.save(); g.beginPath(); g.rect(-104, -134, 208, 230); g.clip(); hale(-300 * 0.55, -134 - 120 * 0.55 * 0 - 150, 0.55, { arm: 'cane', smile: 'kind', t: 1 }); g.restore();
+    g.fillStyle = '#121018'; g.font = '900 30px "Inter Display", sans-serif'; g.textAlign = 'center'; g.fillText('MRS. HALE', 0, 132); g.restore();
+    arrow(290, 1250, 500, 1080, '#ffe23a');
+    hook([["SHE'S NOT", '#ffffff', 130], ['MRS. HALE.', '#ff2a3a', 140]], 210); ring(668, 1010, 150); logo(); badge(6, 760, 1760); },
 };
 window.renderThumb = (n, k = 2) => { cv.width = W * k; cv.height = H * k; g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, W, H); THUMBS[n](); return true; };
 document.fonts.load('900 92px "Inter Display"').then(() => { window.ready = true; });
