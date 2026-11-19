@@ -31,5 +31,16 @@ Simple English, short present-tense sentences, no gore. Never solve all mysterie
 ## Output
 `partN/script.txt`: header (vote result, stats lessons, time card, word count) + table `# | narration | on screen` + recording notes + pinned comment + "plot decisions to confirm".
 
+## Storytelling principles (from Kallaway's "Short-Form Storytelling Principles", applied to HER VOICE)
+Check every script against these before recording:
+1. **Curiosity through contrast**: open a question, answer it, open the next one, all the way down. Every 3-4 s a beat must raise a new question. The biggest curiosity = breaking an expectation ("The scariest thing tonight isn't the monster. It's the one who looks like Mom.").
+2. **Speed to value**: something scary/interesting on screen in frame 1 and a reason to stay within 5 s (Part 6 cold open: eyes in the open car door from the first frame).
+3. **Value density**: cut anything the viewer doesn't need. Keep the comments beat under ~1 s of dead time and keep the story moving behind it.
+4. **Clarity**: 6th-grade words, active voice, short sentences. Say the key reveal twice: once short, once dead simple (so viewers who join mid-video get it).
+5. **Anticipation**: tease what's coming (the promise), then pay it off with a reveal that isn't the obvious one.
+6. **Emotion**: fear and shock drive the most shares; pick trigger words and visuals for one target emotion per beat.
+7. **Rhythm**: mostly staccato, mixed with a few medium/long lines; never the same sentence length three times in a row.
+8. **Energy**: narrator takes in ElevenLabs need tension/urgency; re-record flat lines.
+
 ## Upload checklist
 Instagram reels: ALWAYS pass cover_url (the part thumbnail, as a public r2 URL) to INSTAGRAM_POST_IG_USER_MEDIA. The cover cannot be changed via the API after publishing.
