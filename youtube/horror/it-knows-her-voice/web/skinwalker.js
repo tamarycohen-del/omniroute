@@ -56,10 +56,12 @@ export const skinwalker = (g, o = {}) => {
   // glowing white eyes
   g.save(); g.shadowColor = `rgba(255,255,255,${0.95 * eyes})`; g.shadowBlur = 40 * eyes; g.fillStyle = `rgba(250,250,255,${0.25 + 0.75 * eyes})`;
   for (const ex of [-26, 26]) { g.beginPath(); g.ellipse(ex, 2, 15, 13, 0, 0, 7); g.fill(); } g.restore();
-  // too-wide mouth: stretches past the cheeks
-  const mw = 34 + 44 * smile, mh = 8 + 40 * mouth; g.fillStyle = '#1a0e18'; g.strokeStyle = O; g.lineWidth = 6;
-  g.beginPath(); g.moveTo(-mw, 40); g.quadraticCurveTo(0, 40 + mh * 2, mw, 40); g.quadraticCurveTo(0, 40 + mh * 0.4, -mw, 40); g.fill(); g.stroke();
-  g.fillStyle = '#efe9f2'; for (let k = -3; k <= 3; k++) { const x = k * (mw / 4); g.beginPath(); g.moveTo(x - 5, 42); g.lineTo(x + 5, 42); g.lineTo(x, 52 + mh * 0.25); g.fill(); }
+  // wide, curved grin: corners bent up toward the eyes, but it stays inside the face
+  const sm1 = Math.min(1, smile), mw = 30 + 20 * sm1, mh = 6 + 22 * mouth, cy = 34, up = 10 + 16 * sm1;
+  g.fillStyle = '#1a0e18'; g.strokeStyle = O; g.lineWidth = 6; g.beginPath();
+  g.moveTo(-mw, cy - up); g.bezierCurveTo(-mw * 0.6, cy + mh * 1.6, mw * 0.6, cy + mh * 1.6, mw, cy - up);
+  g.bezierCurveTo(mw * 0.5, cy + mh * 0.3, -mw * 0.5, cy + mh * 0.3, -mw, cy - up); g.fill(); g.stroke();
+  g.fillStyle = '#efe9f2'; for (let k = -3; k <= 3; k++) { const u = k / 4, x = u * mw, y = cy + mh * 0.3 * (1 - u * u) - up * u * u + 2; g.beginPath(); g.moveTo(x - 4, y); g.lineTo(x + 4, y); g.lineTo(x, y + 8 + mh * 0.2); g.fill(); }
   g.restore();
   // Mom's phone in the front hand
   if (o.phone) { const [px, py] = frontHand; g.save(); g.translate(px + 10, py - 30); g.rotate(-0.3); g.fillStyle = O; g.beginPath(); g.roundRect(-26, -46, 52, 92, 10); g.fill(); g.fillStyle = '#2a2448'; g.beginPath(); g.roundRect(-20, -40, 40, 80, 6); g.fill();

@@ -311,15 +311,11 @@ const bigCheck = (a) => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.tra
 
 // ---------- scenes (u = seconds into the shot) ----------
 const SCENES = {
-  open6(u, t) { // the driver door flies open, glowing eyes inside, a long white arm slams flat on the road
-    const slam = 1.35, hit = u > slam ? Math.exp(-(u - slam) * 6) : 0;
+  open6(u, t) { // the driver door flies open, glowing eyes inside the dark car
+    const slam = 0.5, hit = u > slam ? Math.exp(-(u - slam) * 6) : 0;
     cam(2.3 + 0.25 * sm(u / 3) + 0.15 * hit, -390, 1330, Math.sin(T * 60) * 18 * hit, Math.sin(T * 47) * 14 * hit); world({ door: 0.35 + 0.65 * sm((u - 0.15) / 0.35), lights: 1 });
     const ex = -455, ey = 1240, eo = (u > 0.5 && u < 0.62) ? 0.1 : 1; // eyes in the dark doorway (blink now and then)
     if (eo > 0) add(() => { g.shadowColor = '#fff'; g.shadowBlur = 30; g.fillStyle = `rgba(250,250,255,${eo})`; for (const sx of [-1, 1]) { g.beginPath(); g.ellipse(ex + sx * 18, ey, 9, 8, 0, 0, 7); g.fill(); } g.shadowBlur = 0; });
-    const k = sm((u - 0.8) / (slam - 0.8)); if (k > 0) { // the arm: out of the doorway, down to the road
-      const sx = -430, sy = 1275, hx = lerp(-420, -250, k), hy = lerp(1300, GY - 4, k), elx = lerp(-400, -300, k), ely = lerp(1300, 1380 - 110 * k, k);
-      for (const [w, c] of [[34, '#121018'], [22, '#e9e6ee']]) { g.strokeStyle = c; g.lineWidth = w; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath(); g.moveTo(sx, sy); g.lineTo(elx, ely); g.lineTo(hx, hy); g.stroke(); }
-      for (let j = -2; j <= 2; j++) for (const [w, c] of [[12, '#121018'], [6, '#e9e6ee']]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(hx, hy - 4); g.quadraticCurveTo(hx + 30, hy - 10 + j * 5, hx + 62 + Math.abs(j) * -8, hy - 2 + j * 9); g.stroke(); } }
     if (u > slam && u < slam + 0.08) { g.fillStyle = 'rgba(255,250,235,0.3)'; g.fillRect(-1400, -900, 4000, 3800); }
     darken(0.1); },
   open6b(u, t) { // on the bridge he looks back: the eyes are right there behind him
@@ -366,7 +362,7 @@ const SCENES = {
     if (on) { g.save(); g.translate(100, GY); g.scale(-0.62, 0.62); g.translate(-300, -975); g.translate(140, 640); g.rotate(-0.18); g.shadowColor = '#fff'; g.shadowBlur = 60; g.fillStyle = '#fbfbff'; for (const ex of [-26, 26]) { g.beginPath(); g.ellipse(ex, 2, 15, 13, 0, 0, 7); g.fill(); } g.restore();
       add(() => { g.fillStyle = 'rgba(255,255,255,0.05)'; for (const sx of [-1, 1]) { g.beginPath(); g.moveTo(220 + sx * 10, 1105); g.lineTo(900, 950 + sx * 120); g.lineTo(900, 1000 + sx * 160); g.closePath(); g.fill(); } }); }
     if (t >= 33.24 && t < 33.34) { g.fillStyle = 'rgba(255,255,255,0.18)'; g.fillRect(-1400, -900, 4000, 3800); } },
-  smile(u, t) { const k = sm((u - 0.6) / 3.2); cam(4.0 + 0.6 * k, 215, 1100, Math.sin(T * 40) * 2); g.fillStyle = '#05040a'; g.fillRect(-1400, -900, 4000, 3800); world({ door: 0.8, fog: false }); swLit(100, GY, 0.62, { pose: 'crouch', eyes: 1, mouth: 0.25 + 0.5 * k, smile: 0.4 + 0.9 * k }, 1); darken(0.12); },
+  smile(u, t) { const k = sm((u - 0.6) / 3.2); cam(3.6 + 0.6 * k, 200, 1262, Math.sin(T * 40) * 2); g.fillStyle = '#05040a'; g.fillRect(-1400, -900, 4000, 3800); world({ door: 0.8, fog: false }); swLit(100, GY, 0.62, { pose: 'crouch', eyes: 1, mouth: 0.25 + 0.5 * k, smile: 0.4 + 0.9 * k }, 1); darken(0.12); },
   reveal(u, t) { // full reveal in the headlights, Mrs. Hale's cardigan hanging off it
     cam(1.35 + 0.15 * sm(u / 4.7), 160, 1240); world({ door: 0.8 }); swLit(140, GY, 0.7, { pose: 'crouch', eyes: 1, mouth: 0.5, smile: 0.9 }, 1);
     hero(1200 - 300 * 0.5, GY - 975 * 0.5, 0.5, { expr: 'shock', look: -1 }); darken(0.08); },
@@ -377,7 +373,7 @@ const SCENES = {
   cantCross(u, t) { cam(0.95, 700, 1250); world({ door: 0.8 }); swLit(240, GY, 0.55, { pose: 'crouch', eyes: 1, mouth: 0.3, smile: 0.8, reach: 0.4 + 0.2 * Math.sin(T * 2) }, 1);
     hero(1250 - 300 * 0.5, GY - 975 * 0.5, 0.5, { expr: 'scared', look: -1 }); dog(1130, GY, 0.3, { pose: 'stare', ears: 'up', flip: true, t: u }); darken(0.1); },
   biscuitCan(u, t) { cam(1.0 + 0.15 * sm(u / 1.3), 540, 1300); sky(); woods(1240, 0.9); bridge(GY, { x0: -400 }); fog(GY - 40); dog(540, GY, 0.9, { pose: 'stare', look: -1, flip: true, ears: 'up', t: u }); darken(0.12); },
-  callout(u, t) { const k = sm((u - 0.6) / 2.4); cam(3.2 + 0.4 * k, 330, 1150, Math.sin(T * 40) * 2); world({ door: 0.8, fog: false }); swLit(240, GY, 0.62, { pose: 'crouch', eyes: 1, mouth: 0.2 + 0.8 * k, smile: 1, look: 0 }, 1); ripples(BX + 120, GY + 110, k); darken(0.1); },
+  callout(u, t) { const k = sm((u - 0.6) / 2.4); cam(3.0 + 0.4 * k, 340, 1262, Math.sin(T * 40) * 2); world({ door: 0.8, fog: false }); swLit(240, GY, 0.62, { pose: 'crouch', eyes: 1, mouth: 0.2 + 0.8 * k, smile: 1, look: 0 }, 1); ripples(BX + 120, GY + 110, k); darken(0.1); },
   kid(u, t) { cam(1.0 + 0.05 * sm(u / 4), 600, 1250); world({ door: 0.8 }); swLit(240, GY, 0.55, { pose: 'crouch', eyes: 1, mouth: u < 1.6 ? 0.9 + 0.1 * Math.sin(T * 20) : 0.3, smile: 1 }, 1); ripples(BX + 150, GY + 110, 1); ripples(BX + 600, GY + 160, 0.6);
     hero(1250 - 300 * 0.5, GY - 975 * 0.5, 0.5, { expr: 'shock', look: -1 }); dog(1130, GY, 0.3, { pose: 'stare', ears: 'up', flip: true, t: u, look: -1 }); darken(0.1); },
   wag(u, t) { // Biscuit wriggles free and runs back down the bridge, tail wagging

@@ -165,7 +165,7 @@ place(water(DUR), 0.0, 0.45); bed += crickets(DUR) * np.where((t > 23.5) & (t < 
 # --- events (seconds = ep6.html SHOTS) ---
 place(engine(23.5, 30, 30, 0.16), 0.0)                                                              # the car idling at the bridge
 place(creak(0.9, 220, 520), 0.05, 0.8)   # driver door flies open
-place(thunk(42, 6), 1.35, 0.8); place(bone(1.0), 1.35, 0.7); place(sting([98, 103.8, 146.8], 2.0, 1.2), 1.35, 0.4); place(whoosh(0.4), 2.8, 0.25)   # the arm slams on the road
+place(thunk(42, 6), 0.5, 0.8); place(sting([98, 103.8, 146.8], 2.0, 1.2), 0.5, 0.4); place(whoosh(0.4), 2.8, 0.25)   # the door bangs open
 place(static(0.4, 1.0), 6.65, 0.5); place(sting([880, 932, 1245], 1.6, 2.0), 8.0, 0.35); place(sting([98, 103.8, 146.8, 207.7], 3.0, 1.0), 8.0, 0.4)   # mirror: she glitches out, eyes flash
 for i in range(4): place(tick(1500, 120), 8.85 + i * 0.75, 0.35)                                    # comment pops
 place(sting([523, 659, 784], 0.8, 4.0), 14.2, 0.3)                                                  # check
