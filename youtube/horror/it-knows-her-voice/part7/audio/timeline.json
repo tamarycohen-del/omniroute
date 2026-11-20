@@ -1,0 +1,24 @@
+{
+ "total": 86.23,
+ "marks": {
+  "open": 0.0,
+  "comments": 9.35,
+  "call": 13.26,
+  "kidReal": 15.72,
+  "kidFake": 17.861,
+  "two": 22.47,
+  "clap": 27.03,
+  "run": 33.88,
+  "scream": 40.61,
+  "silence": 44.49,
+  "rehook": 45.09,
+  "porch": 46.84,
+  "tall": 54.41,
+  "copies": 59.85,
+  "between": 68.61,
+  "window": 74.13,
+  "choice": 77.7,
+  "ask": 78.2,
+  "end": 85.33
+ }
+}

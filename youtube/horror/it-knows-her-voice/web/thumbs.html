@@ -305,6 +305,18 @@ const farHouse = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, 
   if (pl) add(() => { const rg = g.createRadialGradient(-100, -280, 4, -100, -280, 320); rg.addColorStop(0, `rgba(255,236,170,${0.75 * pl})`); rg.addColorStop(1, 'rgba(255,236,170,0)'); g.fillStyle = rg; g.fillRect(-600, -700, 1100, 1100); });
   if (o.kitchen) add(() => { const rg = g.createRadialGradient(-165, -255, 4, -165, -255, 220); rg.addColorStop(0, 'rgba(255,200,120,0.3)'); rg.addColorStop(1, 'rgba(255,200,120,0)'); g.fillStyle = rg; g.fillRect(-500, -600, 800, 800); });
   g.restore(); if (o.car) carSide(x + 470 * s, y, 0.42 * s, { win: 0, lights: 0 }); };
+const porchClose = (o = {}) => { const s = 1.6, x = 540, y = 1500; g.save(); g.translate(x, y); g.scale(s, s);
+  g.fillStyle = '#1c1530'; g.fillRect(-420, -620, 840, 620); g.fillStyle = '#120e22'; g.beginPath(); g.moveTo(-470, -620); g.lineTo(0, -860); g.lineTo(470, -620); g.fill();
+  rr(-330, -470, 190, 210, 8, '#0c0a18'); g.fillStyle = '#ffd27a'; g.fillRect(-320, -460, 170, 190); // kitchen window (lit)
+  if (o.sil) { const sx = lerp(-330, -150, o.sil); g.save(); g.beginPath(); g.rect(-320, -460, 170, 190); g.clip(); g.fillStyle = 'rgba(30,20,30,0.85)'; g.beginPath(); g.ellipse(sx, -340, 34, 70, 0, 0, 7); g.fill(); g.beginPath(); g.arc(sx, -425, 24, 0, 7); g.fill(); g.restore(); }
+  g.fillStyle = '#0c0a18'; g.fillRect(-239, -460, 8, 190); g.fillRect(-320, -369, 170, 8);
+  add(() => { const rg = g.createRadialGradient(-235, -365, 10, -235, -365, 260); rg.addColorStop(0, 'rgba(255,200,120,0.25)'); rg.addColorStop(1, 'rgba(255,200,120,0)'); g.fillStyle = rg; g.fillRect(-500, -620, 600, 600); });
+  rr(-70, -330, 160, 330, 6, '#2a1e44'); g.fillStyle = o.doorOpen ? '#05040a' : '#3c2e62'; g.fillRect(-60, -320, 140, 320); // door
+  const pl = o.porch ?? 1; g.fillStyle = pl ? '#fff2c0' : '#2a2436'; g.beginPath(); g.arc(-120, -360, 14, 0, 7); g.fill(); rr(150, -250, 26, 40, 4, '#d8d0c0'); // light + switch plate
+  if (pl) add(() => { const rg = g.createRadialGradient(-120, -360, 4, -120, -360, 380); rg.addColorStop(0, 'rgba(255,236,170,0.7)'); rg.addColorStop(1, 'rgba(255,236,170,0)'); g.fillStyle = rg; g.fillRect(-600, -800, 1200, 1100); });
+  rr(-200, -10, 420, 30, 4, '#241a3a'); g.restore(); };
+const tallThing = (x, y, s, o = {}) => { g.save(); if (o.dark) g.filter = `brightness(${o.dark})`; mom(x - 300 * s, y - 975 * s, s, { tall: 2.05, reach: 0, face: o.face || 'dark', ...o }); g.restore();
+  if (o.eyes !== false) { const ex = x, ey = y - 975 * s + (o.eyeY ?? 95) * s; add(() => { g.shadowColor = '#fff'; g.shadowBlur = 12; g.fillStyle = 'rgba(240,236,255,0.95)'; for (const sx of [-1, 1]) { g.beginPath(); g.ellipse(ex + sx * 17 * s, ey, 6 * s, 8 * s, 0, 0, 7); g.fill(); } g.shadowBlur = 0; }); } };
 const THUMBS = {
   1() { T = 1.3; g.save(); cam(1.0, 540, 960); wallIn(); floorIn(1520); door(300, 430, 520, 1090, { glow: 1, feet: 1, glowCol: '200,210,255' });
     add(() => { const rg = g.createRadialGradient(560, 760, 5, 560, 760, 120); rg.addColorStop(0, 'rgba(255,40,60,0.9)'); rg.addColorStop(1, 'rgba(255,40,60,0)'); g.fillStyle = rg; g.fillRect(400, 600, 320, 320); });
@@ -372,6 +384,9 @@ const THUMBS = {
     g.save(); g.font = 'italic 800 52px "Inter Display", sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fff'; g.shadowColor = 'rgba(0,0,0,0.95)'; g.shadowBlur = 24; g.fillText('You finally see what she really is...', 540, 1100); g.font = '900 60px "Inter Display", sans-serif'; g.fillStyle = '#c6ff3a'; g.fillText('YOUR VOTE WON: THE BRIDGE 🌉', 540, 1185); g.restore();
     g.fillStyle = lin(0, 1040, 0, 1920, [[0, 'rgba(5,4,10,0)'], [0.12, 'rgba(5,4,10,0.85)'], [1, 'rgba(5,4,10,1)']]); g.fillRect(0, 1040, 1080, 880);
     g.save(); g.font = 'italic 800 52px "Inter Display", sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fff'; g.fillText('You finally see what she really is...', 540, 1100); g.font = '900 60px "Inter Display", sans-serif'; g.fillStyle = '#c6ff3a'; g.fillText('YOUR VOTE WON: THE BRIDGE 🌉', 540, 1185); g.restore(); logo(); },
+  7() { T = 1.2; g.save(); cam(1.12, 600, 1000); g.fillStyle = '#07050d'; g.fillRect(-400, -400, 1900, 2800); sky(); porchClose({ porch: 1 });
+    tallThing(800, 1560, 0.88, { face: 'dark', dark: 0.25, wave: 1, t: 0.3, eyeY: 70 }); fog(1500); g.restore(); grade(760, 800, '255,30,50', 0.14);
+    hook([["THAT'S NOT MOM", '#ffffff', 112], ['ON THE PORCH...', '#ff2a3a', 112]], 210); ring(764, 695, 105); arrow(260, 1000, 644, 755); logo(); badge(7, 760, 1760); },
 };
 window.renderThumb = (n, k = 2) => { cv.width = W * k; cv.height = H * k; g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, W, H); THUMBS[n](); return true; };
 document.fonts.load('900 92px "Inter Display"').then(() => { window.ready = true; });

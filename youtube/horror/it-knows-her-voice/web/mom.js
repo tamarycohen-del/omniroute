@@ -1,7 +1,7 @@
 // "Mom" (the thing that copies her): our own design, same flat style as whiteStick.
 // Looks like a normal mom in her night-shift scrubs from far away, but too tall and too thin, and her arms can stretch.
 // momThing(g, o) draws in a 600 x 1000 card (cx 300, feet at 975) like whiteStick, but the body is taller (head above the card).
-// o: { tall (1 = normal mom, 1.6 = wrong), reach (0..1 arm stretch), face ('smile'|'blank'|'dark'), t }
+// o: { tall (1 = normal mom, 1.6 = wrong), reach (0..1 arm stretch), face ('smile'|'blank'|'dark'), t, wave (0..1 right arm up, waving), switchArm (right arm out to the side) }
 const O = '#121018', SKIN = '#e0dce6', SCRUB = '#5f8f9a', SCRUB_D = '#4a7280', HAIR = '#2a1e1c', RING = '#e8c860';
 
 export const momThing = (g, o = {}) => {
@@ -30,7 +30,9 @@ export const momThing = (g, o = {}) => {
   const sh = neck + 34, L = 170 + 900 * reach, droop = 120 * (1 - reach);
   for (const s of [-1, 1]) {
     const lp = (a, b) => a + (b - a) * reach, sw = o.runFront ? Math.sin(o.run + (s > 0 ? 0 : Math.PI)) * 12 * (1 - reach) : Math.sin(t * 1.6 + s * 2);
-    const ex = cx + s * lp(62, 44 + L * 0.45), ey = sh + lp(150, 60) + 10 * sw, hx = cx + s * lp(70, 44 + L), hy = sh + lp(300, 90) + lp(6, 30) * sw;
+    let ex = cx + s * lp(62, 44 + L * 0.45), ey = sh + lp(150, 60) + 10 * sw, hx = cx + s * lp(70, 44 + L), hy = sh + lp(300, 90) + lp(6, 30) * sw;
+    if (s === 1 && o.wave) { const wv = Math.sin(t * 7) * 30 * o.wave; ex = cx + 90; ey = sh - 30; hx = cx + 110 + wv; hy = sh - 200; } // raised arm, waving slowly (o.wave 0..1)
+    if (s === 1 && o.switchArm) { ex = cx + 110; ey = sh + 60; hx = cx + 230; hy = sh + 20; } // reaching sideways to a light switch
     if (reach > 0.05) { // long, wavy, snake-like arm
       const pts = []; const N = 18;
       for (let i = 0; i <= N; i++) { const k = i / N, x = cx + s * 40 + (hx - cx - s * 40) * k, y = sh + (hy - sh) * k + Math.sin(k * 7 + t * 3 * s) * 60 * reach * Math.sin(Math.PI * k); pts.push([x, y]); }
