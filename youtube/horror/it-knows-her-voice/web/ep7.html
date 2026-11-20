@@ -333,6 +333,8 @@ const porchClose = (o = {}) => { const s = 1.6, x = 540, y = 1500; g.save(); g.t
   g.fillStyle = '#0c0a18'; g.fillRect(-239, -460, 8, 190); g.fillRect(-320, -369, 170, 8);
   add(() => { const rg = g.createRadialGradient(-235, -365, 10, -235, -365, 260); rg.addColorStop(0, 'rgba(255,200,120,0.25)'); rg.addColorStop(1, 'rgba(255,200,120,0)'); g.fillStyle = rg; g.fillRect(-500, -620, 600, 600); });
   rr(-70, -330, 160, 330, 6, '#2a1e44'); g.fillStyle = o.doorOpen ? '#05040a' : '#3c2e62'; g.fillRect(-60, -320, 140, 320); // door
+  if (o.doorOpen && o.mirror) { g.fillStyle = '#6a6478'; g.beginPath(); g.ellipse(10, -200, 38, 62, 0, 0, 7); g.fill(); g.fillStyle = '#b8c4e0'; g.beginPath(); g.ellipse(10, -200, 30, 54, 0, 0, 7); g.fill();
+    add(() => { const gl = 0.5 + 0.5 * Math.sin(T * 5); g.fillStyle = `rgba(255,255,255,${0.5 * gl * o.mirror})`; g.beginPath(); g.moveTo(-6, -240); g.lineTo(8, -244); g.lineTo(-10, -170); g.lineTo(-22, -168); g.closePath(); g.fill(); const rg = g.createRadialGradient(10, -200, 4, 10, -200, 120); rg.addColorStop(0, `rgba(200,220,255,${0.35 * o.mirror})`); rg.addColorStop(1, 'rgba(200,220,255,0)'); g.fillStyle = rg; g.fillRect(-120, -330, 260, 260); }); }
   const pl = o.porch ?? 1; g.fillStyle = pl ? '#fff2c0' : '#2a2436'; g.beginPath(); g.arc(-120, -360, 14, 0, 7); g.fill(); rr(150, -250, 26, 40, 4, '#d8d0c0'); // light + switch plate
   if (pl) add(() => { const rg = g.createRadialGradient(-120, -360, 4, -120, -360, 380); rg.addColorStop(0, 'rgba(255,236,170,0.7)'); rg.addColorStop(1, 'rgba(255,236,170,0)'); g.fillStyle = rg; g.fillRect(-600, -800, 1200, 1100); });
   rr(-200, -10, 420, 30, 4, '#241a3a'); g.restore(); };
@@ -394,12 +396,21 @@ const SCENES = {
   window7(u, t) { if (u < 1.4) { cam(2.4, 1610, 1220); world7({ broken: 1, house: false }); kidHold(1600, 0.5, { expr: 'scared', look: 1, ears: 'up', tail: u > 0.4 ? 1 : 0 }); }
     else { cam(1.8, 300, 1100); g.fillStyle = '#07050d'; g.fillRect(-400, -400, 1900, 2800); sky(); porchClose({ porch: 1, sil: Math.min(1, (u - 1.5) / 1.6) * 0.5 }); }
     darken(0.1); },
+  movie(u, t) { g.fillStyle = '#0a0812'; g.fillRect(-200, -200, 1500, 2400); cam(1.0, 540, 960); sky(); g.fillStyle = '#100c1e'; g.fillRect(-200, 1300, 1500, 900);
+    add(() => { const rg = g.createRadialGradient(700, 700, 20, 700, 700, 700); rg.addColorStop(0, 'rgba(255,236,170,0.18)'); rg.addColorStop(1, 'rgba(255,236,170,0)'); g.fillStyle = rg; g.fillRect(-200, -200, 1500, 2000); });
+    hero(540 - 300 * 1.3, 1900 - 975 * 1.3, 1.3, { expr: 'worried', look: 0.6 });
+    const a = sm((u - 0.6) / 0.3) * (1 - sm((u - 4.9) / 0.3)); if (a > 0) { g.save(); g.globalAlpha = a; g.translate(760, 560); g.rotate(0.05); rr(-190, -140, 380, 280, 24, '#0b0912'); rr(-170, -120, 340, 240, 14, '#1e2a3a');
+      g.fillStyle = '#6a6478'; g.beginPath(); g.ellipse(0, 0, 60, 95, 0, 0, 7); g.fill(); g.fillStyle = '#b8c4e0'; g.beginPath(); g.ellipse(0, 0, 50, 85, 0, 0, 7); g.fill();
+      g.fillStyle = '#121018'; g.beginPath(); g.arc(0, -10, 26, 0, 7); g.fill(); g.strokeStyle = '#121018'; g.lineWidth = 4; for (let k = 0; k < 6; k++) { g.beginPath(); g.moveTo(0, 0); g.lineTo(Math.cos(k) * 60, Math.sin(k * 1.7) * 80); g.stroke(); } // the copy cracking in the mirror
+      g.restore(); }
+    darken(0.08); },
+  hallway(u, t) { const k = sm(u / 2.4); cam(1.25 + 0.5 * k, lerp(700, 560, k), lerp(1050, 1180, k)); g.fillStyle = '#07050d'; g.fillRect(-400, -400, 1900, 2800); sky(); porchClose({ porch: 1, doorOpen: 1, mirror: 1 }); tallThing(830, 1500, 0.66, { face: 'dark', dark: 0.3, t: T, eyeY: 70 }); darken(0.08); },
   choice(u, t) {
     g.fillStyle = '#05040a'; g.fillRect(0, 0, W, H);
-    g.save(); g.beginPath(); g.rect(0, 0, W, 955); g.clip(); cam(1.0, 540, 1150, 0, -430); g.fillStyle = '#07050d'; g.fillRect(-400, -400, 1900, 2800); sky(); porchClose({ porch: 1 }); tallThing(830, 1500, 0.66, { face: 'dark', dark: 0.3, wave: 1, t: T, eyeY: 70 }); darken(0.08); g.restore();
-    g.save(); g.beginPath(); g.rect(0, 965, W, 955); g.clip(); cam(1.2, 1300, 1300, 0, 480); world7({ broken: 1, dawn: 0.5, house: false }); kidHold(1600, 0.5, { expr: 'scared', look: -1 }); darken(0.08); g.restore();
+    g.save(); g.beginPath(); g.rect(0, 0, W, 955); g.clip(); cam(1.4, 640, 1170, 0, -430); g.fillStyle = '#07050d'; g.fillRect(-400, -400, 1900, 2800); sky(); porchClose({ porch: 1, doorOpen: 1, mirror: 1 }); tallThing(830, 1500, 0.66, { face: 'dark', dark: 0.3, t: T, eyeY: 70 }); darken(0.08); g.restore();
+    g.save(); g.beginPath(); g.rect(0, 965, W, 955); g.clip(); cam(0.58, 960, 1250, 0, 480); world7({ broken: 1, house: false }); swLit(300, GY, 0.6, { pose: 'crouch', eyes: 1, mouth: 0.6, smile: 1, reach: 0.4 }, 1); tallThing(1640, GY - 70, 0.42, { face: 'dark', dark: 0.25, t: T, eyeY: 70, reach: 0.25 }); kidHold(1840, 0.36, { expr: 'scared', look: -1 }); darken(0.08); g.restore();
     g.fillStyle = '#c6ff3a'; g.fillRect(0, 955, W, 10);
-    choiceCard(540, 820, 'RUN INTO THE HOUSE', sm((u - 1.1) / 0.3)); choiceCard(540, 1790, 'WAIT FOR SUNRISE', sm((u - 2.7) / 0.3));
+    choiceCard(540, 820, 'GET THE MIRROR', sm((u - 1.6) / 0.3)); choiceCard(540, 1790, 'LET THEM FIGHT', sm((u - 4.6) / 0.3));
   },
   end() { g.fillStyle = '#000'; g.fillRect(0, 0, W, H); },
 };
@@ -409,8 +420,8 @@ const choiceCard = (x, y, txt, a, col = '#ff4d5e') => { if (a <= 0) return; g.sa
   g.fillStyle = col; g.textAlign = 'center'; g.fillText(txt, 0, 16); g.restore(); };
 
 // ---------- timeline (seconds, from part7/audio/timeline.json + words.json) ----------
-const SHOTS = [[0.0, 'open7'], [4.8, 'promise7'], [9.35, 'comments'], [13.3, 'smart'], [14.2, 'cup'], [15.7, 'kidReal'], [17.85, 'kidFake'], [22.4, 'two'], [27.0, 'clap'], [33.85, 'run'], [36.75, 'jump'], [40.6, 'scream'], [44.45, 'rehook'], [46.8, 'porchBlink'], [51.4, 'pushPorch'], [55.75, 'tallReveal'], [59.85, 'allNight'], [61.75, 'copiesFace'], [65.0, 'signal'], [65.95, 'clothes'], [66.95, 'waves'], [68.6, 'between'], [74.1, 'window7'], [77.7, 'choice'], [85.3, 'end']];
-window.TOTAL = 86.23;
+const SHOTS = [[0.0, 'open7'], [4.8, 'promise7'], [9.35, 'comments'], [13.3, 'smart'], [14.2, 'cup'], [15.7, 'kidReal'], [17.85, 'kidFake'], [22.4, 'two'], [27.0, 'clap'], [33.85, 'run'], [36.75, 'jump'], [40.6, 'scream'], [44.45, 'rehook'], [46.8, 'porchBlink'], [51.4, 'pushPorch'], [55.75, 'tallReveal'], [59.85, 'allNight'], [61.75, 'copiesFace'], [65.0, 'signal'], [65.95, 'clothes'], [66.95, 'waves'], [68.6, 'between'], [74.1, 'window7'], [78.0, 'movie'], [83.45, 'hallway'], [86.0, 'choice'], [95.15, 'end']];
+window.TOTAL = 96.04;
 const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0]]; };
 let CHUNKS = [];
 const buildChunks = () => { CHUNKS = []; let cur = []; WORDS.forEach((w, i) => { cur.push(w); const end = /[.?!:,]$|\.\.\.$/.test(w.w) || cur.length >= 4 || (WORDS[i + 1] && WORDS[i + 1].who !== w.who); if (end) { CHUNKS.push(cur); cur = []; } }); if (cur.length) CHUNKS.push(cur); };
@@ -426,7 +437,7 @@ window.renderFrame = (f) => {
   if (!/^(choice|end|comments)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: '3:48', title: 'HER VOICE', sub: 'CHAPTER SEVEN' }); g.restore(); }
   if (shot !== 'choice' && shot !== 'comments') captions(t, /^(clap)$/.test(shot));
   if (shot === 'choice') { g.save(); g.fillStyle = 'rgba(216,208,232,0.85)'; g.font = '700 36px "DejaVu Sans Mono", monospace'; g.fillText('PART 7', 40, 90); g.fillStyle = '#ff4d5e'; g.textAlign = 'right'; g.fillText('FINALE NEXT', 1040, 90); g.restore(); }
-  if (shot === 'choice' && u > 5.0) { const c = sm((u - 5.0) / 0.3); g.save(); g.globalAlpha = c; g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#0a0610'; g.strokeText('COMMENT YOUR CHOICE', 540, 1080); g.fillText('COMMENT YOUR CHOICE', 540, 1080); const bob = Math.sin(t * 6) * 10; g.fillStyle = '#c6ff3a'; g.beginPath(); g.moveTo(510, 1120 + bob); g.lineTo(570, 1120 + bob); g.lineTo(540, 1160 + bob); g.fill(); g.restore(); }
+  if (shot === 'choice' && u > 6.3) { const c = sm((u - 6.3) / 0.3); g.save(); g.globalAlpha = c; g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#0a0610'; g.strokeText('COMMENT YOUR CHOICE', 540, 1080); g.fillText('COMMENT YOUR CHOICE', 540, 1080); const bob = Math.sin(t * 6) * 10; g.fillStyle = '#c6ff3a'; g.beginPath(); g.moveTo(510, 1120 + bob); g.lineTo(570, 1120 + bob); g.lineTo(540, 1160 + bob); g.fill(); g.restore(); }
   return true;
 };
 fetch('./words7.json').then((r) => r.json()).then((w) => { WORDS = w; buildChunks(); window.ready = true; });

@@ -170,10 +170,10 @@ def switch():
     n = int(0.05 * SR); x = np.arange(n) / SR; return (np.sin(2 * np.pi * 3100 * x) * 0.6 + rng.standard_normal(n) * 0.4) * np.exp(-x * 140)
 # --- drone, gone in the silence before the porch ---
 drone = (np.sin(2 * np.pi * 55 * t) + 0.6 * np.sin(2 * np.pi * 58.3 * t) + 0.3 * np.sin(2 * np.pi * 110.4 * t)) * 0.10
-shape = np.minimum(1, t / 1.0) * (1 + 0.6 * np.clip((t - 68.6) / 9, 0, 1)) * np.where((t > 44.45) & (t < 45.1), 0.05, 1.0) * np.where(t > DUR - 1.0, np.clip((DUR - t) / 1.0, 0, 1), 1.0)
+shape = np.minimum(1, t / 1.0) * (1 + 0.6 * np.clip((t - 68.6) / 17, 0, 1)) * np.where((t > 44.45) & (t < 45.1), 0.05, 1.0) * np.where(t > DUR - 1.0, np.clip((DUR - t) / 1.0, 0, 1), 1.0)
 bed += drone * shape * 0.35
 wat = water(DUR) * np.where(t > 46.8, 0.35, 1.0); place(wat, 0.0, 0.45)
-bed += crickets(DUR) * np.where((t > 46.8) & (t < 77.7), 0.6, 0.0)
+bed += crickets(DUR) * np.where((t > 46.8) & (t < 86.0), 0.6, 0.0)
 # --- events (seconds = ep7.html SHOTS) ---
 place(creak(3.0, 140, 90), 0.2, 0.7); place(snap(0.5), 2.6, 0.4)                                   # boards under Biscuit
 place(sting([98, 103.8, 146.8], 2.5, 1.1), 4.8, 0.4)                                                # something waves...
@@ -191,8 +191,9 @@ place(sting([110, 116.5, 155.6, 233], 3.0, 0.9), 55.75, 0.55); place(thunk(45, 6
 for k in np.arange(58.9, 61.7, 0.2): place(switch(), k, 0.4)                                        # flicking all night
 for k in np.arange(65.0, 65.9, 0.17): place(switch(), k, 0.35)
 place(whimper(), 76.4, 0.25)                                                                        # happy wag at the window
-place(sting([220, 277, 330], 3.0, 1.2), 77.7, 0.3)                                                 # choice
-for c in [4.8, 9.35, 13.3, 14.2, 15.7, 17.85, 22.4, 27.0, 33.85, 36.75, 40.6, 46.8, 51.4, 55.75, 59.85, 61.75, 65.0, 65.95, 66.95, 68.6, 74.1, 77.7]: place(whoosh(0.4), c - 0.2, 0.1)
+place(sting([880, 1175, 1568], 2.0, 1.6), 84.1, 0.25)   # mirror glint
+place(sting([220, 277, 330], 3.0, 1.2), 86.0, 0.3)                                                 # choice
+for c in [4.8, 9.35, 13.3, 14.2, 15.7, 17.85, 22.4, 27.0, 33.85, 36.75, 40.6, 46.8, 51.4, 55.75, 59.85, 61.75, 65.0, 65.95, 66.95, 68.6, 74.1, 78.0, 83.45, 86.0]: place(whoosh(0.4), c - 0.2, 0.1)
 bed *= np.where((t > 44.45) & (t < 45.1), 0.03, 1.0)
 
 bed *= 0.3 / max(1e-9, np.abs(bed).max())

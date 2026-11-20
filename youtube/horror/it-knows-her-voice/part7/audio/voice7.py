@@ -4,11 +4,12 @@
 import json, os, re, subprocess, difflib
 import numpy as np
 SR = 48000; HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = {"A": "narrA.mp3", "B": "narrB.mp3", "K": "kid.mp3", "F": "kid.mp3"}
-WHO = {"A": "n", "B": "n", "K": "k", "F": "f"}
+SRC = {"A": "narrA.mp3", "B": "narrB.mp3", "C": "narrC.mp3", "K": "kid.mp3", "F": "kid.mp3"}
+WHO = {"A": "n", "B": "n", "C": "n", "K": "k", "F": "f"}
 TEXT = {
  "A": "Imagine two voices calling your dog... and both of them are yours. And tonight... something waves at me from our porch. And it isn't Mom. In the comments, you said: call him from the other side. Smart. So I called him.",
  "B": "Two voices. Both mine. And Biscuit didn't know which one was real. So I did the one thing she could never copy. I clapped twice... and whistled. Our treat signal. Biscuit's tail went crazy. He ran to me. The last board broke. He jumped... and I caught him. Behind us, Mrs. Hale screamed. In Mom's voice. But that wasn't the scary part. Our porch light blinked. Once. Twice. Three times. And this time... I was looking at the porch. Mom wasn't there. Something tall was. Its long fingers were on the light switch. It had been doing it all night. It doesn't just copy Mom's voice. It copies Mom. Her signal. Her clothes. Even the way she waves. Behind us, a monster that can't cross water. In front of us... our house. Then Biscuit looked at the kitchen window... and wagged his tail. So... do you run past it into the house? Or wait on the bridge for sunrise? Comment your choice. Part 8 is the finale.",
+ "C": "I saw it in a movie once. A thing that copies you... can't look at itself in a mirror. And our hallway mirror was right behind it. So... do you run in for the mirror? Or lead it back to the bridge... and let the two monsters fight? Comment your choice. Part 8 is the finale.",
  "K": "\"Biscuit! Come here, boy!\"", "F": "\"Biscuit! Come here, boy!\""}
 PLAN = [
     ("A", "Imagine", "In", "open"),
@@ -31,8 +32,11 @@ PLAN = [
     ("B", "It", "Behind#1", "copies"),
     ("B", "Behind#1", "Then", "between"),
     ("B", "Then", "So#1", "window"),
-    ("gap", 0.5, "choice"),
-    ("B", "So#1", None, "ask"),
+    ("gap", 0.4, None),
+    ("C", "I", "And", "movie"),
+    ("C", "And", "So", "hallway"),
+    ("gap", 0.4, "choice"),
+    ("C", "So", None, "ask"),
     ("gap", 0.9, "end"),
 ]
 def load(p): return np.frombuffer(subprocess.run(["ffmpeg", "-v", "error", "-i", p, "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True, check=True).stdout, np.float32).astype(np.float64)

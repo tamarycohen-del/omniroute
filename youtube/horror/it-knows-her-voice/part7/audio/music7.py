@@ -4,7 +4,7 @@ braams on the big reveals, risers into them, an eerie music-box motif at the por
     python3 music5.py -> music.wav (mono 48 kHz, peak 0.9)"""
 import os, wave
 import numpy as np
-SR = 48000; HERE = os.path.dirname(os.path.abspath(__file__)); DUR = 86.3
+SR = 48000; HERE = os.path.dirname(os.path.abspath(__file__)); DUR = 96.1
 N = int(DUR * SR); t = np.arange(N) / SR; rng = np.random.default_rng(11)
 out = np.zeros(N)
 def put(sig, at, g=1.0):
@@ -46,7 +46,8 @@ def bpm(tt):
     if tt < 46.8: return 0
     if tt < 55.75: return 64
     if tt < 68.6: return 0
-    if tt < 77.7: return 80 + 45 * (tt - 68.6) / 9.1
+    if tt < 78.0: return 80 + 30 * (tt - 68.6) / 9.4
+    if tt < 86.0: return 110 + 20 * (tt - 78.0) / 8.0
     return 0
 tt = 0.3
 while tt < DUR - 0.5:
@@ -66,7 +67,7 @@ def riser(dur=2.2):
     noise = rng.standard_normal(n); hp = noise - np.convolve(noise, np.ones(int(40 - 34 * q[-1]) + 2) / (int(40 - 34 * q[-1]) + 2), "same")
     tone = np.sin(2 * np.pi * np.cumsum(220 + 660 * q ** 2) / SR)
     return (hp * 0.5 + tone * 0.35) * q ** 2.2
-for at in [40.6, 55.75, 77.7]: put(riser(2.2), at - 2.2, 0.45)
+for at in [40.6, 55.75, 86.0]: put(riser(2.2), at - 2.2, 0.45)
 # --- reverse swells before some cuts ---
 def rswell(dur=1.0):
     n = int(dur * SR); x = np.arange(n) / SR; s = sum(np.sin(2 * np.pi * NOTE(m) * x) for m in (57, 60, 64)) / 3
@@ -83,8 +84,8 @@ for i, m in enumerate(motif * 2):
 # --- clock at the choice ---
 def tick(f=2400):
     n = int(0.04 * SR); x = np.arange(n) / SR; return np.sin(2 * np.pi * f * x) * np.exp(-x * 160)
-for k in np.arange(77.9, 85.0, 0.5): put(tick(2400 if int(k * 2) % 2 else 1800), k, 0.35)
-put(braam(3.0, 36.7), 77.7, 0.35)
+for k in np.arange(86.2, 95.0, 0.5): put(tick(2400 if int(k * 2) % 2 else 1800), k, 0.35)
+put(braam(3.0, 36.7), 86.0, 0.35); put(braam(2.4, 61.7), 83.45, 0.25)
 # fades
 out *= np.where((t > 44.45) & (t < 45.1), 0.03, 1.0)
 out *= np.minimum(1, t / 0.4) * np.clip((DUR - t) / 1.2, 0, 1)
