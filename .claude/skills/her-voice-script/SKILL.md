@@ -42,5 +42,12 @@ Check every script against these before recording:
 7. **Rhythm**: mostly staccato, mixed with a few medium/long lines; never the same sentence length three times in a row.
 8. **Energy**: narrator takes in ElevenLabs need tension/urgency; re-record flat lines.
 
+## Sound mix (apply the `audio-design` skill, adapted to our videos)
+- Loudness: our Shorts are streaming video, so keep loudnorm I=-14 LUFS, true peak <= -1 dBTP (the skill's -24/-18 LUFS targets are for games). Meter with `ffmpeg -i mix.wav -af ebur128=peak=true -f null -`.
+- Buses: voice, music, SFX, ambience (water/crickets/drone) as separate arrays; duck music AND ambience under the voice (release ~300-500 ms, no pumping).
+- Adaptive music: build intensity in layers (pad -> pulse -> drums) instead of one flat loop; switch sections on bar lines; use stingers for reveals.
+- SFX variation: never repeat the exact same sample in a row (footsteps, ticks, clicks): small random pitch (+/-1 semitone) and volume (+/-2 dB) offsets.
+- Leave headroom before the limiter; check that the re-hook silence is really silent.
+
 ## Upload checklist
 Instagram reels: ALWAYS pass cover_url (the part thumbnail, as a public r2 URL) to INSTAGRAM_POST_IG_USER_MEDIA. The cover cannot be changed via the API after publishing.
