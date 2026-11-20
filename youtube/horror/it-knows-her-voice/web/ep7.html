@@ -338,6 +338,29 @@ const porchClose = (o = {}) => { const s = 1.6, x = 540, y = 1500; g.save(); g.t
   const pl = o.porch ?? 1; g.fillStyle = pl ? '#fff2c0' : '#2a2436'; g.beginPath(); g.arc(-120, -360, 14, 0, 7); g.fill(); rr(150, -250, 26, 40, 4, '#d8d0c0'); // light + switch plate
   if (pl) add(() => { const rg = g.createRadialGradient(-120, -360, 4, -120, -360, 380); rg.addColorStop(0, 'rgba(255,236,170,0.7)'); rg.addColorStop(1, 'rgba(255,236,170,0)'); g.fillStyle = rg; g.fillRect(-600, -800, 1200, 1100); });
   rr(-200, -10, 420, 30, 4, '#241a3a'); g.restore(); };
+// inside our house: the hallway, the framed mirror on the wall, the open front door at the end with the tall thing in it
+const hallwayIn = (o = {}) => { g.fillStyle = lin(0, 0, 0, 1920, [[0, '#1b1430'], [1, '#0c0918']]); g.fillRect(-400, -400, 1900, 2800);
+  g.fillStyle = 'rgba(255,255,255,0.025)'; for (let x = -400; x < 1500; x += 70) g.fillRect(x, -400, 30, 2000); // wallpaper stripes
+  // far end: open front door, porch light behind
+  const dx = 470, dy = 560, dw = 230, dh = 560; rr(dx - 18, dy - 18, dw + 36, dh + 18, 6, '#2a1e44');
+  g.fillStyle = lin(0, dy, 0, dy + dh, [[0, '#ffe6a8'], [1, '#c9a46a']]); g.fillRect(dx, dy, dw, dh);
+  add(() => { const rg = g.createRadialGradient(dx + dw / 2, dy + 120, 10, dx + dw / 2, dy + 120, 700); rg.addColorStop(0, 'rgba(255,230,160,0.35)'); rg.addColorStop(1, 'rgba(255,230,160,0)'); g.fillStyle = rg; g.fillRect(-400, -200, 1900, 2000);
+    g.fillStyle = 'rgba(255,220,150,0.18)'; g.beginPath(); g.moveTo(dx, dy + dh); g.lineTo(dx + dw, dy + dh); g.lineTo(dx + dw + 300, 1920); g.lineTo(dx - 300, 1920); g.closePath(); g.fill(); });
+  if (o.tall !== false) { g.save(); g.beginPath(); g.rect(dx, dy - 400, dw, dh + 400); g.clip(); tallThing(dx + dw / 2, dy + dh, 0.6, { face: 'dark', dark: 0.05, t: T, eyeY: 70, wave: o.wave || 0 }); g.restore(); }
+  // floor
+  g.fillStyle = lin(0, 1120, 0, 1920, [[0, '#2a1d2e'], [1, '#120c18']]); g.beginPath(); g.moveTo(-400, 1920); g.lineTo(dx - 40, dy + dh); g.lineTo(dx + dw + 40, dy + dh); g.lineTo(1500, 1920); g.closePath(); g.fill();
+  g.strokeStyle = 'rgba(0,0,0,0.3)'; g.lineWidth = 4; for (let k = -6; k <= 6; k++) { g.beginPath(); g.moveTo(dx + dw / 2 + k * 18, dy + dh); g.lineTo(dx + dw / 2 + k * 160, 1920); g.stroke(); }
+  // the mirror on the left wall, in a wooden frame
+  const mx = 170, my = 820, mw = 230, mh = 420; g.save(); g.translate(mx, my); g.transform(1, 0.12, 0, 1, 0, 0);
+  rr(-mw / 2 - 26, -mh / 2 - 26, mw + 52, mh + 52, 18, '#5a3a24'); rr(-mw / 2 - 14, -mh / 2 - 14, mw + 28, mh + 28, 12, '#7a5434');
+  g.fillStyle = lin(0, -mh / 2, 0, mh / 2, [[0, '#4a5068'], [1, '#22283a']]); g.fillRect(-mw / 2, -mh / 2, mw, mh); // reflection: the dark hallway
+  g.fillStyle = 'rgba(255,230,160,0.35)'; g.fillRect(mw / 2 - 70, -mh / 2 + 70, 46, 120); // reflected doorway glow
+  add(() => { const gl = 0.55 + 0.45 * Math.sin(T * 4); g.fillStyle = `rgba(255,255,255,${0.35 * gl})`; g.beginPath(); g.moveTo(-mw / 2 + 30, -mh / 2 + 20); g.lineTo(-mw / 2 + 80, -mh / 2 + 20); g.lineTo(-mw / 2 + 10, mh / 2 - 60); g.lineTo(-mw / 2 - 2, mh / 2 - 120); g.closePath(); g.fill();
+    const rg = g.createRadialGradient(0, 0, 10, 0, 0, 330); rg.addColorStop(0, `rgba(190,210,255,${0.22 * (o.glow ?? 1)})`); rg.addColorStop(1, 'rgba(190,210,255,0)'); g.fillStyle = rg; g.fillRect(-400, -400, 800, 800); });
+  g.restore();
+  rr(40, 1180, 280, 30, 6, '#3a2632'); g.fillStyle = '#2a1c26'; g.fillRect(60, 1210, 20, 160); g.fillRect(280, 1210, 20, 160); // little table under it
+  g.fillStyle = '#c8b070'; g.beginPath(); g.arc(120, 1170, 12, 0, 7); g.fill(); // keys on the table
+};
 const clapHands = (u, claps) => { // two hands meeting in front of the camera
   let k = 1; for (const c of claps) { const d = u - c; if (d > -0.15 && d < 0.2) k = Math.min(k, Math.abs(d) / 0.15); }
   const gap = 40 + 160 * k; for (const s of [-1, 1]) { g.save(); g.translate(540 + s * gap * 0.7, 1480); g.rotate(s * 0.2); g.fillStyle = '#f4f2ee'; g.strokeStyle = '#121018'; g.lineWidth = 10; g.beginPath(); g.ellipse(0, 0, 55, 85, 0, 0, 7); g.fill(); g.stroke(); g.restore(); }
@@ -404,10 +427,10 @@ const SCENES = {
       g.fillStyle = '#121018'; g.beginPath(); g.arc(0, -10, 26, 0, 7); g.fill(); g.strokeStyle = '#121018'; g.lineWidth = 4; for (let k = 0; k < 6; k++) { g.beginPath(); g.moveTo(0, 0); g.lineTo(Math.cos(k) * 60, Math.sin(k * 1.7) * 80); g.stroke(); } // the copy cracking in the mirror
       g.restore(); }
     darken(0.08); },
-  hallway(u, t) { const k = sm(u / 2.4); cam(1.25 + 0.5 * k, lerp(700, 560, k), lerp(1050, 1180, k)); g.fillStyle = '#07050d'; g.fillRect(-400, -400, 1900, 2800); sky(); porchClose({ porch: 1, doorOpen: 1, mirror: 1 }); tallThing(830, 1500, 0.66, { face: 'dark', dark: 0.3, t: T, eyeY: 70 }); darken(0.08); },
+  hallway(u, t) { const k = sm(u / 2.5); cam(1.0 + 0.1 * k, lerp(420, 470, k), 960); hallwayIn({}); darken(0.1); },
   choice(u, t) {
     g.fillStyle = '#05040a'; g.fillRect(0, 0, W, H);
-    g.save(); g.beginPath(); g.rect(0, 0, W, 955); g.clip(); cam(1.4, 640, 1170, 0, -430); g.fillStyle = '#07050d'; g.fillRect(-400, -400, 1900, 2800); sky(); porchClose({ porch: 1, doorOpen: 1, mirror: 1 }); tallThing(830, 1500, 0.66, { face: 'dark', dark: 0.3, t: T, eyeY: 70 }); darken(0.08); g.restore();
+    g.save(); g.beginPath(); g.rect(0, 0, W, 955); g.clip(); cam(1.0, 420, 900, 0, -430); hallwayIn({}); darken(0.08); g.restore();
     g.save(); g.beginPath(); g.rect(0, 965, W, 955); g.clip(); cam(0.58, 960, 1250, 0, 480); world7({ broken: 1, house: false }); swLit(300, GY, 0.6, { pose: 'crouch', eyes: 1, mouth: 0.6, smile: 1, reach: 0.4 }, 1); tallThing(1640, GY - 70, 0.42, { face: 'dark', dark: 0.25, t: T, eyeY: 70, reach: 0.25 }); kidHold(1840, 0.36, { expr: 'scared', look: -1 }); darken(0.08); g.restore();
     g.fillStyle = '#c6ff3a'; g.fillRect(0, 955, W, 10);
     choiceCard(540, 820, 'GET THE MIRROR', sm((u - 1.6) / 0.3)); choiceCard(540, 1790, 'LET THEM FIGHT', sm((u - 4.6) / 0.3));
