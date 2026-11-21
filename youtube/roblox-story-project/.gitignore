@@ -1,0 +1,4 @@
+production/tts/
+*.wav
+__pycache__/
+tts_k/

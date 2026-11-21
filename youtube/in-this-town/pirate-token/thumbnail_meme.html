@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0"><canvas id="c" width="2160" height="3840" style="width:1080px;height:1920px;display:block"></canvas><script>
+const c = document.getElementById('c'), g = c.getContext('2d'); g.scale(2, 2); const W = 1080, H = 1920;
+const load = (s) => new Promise((r) => { const i = new Image(); i.onload = () => r(i); i.src = s; });
+const F = (s) => `900 ${s}px "Inter Display", "Noto Color Emoji", sans-serif`;
+const big = (t, x, y, fs, fill, rot = 0, glow = null) => { g.save(); g.translate(x, y); g.rotate(rot); g.font = F(fs); g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round';
+  g.shadowColor = 'rgba(0,0,0,0.8)'; g.shadowBlur = 30; g.shadowOffsetY = 12; g.lineWidth = fs * 0.26; g.strokeStyle = '#000'; g.strokeText(t, 0, 0); g.shadowColor = 'transparent';
+  g.lineWidth = fs * 0.1; g.strokeStyle = '#fff'; g.strokeText(t, 0, 0); if (glow) { g.shadowColor = glow; g.shadowBlur = 40; } g.fillStyle = fill; g.fillText(t, 0, 0); g.restore(); };
+const tag = (t, x, y, bg, fg = '#fff') => { g.save(); g.font = F(46); const w = g.measureText(t).width + 56; g.shadowColor = 'rgba(0,0,0,0.6)'; g.shadowBlur = 20; g.fillStyle = bg; g.beginPath(); g.roundRect(x, y, w, 84, 42); g.fill(); g.shadowBlur = 0;
+  g.lineWidth = 5; g.strokeStyle = '#000'; g.stroke(); g.fillStyle = fg; g.textBaseline = 'middle'; g.fillText(t, x + 28, y + 45); g.restore(); };
+const arrow = (x0, y0, x1, y1, col = '#ff2d2d') => { g.save(); const a = Math.atan2(y1 - y0, x1 - x0), L = Math.hypot(x1 - x0, y1 - y0); g.translate(x0, y0); g.rotate(a); g.shadowColor = 'rgba(0,0,0,0.7)'; g.shadowBlur = 18;
+  g.fillStyle = col; g.strokeStyle = '#000'; g.lineWidth = 10; g.beginPath(); g.moveTo(0, -16); g.quadraticCurveTo(L * 0.5, -30, L - 80, -22); g.lineTo(L - 86, -58); g.lineTo(L, 0); g.lineTo(L - 86, 58); g.lineTo(L - 80, 22); g.quadraticCurveTo(L * 0.5, 26, 0, 16); g.closePath(); g.stroke(); g.fill(); g.restore(); };
+const vign = (y0, y1, col) => { const v = g.createRadialGradient(540, (y0 + y1) / 2, 200, 540, (y0 + y1) / 2, 900); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, col); g.fillStyle = v; g.fillRect(0, y0, W, y1 - y0); };
+(async () => { await document.fonts.load(F(80)); await document.fonts.load('80px "Noto Color Emoji"');
+  const a = await load('TH3.png'), b = await load('TH4.png'); const yA = 880, yB = 1020;
+  // top panel (sad rich guy), cool and dim
+  g.save(); g.beginPath(); g.moveTo(0, 0); g.lineTo(W, 0); g.lineTo(W, yA); g.lineTo(0, yB); g.closePath(); g.clip();
+  g.filter = 'saturate(0.9) contrast(1.08)'; g.drawImage(a, 0, 560, 1080, 1080, 0, 0, 1080, 1080); g.filter = 'none';
+  g.fillStyle = 'rgba(30,40,110,0.18)'; g.fillRect(0, 0, W, yB); vign(0, yB, 'rgba(0,0,10,0.5)'); g.restore();
+  // bottom panel (noob + token), warm and bright
+  g.save(); g.beginPath(); g.moveTo(0, yB); g.lineTo(W, yA); g.lineTo(W, H); g.lineTo(0, H); g.closePath(); g.clip();
+  g.filter = 'saturate(1.2) contrast(1.06)'; g.drawImage(b, 0, 300, 1080, 1180, 0, yA - 40, 1080, 1180); g.filter = 'none';
+  g.globalCompositeOperation = 'lighter'; const wg = g.createRadialGradient(720, 1230, 30, 720, 1230, 520); wg.addColorStop(0, 'rgba(255,190,60,0.25)'); wg.addColorStop(1, 'rgba(255,190,60,0)'); g.fillStyle = wg; g.fillRect(0, yA, W, H - yA); g.globalCompositeOperation = 'source-over';
+  vign(yA, H, 'rgba(10,5,0,0.6)'); g.restore();
+  // divider
+  g.save(); g.lineCap = 'round'; g.lineWidth = 30; g.strokeStyle = '#000'; g.beginPath(); g.moveTo(-20, yB + 3); g.lineTo(W + 20, yA - 3); g.stroke(); g.lineWidth = 14; g.strokeStyle = '#fff'; g.stroke(); g.restore();
+  g.save(); g.translate(540, (yA + yB) / 2); g.rotate(-0.13); g.fillStyle = '#ffd21f'; g.strokeStyle = '#000'; g.lineWidth = 10; g.beginPath(); g.arc(0, 0, 78, 0, 7); g.fill(); g.stroke(); g.font = F(70); g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#000'; g.fillText('VS', 0, 5); g.restore();
+  // text
+  tag('RICHEST GUY 💰', 36, 60, '#1b1b22'); big('0% CHANCE', 450, 830, 128, '#ff3b30', -0.07, 'rgba(255,40,40,0.8)'); big('💀', 935, 770, 110, '#fff', 0.1);
+  tag('THE NOOB 🤓', 36, 1090, '#1f6fd6'); big('FIRST TRY ✅', 540, 1655, 78, '#ffffff', -0.035);
+  big('1 IN 137,500', 540, 1780, 150, '#ffe11f', -0.035, 'rgba(255,200,0,0.7)');
+  arrow(110, 1330, 545, 1225);
+  window.done = true; })();
+</script></body></html>

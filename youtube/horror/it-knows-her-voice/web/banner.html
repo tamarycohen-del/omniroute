@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="2560" height="1440"></canvas>
+<script type="module">
+// Channel banner 2560x1440, no text, purple palette. Our character + moon + a signpost with two arrows (the choice),
+// and white eyes watching from the dark. Key art inside the 1546x423 safe area (x 507-2053, y 508-931).
+import { whiteStick } from './stick.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 2560, H = 1440, GY = 925;
+const r = g.createRadialGradient(1280, 720, 100, 1280, 720, 1500); r.addColorStop(0, '#2e2160'); r.addColorStop(1, '#07050f'); g.fillStyle = r; g.fillRect(0, 0, W, H);
+g.fillStyle = 'rgba(255,255,255,0.02)'; for (let x = 0; x < W; x += 110) g.fillRect(x, 0, 48, H);
+g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(0, GY, W, H - GY);
+// moon
+g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(1280, 590, 40, 0, 7); g.fill(); g.fillStyle = '#2a1e58'; g.beginPath(); g.arc(1296, 578, 36, 0, 7); g.fill();
+// character
+g.fillStyle = 'rgba(0,0,0,0.35)'; g.beginPath(); g.ellipse(1020, GY + 3, 80, 12, 0, 0, 7); g.fill();
+g.save(); g.translate(1020 - 300 * 0.42, GY - 975 * 0.42); g.scale(0.42, 0.42); whiteStick({ g }, { beanie: '#2a2a36', expr: 'worried', look: 1 }); g.restore();
+// signpost with two arrows (lime left, red right)
+const px = 1500; g.fillStyle = 'rgba(0,0,0,0.35)'; g.beginPath(); g.ellipse(px, GY + 3, 60, 10, 0, 0, 7); g.fill();
+g.fillStyle = '#4a3720'; g.strokeStyle = '#121018'; g.lineWidth = 8; g.beginPath(); g.rect(px - 13, GY - 330, 26, 330); g.fill(); g.stroke();
+const arrow = (y, dir, col, tilt) => { g.save(); g.translate(px, y); g.rotate(tilt); g.fillStyle = col; g.strokeStyle = '#121018'; g.lineWidth = 8; g.beginPath();
+  const L = 190, h = 54; if (dir < 0) { g.moveTo(30, -h / 2); g.lineTo(-L + 40, -h / 2); g.lineTo(-L, 0); g.lineTo(-L + 40, h / 2); g.lineTo(30, h / 2); } else { g.moveTo(-30, -h / 2); g.lineTo(L - 40, -h / 2); g.lineTo(L, 0); g.lineTo(L - 40, h / 2); g.lineTo(-30, h / 2); }
+  g.closePath(); g.fill(); g.stroke(); g.fillStyle = 'rgba(0,0,0,0.18)'; g.fillRect(dir < 0 ? -L + 50 : -20, 6, L - 40, 12); g.restore(); };
+arrow(GY - 285, -1, '#c6ff3a', -0.05); arrow(GY - 205, 1, '#ff4d5e', 0.06);
+g.fillStyle = '#121018'; g.beginPath(); g.arc(px, GY - 340, 16, 0, 7); g.fill();
+// eyes watching from the dark (right)
+g.save(); g.shadowColor = 'rgba(255,255,255,0.9)'; g.shadowBlur = 16; g.fillStyle = '#f4f2ee';
+for (const [x, y, s] of [[1860, GY - 120, 1], [1960, GY - 210, 0.8], [700, GY - 160, 0.8]]) for (const d of [-1, 1]) { g.beginPath(); g.ellipse(x + d * 12 * s, y, 6 * s, 9 * s, 0, 0, 7); g.fill(); }
+g.restore();
+const v = g.createRadialGradient(1280, 720, 600, 1280, 720, 1500); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.6)'); g.fillStyle = v; g.fillRect(0, 0, W, H);
+window.ready = true;
+</script></body></html>

@@ -1,0 +1,301 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+// "It Knows Her Voice" - Part 1. 30 fps, timings from words.json (voice.py output).
+import { capCard, chapterCard, whiteStick } from './stick.js';
+import { biscuit, biscuitFront } from './biscuit.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920, P = { g };
+const rr = (x, y, w, h, r, fill) => { g.beginPath(); g.roundRect(x, y, w, h, r); g.fillStyle = fill; g.fill(); };
+const lin = (x0, y0, x1, y1, stops) => { const gr = g.createLinearGradient(x0, y0, x1, y1); stops.forEach(([o, c]) => gr.addColorStop(o, c)); return gr; };
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
+const lerp = (a, b, u) => a + (b - a) * u;
+const add = (fn) => { g.save(); g.globalCompositeOperation = 'lighter'; fn(); g.restore(); };
+let WORDS = [];
+// ---- timeline (seconds) ----
+export const KNOCKS = [2.15, 2.45, 2.75, 18.30, 18.62, 18.94];
+const knockAmt = (t) => KNOCKS.reduce((m, k) => (t >= k && t < k + 0.14 ? Math.max(m, 1 - (t - k) / 0.14) : m), 0);
+const SHOTS = [
+  [0.0, 'bed'], [7.0, 'phone1'], [12.7, 'window'], [17.4, 'hallKnock'], [19.7, 'frontDoor'], [26.0, 'underBed'],
+  [30.4, 'lock'], [33.2, 'face'], [35.55, 'phone2'], [44.45, 'peep'], [48.3, 'doorClose'], [58.6, 'phone3'],
+  [65.6, 'biscuitWalk'], [69.65, 'choice'], [78.2, 'end'],
+];
+const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0], SHOTS[i + 1] ? SHOTS[i + 1][0] - SHOTS[i][0] : 1]; };
+const cam = (z, fx, fy, sx = 0, sy = 0) => { g.translate(W / 2 + sx, H / 2 + sy); g.scale(z, z); g.translate(-fx, -fy); };
+
+// ---- set pieces ----
+const wall = (top = '#1a1236', bot = '#2a1e4e') => { g.fillStyle = lin(0, 0, 0, 1500, [[0, top], [1, bot]]); g.fillRect(-1400, -900, 4000, 3600); g.fillStyle = 'rgba(255,255,255,0.025)'; for (let x = -1400; x < 2600; x += 90) g.fillRect(x, -900, 40, 3200); };
+const floor = (y = 1300, a = '#231838', b = '#100a1c') => { g.fillStyle = lin(0, y, 0, y + 800, [[0, a], [1, b]]); g.fillRect(-1400, y, 4000, 1600); g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(-1400, y, 4000, 14); g.strokeStyle = 'rgba(0,0,0,0.18)'; g.lineWidth = 4; for (let k = 1; k < 7; k++) { g.beginPath(); g.moveTo(-1400, y + k * k * 18); g.lineTo(2600, y + k * k * 18); g.stroke(); } };
+const darken = (a) => { g.fillStyle = `rgba(4,2,12,${a})`; g.fillRect(-1400, -900, 4000, 3800); };
+const door = (x, y, w, h, o = {}) => { // o: shake, glow (0..1), glowCol, feet (0..1), big (0..1), knob ('L'|'R')
+  const sh = o.shake || 0, gc = o.glowCol || '170,190,255';
+  g.save(); g.translate(sh * 7, 0);
+  rr(x - 20, y - 20, w + 40, h + 20, 8, '#2a1e44'); rr(x, y, w, h, 6, o.col || '#3c2e62');
+  g.fillStyle = 'rgba(0,0,0,0.14)'; g.fillRect(x + 30, y + 40, w - 60, h * 0.36); g.fillRect(x + 30, y + h * 0.48, w - 60, h * 0.44);
+  g.fillStyle = '#c8b070'; g.beginPath(); g.arc(o.knob === 'R' ? x + w - 34 : x + 34, y + h * 0.52, 14, 0, 7); g.fill();
+  if (o.peep !== false) { g.fillStyle = '#0c0a14'; g.beginPath(); g.arc(x + w / 2, y + h * 0.3, 9, 0, 7); g.fill(); }
+  g.restore();
+  const gl = o.glow ?? 1;
+  if (gl > 0) {
+    g.fillStyle = `rgba(${gc},${0.9 * gl})`; g.fillRect(x, y + h - 6, w, 7);
+    // shadows of what stands outside, cut out of the light strip
+    if (o.feet) { g.fillStyle = `rgba(6,4,14,${o.feet})`; for (const fx of [0.36, 0.58]) g.fillRect(x + w * fx, y + h - 7, w * 0.11, 8); }
+    add(() => { g.fillStyle = lin(0, y + h, 0, y + h + 150, [[0, `rgba(${gc},${0.38 * gl})`], [1, `rgba(${gc},0)`]]); g.beginPath(); g.moveTo(x, y + h); g.lineTo(x + w, y + h); g.lineTo(x + w + 90, y + h + 150); g.lineTo(x - 90, y + h + 150); g.closePath(); g.fill(); });
+    if (o.feet) { g.fillStyle = `rgba(6,4,14,${0.7 * o.feet})`; for (const fx of [0.36, 0.58]) { g.beginPath(); g.moveTo(x + w * fx, y + h); g.lineTo(x + w * (fx + 0.11), y + h); g.lineTo(x + w * (fx + 0.11) + 40, y + h + 150); g.lineTo(x + w * fx - 30, y + h + 150); g.closePath(); g.fill(); } }
+    if (o.big) { g.fillStyle = `rgba(6,4,14,${0.85 * o.big})`; g.fillRect(x + w * 0.12, y + h - 7, w * 0.8 * o.big, 8); g.beginPath(); g.moveTo(x + w * 0.12, y + h); g.lineTo(x + w * (0.12 + 0.8 * o.big), y + h); g.lineTo(x + w * (0.12 + 0.8 * o.big) + 80, y + h + 150); g.lineTo(x + w * 0.12 - 70, y + h + 150); g.closePath(); g.fill(); }
+  }
+};
+const clock = (x, y, txt, on = true, blinkT = 0) => { rr(x - 75, y - 52, 150, 70, 10, '#0a0610'); const b = Math.floor(blinkT * 2) % 2 === 0; g.fillStyle = on ? (b ? '#ff2a3a' : '#8a1420') : '#2a0a10'; g.shadowColor = '#ff2a3a'; g.shadowBlur = on && b ? 22 : 4; g.font = '700 50px "DejaVu Sans Mono", monospace'; g.textAlign = 'center'; g.fillText(txt, x, y); g.shadowBlur = 0; g.textAlign = 'left'; };
+const bedroomBase = (o = {}) => {
+  wall(); floor();
+  rr(600, 380, 330, 430, 10, '#0c0a1c'); g.fillStyle = lin(600, 380, 930, 810, [[0, '#3a3a7a'], [1, '#141038']]); g.fillRect(612, 392, 306, 406);
+  g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(840, 470, 38, 0, 7); g.fill(); g.fillStyle = '#3a3a7a'; g.beginPath(); g.arc(856, 460, 34, 0, 7); g.fill();
+  g.fillStyle = '#0c0a1c'; g.fillRect(760, 392, 10, 406); g.fillRect(612, 590, 306, 10);
+  for (const [x, w] of [[560, 90], [880, 90]]) { g.fillStyle = lin(x, 0, x + w, 0, [[0, '#2e2050'], [0.5, '#3e2c68'], [1, '#261a44']]); g.fillRect(x, 340, w, 560); }
+  add(() => { g.fillStyle = lin(700, 800, 500, 1500, [[0, 'rgba(150,140,255,0.22)'], [1, 'rgba(150,140,255,0)']]); g.beginPath(); g.moveTo(620, 800); g.lineTo(920, 800); g.lineTo(760, 1650); g.lineTo(260, 1650); g.closePath(); g.fill(); });
+  door(1000, 560, 240, 760, { shake: o.shake || 0, glow: o.doorGlow ?? 0, peep: false });
+  rr(60, 1080, 220, 230, 12, '#24183c'); clock(175, 1062, o.clockTxt || '3:33', o.clockOn !== false, o.t || 0);
+  if (o.lamp) { rr(200, 930, 50, 80, 8, '#3a2c58'); add(() => { const r = g.createRadialGradient(225, 930, 10, 225, 930, 360); r.addColorStop(0, `rgba(255,210,140,${0.5 * o.lamp})`); r.addColorStop(1, 'rgba(255,210,140,0)'); g.fillStyle = r; g.fillRect(-200, 500, 900, 900); }); }
+  rr(260, 880, 640, 120, 30, '#33245a'); rr(300, 1040, 200, 80, 30, '#8a82c8');
+};
+const bedFront = (knee = 0) => {
+  rr(270, 1090, 700, 230, 24, '#3c2a6a'); rr(262, 1290, 716, 150, 10, '#20163a'); for (const lx of [280, 940]) rr(lx, 1420, 26, 60, 4, '#160f28');
+  g.fillStyle = lin(0, 1110, 0, 1330, [[0, '#6a54b8'], [1, '#3e2c78']]); g.beginPath(); g.moveTo(290, 1150); g.lineTo(470, 1146); g.quadraticCurveTo(560, 1146 - 90 * knee, 650, 1146 - 70 * knee); g.quadraticCurveTo(720, 1146 - 40 * knee, 790, 1140); g.quadraticCurveTo(900, 1136, 980, 1140); g.lineTo(980, 1330); g.lineTo(290, 1330); g.closePath(); g.fill();
+  if (knee > 0) { g.strokeStyle = 'rgba(255,255,255,0.10)'; g.lineWidth = 6; g.beginPath(); g.moveTo(480, 1140); g.quadraticCurveTo(560, 1146 - 86 * knee, 645, 1150 - 70 * knee); g.stroke(); }
+  g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 6; for (const x of [520, 690, 840]) { g.beginPath(); g.moveTo(x, 1135); g.quadraticCurveTo(x + 30, 1230, x + 10, 1325); g.stroke(); }
+};
+const rug = () => { g.fillStyle = 'rgba(80,60,140,0.45)'; g.beginPath(); g.ellipse(560, 1640, 380, 90, 0, 0, 7); g.fill(); g.setLineDash([26, 18]); g.strokeStyle = 'rgba(160,140,230,0.45)'; g.lineWidth = 6; g.beginPath(); g.ellipse(560, 1640, 340, 72, 0, 0, 7); g.stroke(); g.setLineDash([]); };
+// hallway: back door far left, bedroom door middle, front door right
+const hallway = (o = {}) => {
+  wall('#141030', '#221a42'); floor(1400, '#1e1532', '#0c0816');
+  rr(250, 470, 170, 210, 6, '#1c1634'); rr(264, 484, 142, 182, 4, '#2a2048'); // picture frame
+  door(-330, 600, 260, 800, { glow: o.backGlow ?? 0.25, glowCol: '150,170,255', knob: 'R', peep: false, col: '#34285a' }); // back door
+  door(520, 640, 230, 760, { glow: 0, peep: false, col: '#30244f' }); // bedroom door (open dark gap)
+  if (o.bedOpen) { g.fillStyle = '#07050d'; g.fillRect(520, 640, 230 * o.bedOpen, 760); }
+  door(900, 560, 300, 860, { shake: o.shake || 0, glow: o.frontGlow ?? 1, glowCol: o.glowCol, feet: o.feet, big: o.big });
+};
+
+// ---- character helpers ----
+const hero = (x, y, s, o) => { g.save(); g.translate(x, y); g.scale(s, s); whiteStick(P, { beanie: '#2a2a36', ...o }); g.restore(); };
+const dog = (x, y, s, o) => { g.save(); g.translate(x, y); g.scale(s, s); biscuit(g, o); g.restore(); };
+
+// ---- phone ----
+const phone = (t, o) => {
+  // o: msgs [{me, text, time, at}], batt, dieAt, zoomMsg (index), header
+  g.fillStyle = lin(0, 0, 0, 1920, [[0, '#0e0a1c'], [1, '#05040a']]); g.fillRect(-600, -600, 2400, 3200);
+  add(() => { const r = g.createRadialGradient(540, 980, 100, 540, 980, 900); r.addColorStop(0, 'rgba(120,140,255,0.16)'); r.addColorStop(1, 'rgba(120,140,255,0)'); g.fillStyle = r; g.fillRect(-200, 0, 1500, 1920); });
+  // hand (white stick hand under the phone)
+  g.strokeStyle = '#121018'; g.lineCap = 'round'; g.lineWidth = 64; g.beginPath(); g.moveTo(700, 2100); g.lineTo(640, 1560); g.stroke(); g.strokeStyle = '#f4f2ee'; g.lineWidth = 40; g.beginPath(); g.moveTo(700, 2100); g.lineTo(640, 1560); g.stroke();
+  rr(250, 380, 580, 1180, 70, '#121018'); rr(266, 396, 548, 1148, 58, '#1b1730');
+  const dead = o.dieAt != null && t > o.dieAt;
+  if (dead) { rr(266, 396, 548, 1148, 58, '#020104'); const f = clamp(1 - (t - o.dieAt) / 0.25); if (f > 0) { g.fillStyle = `rgba(255,255,255,${0.5 * f})`; g.fillRect(266, 900, 548, 6); } g.strokeStyle = '#ff2a3a'; g.lineWidth = 6; const bl = Math.floor((t - o.dieAt) * 3) % 2 === 0; if (bl) { g.strokeRect(470, 930, 120, 60); g.fillStyle = '#ff2a3a'; g.fillRect(590, 948, 12, 24); g.fillRect(478, 938, 14, 44); } }
+  else {
+    rr(266, 396, 548, 1148, 58, '#15122a');
+    g.fillStyle = '#d8d0e8'; g.font = '600 30px "DejaVu Sans", sans-serif'; g.fillText(o.clock || '3:33', 320, 450);
+    const b = o.batt ?? 100, low = b <= 5; g.strokeStyle = low ? '#ff2a3a' : '#d8d0e8'; g.lineWidth = 4; g.strokeRect(680, 426, 60, 28); g.fillStyle = low ? '#ff2a3a' : '#d8d0e8'; g.fillRect(684, 430, 52 * b / 100 + 2, 20); g.fillRect(742, 434, 6, 12);
+    g.fillStyle = low ? '#ff2a3a' : '#d8d0e8'; g.font = '700 26px "DejaVu Sans", sans-serif'; g.textAlign = 'right'; g.fillText(`${b}%`, 670, 450); g.textAlign = 'left';
+    rr(266, 470, 548, 110, 0, '#1f1a38'); g.fillStyle = '#9a86e0'; g.beginPath(); g.arc(350, 525, 34, 0, 7); g.fill(); g.fillStyle = '#fff'; g.font = '700 34px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('M', 350, 537); g.textAlign = 'left';
+    g.fillStyle = '#fff'; g.font = '700 38px "DejaVu Sans", sans-serif'; g.fillText('Mom', 404, 538); g.fillStyle = '#ff6b8b'; g.fillText('♥', 494, 538);
+    let y = 640;
+    o.msgs.forEach((m, i) => {
+      if (t < m.at) return; const a = sm((t - m.at) / 0.25);
+      g.save(); g.globalAlpha = a; g.translate(0, (1 - a) * 30);
+      g.font = '600 34px "DejaVu Sans", sans-serif'; const lines = wrap(m.text, 360); const bh = 34 + lines.length * 46, bw = Math.max(...lines.map((l) => g.measureText(l).width)) + 56;
+      const bx = m.me ? 780 - bw : 300; const hl = o.zoomMsg === i ? o.hl || 0 : 0;
+      rr(bx, y, bw, bh, 30, m.me ? '#5b8cff' : '#2e2850');
+      if (hl) { g.strokeStyle = `rgba(198,255,58,${hl})`; g.lineWidth = 7; g.beginPath(); g.roundRect(bx - 8, y - 8, bw + 16, bh + 16, 36); g.stroke(); }
+      g.fillStyle = '#fff'; lines.forEach((l, k) => g.fillText(l, bx + 28, y + 56 + k * 46));
+      g.fillStyle = 'rgba(216,208,232,0.6)'; g.font = '500 22px "DejaVu Sans", sans-serif'; g.textAlign = m.me ? 'right' : 'left'; g.fillText(m.time, m.me ? 780 : 300, y + bh + 30); g.textAlign = 'left';
+      g.restore(); y += bh + 64;
+    });
+    if (o.typing != null && t > o.typing && t < (o.typingEnd ?? 1e9)) { rr(300, y, 130, 64, 30, '#2e2850'); for (let k = 0; k < 3; k++) { g.fillStyle = `rgba(255,255,255,${0.4 + 0.6 * (Math.floor(t * 4 + k) % 3 === 0)})`; g.beginPath(); g.arc(336 + k * 30, y + 32, 9, 0, 7); g.fill(); } }
+    if (o.draft) { rr(290, 1440, 500, 70, 35, '#221d3e'); g.fillStyle = '#d8d0e8'; g.font = '500 30px "DejaVu Sans", sans-serif'; g.fillText(o.draft + (Math.floor(t * 3) % 2 ? '|' : ''), 320, 1485); }
+  }
+};
+const wrap = (s, max) => { const ws = s.split(' '), out = ['']; for (const w of ws) { const n = out[out.length - 1] ? out[out.length - 1] + ' ' + w : w; if (g.measureText(n).width > max && out[out.length - 1]) out.push(w); else out[out.length - 1] = n; } return out; };
+const MSG_TEN = { me: false, text: 'Back at 8. Lock the door. Love you ❤️', time: '10:02 PM', at: 0 };
+const MSG_ASK = { me: true, text: 'Mom... are you outside?', time: '3:34 AM', at: 0 };
+const MSG_REPLY = { me: false, text: "No. I'm at work. DON'T open the door.", time: '3:34 AM', at: 0 };
+
+// ---- scenes ----
+const SCENES = {
+  bed(u, t) { // 0-7: knocks, he sits up, Biscuit lifts his head
+    const zoom = 1.0 + 0.04 * sm(u / 7) + (u > 2.1 ? 0.12 * sm((u - 2.1) / 0.6) * (1 - sm((u - 4.6) / 0.8)) : 0);
+    cam(zoom, 560 + (u > 2.1 && u < 5 ? 180 * sm((u - 2.1) / 0.6) * (1 - sm((u - 4.4) / 0.6)) : 0), 1060);
+    bedroomBase({ shake: knockAmt(t), t: u, lamp: 0 });
+    const sit = sm((u - 2.4) / 0.5), look = u > 2.3 ? sm((u - 2.3) / 0.3) : 0;
+    g.save(); g.beginPath(); g.rect(-600, -600, 2400, 1760); g.clip(); hero(160, 510 + 230 * (1 - sit), 0.82, { expr: u > 2.3 ? 'scared' : 'neutral', look }); g.restore();
+    bedFront(sit); rug();
+    const up = sm((u - 5.1) / 0.5);
+    dog(560, 1660, 0.62, { pose: up > 0.5 ? 'stand' : 'crouch', look: up > 0.5 ? 1 : 0, ears: up > 0.5 ? 'up' : 'down', t });
+  },
+  phone1(u, t) { cam(1.22 + 0.05 * sm(u / 5.7), 540, 900); phone(u, { msgs: [{ ...MSG_TEN, at: 2.9 }], batt: 9, clock: '10:02' }); },
+  window(u, t) { // 12.7-17.4: house lamp off, street lights die one by one
+    cam(1.05 + 0.06 * sm(u / 4.7), 540, 980);
+    wall('#120e28', '#1c1638');
+    const sky = lin(0, 300, 0, 1500, [[0, '#0a0a26'], [1, '#1c1a44']]); rr(130, 320, 820, 1180, 14, '#0a0716'); g.fillStyle = sky; g.fillRect(150, 340, 780, 1140);
+    g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(780, 470, 44, 0, 7); g.fill(); g.fillStyle = '#0f0e30'; g.beginPath(); g.arc(798, 458, 40, 0, 7); g.fill();
+    const offs = [1.6, 2.2, 2.75, 3.3, 3.85];
+    g.fillStyle = '#0a0818'; for (const [x, w, h] of [[150, 200, 380], [380, 170, 300], [580, 220, 420], [820, 120, 340]]) { g.fillRect(x, 1100 - h, w, h + 400); g.beginPath(); g.moveTo(x - 20, 1100 - h); g.lineTo(x + w / 2, 1100 - h - 90); g.lineTo(x + w + 20, 1100 - h); g.fill(); }
+    const lit = [[200, 900], [260, 980], [430, 950], [640, 860], [720, 960], [860, 900]];
+    lit.forEach(([x, y], i) => { const on = u < offs[Math.min(i, 4)] - 0.15; g.fillStyle = on ? '#ffd27a' : '#141028'; g.fillRect(x, y, 38, 50); });
+    g.fillStyle = '#16122a'; g.fillRect(150, 1300, 780, 180);
+    [[230, 1.6], [420, 2.2], [610, 2.75], [800, 3.3]].forEach(([x, off], i) => {
+      const flick = u > off - 0.25 && u < off ? (Math.floor(u * 30) % 2) : 1, on = u < off ? flick : 0;
+      g.fillStyle = '#0a0818'; g.fillRect(x - 6, 1060, 12, 260); g.fillRect(x - 6, 1060, 46, 10);
+      if (on) add(() => { const r = g.createRadialGradient(x + 40, 1076, 4, x + 40, 1076, 200); r.addColorStop(0, 'rgba(255,220,140,0.85)'); r.addColorStop(1, 'rgba(255,220,140,0)'); g.fillStyle = r; g.fillRect(x - 200, 860, 480, 480); g.fillStyle = 'rgba(255,220,140,0.18)'; g.beginPath(); g.moveTo(x + 30, 1076); g.lineTo(x + 60, 1076); g.lineTo(x + 140, 1310); g.lineTo(x - 50, 1310); g.fill(); });
+    });
+    g.fillStyle = '#0a0716'; g.fillRect(530, 340, 18, 1140); g.fillRect(150, 900, 780, 18);
+    // room lamp reflection dies at the start
+    const lamp = 1 - sm((u - 0.05) / 0.08); if (lamp > 0) add(() => { g.fillStyle = `rgba(255,210,140,${0.25 * lamp})`; g.fillRect(-600, -600, 2400, 3200); });
+    // his silhouette at the window
+    g.save(); g.globalAlpha = 0.95; hero(-40, 980, 1.0, { expr: 'worried', look: 1 }); g.restore();
+    darken(0.15 + 0.25 * sm((u - 3.9) / 0.6));
+  },
+  hallKnock(u, t) { // 17.4-19.7: the front door shakes - three knocks
+    const k = knockAmt(t); cam(1.0 + 0.10 * sm(u / 2.3), 960, 1010, k * 10, 0);
+    hallway({ shake: k, frontGlow: 0.9, backGlow: 0.15 }); darken(0.25);
+  },
+  frontDoor(u, t) { // 19.7-26: he creeps up to the front door while the voice talks
+    cam(1.0 + 0.10 * sm(u / 6.3), 780, 1000);
+    hallway({ frontGlow: 0.95 + 0.05 * Math.sin(t * 7) });
+    const w = sm(u / 4.5), x = -260 + 680 * w, step = Math.sin(u * 7) * (w < 0.98 ? 1 : 0);
+    hero(x, 500, 1.15, { expr: u > 0.4 ? 'worried' : 'scared', look: 1, step: step * 0.6, arm: u > 4.6 ? 'reach' : 'hang' });
+    darken(0.18);
+  },
+  underBed(u, t) { // 26-30.4: under the bed, two eyes, then Biscuit shaking
+    cam(1.0 + 0.12 * sm(u / 4.4), 540, 1150);
+    g.fillStyle = '#0a0714'; g.fillRect(-600, -600, 2400, 3200);
+    rr(-200, 560, 1480, 260, 0, '#3c2a6a'); rr(-200, 800, 1480, 90, 0, '#20163a'); // mattress + frame (seen from the floor)
+    g.fillStyle = lin(0, 890, 0, 1600, [[0, '#05040a'], [1, '#120c20']]); g.fillRect(-200, 890, 1480, 900);
+    floor(1520, '#1a1230', '#0a0614');
+    add(() => { g.fillStyle = lin(0, 1520, 0, 1300, [[0, 'rgba(120,120,255,0.18)'], [1, 'rgba(120,120,255,0)']]); g.fillRect(-200, 1300, 1480, 220); });
+    const a = sm((u - 3.3) / 0.35);
+    g.save(); g.translate(540, 1240); g.scale(1.6, 1.6); biscuitFront(g, { t: u, shake: u > 3.3 ? 1 : 0, dark: 1 - a }); g.restore();
+    darken(0.12 + 0.2 * (1 - a));
+  },
+  lock(u, t) { // 30.4-33.2: his hand stops at the lock
+    cam(1.0 + 0.06 * sm(u / 2.8), 640, 960);
+    wall('#141030', '#221a42'); rr(300, -100, 760, 2200, 6, '#3c2e62'); g.fillStyle = 'rgba(0,0,0,0.14)'; g.fillRect(360, 100, 640, 700); g.fillRect(360, 1100, 640, 800);
+    rr(380, 860, 200, 130, 20, '#b39a5e'); g.fillStyle = '#8a7444'; g.beginPath(); g.arc(480, 925, 40, 0, 7); g.fill(); g.fillStyle = '#c8b070'; g.fillRect(470, 890, 20, 70); // deadbolt
+    rr(400, 1080, 160, 220, 20, '#b39a5e'); g.fillStyle = '#c8b070'; g.beginPath(); g.arc(480, 1190, 56, 0, 7); g.fill();
+    const reach = sm(u / 0.9), tremble = u > 1.0 ? Math.sin(u * 50) * 4 : 0;
+    const hx = lerp(-140, 330, reach) + tremble, hy = 960 + tremble * 0.5;
+    g.lineCap = 'round'; g.strokeStyle = '#121018'; g.lineWidth = 70; g.beginPath(); g.moveTo(-300, 1500); g.lineTo(hx, hy); g.stroke(); g.strokeStyle = '#f4f2ee'; g.lineWidth = 42; g.beginPath(); g.moveTo(-300, 1500); g.lineTo(hx, hy); g.stroke();
+    g.fillStyle = '#f4f2ee'; g.strokeStyle = '#121018'; g.lineWidth = 10; g.beginPath(); g.arc(hx, hy, 40, 0, 7); g.fill(); g.stroke();
+    add(() => { g.fillStyle = lin(0, 1880, 0, 1700, [[0, 'rgba(170,190,255,0.35)'], [1, 'rgba(170,190,255,0)']]); g.fillRect(300, 1700, 760, 200); });
+    darken(0.2);
+  },
+  face(u, t) { // 33.2-35.55: shock close-up
+    const z = 2.3 + 0.25 * sm(u / 2.3); cam(z, 300, 500);
+    wall('#141030', '#221a42'); hero(0, 0, 1, { expr: 'shock', look: 0.3 });
+    darken(0.12);
+  },
+  phone2(u, t) { // 35.55-44.45: he texts, she replies right away
+    cam(1.22 + 0.05 * sm(u / 8.9), 540, 900);
+    const draftTxt = 'Mom... are you outside?'; const typed = Math.floor(clamp((u - 1.2) / 1.4) * draftTxt.length);
+    phone(u, { msgs: [{ ...MSG_TEN, at: -1 }, { ...MSG_ASK, at: 2.75 }, { ...MSG_REPLY, at: 6.1 }], batt: 3, clock: '3:34', typing: 4.7, typingEnd: 6.1, draft: u > 1.0 && u < 2.75 ? draftTxt.slice(0, typed) : '' });
+  },
+  peep(u, t) { // 44.45-48.3: empty porch through the peephole
+    cam(1.0 + 0.05 * sm(u / 3.8), 540, 960);
+    g.fillStyle = '#000'; g.fillRect(-600, -600, 2400, 3200);
+    g.save(); g.beginPath(); g.arc(540, 960, 470, 0, 7); g.clip();
+    g.fillStyle = lin(0, 500, 0, 1450, [[0, '#1c1830'], [1, '#08060f']]); g.fillRect(0, 400, 1080, 1200);
+    g.strokeStyle = 'rgba(100,90,150,0.45)'; g.lineWidth = 6;
+    for (const [a, b] of [[[150, 520], [470, 840]], [[930, 520], [610, 840]], [[150, 1400], [470, 1080]], [[930, 1400], [610, 1080]]]) { g.beginPath(); g.moveTo(...a); g.quadraticCurveTo((a[0] + b[0]) / 2 + (a[0] < 540 ? -40 : 40), (a[1] + b[1]) / 2, ...b); g.stroke(); }
+    rr(470, 840, 140, 240, 4, '#05040a'); // dark street opening
+    for (let k = 0; k < 3; k++) { g.fillStyle = 'rgba(160,150,200,0.05)'; g.beginPath(); g.ellipse(540 + Math.sin(t * 0.7 + k) * 120, 1150 + k * 60, 380, 60, 0, 0, 7); g.fill(); } // mist
+    const vg = g.createRadialGradient(540, 960, 200, 540, 960, 480); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.92)'); g.fillStyle = vg; g.fillRect(0, 400, 1080, 1200);
+    g.restore(); g.strokeStyle = '#1a1622'; g.lineWidth = 26; g.beginPath(); g.arc(540, 960, 480, 0, 7); g.stroke();
+  },
+  doorClose(u, t) { // 48.3-58.6: the voice right against the door, he backs away; feet, then something bigger
+    const climax = sm((u - 8.7) / 0.5);
+    cam(1.05 + 0.12 * sm(u / 10.3) + 0.12 * climax, 900 - 60 * climax, 1060, Math.sin(t * 40) * 6 * climax, 0);
+    const flick = u > 8.6 ? (Math.floor(t * 18) % 4 === 0 ? 0.45 : 1) : 1;
+    hallway({ frontGlow: flick, feet: sm((u - 3.1) / 0.6), big: climax, backGlow: 0.15 });
+    const back = sm((u - 2.4) / 3.0);
+    hero(lerp(420, 120, back), 500, 1.15, { expr: u > 8.6 ? 'shock' : 'scared', look: 1, step: Math.sin(u * 6) * (back > 0 && back < 1 ? 0.5 : 0) });
+    darken(0.2);
+  },
+  phone3(u, t) { // 58.6-63.4: zoom on the reply - no "love you" - then the phone dies
+    const z = 1.22 + 0.35 * sm(u / 1.6); cam(z, 540, 1000);
+    phone(u, { msgs: [{ ...MSG_TEN, at: -1 }, { ...MSG_ASK, at: -1 }, { ...MSG_REPLY, at: -1 }], batt: 1, clock: '3:35', zoomMsg: 2, hl: sm((u - 1.8) / 0.3), dieAt: 6.05 });
+    if (u > 1.8 && u < 6.05) { // "love you" from the first text, pointed out
+      g.save(); g.strokeStyle = '#c6ff3a'; g.lineWidth = 7; g.globalAlpha = sm((u - 2.0) / 0.3); g.beginPath(); g.roundRect(292, 632, 470, 132, 34); g.stroke(); g.restore();
+    }
+  },
+  biscuitWalk(u, t) { // 63.4-67.45: Biscuit crawls out and stares at the back door
+    cam(0.86 + 0.05 * sm(u / 4), 180, 1060);
+    hallway({ bedOpen: 1, frontGlow: 0.6, backGlow: 0.35 + 0.15 * Math.sin(t * 3) });
+    const w = sm(u / 2.0), x = lerp(640, 300, w);
+    dog(x, 1470, 0.9, { pose: u < 2.0 ? 'walk' : 'stare', flip: true, t: u, look: 1, ears: u > 2.0 ? 'up' : 'down' });
+    darken(0.15);
+  },
+  choice(u, t) { // 67.45-76: two doors, two cards
+    g.fillStyle = '#05040a'; g.fillRect(0, 0, W, H);
+    // top: front door
+    g.save(); g.beginPath(); g.rect(0, 0, W, 955); g.clip(); cam(0.62, 1050, 980, 0, -480);
+    hallway({ frontGlow: 0.9 + 0.1 * Math.sin(t * 6), feet: 1 }); darken(0.2); g.restore();
+    // bottom: back door with Biscuit
+    g.save(); g.beginPath(); g.rect(0, 965, W, 955); g.clip(); cam(0.62, -200, 1000, 0, 480);
+    hallway({ backGlow: 0.5, frontGlow: 0.3 }); dog(80, 1470, 0.9, { pose: 'stare', flip: true, t: u, look: 1, tail: 0.4 }); darken(0.15); g.restore();
+    g.fillStyle = '#c6ff3a'; g.fillRect(0, 955, W, 10);
+    const a = sm((u - 0.2) / 0.3), b = sm((u - 2.8) / 0.3);
+    choiceCard(540, 820, 'OPEN THE DOOR', a, '#ff4d5e');
+    choiceCard(540, 1790, 'BACK DOOR WITH BISCUIT', b, '#ff4d5e');
+    if (u > 5.3) { const c = sm((u - 5.3) / 0.3); g.save(); g.globalAlpha = c; g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#0a0610'; g.strokeText('COMMENT YOUR CHOICE', 540, 1080); g.fillText('COMMENT YOUR CHOICE', 540, 1080); const bob = Math.sin(t * 6) * 10; g.fillStyle = '#c6ff3a'; g.beginPath(); g.moveTo(510, 1110 + bob); g.lineTo(570, 1110 + bob); g.lineTo(540, 1150 + bob); g.fill(); g.restore(); }
+  },
+  end(u, t) { g.fillStyle = '#000'; g.fillRect(0, 0, W, H); },
+};
+const choiceCard = (x, y, txt, a, col) => {
+  if (a <= 0) return; g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(0.85 + 0.15 * a, 0.85 + 0.15 * a);
+  g.font = '900 60px "DejaVu Sans", sans-serif'; const w = g.measureText(txt).width + 80;
+  rr(-w / 2, -60, w, 110, 26, 'rgba(10,6,16,0.88)'); g.strokeStyle = col; g.lineWidth = 6; g.beginPath(); g.roundRect(-w / 2, -60, w, 110, 26); g.stroke();
+  g.fillStyle = col; g.textAlign = 'center'; g.fillText(txt, 0, 16); g.restore();
+};
+
+// ---- captions from words.json: chunks of up to 4 words, current word in lime ----
+let CHUNKS = [];
+const buildChunks = () => {
+  CHUNKS = []; let cur = [];
+  WORDS.forEach((w, i) => { cur.push(w); const end = /[.?!:,]$|\.\.\.$/.test(w.w) || cur.length >= 4 || (WORDS[i + 1] && WORDS[i + 1].who !== w.who); if (end) { CHUNKS.push(cur); cur = []; } });
+  if (cur.length) CHUNKS.push(cur);
+};
+const captions = (t, low) => {
+  const ch = CHUNKS.find((c, i) => t >= c[0].s - 0.05 && t < (CHUNKS[i + 1] ? Math.min(CHUNKS[i + 1][0].s - 0.05, c[c.length - 1].e + 0.6) : c[c.length - 1].e + 0.6));
+  if (!ch) return;
+  const mom = ch[0].who === 'm', words = ch.map((w) => w.w.toUpperCase()), hi = ch.findIndex((w) => t >= w.s && t < w.e + 0.08);
+  g.save(); g.translate(240, low ? 1240 : mom ? 840 : 880);
+  capCard(P, { words, hi: hi < 0 ? ch.length - 1 : hi, color: mom ? '#e6dcff' : undefined });
+  g.restore();
+};
+
+window.renderFrame = (f) => {
+  const t = f / 30; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
+  const [shot, u] = shotAt(t);
+  g.save(); SCENES[shot](u, t); g.restore();
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  if (!/^(choice|end|phone)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: t < 41.6 ? '3:33' : t < 58.6 ? '3:34' : '3:35', title: 'HER VOICE', sub: 'CHAPTER ONE' }); g.restore(); }
+  const ks = knockAmt(t);
+  // (no KNOCK text: the knocks are heard, not written)
+  if (shot !== 'choice') captions(t, shot.startsWith('phone'));
+  if (shot === 'choice') { g.save(); g.fillStyle = 'rgba(216,208,232,0.85)'; g.font = '700 36px "DejaVu Sans Mono", monospace'; g.fillText('PART 1', 40, 90); g.restore(); }
+  return true;
+};
+
+// Cover / thumbnail for the profile grid (text kept inside the centre 1080x1440 so a 3:4 crop keeps it).
+window.renderCover = (part = 1) => {
+  g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
+  g.save(); cam(1.12, 820, 1120); hallway({ frontGlow: 1, feet: 1, backGlow: 0.15 }); hero(300, 500, 1.15, { expr: 'shock', look: 1 }); darken(0.15); g.restore();
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = g.createRadialGradient(W / 2, H * 0.55, H * 0.2, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.8)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  g.textAlign = 'center'; g.lineJoin = 'round';
+  g.font = '900 104px "DejaVu Sans", sans-serif'; g.lineWidth = 22; g.strokeStyle = '#0a0610';
+  for (const [t, y, c] of [['WOULD YOU', 420, '#ffffff'], ['OPEN THE DOOR?', 540, '#ff4d5e']]) { g.strokeText(t, W / 2, y); g.fillStyle = c; g.fillText(t, W / 2, y); }
+  g.save(); g.translate(W / 2, 1620); g.rotate(-0.04); g.font = '900 120px "DejaVu Sans", sans-serif'; const tw = g.measureText(`PART ${part}`).width + 80;
+  g.fillStyle = '#c6ff3a'; g.strokeStyle = '#0a0610'; g.lineWidth = 12; g.beginPath(); g.roundRect(-tw / 2, -110, tw, 150, 28); g.fill(); g.stroke();
+  g.fillStyle = '#0a0610'; g.fillText(`PART ${part}`, 0, 8); g.restore();
+  return true;
+};
+fetch('./words.json').then((r) => r.json()).then((w) => { WORDS = w; buildChunks(); window.ready = true; });
+</script></body></html>

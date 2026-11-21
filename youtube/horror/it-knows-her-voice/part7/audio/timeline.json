@@ -1,0 +1,26 @@
+{
+ "total": 96.04,
+ "marks": {
+  "open": 0.0,
+  "comments": 9.35,
+  "call": 13.26,
+  "kidReal": 15.72,
+  "kidFake": 17.861,
+  "two": 22.47,
+  "clap": 27.03,
+  "run": 33.88,
+  "scream": 40.61,
+  "silence": 44.49,
+  "rehook": 45.09,
+  "porch": 46.84,
+  "tall": 54.41,
+  "copies": 59.85,
+  "between": 68.61,
+  "window": 74.13,
+  "movie": 78.1,
+  "hallway": 83.55,
+  "choice": 86.04,
+  "ask": 86.44,
+  "end": 95.14
+ }
+}

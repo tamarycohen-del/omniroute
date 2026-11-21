@@ -1,0 +1,27 @@
+{
+ "total": 82.73,
+ "marks": {
+  "open": 0.0,
+  "comments": 6.41,
+  "big": 12.86,
+  "run": 13.9,
+  "honey": 17.71,
+  "rehook": 19.21,
+  "face": 19.91,
+  "jump": 25.24,
+  "copy": 26.7,
+  "fall": 31.25,
+  "mirrorRule": 35.93,
+  "grab": 41.2,
+  "duck": 42.44,
+  "truth": 48.42,
+  "light": 55.42,
+  "mom": 57.53,
+  "buddy": 61.81,
+  "wag": 65.75,
+  "calm": 69.67,
+  "thanks": 77.75,
+  "end": 78.15,
+  "black": 81.33
+ }
+}

@@ -1,0 +1,35 @@
+<!doctype html><html><body style="margin:0;background:transparent"><canvas id="c" width="1400" height="1400" style="width:700px;height:700px"></canvas><script>
+const c = document.getElementById('c'), g = c.getContext('2d'); g.scale(2, 2); const C = 350, INK = '#2a1606', D = Math.PI / 180;
+g.lineJoin = 'round'; g.lineCap = 'round';
+// broken outer ring
+const seg = (a0, a1, r0 = 248, r1 = 302) => { g.beginPath(); g.arc(C, C, r1, a0 * D, a1 * D); g.arc(C, C, r0, a1 * D, a0 * D, true); g.closePath(); };
+const ringGrad = g.createLinearGradient(120, 80, 600, 640); ringGrad.addColorStop(0, '#fbeab4'); ringGrad.addColorStop(0.45, '#e7b754'); ringGrad.addColorStop(1, '#a8661c');
+for (const [a0, a1] of [[-124, 92], [99, 113], [121, 141], [152, 214]]) { seg(a0, a1); g.fillStyle = ringGrad; g.fill(); g.lineWidth = 7; g.strokeStyle = INK; g.stroke();
+  seg(a0 + 1, a1 - 1, 287, 296); g.fillStyle = 'rgba(255,248,220,0.55)'; g.fill(); }
+// dark disc
+const dg = g.createRadialGradient(C, C, 120, C, C, 250); dg.addColorStop(0, '#5a3210'); dg.addColorStop(1, '#2e1806'); g.fillStyle = dg; g.beginPath(); g.arc(C, C, 246, 0, 7); g.fill(); g.lineWidth = 6; g.strokeStyle = INK; g.stroke();
+// compass star: point(angle, length, half-width) in two tones
+const point = (ang, len, hw, base = 120) => { const a = ang * D, px = Math.cos(a), py = Math.sin(a), nx = -py, ny = px;
+  const tip = [C + px * len, C + py * len], b1 = [C + px * base + nx * hw, C + py * base + ny * hw], b2 = [C + px * base - nx * hw, C + py * base - ny * hw], mid = [C + px * (base - 30), C + py * (base - 30)];
+  g.beginPath(); g.moveTo(...tip); g.lineTo(...b1); g.lineTo(...mid); g.closePath(); g.fillStyle = '#fff3c6'; g.fill();
+  g.beginPath(); g.moveTo(...tip); g.lineTo(...b2); g.lineTo(...mid); g.closePath(); g.fillStyle = '#c9923a'; g.fill();
+  g.beginPath(); g.moveTo(...tip); g.lineTo(...b1); g.lineTo(...mid); g.lineTo(...b2); g.closePath(); g.lineWidth = 6; g.strokeStyle = INK; g.stroke();
+  g.beginPath(); g.moveTo(...tip); g.lineTo(...mid); g.lineWidth = 2.5; g.strokeStyle = 'rgba(90,50,10,0.7)'; g.stroke(); };
+for (const a of [45, 135, 225, 315]) point(a, 232, 30, 130);
+for (const a of [0, 90, 180, 270]) point(a, 338, 44, 120);
+// gold bezel
+const bz = g.createLinearGradient(220, 200, 480, 520); bz.addColorStop(0, '#fbe3a0'); bz.addColorStop(0.5, '#e2a83e'); bz.addColorStop(1, '#a96718');
+g.beginPath(); g.arc(C, C, 168, 0, 7); g.fillStyle = bz; g.fill(); g.lineWidth = 7; g.strokeStyle = INK; g.stroke();
+// gem
+const gm = g.createRadialGradient(305, 290, 10, C, C, 150); gm.addColorStop(0, '#fff2a0'); gm.addColorStop(0.35, '#ffcb2e'); gm.addColorStop(0.8, '#f59a16'); gm.addColorStop(1, '#e07a0c');
+g.save(); g.beginPath(); g.arc(C, C, 146, 0, 7); g.fillStyle = gm; g.fill(); g.clip();
+const facets = [[[220, 260], [300, 215], [290, 300]], [[300, 215], [395, 230], [345, 300]], [[395, 230], [470, 300], [420, 330]], [[230, 380], [290, 300], [300, 420]], [[300, 420], [380, 470], [330, 360]], [[420, 330], [470, 420], [400, 440]], [[290, 300], [345, 300], [330, 360]], [[345, 300], [420, 330], [400, 400]]];
+facets.forEach((f, i) => { g.beginPath(); f.forEach(([x, y], j) => (j ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath(); g.fillStyle = i % 2 ? 'rgba(255,250,210,0.22)' : 'rgba(200,90,0,0.16)'; g.fill(); g.strokeStyle = 'rgba(255,240,190,0.35)'; g.lineWidth = 2; g.stroke(); });
+g.fillStyle = 'rgba(255,255,255,0.85)'; g.beginPath(); g.ellipse(268, 262, 26, 16, -0.7, 0, 7); g.fill(); g.beginPath(); g.arc(300, 245, 6, 0, 7); g.fill();
+g.restore(); g.beginPath(); g.arc(C, C, 146, 0, 7); g.lineWidth = 5; g.strokeStyle = '#8a4a08'; g.stroke();
+// the F
+const F = [[316, 256], [412, 252], [404, 300], [362, 302], [360, 338], [396, 338], [392, 384], [358, 386], [354, 452], [306, 456]];
+g.save(); g.translate(8, 10); g.beginPath(); F.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath(); g.fillStyle = 'rgba(150,60,0,0.55)'; g.fill(); g.restore();
+g.beginPath(); F.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath(); g.fillStyle = '#fffaf0'; g.fill(); g.lineWidth = 4; g.strokeStyle = 'rgba(160,80,10,0.7)'; g.stroke();
+window.done = true;
+</script></body></html>

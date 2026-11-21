@@ -1,0 +1,295 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+// "Her Voice" - Part 3. Scenes first; SHOTS get their times from words.json once the voice is recorded.
+import { capCard, chapterCard, whiteStick } from './stick.js';
+import { biscuit } from './biscuit.js';
+import { mrsHale } from './hale.js';
+import { momThing, hand } from './mom.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920, P = { g };
+const rr = (x, y, w, h, r, fill) => { g.beginPath(); g.roundRect(x, y, w, h, r); g.fillStyle = fill; g.fill(); };
+const lin = (x0, y0, x1, y1, st) => { const q = g.createLinearGradient(x0, y0, x1, y1); st.forEach(([o, c]) => q.addColorStop(o, c)); return q; };
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
+const lerp = (a, b, u) => a + (b - a) * u;
+const add = (fn) => { g.save(); g.globalCompositeOperation = 'lighter'; fn(); g.restore(); };
+const cam = (z, fx, fy, sx = 0, sy = 0) => { g.translate(W / 2 + sx, H / 2 + sy); g.scale(z, z); g.translate(-fx, -fy); };
+const darken = (a) => { g.fillStyle = `rgba(4,2,12,${a})`; g.fillRect(-1400, -900, 4000, 3800); };
+const hero = (x, y, s, o) => { const br = Math.sin(T * 2.4 + x * 0.01) * 0.012; g.save(); g.translate(x, y + 975 * s * br * 0.5); g.scale(s, s * (1 - br)); g.translate(300 * br * 0.0, 0); whiteStick(P, { beanie: '#2a2a36', ...o }); g.restore(); };
+const dog = (x, y, s, o) => { const br = Math.sin(T * 3.2 + x * 0.02) * 0.02; g.save(); g.translate(x, y); g.scale(s, s * (1 + br)); biscuit(g, { tail: 0.15, ...o, t: o.t ?? T }); g.restore(); };
+const hale = (x, y, s, o) => { const br = Math.sin(T * 1.9) * 0.01; g.save(); g.translate(x + Math.sin(T * 0.9) * 3, y + 975 * s * br * 0.5); g.scale(s, s * (1 - br)); mrsHale(g, o); g.restore(); };
+let WORDS = []; let T = 0; // global time, for idle motion
+const hcam = () => { g.translate(Math.sin(T * 1.3) * 4 + Math.sin(T * 3.1) * 1.5, Math.sin(T * 1.7) * 3); }; // handheld drift
+
+// ---------- exterior set pieces ----------
+const sky = (warm = 0) => { g.fillStyle = lin(0, -400, 0, 1400, [[0, '#0a0a26'], [1, '#1e1a46']]); g.fillRect(-1400, -900, 4000, 2400);
+  g.fillStyle = 'rgba(255,255,255,0.5)'; for (let k = 0; k < 40; k++) { const x = (k * 263) % 2600 - 800, y = (k * 151) % 700 - 300; g.fillRect(x, y, 3, 3); }
+  g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(880, 120, 50, 0, 7); g.fill(); g.fillStyle = '#141236'; g.beginPath(); g.arc(900, 104, 46, 0, 7); g.fill(); };
+const woods = (y = 1150, alpha = 1, eyes = 0) => { g.save(); g.globalAlpha = alpha;
+  g.fillStyle = '#0b0918'; g.beginPath(); g.moveTo(-1400, y); for (let x = -1400; x <= 2600; x += 60) g.lineTo(x, y - 60 - 40 * Math.sin(x * 0.013) - 30 * Math.sin(x * 0.041)); g.lineTo(2600, y + 200); g.lineTo(-1400, y + 200); g.fill();
+  for (let k = 0; k < 34; k++) { const sway = Math.sin(T * 1.1 + k * 0.7) * 10; const x = -1300 + k * 115 + (k % 3) * 20, h = 260 + (k * 37) % 160; g.fillStyle = k % 2 ? '#0a0816' : '#0e0b1e'; g.fillRect(x - 7, y - h, 14, h); for (let j = 0; j < 4; j++) { const yy = y - h + j * h * 0.22, sw = sway * (1 - j / 4); g.beginPath(); g.moveTo(x + sw, yy - 50); g.lineTo(x - 40 - j * 14 + sw * 0.6, yy + 60); g.lineTo(x + 40 + j * 14 + sw * 0.6, yy + 60); g.fill(); } }
+  if (eyes) { g.save(); g.shadowColor = 'rgba(255,255,255,0.9)'; g.shadowBlur = 14; g.fillStyle = `rgba(244,242,238,${eyes})`; for (const [x, yy] of [[200, y - 80], [760, y - 110]]) for (const s of [-1, 1]) { g.beginPath(); g.ellipse(x + s * 9, yy, 5, 7, 0, 0, 7); g.fill(); } g.restore(); }
+  g.restore(); };
+const ground = (y = 1500) => { setTimeout(() => 0, 0); g.fillStyle = lin(0, y, 0, y + 900, [[0, '#141026'], [1, '#08060f']]); g.fillRect(-1400, y, 4000, 1600);
+  g.strokeStyle = 'rgba(80,120,90,0.25)'; g.lineWidth = 4; for (let k = 0; k < 120; k++) { const x = -1300 + (k * 97) % 3800, yy = y + 20 + (k * 53) % 500; g.beginPath(); g.moveTo(x, yy); g.lineTo(x - 6, yy - 18); g.moveTo(x + 6, yy); g.lineTo(x + 10, yy - 16); g.stroke(); } };
+const fog = (y = 1500) => { g.save(); for (let k = 0; k < 5; k++) { const x = ((T * (18 + k * 6) + k * 520) % 3200) - 1400; g.fillStyle = 'rgba(170,160,220,0.06)'; g.beginPath(); g.ellipse(x, y - 30 + k * 26, 520, 70, 0, 0, 7); g.fill(); }
+  g.fillStyle = 'rgba(230,225,255,0.35)'; for (let k = 0; k < 26; k++) { const px = ((k * 397 + T * (12 + k % 5 * 4)) % 2400) - 600, py = 700 + ((k * 211 + T * (8 + k % 3 * 3)) % 900); g.fillRect(px, py, 3, 3); } g.restore(); };
+const fence = (x0, x1, y) => { g.fillStyle = '#2a2036'; g.strokeStyle = '#121018'; g.lineWidth = 6; for (let x = x0; x < x1; x += 70) { g.beginPath(); g.moveTo(x, y); g.lineTo(x, y - 170); g.lineTo(x + 25, y - 200); g.lineTo(x + 50, y - 170); g.lineTo(x + 50, y); g.closePath(); g.fill(); g.stroke(); } g.fillRect(x0, y - 140, x1 - x0, 18); g.fillRect(x0, y - 60, x1 - x0, 18); };
+// our house, back side: wall, back door, two windows (lit=0 dark)
+const ourHouse = (x, y, o = {}) => { // y = ground line
+  g.fillStyle = '#1c1530'; g.fillRect(x, y - 900, 700, 900); g.fillStyle = '#120e22'; g.beginPath(); g.moveTo(x - 40, y - 900); g.lineTo(x + 350, y - 1180); g.lineTo(x + 740, y - 900); g.fill();
+  g.fillStyle = 'rgba(255,255,255,0.03)'; for (let k = 0; k < 20; k++) g.fillRect(x, y - 900 + k * 45, 700, 4);
+  const win = (wx, wy, lit) => { rr(wx - 10, wy - 10, 160, 200, 6, '#0c0a18'); g.fillStyle = lit ? '#ffd27a' : '#16122c'; g.fillRect(wx, wy, 140, 180); g.fillStyle = '#0c0a18'; g.fillRect(wx + 66, wy, 8, 180); g.fillRect(wx, wy + 86, 140, 8); };
+  win(x + 80, y - 760, o.win1); win(x + 470, y - 760, o.win2);
+  // back door
+  const dx = x + 260, dw = 190, dh = 420, open = o.open || 0;
+  rr(dx - 14, y - dh - 14, dw + 28, dh + 14, 6, '#2a1e44');
+  g.fillStyle = '#05040a'; g.fillRect(dx, y - dh, dw, dh); // dark opening behind
+  g.save(); g.translate(dx, y - dh); g.scale(1 - 0.8 * open, 1); rr(0, 0, dw, dh, 4, '#3c2e62'); g.fillStyle = 'rgba(0,0,0,0.15)'; g.fillRect(22, 30, dw - 44, 150); g.fillRect(22, 210, dw - 44, 180);
+  g.fillStyle = '#c8b070'; g.beginPath(); g.arc(dw - 26, 230, 11, 0, 7); g.fill(); g.restore();
+  // steps
+  rr(dx - 40, y - 10, dw + 80, 30, 4, '#241a3a');
+};
+// Mrs. Hale's house (lit), front-on, with back door at its left side
+const haleHouse = (x, y, o = {}) => { const lit = o.lit ?? 1;
+  g.fillStyle = '#231a36'; g.fillRect(x, y - 760, 640, 760); g.fillStyle = '#17112a'; g.beginPath(); g.moveTo(x - 30, y - 760); g.lineTo(x + 320, y - 1000); g.lineTo(x + 670, y - 760); g.fill();
+  const win = (wx, wy) => { rr(wx - 10, wy - 10, 170, 210, 6, '#0c0a18'); g.fillStyle = lit ? '#ffcf7a' : '#16122c'; g.fillRect(wx, wy, 150, 190);
+    if (lit) { g.fillStyle = 'rgba(200,120,90,0.35)'; g.fillRect(wx, wy, 34, 190); g.fillRect(wx + 116, wy, 34, 190); } g.fillStyle = '#0c0a18'; g.fillRect(wx + 71, wy, 8, 190); g.fillRect(wx, wy + 90, 150, 8);
+    if (lit) add(() => { const r = g.createRadialGradient(wx + 75, wy + 95, 10, wx + 75, wy + 95, 320); r.addColorStop(0, 'rgba(255,200,120,0.28)'); r.addColorStop(1, 'rgba(255,200,120,0)'); g.fillStyle = r; g.fillRect(wx - 300, wy - 300, 750, 800); }); };
+  win(x + 330, y - 620); win(x + 330, y - 340);
+  if (o.shadow) { g.fillStyle = `rgba(30,18,30,${0.7 * o.shadow})`; g.beginPath(); g.ellipse(x + 330 + 40 + 70 * o.shadowX, y - 560, 26, 60, 0, 0, 7); g.fill(); g.beginPath(); g.arc(x + 330 + 40 + 70 * o.shadowX, y - 600, 20, 0, 7); g.fill(); }
+  // back door (left)
+  const dx = x + 70, dw = 180, dh = 400, open = o.open ?? 0;
+  rr(dx - 14, y - dh - 14, dw + 28, dh + 14, 6, '#2a1e44');
+  g.fillStyle = '#ffcf7a'; g.fillRect(dx, y - dh, dw, dh);
+  add(() => { g.fillStyle = lin(0, y, 0, y + 260, [[0, `rgba(255,200,120,${0.45 * open})`], [1, 'rgba(255,200,120,0)']]); g.beginPath(); g.moveTo(dx, y); g.lineTo(dx + dw, y); g.lineTo(dx + dw + 160, y + 260); g.lineTo(dx - 160, y + 260); g.fill(); });
+  g.save(); g.translate(dx, y - dh); g.scale(1 - 0.85 * open, 1); rr(0, 0, dw, dh, 4, '#4a3a6a'); g.fillStyle = 'rgba(0,0,0,0.15)'; g.fillRect(20, 28, dw - 40, 140); g.fillRect(20, 200, dw - 40, 170); g.restore();
+  rr(dx - 40, y - 10, dw + 80, 30, 4, '#2a2040');
+  // overgrown yard tufts
+  g.fillStyle = '#0d1410'; for (let k = 0; k < 14; k++) { const tx = x - 40 + k * 52, th = 40 + (k * 29) % 50; g.beginPath(); g.moveTo(tx, y + 10); g.lineTo(tx + 10, y - th); g.lineTo(tx + 22, y + 10); g.fill(); }
+};
+const streetDark = (x, y) => { for (const [dx, w, h] of [[-900, 360, 520], [-480, 300, 460], [1300, 380, 540], [1720, 320, 480]]) { g.fillStyle = '#0c0a18'; g.fillRect(x + dx, y - h, w, h); g.beginPath(); g.moveTo(x + dx - 20, y - h); g.lineTo(x + dx + w / 2, y - h - 140); g.lineTo(x + dx + w + 20, y - h); g.fill(); g.fillStyle = '#141028'; g.fillRect(x + dx + 60, y - h + 120, 60, 80); g.fillRect(x + dx + w - 120, y - h + 120, 60, 80); } };
+
+// ---- Part 1 bedroom (same opening as Part 1) ----
+const wallIn = (top = '#1a1236', bot = '#2a1e4e') => { g.fillStyle = lin(0, 0, 0, 1500, [[0, top], [1, bot]]); g.fillRect(-1400, -900, 4000, 3600); g.fillStyle = 'rgba(255,255,255,0.025)'; for (let x = -1400; x < 2600; x += 90) g.fillRect(x, -900, 40, 3200); };
+const floorIn = (y = 1300, a = '#231838', b = '#100a1c') => { g.fillStyle = lin(0, y, 0, y + 800, [[0, a], [1, b]]); g.fillRect(-1400, y, 4000, 1600); g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(-1400, y, 4000, 14); g.strokeStyle = 'rgba(0,0,0,0.18)'; g.lineWidth = 4; for (let k = 1; k < 7; k++) { g.beginPath(); g.moveTo(-1400, y + k * k * 18); g.lineTo(2600, y + k * k * 18); g.stroke(); } };
+const door = (x, y, w, h, o = {}) => { // o: shake, glow (0..1), glowCol, feet (0..1), big (0..1), knob ('L'|'R')
+  const sh = o.shake || 0, gc = o.glowCol || '170,190,255';
+  g.save(); g.translate(sh * 7, 0);
+  rr(x - 20, y - 20, w + 40, h + 20, 8, '#2a1e44'); rr(x, y, w, h, 6, o.col || '#3c2e62');
+  g.fillStyle = 'rgba(0,0,0,0.14)'; g.fillRect(x + 30, y + 40, w - 60, h * 0.36); g.fillRect(x + 30, y + h * 0.48, w - 60, h * 0.44);
+  g.fillStyle = '#c8b070'; g.beginPath(); g.arc(o.knob === 'R' ? x + w - 34 : x + 34, y + h * 0.52, 14, 0, 7); g.fill();
+  if (o.peep !== false) { g.fillStyle = '#0c0a14'; g.beginPath(); g.arc(x + w / 2, y + h * 0.3, 9, 0, 7); g.fill(); }
+  g.restore();
+  const gl = o.glow ?? 1;
+  if (gl > 0) {
+    g.fillStyle = `rgba(${gc},${0.9 * gl})`; g.fillRect(x, y + h - 6, w, 7);
+    // shadows of what stands outside, cut out of the light strip
+    if (o.feet) { g.fillStyle = `rgba(6,4,14,${o.feet})`; for (const fx of [0.36, 0.58]) g.fillRect(x + w * fx, y + h - 7, w * 0.11, 8); }
+    add(() => { g.fillStyle = lin(0, y + h, 0, y + h + 150, [[0, `rgba(${gc},${0.38 * gl})`], [1, `rgba(${gc},0)`]]); g.beginPath(); g.moveTo(x, y + h); g.lineTo(x + w, y + h); g.lineTo(x + w + 90, y + h + 150); g.lineTo(x - 90, y + h + 150); g.closePath(); g.fill(); });
+    if (o.feet) { g.fillStyle = `rgba(6,4,14,${0.7 * o.feet})`; for (const fx of [0.36, 0.58]) { g.beginPath(); g.moveTo(x + w * fx, y + h); g.lineTo(x + w * (fx + 0.11), y + h); g.lineTo(x + w * (fx + 0.11) + 40, y + h + 150); g.lineTo(x + w * fx - 30, y + h + 150); g.closePath(); g.fill(); } }
+    if (o.big) { g.fillStyle = `rgba(6,4,14,${0.85 * o.big})`; g.fillRect(x + w * 0.12, y + h - 7, w * 0.8 * o.big, 8); g.beginPath(); g.moveTo(x + w * 0.12, y + h); g.lineTo(x + w * (0.12 + 0.8 * o.big), y + h); g.lineTo(x + w * (0.12 + 0.8 * o.big) + 80, y + h + 150); g.lineTo(x + w * 0.12 - 70, y + h + 150); g.closePath(); g.fill(); }
+  }
+};
+const clock = (x, y, txt, on = true, blinkT = 0) => { rr(x - 75, y - 52, 150, 70, 10, '#0a0610'); const b = Math.floor(blinkT * 2) % 2 === 0; g.fillStyle = on ? (b ? '#ff2a3a' : '#8a1420') : '#2a0a10'; g.shadowColor = '#ff2a3a'; g.shadowBlur = on && b ? 22 : 4; g.font = '700 50px "DejaVu Sans Mono", monospace'; g.textAlign = 'center'; g.fillText(txt, x, y); g.shadowBlur = 0; g.textAlign = 'left'; };
+const bedroomBase = (o = {}) => {
+  wallIn(); floorIn();
+  rr(600, 380, 330, 430, 10, '#0c0a1c'); g.fillStyle = lin(600, 380, 930, 810, [[0, '#3a3a7a'], [1, '#141038']]); g.fillRect(612, 392, 306, 406);
+  g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(840, 470, 38, 0, 7); g.fill(); g.fillStyle = '#3a3a7a'; g.beginPath(); g.arc(856, 460, 34, 0, 7); g.fill();
+  g.fillStyle = '#0c0a1c'; g.fillRect(760, 392, 10, 406); g.fillRect(612, 590, 306, 10);
+  for (const [x, w] of [[560, 90], [880, 90]]) { g.fillStyle = lin(x, 0, x + w, 0, [[0, '#2e2050'], [0.5, '#3e2c68'], [1, '#261a44']]); g.fillRect(x, 340, w, 560); }
+  add(() => { g.fillStyle = lin(700, 800, 500, 1500, [[0, 'rgba(150,140,255,0.22)'], [1, 'rgba(150,140,255,0)']]); g.beginPath(); g.moveTo(620, 800); g.lineTo(920, 800); g.lineTo(760, 1650); g.lineTo(260, 1650); g.closePath(); g.fill(); });
+  door(1000, 560, 240, 760, { shake: o.shake || 0, glow: o.doorGlow ?? 0, peep: false });
+  rr(60, 1080, 220, 230, 12, '#24183c'); clock(175, 1062, o.clockTxt || '3:33', o.clockOn !== false, o.t || 0);
+  if (o.lamp) { rr(200, 930, 50, 80, 8, '#3a2c58'); add(() => { const r = g.createRadialGradient(225, 930, 10, 225, 930, 360); r.addColorStop(0, `rgba(255,210,140,${0.5 * o.lamp})`); r.addColorStop(1, 'rgba(255,210,140,0)'); g.fillStyle = r; g.fillRect(-200, 500, 900, 900); }); }
+  rr(260, 880, 640, 120, 30, '#33245a'); rr(300, 1040, 200, 80, 30, '#8a82c8');
+};
+const bedFront = (knee = 0) => {
+  rr(270, 1090, 700, 230, 24, '#3c2a6a'); rr(262, 1290, 716, 150, 10, '#20163a'); for (const lx of [280, 940]) rr(lx, 1420, 26, 60, 4, '#160f28');
+  g.fillStyle = lin(0, 1110, 0, 1330, [[0, '#6a54b8'], [1, '#3e2c78']]); g.beginPath(); g.moveTo(290, 1150); g.lineTo(470, 1146); g.quadraticCurveTo(560, 1146 - 90 * knee, 650, 1146 - 70 * knee); g.quadraticCurveTo(720, 1146 - 40 * knee, 790, 1140); g.quadraticCurveTo(900, 1136, 980, 1140); g.lineTo(980, 1330); g.lineTo(290, 1330); g.closePath(); g.fill();
+  if (knee > 0) { g.strokeStyle = 'rgba(255,255,255,0.10)'; g.lineWidth = 6; g.beginPath(); g.moveTo(480, 1140); g.quadraticCurveTo(560, 1146 - 86 * knee, 645, 1150 - 70 * knee); g.stroke(); }
+  g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 6; for (const x of [520, 690, 840]) { g.beginPath(); g.moveTo(x, 1135); g.quadraticCurveTo(x + 30, 1230, x + 10, 1325); g.stroke(); }
+};
+const rug = () => { g.fillStyle = 'rgba(80,60,140,0.45)'; g.beginPath(); g.ellipse(560, 1640, 380, 90, 0, 0, 7); g.fill(); g.setLineDash([26, 18]); g.strokeStyle = 'rgba(160,140,230,0.45)'; g.lineWidth = 6; g.beginPath(); g.ellipse(560, 1640, 340, 72, 0, 0, 7); g.stroke(); g.setLineDash([]); };
+
+// ---------- Part 3 set pieces: inside the woods ----------
+const forest = (scroll = 0, o = {}) => { // layered trunks; scroll moves them sideways (running = parallax)
+  g.fillStyle = lin(0, -400, 0, 1700, [[0, '#07061a'], [1, '#17123a']]); g.fillRect(-1400, -900, 4000, 3600);
+  g.fillStyle = 'rgba(200,190,255,0.06)'; g.fillRect(-1400, 900, 4000, 500); // mist band
+  const layer = (n, w, col, speed, y0, h0, sw) => { for (let k = 0; k < n; k++) { let x = ((k * 2600 / n - scroll * speed) % 2600 + 2600) % 2600 - 800; const ww = w * (0.8 + (k * 37 % 5) / 10), s = Math.sin(T * 0.9 + k) * sw;
+    g.fillStyle = col; g.beginPath(); g.moveTo(x - ww / 2, y0 + 1200); g.lineTo(x - ww / 2 + s * 0.3, y0 - h0); g.lineTo(x + ww / 2 + s * 0.3, y0 - h0); g.lineTo(x + ww / 2, y0 + 1200); g.fill();
+    if (o.branches !== false) { g.strokeStyle = col; g.lineWidth = ww * 0.18; g.beginPath(); g.moveTo(x, y0 - h0 * 0.4); g.lineTo(x + (k % 2 ? 1 : -1) * ww * 2.2 + s, y0 - h0 * 0.62); g.stroke(); } } };
+  layer(16, 34, '#100c26', 0.25, 1200, 1500, 4); fog(1350);
+  layer(10, 70, '#0b081c', 0.55, 1350, 1700, 6);
+  for (let k = 0; k < 10; k++) { const x = ((k * 260 - scroll * 0.55) % 2600 + 2600) % 2600 - 800; g.strokeStyle = 'rgba(120,110,170,0.08)'; g.lineWidth = 3; for (let j = 0; j < 6; j++) { g.beginPath(); g.moveTo(x - 20 + j * 8, 400 + j * 160); g.lineTo(x - 16 + j * 8, 520 + j * 160); g.stroke(); }
+    g.fillStyle = '#0a0718'; for (let j = 0; j < 4; j++) { g.beginPath(); g.ellipse(x + (j % 2 ? 90 : -90) + Math.sin(T + k + j) * 6, 120 + j * 110, 110, 46, 0, 0, 7); g.fill(); } }
+  g.fillStyle = lin(0, 1450, 0, 2200, [[0, '#120e22'], [1, '#05040a']]); g.fillRect(-1400, 1450, 4000, 1400);
+  g.fillStyle = '#0d0a1a'; for (let k = 0; k < 40; k++) { const x = ((k * 97 - scroll * 1.0) % 2600 + 2600) % 2600 - 800; g.beginPath(); g.ellipse(x, 1470 + (k * 13) % 40, 30 + k % 4 * 10, 10, 0, 0, 7); g.fill(); } // leaves/roots
+};
+const fgTrunks = (scroll = 0) => { for (let k = 0; k < 3; k++) { let x = ((k * 1100 - scroll * 1.6) % 3300 + 3300) % 3300 - 900; g.fillStyle = '#040309'; g.fillRect(x, -900, 150, 3600); } };
+const fallenTree = (x, y, w = 1300) => { g.fillStyle = '#2a1e3a'; g.strokeStyle = '#08060f'; g.lineWidth = 10; g.beginPath(); g.roundRect(x, y - 190, w, 190, 90); g.fill(); g.stroke();
+  g.strokeStyle = 'rgba(190,170,240,0.22)'; g.lineWidth = 8; g.beginPath(); g.moveTo(x + 90, y - 180); g.lineTo(x + w - 90, y - 180); g.stroke(); // moonlight on the top of the log
+  g.fillStyle = '#2f4a2e'; for (let k = 0; k < 6; k++) { g.beginPath(); g.ellipse(x + 160 + k * 210, y - 186, 46, 14, 0, 0, 7); g.fill(); } // moss
+  g.strokeStyle = 'rgba(255,255,255,0.05)'; g.lineWidth = 6; for (let k = 0; k < 8; k++) { g.beginPath(); g.moveTo(x + 80 + k * 150, y - 170); g.lineTo(x + 140 + k * 150, y - 30); g.stroke(); }
+  g.fillStyle = '#0c0816'; for (const rx of [x - 30, x + w - 30]) { g.beginPath(); g.ellipse(rx + 30, y - 95, 70, 110, 0, 0, 7); g.fill(); } };
+const treehouse = (x, y, o = {}) => { g.fillStyle = '#0e0a1c'; g.fillRect(x - 40, y - 200, 80, 1600); // trunk
+  g.fillStyle = '#2a1e2e'; g.strokeStyle = '#08060f'; g.lineWidth = 8; g.beginPath(); g.rect(x - 220, y - 380, 440, 260); g.fill(); g.stroke();
+  g.fillStyle = '#1c1424'; g.beginPath(); g.moveTo(x - 260, y - 380); g.lineTo(x, y - 560); g.lineTo(x + 260, y - 380); g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = '#05040a'; g.fillRect(x - 70, y - 320, 110, 150); g.fillStyle = '#3a2a2e'; g.fillRect(x - 260, y - 130, 520, 26);
+  g.strokeStyle = 'rgba(255,255,255,0.05)'; g.lineWidth = 4; for (let k = 0; k < 6; k++) { g.beginPath(); g.moveTo(x - 220, y - 360 + k * 42); g.lineTo(x + 220, y - 360 + k * 42); g.stroke(); }
+  const sw = Math.sin(T * 1.4) * 14; g.strokeStyle = '#8a7a5a'; g.lineWidth = 6; for (const s of [-1, 1]) { g.beginPath(); g.moveTo(x + 120 + s * 30, y - 104); g.quadraticCurveTo(x + 120 + s * 30 + sw, y + 300, x + 120 + s * 30 + sw * 1.6, y + 700); g.stroke(); }
+  for (let k = 0; k < 10; k++) { const yy = y - 60 + k * 76, d = sw * (k / 9) * 1.4; g.beginPath(); g.moveTo(x + 90 + d, yy); g.lineTo(x + 150 + d, yy); g.stroke(); } };
+const road = (y, o = {}) => { g.fillStyle = '#16131e'; g.fillRect(-1400, y - 60, 4000, 120); g.fillStyle = 'rgba(230,220,160,0.35)'; for (let x = -1400; x < 2600; x += 140) g.fillRect(x, y - 4, 70, 8); };
+const headlights = (x, y, a = 1, dir = -1) => { add(() => { for (const s of [-1, 1]) { const hx = x + s * 40; const gr2 = g.createRadialGradient(hx, y, 4, hx, y, 900); gr2.addColorStop(0, `rgba(255,245,210,${0.9 * a})`); gr2.addColorStop(0.2, `rgba(255,240,200,${0.35 * a})`); gr2.addColorStop(1, 'rgba(255,240,200,0)'); g.fillStyle = gr2; g.beginPath(); g.moveTo(hx, y); g.lineTo(hx + dir * 1400, y - 260); g.lineTo(hx + dir * 1400, y + 300); g.closePath(); g.fill();
+    g.fillStyle = `rgba(255,250,230,${a})`; g.beginPath(); g.arc(hx, y, 16, 0, 7); g.fill(); } }); };
+// hiding pose: sitting behind the log, knees folded up, arms around Biscuit
+const heroCrouch = (x, y, s, o = {}) => { const tr = o.tremble ? o.tremble : 0; g.save(); g.translate(x + tr * 3 * Math.sin(T * 47), y + tr * 2 * Math.sin(T * 39)); g.scale(s, s * (1 + 0.015 * Math.sin(T * 7)));
+  g.save(); g.beginPath(); g.rect(-400, -400, 1400, 1340); g.clip(); g.translate(0, 175); whiteStick(P, { beanie: '#2a2a36', arm: 'reach', ...o }); g.restore();
+  g.lineCap = 'round'; g.lineJoin = 'round';
+  for (const [dx, kx] of [[-8, 0], [8, 22]]) for (const [w, c] of [[30, '#121018'], [18, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(300 + dx, 935); g.lineTo(400 + kx, 818); g.lineTo(430 + kx, 968); g.stroke(); }
+  g.restore(); };
+const mom = (x, y, s, o) => { g.save(); g.translate(x, y); g.scale(s, s); momThing(g, { t: T, ...o }); g.restore(); };
+
+// ---------- scenes (u = seconds into the shot) ----------
+const SCENES = {
+  eyesOpen(u, t) { // cold open: the two eyes in our dark back doorway blink
+    cam(2.6 + 0.3 * sm(u / 1.9), 470, 1240); sky(); ground(1500); ourHouse(120, 1500, { open: 1 });
+    const blink = (u > 0.7 && u < 0.85) ? 0.1 : 1; g.save(); g.shadowColor = 'rgba(255,255,255,0.9)'; g.shadowBlur = 16; g.fillStyle = '#f4f2ee';
+    for (const s of [-1, 1]) { g.beginPath(); g.ellipse(470 + s * 24, 1230, 11, 15 * blink, 0, 0, 7); g.fill(); } g.restore(); darken(0.2);
+  },
+  run1(u, t) { // they sprint into the trees; a shadow follows
+    cam(1.0, 540, 1150, Math.sin(u * 18) * 6, Math.abs(Math.sin(u * 9)) * 8); forest(u * 900);
+    hero(360, 1500 - 975 * 0.6 - Math.abs(Math.sin(u * 7)) * 14, 0.6, { expr: 'scared', look: 1, step: Math.sin(u * 14), swing: Math.sin(u * 14) }); dog(620, 1500 - Math.abs(Math.sin(u * 9)) * 26, 0.5, { pose: 'walk', t: u * 1.6 });
+    g.save(); g.globalAlpha = 0.85; g.fillStyle = '#020104'; g.beginPath(); g.ellipse(-60 + 30 * Math.sin(u * 3), 1050, 70, 260, 0, 0, 7); g.fill(); g.restore();
+    fgTrunks(u * 900); darken(0.12);
+  },
+  comments(u, t) { // four viewer comments, no check mark; they slide away at the end
+    g.fillStyle = lin(0, 0, 0, H, [[0, '#120c26'], [1, '#05040a']]); g.fillRect(0, 0, W, H);
+    const C = ["It's will always be biscuit", 'IN TO THE WOODS WITH BISCUIT!', 'runnig with busquit', 'Biscuit againnnn'];
+    const out = sm((u - 3.3) / 0.3);
+    C.forEach((c, i) => { const a = sm((u - 0.15 - i * 0.55) / 0.18); if (a <= 0) return; const y = 560 + i * 210, x = (i % 2 ? 140 : 100) - out * 1200 * (i % 2 ? -1 : 1);
+      g.save(); g.globalAlpha = a; g.translate(x + 380, y + 60); g.scale(0.8 + 0.2 * a, 0.8 + 0.2 * a); g.translate(-(x + 380), -(y + 60));
+      rr(x, y, 840, 130, 34, '#ffffff'); g.fillStyle = '#d8d0e8'; g.beginPath(); g.arc(x + 62, y + 65, 38, 0, 7); g.fill(); g.fillStyle = '#7a6aa8'; g.beginPath(); g.arc(x + 62, y + 52, 15, 0, 7); g.fill(); g.beginPath(); g.ellipse(x + 62, y + 90, 24, 14, 0, Math.PI, 0); g.fill();
+      g.fillStyle = '#121018'; let fs = 42; g.font = `700 ${fs}px "DejaVu Sans", sans-serif`; while (g.measureText(c).width > 690 && fs > 24) { fs -= 2; g.font = `700 ${fs}px "DejaVu Sans", sans-serif`; } g.textAlign = 'left'; g.fillText(c, x + 124, y + 66 + fs * 0.35); g.restore(); });
+  },
+  run2(u, t) { // running deeper; branches whip past; heavy steps behind
+    cam(1.08, 540, 1150, Math.sin(u * 17) * 8, Math.abs(Math.sin(u * 8.5)) * 10); forest(800 + u * 1100);
+    hero(330, 1500 - 975 * 0.6 - Math.abs(Math.sin(u * 7)) * 14, 0.6, { expr: 'scared', look: u > 5 ? -1 : 1, step: Math.sin(u * 14), swing: Math.sin(u * 14) }); dog(600, 1500 - Math.abs(Math.sin(u * 9)) * 26, 0.5, { pose: 'walk', t: u * 1.6 });
+    fgTrunks(800 + u * 1100);
+    if (Math.floor(u * 2.2) % 3 === 0) { g.strokeStyle = '#030206'; g.lineWidth = 22; g.beginPath(); g.moveTo(-200, 300 + (u * 400) % 400); g.quadraticCurveTo(300, 500, 900, 380 + (u * 300) % 300); g.stroke(); } // branch whip
+    darken(0.14);
+  },
+  lookBack(u, t) { // close: he turns his head while running
+    const z = 2.0; cam(z, 300, 560, Math.sin(u * 16) * 8, Math.abs(Math.sin(u * 8)) * 8); forest(2000 + u * 600, { branches: false });
+    hero(0, 0, 1, { expr: u > 1.0 ? 'shock' : 'scared', look: lerp(1, -1, sm((u - 0.3) / 0.5)) }); darken(0.15);
+  },
+  momReveal(u, t) { // far between the trunks: Mom, much too tall, standing still in the fog
+    cam(1.0 + 0.5 * sm(u / 5), 700, 1100); forest(2400, { branches: true });
+    mom(700 - 300 * 0.72, 1500 - 975 * 0.72, 0.72, { tall: 1.6, face: u > 2.5 ? 'blank' : 'smile' }); fog(1450);
+    g.fillStyle = '#040309'; g.fillRect(180, -900, 160, 3600); g.fillRect(1120, -900, 180, 3600); darken(0.18);
+  },
+  armsStretch(u, t) { // her arms slide out between the trunks, longer and longer
+    cam(0.85, 620, 1050, Math.sin(t * 30) * 2, 0); forest(2400);
+    mom(620 - 300 * 0.72, 1520 - 975 * 0.72, 0.72, { tall: 1.6, reach: sm(u / 3.6), face: 'dark' }); fog(1450);
+    for (const x of [80, 360, 900, 1180]) { g.fillStyle = '#05040b'; g.fillRect(x, -900, 110, 3600); } darken(0.15);
+  },
+  dive(u, t) { // they dive under a big fallen trunk
+    cam(1.05, 560, 1250); forest(2600, { branches: false });
+    const d = sm(u / 0.8); g.save(); g.beginPath(); g.rect(-1400, -900, 4000, 2420); g.clip(); hero(lerp(80, 350, d), 1500 - 975 * 0.55 + 62 * d, 0.55, { expr: 'scared', look: 1 - 2 * sm((u - 1) / 0.5), lookY: 0 }); dog(lerp(260, 620, d), 1500 + 60 * d, 0.48, { pose: 'crouch', t: u }); g.restore(); fallenTree(-120, 1520, 1400);
+    g.fillStyle = '#05040a'; g.fillRect(-1400, 1500, 4000, 60); fog(1500); darken(0.2);
+  },
+  hug(u, t) { // close: he hugs Biscuit, Biscuit trembling, eyes wide
+    cam(1.9, 470, 1330); g.fillStyle = '#07050f'; g.fillRect(-1400, -900, 4000, 3800); g.fillStyle = '#1a1226'; g.fillRect(-1400, 900, 4000, 260); // trunk above them
+    heroCrouch(250, 1520 - 975 * 0.6, 0.6, { expr: 'scared', tremble: 1, look: Math.sin(T * 1.7) * 0.7 }); dog(400, 1468, 0.38, { pose: 'crouch', shake: 1, t: u, ears: 'down', worried: true });
+    darken(0.18);
+  },
+  dontBreathe(u, t) { cam(3.0, 300 + Math.sin(t * 45) * 1.5, 500); g.fillStyle = '#06040c'; g.fillRect(-400, -400, 1400, 1800); hero(0, 0, 1, { expr: 'scared', look: Math.sin(t * 2.2) * 0.6 }); darken(0.3 + 0.1 * Math.sin(t * 2)); },
+  feetStop(u, t) { // from under the trunk: her long legs stop right beyond it
+    cam(1.0, 540, 1150); g.fillStyle = '#05040a'; g.fillRect(-1400, -900, 4000, 3800);
+    g.fillStyle = '#1a1226'; g.fillRect(-200, 700, 1500, 520); g.fillStyle = '#0c0816'; g.fillRect(-200, 1180, 1500, 40); // trunk from below
+    g.fillStyle = lin(0, 1220, 0, 1900, [[0, '#120e22'], [1, '#04030a']]); g.fillRect(-200, 1220, 1500, 700);
+    const step = 1 - sm((u - 0.2) / 1.4); const lx = 640 - 160 * step;
+    for (const s of [-1, 1]) { g.strokeStyle = '#121018'; g.lineWidth = 44; g.beginPath(); g.moveTo(lx + s * 40, 1220); g.lineTo(lx + s * 44, 1420); g.stroke(); g.strokeStyle = '#4a7280'; g.lineWidth = 30; g.stroke();
+      g.fillStyle = '#e8e4ee'; g.strokeStyle = '#121018'; g.lineWidth = 6; g.beginPath(); g.ellipse(lx + s * 50, 1428, 34, 13, 0, 0, 7); g.fill(); g.stroke(); }
+    add(() => { g.fillStyle = 'rgba(150,150,230,0.12)'; g.fillRect(-200, 1220, 1500, 300); }); darken(0.15);
+  },
+  trunkFingers(u, t) { // they hide with their backs to the log; her long fingers reach over the top, right above them
+    cam(1.35, 520, 1150); forest(2600, { branches: false });
+    g.fillStyle = 'rgba(4,3,9,0.5)'; g.beginPath(); g.ellipse(700, 820, 230, 520, 0, 0, 7); g.fill(); // her shadow beyond the log
+    fallenTree(-260, 1460, 1600);
+    heroCrouch(170, 1530 - 975 * 0.6, 0.6, { expr: 'scared', tremble: 1, look: Math.sin(T * 1.3) * 0.5, lookY: 0.6 }); dog(320, 1478, 0.36, { pose: 'crouch', shake: 1, t: u, ears: 'down', worried: true }); // Biscuit held in his arms
+    const x = 330 + 240 * Math.sin(u * 0.35);
+    { // her long arm: comes down from her, beyond the log and out of frame, bending like a snake, to the wrist on the log
+      const ax = 760, ay = 300, bx = x + 6, by = 1262, pts = [];
+      for (let i = 0; i <= 24; i++) { const k = i / 24, bend = Math.sin(Math.PI * k); pts.push([ax + (bx - ax) * k + Math.sin(k * 6 + u * 2.2) * 70 * bend, ay + (by - ay) * k - 120 * bend]); }
+      g.lineCap = 'round'; g.lineJoin = 'round';
+      for (const [w, c] of [[24, '#121018'], [12, '#e0dce6']]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); pts.forEach(([px, py], i) => (i ? g.lineTo(px, py) : g.moveTo(px, py))); g.stroke(); }
+    }
+    g.save(); g.translate(x, 1262); g.rotate(1.2); g.scale(1.9, 1.9); hand(g, 0, 0, 1, 0.9, u); g.restore(); // fingers hanging over the edge
+    fog(1500); darken(0.16);
+  },
+  closer(u, t) { SCENES.feetStop(u + 2.0, t); const k = sm(u / 2.5); g.save(); g.fillStyle = `rgba(4,3,9,${0.4 * k})`; g.fillRect(-1400, -900, 4000, 3800); g.restore(); },
+  rustle(u, t) { // a bush shakes far behind her; she turns and walks away into the fog
+    cam(0.95, 620, 1100); forest(2700);
+    const sh = (u > 1.6 && u < 3.0) ? Math.sin(u * 40) * 14 : 0; g.fillStyle = '#0a1210'; g.beginPath(); g.ellipse(1120 + sh, 1420, 150, 90, 0, 0, 7); g.fill();
+    const go = sm((u - 3.0) / 3.0); g.save(); g.globalAlpha = 1 - 0.7 * go; mom(lerp(520, 980, go) - 300 * lerp(0.6, 0.4, go), 1480 - 975 * lerp(0.6, 0.4, go), lerp(0.6, 0.4, go), { tall: 1.6, face: 'dark' }); g.restore();
+    g.fillStyle = '#05040a'; g.fillRect(-1400, 1480, 4000, 900); fallenTree(-200, 1700, 1700); fog(1450); darken(0.18);
+  },
+  heroLookUp(u, t) { // "Quickly, you look up..." - him behind the log, eyes going up
+    cam(1.9, 420, 1250); forest(2700, { branches: false }); heroCrouch(250, 1520 - 975 * 0.6, 0.6, { expr: 'scared', tremble: 0.7, look: 0.2, lookY: sm((u - 0.2) / 0.4) });
+    dog(400, 1468, 0.38, { pose: 'crouch', shake: 0.6, t: u, ears: 'down' }); fallenTree(-300, 1700, 1600); darken(0.15);
+  },
+  lookUp(u, t) { // looking up through the branches: an old treehouse, ladder swaying
+    cam(0.9 + 0.08 * sm(u / 5), 560, 900 - 120 * sm(u / 3)); forest(2800, { branches: true }); treehouse(560, 900); fog(1450); darken(0.15);
+  },
+  headlightsShot(u, t) { // far off between trunks: headlights on the old road
+    cam(1.0, 540, 1150); forest(3000); road(1380); headlights(lerp(1500, 700, sm(u / 3.0)), 1350, sm(u / 0.8), -1);
+    for (const x of [60, 420, 820]) { g.fillStyle = '#05040b'; g.fillRect(x, -900, 120, 3600); } darken(0.1);
+  },
+  biscuitLook(u, t) { // Biscuit looks up at the ladder... then at the road
+    cam(1.7, 560, 1380); forest(2800, { branches: false });
+    const look = Math.sin(u * 1.6) > 0 ? 'stare' : 'stand'; dog(560, 1500, 0.8, { pose: look, t: u, look: Math.sin(u * 1.6) > 0 ? 1 : -1, ears: 'down', flip: Math.sin(u * 1.6) < 0 });
+    headlights(1300, 1250, 0.4, -1); darken(0.12);
+  },
+  momTurns(u, t) { // deep in the woods she stops... and slowly turns back toward us; arms start to rise
+    cam(1.0 + 0.6 * sm(u / 5.8), 760, 1050); forest(2900);
+    mom(760 - 300 * 0.5, 1460 - 975 * 0.5, 0.5, { tall: 1.6, reach: 0.35 * sm((u - 3.2) / 2.5), face: u > 3.0 ? 'dark' : 'blank' }); fog(1440);
+    g.fillStyle = '#040309'; g.fillRect(260, -900, 140, 3600); g.fillRect(1160, -900, 160, 3600); darken(0.2 + 0.1 * sm((u - 3) / 2));
+  },
+  choice(u, t) {
+    g.fillStyle = '#05040a'; g.fillRect(0, 0, W, H);
+    g.save(); g.beginPath(); g.rect(0, 0, W, 955); g.clip(); cam(0.62, 560, 820, 0, -480); forest(2800); treehouse(560, 900); dog(1150, 1500, 0.55, { pose: 'stare', look: 1, t: u, flip: true }); darken(0.12); g.restore();
+    g.save(); g.beginPath(); g.rect(0, 965, W, 955); g.clip(); cam(0.7, 540, 1250, 0, 480); forest(3100); road(1380); headlights(900, 1350, 1, -1); dog(160, 1500, 0.55, { pose: 'stare', look: 1, t: u }); darken(0.1); g.restore();
+    g.fillStyle = '#c6ff3a'; g.fillRect(0, 955, W, 10);
+    choiceCard(540, 820, 'THE TREEHOUSE', sm((u - 0.2) / 0.3)); choiceCard(540, 1790, 'THE ROAD', sm((u - 1.6) / 0.3));
+  },
+  end() { g.fillStyle = '#000'; g.fillRect(0, 0, W, H); },
+};
+const choiceCard = (x, y, txt, a, col = '#ff4d5e') => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(0.85 + 0.15 * a, 0.85 + 0.15 * a);
+  g.font = '900 58px "DejaVu Sans", sans-serif'; const w = g.measureText(txt).width + 70; rr(-w / 2, -58, w, 104, 26, 'rgba(10,6,16,0.88)'); g.strokeStyle = col; g.lineWidth = 6; g.beginPath(); g.roundRect(-w / 2, -58, w, 104, 26); g.stroke();
+  g.fillStyle = col; g.textAlign = 'center'; g.fillText(txt, 0, 16); g.restore(); };
+window.renderScene = (name, u = 1, t = u) => { T = t; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H); g.save(); SCENES[name](u, t, 0); g.restore(); return true; };
+
+// ---------- timeline (seconds, from part3/audio/timeline.json + words.json) ----------
+const SHOTS = [[0, 'eyesOpen'], [1.9, 'run1'], [4.1, 'comments'], [7.85, 'run2'], [14.0, 'lookBack'], [16.0, 'momReveal'], [21.05, 'armsStretch'], [26.2, 'dive'],
+  [28.85, 'hug'], [32.8, 'dontBreathe'], [34.1, 'feetStop'], [38.4, 'trunkFingers'], [47.0, 'closer'], [50.4, 'rustle'], [56.4, 'heroLookUp'], [57.75, 'lookUp'], [61.6, 'headlightsShot'],
+  [66.5, 'biscuitLook'], [71.0, 'momTurns'], [76.85, 'choice'], [83.47, 'end']];
+const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0]]; };
+let CHUNKS = [];
+const buildChunks = () => { CHUNKS = []; let cur = []; WORDS.forEach((w, i) => { cur.push(w); const end = /[.?!:,]$|\.\.\.$/.test(w.w) || cur.length >= 4 || (WORDS[i + 1] && WORDS[i + 1].who !== w.who); if (end) { CHUNKS.push(cur); cur = []; } }); if (cur.length) CHUNKS.push(cur); };
+const captions = (t, top) => {
+  const ch = CHUNKS.find((c, i) => t >= c[0].s - 0.05 && t < (CHUNKS[i + 1] ? Math.min(CHUNKS[i + 1][0].s - 0.05, c[c.length - 1].e + 0.6) : c[c.length - 1].e + 0.6)); if (!ch) return;
+  const isMom = ch[0].who === 'm', hi = ch.findIndex((w) => t >= w.s && t < w.e + 0.08);
+  g.save(); g.translate(240, top ? 230 : 880); capCard(P, { words: ch.map((w) => w.w.toUpperCase()), hi: hi < 0 ? ch.length - 1 : hi, color: isMom ? '#e6dcff' : undefined }); g.restore(); };
+window.renderFrame = (f) => {
+  const t = f / 30; T = t; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
+  const [shot, u] = shotAt(t);
+  g.save(); if (!/^(comments|choice|end)/.test(shot)) hcam(); SCENES[shot](u, t, 0); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
+  if (shot !== 'comments') { const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H); }
+  if (!/^(choice|end|comments)/.test(shot)) { g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: '3:37', title: 'HER VOICE', sub: 'CHAPTER THREE' }); g.restore(); }
+  if (shot !== 'choice' && shot !== 'comments') captions(t, /^(hug|trunkFingers|heroLookUp|feetStop|closer|dive)$/.test(shot));
+  if (shot === 'choice') { g.save(); g.fillStyle = 'rgba(216,208,232,0.85)'; g.font = '700 36px "DejaVu Sans Mono", monospace'; g.fillText('PART 3', 40, 90); g.restore(); }
+  if (shot === 'choice' && u > 3.6) { const c = sm((u - 3.6) / 0.3); g.save(); g.globalAlpha = c; g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#0a0610'; g.strokeText('COMMENT YOUR CHOICE', 540, 1080); g.fillText('COMMENT YOUR CHOICE', 540, 1080); const bob = Math.sin(t * 6) * 10; g.fillStyle = '#c6ff3a'; g.beginPath(); g.moveTo(510, 1110 + bob); g.lineTo(570, 1110 + bob); g.lineTo(540, 1150 + bob); g.fill(); g.restore(); }
+  return true;
+};
+fetch('./words3.json').then((r) => r.json()).then((w) => { WORDS = w; buildChunks(); window.ready = true; });
+</script></body></html>

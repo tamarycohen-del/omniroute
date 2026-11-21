@@ -1,0 +1,93 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+// Flat 2D horror sample: "It Knows Her Voice" - 9 s, 30 fps. Shots: bedroom (knock) -> walk to door with flashlight -> peephole.
+import { capCard, chapterCard, whiteStick } from './stick.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920, P = { g };
+const rr = (x, y, w, h, r, fill) => { g.beginPath(); g.roundRect(x, y, w, h, r); g.fillStyle = fill; g.fill(); };
+const lin = (x0, y0, x1, y1, stops) => { const gr = g.createLinearGradient(x0, y0, x1, y1); stops.forEach(([o, c]) => gr.addColorStop(o, c)); return gr; };
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
+const KNOCKS = [2.0, 2.35, 2.7, 5.2, 5.55];
+const knockAmt = (t) => KNOCKS.reduce((m, k) => (t >= k && t < k + 0.12 ? Math.max(m, 1 - (t - k) / 0.12) : m), 0);
+
+const wall = (top = '#1a1236', bot = '#2a1e4e') => { g.fillStyle = lin(0, 0, 0, 1500, [[0, top], [1, bot]]); g.fillRect(-400, -400, 2000, 2000); g.fillStyle = 'rgba(255,255,255,0.025)'; for (let x = -400; x < 1600; x += 90) g.fillRect(x, -400, 40, 1800); };
+const floor = (y = 1300) => { g.fillStyle = lin(0, y, 0, y + 800, [[0, '#231838'], [1, '#100a1c']]); g.fillRect(-400, y, 2000, 1200); g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(-400, y, 2000, 14); };
+const door = (x, y, w, h, shake = 0, crack = 1) => {
+  g.save(); g.translate(shake * 6, 0);
+  rr(x - 18, y - 18, w + 36, h + 18, 8, '#2a1e44'); rr(x, y, w, h, 6, '#3c2e62');
+  g.fillStyle = '#33275a'; g.fillRect(x + 30, y + 40, w - 60, h * 0.36); g.fillRect(x + 30, y + h * 0.48, w - 60, h * 0.44);
+  g.fillStyle = '#c8b070'; g.beginPath(); g.arc(x + 32, y + h * 0.5, 13, 0, 7); g.fill();
+  g.fillStyle = '#0c0a14'; g.beginPath(); g.arc(x + w / 2, y + h * 0.3, 9, 0, 7); g.fill(); // peephole
+  g.restore();
+  g.fillStyle = `rgba(255,200,130,${0.85 * crack})`; g.fillRect(x, y + h - 6, w, 7);
+  g.save(); g.globalCompositeOperation = 'lighter'; g.fillStyle = lin(0, y + h, 0, y + h + 120, [[0, `rgba(255,190,120,${0.35 * crack})`], [1, 'rgba(255,190,120,0)']]); g.fillRect(x - 20, y + h, w + 40, 120); g.restore();
+};
+const bedroom = (t) => {
+  wall(); floor();
+  rr(600, 380, 330, 430, 10, '#0c0a1c'); g.fillStyle = lin(600, 380, 930, 810, [[0, '#3a3a7a'], [1, '#141038']]); g.fillRect(612, 392, 306, 406);
+  g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(840, 470, 38, 0, 7); g.fill(); g.fillStyle = '#3a3a7a'; g.beginPath(); g.arc(856, 460, 34, 0, 7); g.fill();
+  g.fillStyle = '#0c0a1c'; g.fillRect(760, 392, 10, 406); g.fillRect(612, 590, 306, 10);
+  for (const [x, w] of [[560, 90], [880, 90]]) { g.fillStyle = lin(x, 0, x + w, 0, [[0, '#2e2050'], [0.5, '#3e2c68'], [1, '#261a44']]); g.fillRect(x, 340, w, 560); }
+  g.save(); g.globalCompositeOperation = 'lighter'; g.fillStyle = lin(700, 800, 500, 1500, [[0, 'rgba(150,140,255,0.22)'], [1, 'rgba(150,140,255,0)']]);
+  g.beginPath(); g.moveTo(620, 800); g.lineTo(920, 800); g.lineTo(760, 1650); g.lineTo(260, 1650); g.closePath(); g.fill(); g.restore();
+  door(1000, 560, 240, 760, knockAmt(t));
+  rr(60, 1080, 220, 230, 12, '#24183c'); rr(100, 1010, 150, 70, 10, '#0a0610');
+  const blink = Math.floor(t * 2) % 2 === 0; g.fillStyle = blink ? '#ff2a3a' : '#7a1018'; g.shadowColor = '#ff2a3a'; g.shadowBlur = blink ? 22 : 6; g.font = '700 50px "DejaVu Sans Mono", monospace'; g.textAlign = 'center'; g.fillText('3:33', 175, 1062); g.shadowBlur = 0; g.textAlign = 'left';
+  rr(260, 880, 640, 120, 30, '#33245a'); rr(300, 1040, 200, 80, 30, '#8a82c8');
+  // character sitting up in bed (legs under the blanket)
+  const look = t > 2.05 ? sm((t - 2.05) / 0.25) : 0, sit = sm((t - 0.6) / 0.6);
+  g.save(); g.translate(330, 600 + 140 * (1 - sit)); g.scale(0.82, 0.82); whiteStick(P, { beanie: '#2a2a36', expr: t > 2.05 ? 'scared' : sit > 0.5 ? 'worried' : 'neutral', look }); g.restore();
+  rr(270, 1090, 700, 230, 24, '#3c2a6a'); rr(262, 1290, 716, 150, 10, '#20163a'); for (const lx of [280, 940]) rr(lx, 1420, 26, 60, 4, '#160f28');
+  g.fillStyle = lin(0, 1110, 0, 1330, [[0, '#6a54b8'], [1, '#3e2c78']]); g.beginPath(); g.moveTo(330, 1150); g.quadraticCurveTo(640, 1100, 980, 1140); g.lineTo(980, 1330); g.lineTo(330, 1330); g.closePath(); g.fill();
+  g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 6; for (const x of [520, 690, 840]) { g.beginPath(); g.moveTo(x, 1135); g.quadraticCurveTo(x + 30, 1230, x + 10, 1325); g.stroke(); }
+};
+const hallway = (t) => { // he walks to the front door with a flashlight
+  wall('#141030', '#221a42'); floor(1400);
+  for (const x of [80, 380]) { rr(x, 520, 150, 190, 6, '#1c1634'); rr(x + 14, 534, 122, 162, 4, '#2a2048'); }
+  const k = knockAmt(t); door(700, 560, 300, 860, k, 1);
+  const u = sm((t - 3.0) / 2.2), x = -520 + 540 * u, step = Math.sin(t * 9) * (u < 1 ? 1 : 0);
+  // flashlight cone (additive)
+  g.save(); g.globalCompositeOperation = 'lighter'; const hx = x + 618, hy = 1228;
+  const cone = g.createRadialGradient(hx, hy, 10, hx, hy, 620); cone.addColorStop(0, 'rgba(255,240,190,0.55)'); cone.addColorStop(1, 'rgba(255,240,190,0)');
+  g.fillStyle = cone; g.beginPath(); g.moveTo(hx, hy); g.lineTo(hx + 700, hy - 300); g.lineTo(hx + 700, hy + 200); g.closePath(); g.fill(); g.restore();
+  g.save(); g.translate(x, 470); g.scale(1.2, 1.2); whiteStick(P, { beanie: '#2a2a36', expr: t > 5.2 ? 'scared' : 'worried', look: 1, arm: 'flash', step }); g.restore();
+};
+const peephole = (t) => { // fisheye view through the peephole
+  g.fillStyle = '#000'; g.fillRect(-400, -400, 2000, 2400);
+  g.save(); g.beginPath(); g.arc(540, 960, 470, 0, 7); g.clip();
+  g.fillStyle = lin(0, 500, 0, 1450, [[0, '#2a2440'], [1, '#100c1c']]); g.fillRect(0, 400, 1080, 1200);
+  // corridor perspective (bulged)
+  g.strokeStyle = 'rgba(120,110,170,0.5)'; g.lineWidth = 6;
+  for (const [a, b] of [[[150, 520], [470, 840]], [[930, 520], [610, 840]], [[150, 1400], [470, 1080]], [[930, 1400], [610, 1080]]]) { g.beginPath(); g.moveTo(...a); g.quadraticCurveTo((a[0] + b[0]) / 2 + (a[0] < 540 ? -40 : 40), (a[1] + b[1]) / 2, ...b); g.stroke(); }
+  rr(470, 840, 140, 240, 4, '#0c0a16');
+  g.fillStyle = 'rgba(255,220,150,0.35)'; g.beginPath(); g.ellipse(540, 600, 60, 20, 0, 0, 7); g.fill(); // hall lamp
+  // the thing: too tall, too thin, white eyes - closer each second
+  const near = sm((t - 6.3) / 2.2), sc = 0.55 + 0.9 * near, by = 1080 + 230 * near;
+  g.save(); g.translate(540, by); g.scale(sc, sc); g.fillStyle = '#05040a';
+  g.beginPath(); g.ellipse(0, -420, 52, 64, 0, 0, 7); g.fill(); g.fillRect(-22, -360, 44, 300); for (const s of [-1, 1]) { g.save(); g.rotate(s * 0.08); g.fillRect(s * 22 - 6, -350, 12, 330); g.restore(); g.fillRect(s * 14 - 6, -70, 12, 80); }
+  g.fillStyle = '#f2f0ec'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(s * 20, -430, 9, 13, 0, 0, 7); g.fill(); }
+  g.restore();
+  const vg = g.createRadialGradient(540, 960, 200, 540, 960, 480); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.9)'); g.fillStyle = vg; g.fillRect(0, 400, 1080, 1200);
+  g.restore();
+  g.strokeStyle = '#1a1622'; g.lineWidth = 26; g.beginPath(); g.arc(540, 960, 480, 0, 7); g.stroke();
+  // whisper
+  if (t > 7.0) { g.save(); g.globalAlpha = sm((t - 7.0) / 0.4); g.fillStyle = '#d8d0e8'; g.font = 'italic 600 46px "DejaVu Serif", serif'; g.textAlign = 'center'; g.fillText('"honey… let me in. it’s cold."', 540, 1530); g.restore(); }
+};
+window.renderFrame = (f) => {
+  const t = f / 30; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
+  const shot = t < 3.0 ? 'bed' : t < 6.0 ? 'hall' : 'peep', ks = knockAmt(t);
+  g.save();
+  if (shot === 'bed') { const z = 1.0 + 0.05 * sm(t / 3) + (t > 2.0 ? 0.25 * sm((t - 2.0) / 0.8) : 0), fx = 540 + (t > 2.0 ? 260 * sm((t - 2.0) / 0.8) : 0); g.translate(W / 2, H / 2); g.scale(z, z); g.translate(-fx, -1000); bedroom(t); }
+  else if (shot === 'hall') { const z = 1.05 + 0.08 * sm((t - 3) / 3); g.translate(W / 2 + ks * 8, H / 2); g.scale(z, z); g.translate(-560, -980); hallway(t); }
+  else { const z = 1.0 + 0.04 * sm((t - 6) / 3); g.translate(W / 2, H / 2); g.scale(z, z); g.translate(-540, -960); peephole(t); }
+  g.restore();
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: '3:33', title: 'NIGHT ONE' }); g.restore();
+  if (ks > 0) { g.save(); g.translate(540, 620); g.rotate((Math.floor(t * 10) % 2 ? 1 : -1) * 0.1); g.font = '900 120px "Inter Display Black", "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineJoin = 'round'; g.lineWidth = 18; g.strokeStyle = '#0a0610'; g.strokeText('KNOCK', 0, 0); g.fillStyle = '#ffffff'; g.fillText('KNOCK', 0, 0); g.restore(); }
+  const cap = t < 2.0 ? [['EVERY', 'NIGHT', 'AT', '3:33…'], 3] : t < 6.0 ? [['SOMEONE', 'KNOCKS.'], 1] : [['WITH', "MOM'S", 'VOICE.'], 1];
+  g.save(); g.translate(240, 1080); capCard(P, { words: cap[0], hi: cap[1] }); g.restore();
+  return true;
+};
+window.ready = true;
+</script></body></html>

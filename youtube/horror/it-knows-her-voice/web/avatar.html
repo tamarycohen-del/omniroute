@@ -1,0 +1,79 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="800" height="800"></canvas>
+<script type="module">
+// Channel profile picture options (800x800, everything important inside the centre circle).
+import { whiteStick } from './stick.js'; import { biscuitFront } from './biscuit.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d');
+const bg = () => { const r = g.createRadialGradient(400, 360, 40, 400, 400, 560); r.addColorStop(0, '#3a2a6e'); r.addColorStop(1, '#0c0818'); g.fillStyle = r; g.fillRect(0, 0, 800, 800); };
+const moon = (x, y, s) => { g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(x, y, s, 0, 7); g.fill(); g.fillStyle = '#2e2260'; g.beginPath(); g.arc(x + s * 0.4, y - s * 0.25, s * 0.9, 0, 7); g.fill(); };
+const OPT = {
+  A() { bg(); moon(600, 190, 50); g.save(); g.translate(400 - 300 * 2.3, 470 - 495 * 2.3); g.scale(2.3, 2.3); whiteStick({ g }, { beanie: '#2a2a36', expr: 'scared', look: 0.4 }); g.restore(); },
+  B() { bg(); const x = 290, y = 170, w = 220, h = 470;
+    g.fillStyle = '#2a1e44'; g.fillRect(x - 16, y - 16, w + 32, h + 16); g.fillStyle = '#4a3a7a'; g.fillRect(x, y, w, h);
+    g.fillStyle = 'rgba(0,0,0,0.18)'; g.fillRect(x + 24, y + 30, w - 48, 160); g.fillRect(x + 24, y + 230, w - 48, 210);
+    g.fillStyle = '#c8b070'; g.beginPath(); g.arc(x + 30, y + 250, 11, 0, 7); g.fill();
+    g.fillStyle = '#ff2a3a'; g.shadowColor = '#ff2a3a'; g.shadowBlur = 30; g.font = '700 96px "DejaVu Sans Mono", monospace'; g.textAlign = 'center'; g.fillText('3:33', 400, 150); g.shadowBlur = 0;
+    g.fillStyle = 'rgba(200,215,255,0.95)'; g.fillRect(x, y + h - 8, w, 9);
+    g.save(); g.globalCompositeOperation = 'lighter'; const lg = g.createLinearGradient(0, y + h, 0, y + h + 140); lg.addColorStop(0, 'rgba(170,190,255,0.5)'); lg.addColorStop(1, 'rgba(170,190,255,0)'); g.fillStyle = lg; g.beginPath(); g.moveTo(x, y + h); g.lineTo(x + w, y + h); g.lineTo(x + w + 80, y + h + 140); g.lineTo(x - 80, y + h + 140); g.fill(); g.restore();
+    g.fillStyle = '#06040c'; for (const fx of [0.34, 0.58]) g.fillRect(x + w * fx, y + h - 9, w * 0.11, 10); },
+  C() { bg(); moon(170, 170, 40);
+    g.save(); g.translate(330 - 300 * 1.75, 430 - 495 * 1.75); g.scale(1.75, 1.75); whiteStick({ g }, { beanie: '#2a2a36', expr: 'worried', look: 1 }); g.restore();
+    g.save(); g.translate(545, 560); g.scale(1.55, 1.55); biscuitFront(g, { t: 0, dark: 0 }); g.restore(); },
+  D() { // face split: purple moonlight + red, a lime "?" stitched on the beanie (= you choose)
+    bg(); const r = g.createLinearGradient(0, 0, 800, 0); r.addColorStop(0.5, 'rgba(255,40,60,0)'); r.addColorStop(1, 'rgba(255,40,60,0.35)'); g.fillStyle = r; g.fillRect(0, 0, 800, 800);
+    g.save(); g.translate(400 - 300 * 2.3, 470 - 495 * 2.3); g.scale(2.3, 2.3); whiteStick({ g }, { beanie: '#2a2a36', expr: 'worried', look: 0 }); g.restore();
+    g.fillStyle = '#c6ff3a'; g.font = '900 96px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#121018'; g.strokeText('?', 400, 330); g.fillText('?', 400, 330); },
+  E() { // crossroads: two glowing paths, you pick
+    const r = g.createLinearGradient(0, 0, 0, 800); r.addColorStop(0, '#0c0a24'); r.addColorStop(1, '#2a1e4e'); g.fillStyle = r; g.fillRect(0, 0, 800, 800); moon(400, 170, 60);
+    for (const [s, c] of [[-1, '255,77,94'], [1, '198,255,58']]) { g.save(); g.globalCompositeOperation = 'lighter'; const lg = g.createLinearGradient(0, 760, 0, 470); lg.addColorStop(0, `rgba(${c},0.75)`); lg.addColorStop(1, `rgba(${c},0)`); g.fillStyle = lg; g.beginPath(); g.moveTo(400 + s * 40, 800); g.lineTo(400 + s * 170, 800); g.lineTo(400 + s * 330, 480); g.lineTo(400 + s * 270, 480); g.fill(); g.restore(); }
+    g.save(); g.translate(400 - 300 * 0.62, 760 - 975 * 0.62); g.scale(0.62, 0.62); whiteStick({ g }, { beanie: '#2a2a36', expr: 'worried', look: 0 }); g.restore(); },
+  F() { // minimal icon: the beanie with two eyes peeking out of the dark
+    g.fillStyle = '#0c0818'; g.fillRect(0, 0, 800, 800);
+    const cx = 400, hc = 520, R = 190; g.fillStyle = '#2a2a36'; g.strokeStyle = '#000'; g.lineWidth = 14;
+    g.beginPath(); g.moveTo(cx - R - 10, hc - 40); g.bezierCurveTo(cx - R + 10, hc - R - 120, cx + R - 10, hc - R - 120, cx + R + 10, hc - 40); g.closePath(); g.fill(); g.stroke();
+    g.beginPath(); g.roundRect(cx - R - 26, hc - 90, 2 * R + 52, 80, 30); g.fill(); g.stroke();
+    g.strokeStyle = '#1a1a22'; g.lineWidth = 8; for (let k = -4; k <= 4; k++) { g.beginPath(); g.moveTo(cx + k * 40, hc - 80); g.lineTo(cx + k * 40, hc - 20); g.stroke(); }
+    g.save(); g.shadowColor = 'rgba(255,255,255,0.8)'; g.shadowBlur = 30; g.fillStyle = '#f4f2ee'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 70, hc + 70, 30, 40, 0, 0, 7); g.fill(); } g.restore();
+    g.fillStyle = '#0c0818'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 70 + 6, hc + 76, 14, 20, 0, 0, 7); g.fill(); } },
+  G() { // under-lit face (phone light from below), classic horror
+    g.fillStyle = '#05040a'; g.fillRect(0, 0, 800, 800);
+    g.save(); g.translate(400 - 300 * 2.3, 470 - 495 * 2.3); g.scale(2.3, 2.3); whiteStick({ g }, { beanie: '#2a2a36', expr: 'scared', look: 0 }); g.restore();
+    const r = g.createLinearGradient(0, 800, 0, 150); r.addColorStop(0, 'rgba(120,160,255,0)'); r.addColorStop(0.35, 'rgba(10,8,30,0.05)'); r.addColorStop(1, 'rgba(5,4,10,0.85)'); g.fillStyle = r; g.fillRect(0, 0, 800, 800);
+    g.save(); g.globalCompositeOperation = 'lighter'; const q = g.createRadialGradient(400, 820, 20, 400, 820, 520); q.addColorStop(0, 'rgba(140,170,255,0.55)'); q.addColorStop(1, 'rgba(140,170,255,0)'); g.fillStyle = q; g.fillRect(0, 0, 800, 800); g.restore();
+    g.fillStyle = '#1b1730'; g.strokeStyle = '#000'; g.lineWidth = 8; g.beginPath(); g.roundRect(300, 700, 200, 140, 24); g.fill(); g.stroke(); g.fillStyle = '#aac4ff'; g.fillRect(316, 716, 168, 120); },
+  J() { charFace('worried', 0); },
+  K() { charFace('worried', 0.55); },
+  H() { faceIcon(false); },
+  I() { faceIcon(true); },
+};
+// like F, but the whole face shows: big head in the dark, beanie, glowing eyes. lit=false: face in shadow; lit=true: pale face, soft rim light.
+// our character's own face (whiteStick head), big, on the dark background. shade 0..1 darkens the face from the right.
+const charFace = (expr, shade) => {
+  g.fillStyle = '#0c0818'; g.fillRect(0, 0, 800, 800);
+  const r = g.createRadialGradient(400, 430, 60, 400, 430, 420); r.addColorStop(0, 'rgba(70,50,140,0.45)'); r.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = r; g.fillRect(0, 0, 800, 800);
+  const S = 3.0, hc = 560 - 70 + 4; // head centre in whiteStick units: cx 300, hc 494
+  g.save(); g.translate(400 - 300 * S, 470 - hc * S); g.scale(S, S); whiteStick({ g }, { beanie: '#2a2a36', expr, look: 0 }); g.restore();
+  if (shade > 0) { g.save(); g.beginPath(); g.arc(400, 470, 70 * S - 12, 0, 7); g.clip(); g.beginPath(); g.rect(0, 462, 800, 400); g.clip(); const sh = g.createLinearGradient(400 - 210, 0, 400 + 210, 0); sh.addColorStop(0, 'rgba(10,6,24,0)'); sh.addColorStop(1, `rgba(10,6,24,${shade})`); g.fillStyle = sh; g.fillRect(0, 0, 800, 800); g.restore(); }
+  const v = g.createRadialGradient(400, 420, 250, 400, 420, 560); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.6)'); g.fillStyle = v; g.fillRect(0, 0, 800, 800);
+};
+const faceIcon = (lit) => {
+  g.fillStyle = '#0c0818'; g.fillRect(0, 0, 800, 800);
+  const r = g.createRadialGradient(400, 470, 60, 400, 470, 420); r.addColorStop(0, lit ? 'rgba(90,70,160,0.45)' : 'rgba(60,40,120,0.35)'); r.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = r; g.fillRect(0, 0, 800, 800);
+  const cx = 400, hc = 470, R = 210;
+  g.fillStyle = lit ? '#e9e6ef' : '#2b2838'; g.strokeStyle = '#000'; g.lineWidth = 14; g.beginPath(); g.arc(cx, hc, R, 0, 7); g.fill(); g.stroke();
+  const sh = g.createLinearGradient(cx - R, 0, cx + R, 0); sh.addColorStop(0, lit ? 'rgba(20,10,40,0.05)' : 'rgba(140,130,220,0.18)'); sh.addColorStop(1, lit ? 'rgba(20,10,40,0.55)' : 'rgba(0,0,0,0.35)'); g.fillStyle = sh; g.beginPath(); g.arc(cx, hc, R - 7, 0, 7); g.fill();
+  // mouth: small worried line
+  g.strokeStyle = lit ? '#121018' : 'rgba(0,0,0,0.75)'; g.lineWidth = 12; g.lineCap = 'round'; g.beginPath(); g.moveTo(cx - 34, hc + 120); g.quadraticCurveTo(cx, hc + 104, cx + 34, hc + 120); g.stroke();
+  // beanie (same as the character)
+  g.fillStyle = '#2a2a36'; g.strokeStyle = '#000'; g.lineWidth = 14;
+  g.beginPath(); g.moveTo(cx - R - 8, hc - 50); g.bezierCurveTo(cx - R + 12, hc - R - 140, cx + R - 12, hc - R - 140, cx + R + 8, hc - 50); g.closePath(); g.fill(); g.stroke();
+  g.beginPath(); g.roundRect(cx - R - 26, hc - 100, 2 * R + 52, 86, 32); g.fill(); g.stroke();
+  g.strokeStyle = '#1a1a22'; g.lineWidth = 8; for (let k = -4; k <= 4; k++) { g.beginPath(); g.moveTo(cx + k * 44, hc - 90); g.lineTo(cx + k * 44, hc - 26); g.stroke(); }
+  // glowing eyes
+  g.save(); g.shadowColor = 'rgba(255,255,255,0.9)'; g.shadowBlur = lit ? 12 : 34; g.fillStyle = '#f8f6ff'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 72, hc + 40, 32, 42, 0, 0, 7); g.fill(); } g.restore();
+  g.fillStyle = '#0c0818'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 72 + 6, hc + 46, 15, 21, 0, 0, 7); g.fill(); }
+  g.fillStyle = '#fff'; for (const s of [-1, 1]) { g.beginPath(); g.arc(cx + s * 72 + 12, hc + 36, 5, 0, 7); g.fill(); }
+};
+window.renderFrame = (k, size = 800) => { cv.width = cv.height = size; g.setTransform(size / 800, 0, 0, size / 800, 0, 0); g.imageSmoothingQuality = 'high'; OPT['ABCDEFGHIJK'[k]](); };
+window.ready = true;
+</script></body></html>
