@@ -390,6 +390,13 @@ const THUMBS = {
   7() { T = 1.2; g.save(); cam(1.12, 600, 1000); g.fillStyle = '#07050d'; g.fillRect(-400, -400, 1900, 2800); sky(); porchClose({ porch: 1 });
     tallThing(800, 1560, 0.88, { face: 'dark', dark: 0.25, wave: 1, t: 0.3, eyeY: 70 }); fog(1500); g.restore(); grade(760, 800, '255,30,50', 0.14);
     memeTop('WHO IS THAT?', 285); memeBottom('(IT\'S NOT MOM)', 1560); ring(764, 695, 105); arrow(260, 1000, 644, 755); logo(); badge(7, 760, 1760); },
+  8() { T = 1.0; g.save(); cam(1.0, 540, 960); sky(); woods(1500, 0.9); g.fillStyle = '#0b0a1e'; g.fillRect(-200, 1450, 1500, 600);
+    add(() => { const rg = g.createRadialGradient(540, 1100, 20, 540, 1100, 800); rg.addColorStop(0, 'rgba(255,40,60,0.25)'); rg.addColorStop(1, 'rgba(255,40,60,0)'); g.fillStyle = rg; g.fillRect(-200, 0, 1500, 1920); });
+    g.save(); g.translate(300, 1560); g.scale(-1.0, 1.0); g.translate(-300, -975); skinwalker(g, { pose: 'crouch', t: 1.4, eyes: 1, mouth: 0.9, smile: 1, reach: 0.6 }); g.restore();
+    tallThing(820, 1560, 0.78, { face: 'dark', dark: 0.25, reach: 0.35, t: 0.4, eyeY: 70 }); fog(1500); g.restore(); grade(540, 1000, '255,30,50', 0.15);
+    memeTop('MONSTER VS', 300); memeTop('MONSTER', 450);
+    g.save(); g.font = '900 120px "Inter Display", sans-serif'; g.textAlign = 'center'; g.lineWidth = 22; g.strokeStyle = '#000'; g.strokeText('VS', 560, 1180); g.fillStyle = '#ff2a3a'; g.fillText('VS', 560, 1180); g.restore();
+    logo(); g.save(); g.translate(760, 1760); g.rotate(0.03); g.font = '900 76px "Inter Display", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; const w = g.measureText('FINALE').width + 70; g.fillStyle = '#ffe23a'; g.beginPath(); g.roundRect(-w / 2, -58, w, 116, 22); g.fill(); g.lineWidth = 8; g.strokeStyle = '#000'; g.stroke(); g.fillStyle = '#000'; g.fillText('FINALE', 0, 4); g.restore(); },
 };
 window.renderThumb = (n, k = 2) => { cv.width = W * k; cv.height = H * k; g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, W, H); THUMBS[n](); return true; };
 document.fonts.load('900 92px "Inter Display"').then(() => { window.ready = true; });
