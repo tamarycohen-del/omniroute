@@ -21,3 +21,4 @@ THE END 🚪 Thank you for choosing every part with us. What should our NEXT sto
 UPLOAD: 22:00 Israel time. File: Would-You-Open-the-Door-Part8-FINALE.mp4 (1080x1920) · thumbnail + Instagram cover: thumbnail_part8.jpg (pass it as cover_url!)
 
 STATUS (Nov 21): YouTube uploaded as HvfgYUYO_1A, scheduled public at 22:00 Israel (20:00Z), thumbnail set, YouTube-only description. Instagram: scheduled task at 21:53 publishes the reel (with cover) at 22:00 + posts the comment on both.
+PUBLISHED Nov 21 22:00 Israel: Instagram https://www.instagram.com/reel/DgBB66loJ1g/ (cover = thumbnail_part8.jpg, comment posted). YouTube https://youtube.com/shorts/HvfgYUYO_1A scheduled public at 20:00Z; the YouTube API quota ran out, so the comment was NOT posted there and the public status was not verified.
