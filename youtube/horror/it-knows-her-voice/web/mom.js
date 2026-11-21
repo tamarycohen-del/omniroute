@@ -1,14 +1,14 @@
 // "Mom" (the thing that copies her): our own design, same flat style as whiteStick.
 // Looks like a normal mom in her night-shift scrubs from far away, but too tall and too thin, and her arms can stretch.
 // momThing(g, o) draws in a 600 x 1000 card (cx 300, feet at 975) like whiteStick, but the body is taller (head above the card).
-// o: { tall (1 = normal mom, 1.6 = wrong), reach (0..1 arm stretch), face ('smile'|'blank'|'dark'), t, wave (0..1 right arm up, waving), switchArm (right arm out to the side) }
+// o: { tall (1 = normal mom, 1.6 = wrong), reach (0..1 arm stretch), face ('smile'|'blank'|'dark'), t, wave (0..1 right arm up, waving), switchArm (right arm out to the side), real (the REAL Mom: warm skin, kind eyes, normal hands) }
 const O = '#121018', SKIN = '#e0dce6', SCRUB = '#5f8f9a', SCRUB_D = '#4a7280', HAIR = '#2a1e1c', RING = '#e8c860';
 
 export const momThing = (g, o = {}) => {
-  const k = o.tall ?? 1.6, t = o.t || 0, reach = o.reach || 0, cx = 300, sole = 975;
+  const SK = o.real ? '#f1cfb2' : SKIN; const k = o.tall ?? 1.6, t = o.t || 0, reach = o.reach || 0, cx = 300, sole = 975;
   const legTop = sole - 230 * k, waist = legTop - 20, neck = waist - 250 * k * 0.8, headR = 62, hc = neck - headR + 6;
   g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
-  const limb = (pts, a = 26, b = 14, col = SKIN) => { for (const [w, c] of [[a, O], [b, col]]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke(); } };
+  const limb = (pts, a = 26, b = 14, col = SK) => { for (const [w, c] of [[a, O], [b, col]]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke(); } };
   // legs (scrub pants), too long
   for (const s of [-1, 1]) { // o.run = running phase (legs swing like scissors); undefined = standing
     const len = sole - 14 - legTop, sw = o.run === undefined || o.runFront ? 0 : Math.sin(o.run + (s > 0 ? Math.PI : 0)) * 0.55;
@@ -38,7 +38,8 @@ export const momThing = (g, o = {}) => {
       for (let i = 0; i <= N; i++) { const k = i / N, x = cx + s * 40 + (hx - cx - s * 40) * k, y = sh + (hy - sh) * k + Math.sin(k * 7 + t * 3 * s) * 60 * reach * Math.sin(Math.PI * k); pts.push([x, y]); }
       limb(pts, 24 - 6 * reach, 12 - 4 * reach);
     } else limb([[cx + s * 40, sh], [ex, ey], [hx, hy]], 24 - 6 * reach, 12 - 4 * reach);
-    hand(g, hx, hy, s, reach, t);
+    if (o.real) { g.fillStyle = SK; g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.arc(hx, hy, 18, 0, 7); g.fill(); g.stroke(); g.strokeStyle = RING; g.lineWidth = 5; g.beginPath(); g.moveTo(hx + s * 8, hy - 6); g.lineTo(hx + s * 12, hy + 4); g.stroke(); } // a normal hand, still her ring
+    else hand(g, hx, hy, s, reach, t);
   }
   g.save(); g.translate(cx, hc + 40); g.rotate(-0.07); g.translate(-cx, -(hc + 40)); // head tilted a little
   // head: shoulder-length hair (open at the bottom, neck and chin visible), side part
@@ -46,7 +47,7 @@ export const momThing = (g, o = {}) => {
   g.beginPath(); g.moveTo(cx - headR - 14, hc + 70); g.lineTo(cx - headR - 14, hc); g.bezierCurveTo(cx - headR - 14, hc - headR - 30, cx + headR + 14, hc - headR - 30, cx + headR + 14, hc); g.lineTo(cx + headR + 14, hc + 70);
   g.quadraticCurveTo(cx + headR, hc + 80, cx + headR - 10, hc + 66); g.lineTo(cx - headR + 10, hc + 66); g.quadraticCurveTo(cx - headR, hc + 80, cx - headR - 14, hc + 70); g.closePath(); g.fill(); g.stroke();
   // neck + face
-  g.fillStyle = SKIN; g.fillRect(cx - 16, hc + 50, 32, neck - hc - 40); g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.moveTo(cx - 16, hc + 56); g.lineTo(cx - 16, neck + 10); g.moveTo(cx + 16, hc + 56); g.lineTo(cx + 16, neck + 10); g.stroke();
+  g.fillStyle = SK; g.fillRect(cx - 16, hc + 50, 32, neck - hc - 40); g.strokeStyle = O; g.lineWidth = 6; g.beginPath(); g.moveTo(cx - 16, hc + 56); g.lineTo(cx - 16, neck + 10); g.moveTo(cx + 16, hc + 56); g.lineTo(cx + 16, neck + 10); g.stroke();
   g.lineWidth = 8; g.beginPath(); g.arc(cx, hc + 8, headR - 4, 0, 7); g.fill(); g.stroke();
   // fringe swept to one side
   g.fillStyle = HAIR; g.beginPath(); g.moveTo(cx - headR + 2, hc + 4); g.bezierCurveTo(cx - headR + 6, hc - headR - 8, cx + headR - 6, hc - headR - 8, cx + headR - 2, hc + 4); g.quadraticCurveTo(cx + 20, hc - 26, cx - 10, hc - 20); g.quadraticCurveTo(cx - 40, hc - 12, cx - headR + 2, hc + 4); g.fill();
@@ -54,7 +55,9 @@ export const momThing = (g, o = {}) => {
   if (f === 'dark') { g.fillStyle = 'rgba(8,6,14,0.85)'; g.beginPath(); g.arc(cx, hc + 8, headR - 6, 0, 7); g.fill();
     g.save(); g.shadowColor = '#fff'; g.shadowBlur = 14; g.fillStyle = '#f4f2ee'; for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 20, ey, 8, 11, 0, 0, 7); g.fill(); } g.restore(); }
   else {
-    for (const s of [-1, 1]) {
+    if (o.real) { for (const s of [-1, 1]) { g.fillStyle = O; g.beginPath(); g.ellipse(cx + s * 21, ey + 1, 8, 10, 0, 0, 7); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.arc(cx + s * 21 + 3, ey - 3, 3, 0, 7); g.fill(); // warm eyes with a glint
+        g.fillStyle = 'rgba(235,120,120,0.35)'; g.beginPath(); g.ellipse(cx + s * 34, ey + 22, 12, 8, 0, 0, 7); g.fill(); } }
+    else for (const s of [-1, 1]) {
       g.fillStyle = '#f8f6fa'; g.strokeStyle = O; g.lineWidth = 3.5; g.beginPath(); g.ellipse(cx + s * 21, ey, 11, 12, 0, 0, 7); g.fill(); g.stroke();
       g.fillStyle = O; g.beginPath(); g.arc(cx + s * 21, ey + 1, 4, 0, 7); g.fill();                                     // tiny staring pupils
     }

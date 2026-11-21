@@ -382,29 +382,8 @@ const kitchen = (o = {}) => { const dawnA = o.dawn || 0; g.fillStyle = lin(0, 0,
   g.fillStyle = '#6a5040'; g.fillRect(-400, 1180, 1900, 60); g.fillStyle = '#4a3428'; g.fillRect(-400, 1240, 1900, 300);
   g.fillStyle = lin(0, 1540, 0, 1920, [[0, '#3a2a30'], [1, '#1c1418']]); g.fillRect(-400, 1540, 1900, 600);
   rr(80, 1080, 90, 100, 10, '#d8d0c0'); rr(200, 1110, 70, 70, 8, '#c8b8a8'); };
-// the REAL Mom: warm skin, kind eyes, normal hands, normal height (nothing like the copy)
-const niceMom = (o = {}) => { const OL = '#121018', SK = '#f1c9a8', SK_D = '#d9a988', SC = '#5f8f9a', SC_D = '#4a7280', HR = '#3a2620', br = Math.sin(T * 2) * 3;
-  g.save(); g.lineJoin = 'round'; g.lineCap = 'round'; g.strokeStyle = OL; g.lineWidth = 8;
-  for (const sx of [-1, 1]) { g.fillStyle = SC_D; g.beginPath(); g.roundRect(300 + sx * 48 - 34, 640, 68, 300, 22); g.fill(); g.stroke(); g.fillStyle = '#e8e4ec'; g.beginPath(); g.ellipse(300 + sx * 52, 952, 46, 22, 0, 0, 7); g.fill(); g.stroke(); } // legs + shoes
-  g.fillStyle = SC; g.beginPath(); g.roundRect(196, 388 + br, 208, 290, 46); g.fill(); g.stroke(); // scrub top
-  g.fillStyle = SK; g.beginPath(); g.moveTo(262, 392 + br); g.lineTo(300, 452 + br); g.lineTo(338, 392 + br); g.closePath(); g.fill(); g.stroke(); // V neck
-  g.fillStyle = '#f4f2ee'; g.beginPath(); g.roundRect(330, 470 + br, 46, 58, 6); g.fill(); g.lineWidth = 5; g.stroke(); g.lineWidth = 8; // badge
-  const arm = (x0, y0, x1, y1, x2, y2) => { for (const [w, c] of [[34, OL], [22, SC]]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke(); }
-    for (const [w, c] of [[30, OL], [20, SK]]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); } g.fillStyle = SK; g.strokeStyle = OL; g.lineWidth = 7; g.beginPath(); g.arc(x2, y2, 20, 0, 7); g.fill(); g.stroke(); };
-  if (o.hug) arm(208, 420 + br, 150, 500 + br, 96, 560 + br); else arm(208, 420 + br, 182, 540 + br, 196, 640 + br); // left arm: hangs, or around the kid
-  if (o.mug) { arm(392, 420 + br, 430, 520 + br, 372, 500 + br); rr(380, 452 + br, 56, 66, 10, '#e8e2f0'); g.strokeStyle = OL; g.lineWidth = 5; g.strokeRect(380, 452 + br, 56, 66); g.strokeStyle = '#e8e2f0'; g.lineWidth = 9; g.beginPath(); g.arc(442, 485 + br, 18, -1.3, 1.3); g.stroke();
-    g.strokeStyle = 'rgba(255,255,255,0.4)'; g.lineWidth = 4; for (const dx of [0, 16]) { g.beginPath(); g.moveTo(398 + dx, 440 + br); g.quadraticCurveTo(388 + dx, 420 + br, 402 + dx, 400 + br); g.stroke(); } }
-  else arm(392, 420 + br, 418, 540 + br, 404, 640 + br);
-  // head + hair
-  const hy = 300 + br; g.fillStyle = HR; g.strokeStyle = OL; g.lineWidth = 8; g.beginPath(); g.moveTo(206, hy + 90); g.quadraticCurveTo(196, hy - 100, 300, hy - 98); g.quadraticCurveTo(404, hy - 100, 394, hy + 90); g.lineTo(366, hy + 92); g.lineTo(234, hy + 92); g.closePath(); g.fill(); g.stroke();
-  g.fillStyle = SK; g.beginPath(); g.ellipse(300, hy, 74, 84, 0, 0, 7); g.fill(); g.stroke();
-  g.fillStyle = HR; g.beginPath(); g.moveTo(226, hy - 30); g.quadraticCurveTo(250, hy - 96, 330, hy - 82); g.quadraticCurveTo(372, hy - 70, 374, hy - 26); g.quadraticCurveTo(330, hy - 58, 226, hy - 30); g.fill(); // bangs
-  g.fillStyle = 'rgba(240,120,120,0.35)'; for (const sx of [-1, 1]) { g.beginPath(); g.ellipse(300 + sx * 40, hy + 26, 16, 10, 0, 0, 7); g.fill(); } // cheeks
-  for (const sx of [-1, 1]) { g.fillStyle = OL; g.beginPath(); g.ellipse(300 + sx * 28, hy + 2, 9, 11, 0, 0, 7); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.arc(300 + sx * 28 + 3, hy - 2, 3.2, 0, 7); g.fill();
-    g.strokeStyle = OL; g.lineWidth = 5; g.beginPath(); g.moveTo(300 + sx * 16, hy - 22); g.quadraticCurveTo(300 + sx * 28, hy - 30, 300 + sx * 42, hy - 22); g.stroke(); } // eyes + brows
-  g.strokeStyle = OL; g.lineWidth = 6; g.beginPath(); g.arc(300, hy + 30, 20, 0.25, Math.PI - 0.25); g.stroke(); // soft smile
-  g.restore(); };
-const realMom = (x, y, s, o = {}) => { g.save(); g.translate(x - 300 * s, y - 975 * s); g.scale(s, s); niceMom({ mug: o.mug !== false && !o.hug, hug: o.hug }); g.restore(); };
+const realMom = (x, y, s, o = {}) => { mom(x - 300 * s, y - 975 * s, s, { tall: 1.0, reach: 0, face: 'smile', real: true, t: T });
+  if (o.mug !== false && !o.hug) { rr(x + 70 * s, y - 470 * s, 50 * s, 60 * s, 8 * s, '#e8e2f0'); g.strokeStyle = '#e8e2f0'; g.lineWidth = 8 * s; g.beginPath(); g.arc(x + 125 * s, y - 440 * s, 18 * s, -1.4, 1.4); g.stroke(); } };
 
 // ---------- scenes (u = seconds into the shot) ----------
 const SCENES = {
