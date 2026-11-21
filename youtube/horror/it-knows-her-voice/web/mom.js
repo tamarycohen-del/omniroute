@@ -31,6 +31,7 @@ export const momThing = (g, o = {}) => {
   for (const s of [-1, 1]) {
     const lp = (a, b) => a + (b - a) * reach, sw = o.runFront ? Math.sin(o.run + (s > 0 ? 0 : Math.PI)) * 12 * (1 - reach) : Math.sin(t * 1.6 + s * 2);
     let ex = cx + s * lp(62, 44 + L * 0.45), ey = sh + lp(150, 60) + 10 * sw, hx = cx + s * lp(70, 44 + L), hy = sh + lp(300, 90) + lp(6, 30) * sw;
+    if (o.real) { ex = cx + s * 58; ey = sh + 105 + 6 * sw; hx = cx + s * 64; hy = sh + 205 + 4 * sw; } // the real Mom: normal arm length
     if (s === 1 && o.wave) { const wv = Math.sin(t * 7) * 30 * o.wave; ex = cx + 90; ey = sh - 30; hx = cx + 110 + wv; hy = sh - 200; } // raised arm, waving slowly (o.wave 0..1)
     if (s === 1 && o.switchArm) { ex = cx + 110; ey = sh + 60; hx = cx + 230; hy = sh + 20; } // reaching sideways to a light switch
     if (reach > 0.05) { // long, wavy, snake-like arm
