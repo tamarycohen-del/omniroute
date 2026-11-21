@@ -414,6 +414,24 @@ window.renderMovie = (k = 1) => { cv.width = 1920 * k; cv.height = 1080 * k; g.s
   const big = (txt, y, size, col) => { g.save(); g.font = `900 ${size}px "Inter Display", "DejaVu Sans", sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = size * 0.2; g.strokeStyle = '#000'; g.shadowColor = 'rgba(0,0,0,0.9)'; g.shadowBlur = 30; g.strokeText(txt, 960, y); g.shadowBlur = 0; if (col !== '#ffffff') { g.shadowColor = col; g.shadowBlur = 40; } g.fillStyle = col; g.fillText(txt, 960, y); g.restore(); };
   big('HER VOICE', 150, 190, '#ff2a3a'); big('THE MOVIE', 315, 110, '#ffe23a');
   return true; };
+
+// portrait (1080x1920) Instagram story for the full movie, drawn natively (no pasted image)
+window.renderStoryMovie = (k = 2) => { cv.width = 1080 * k; cv.height = 1920 * k; g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, 1080, 1920); T = 1.0;
+  g.fillStyle = lin(0, 0, 0, 1920, [[0, '#07061a'], [0.55, '#1e1a46'], [1, '#05040a']]); g.fillRect(0, 0, 1080, 1920);
+  g.fillStyle = 'rgba(255,255,255,0.5)'; for (let i = 0; i < 60; i++) g.fillRect((i * 263) % 1080, 560 + (i * 151) % 420, 3, 3);
+  g.save(); g.translate(0, 420); woods(1000, 0.95); g.restore(); g.fillStyle = '#0b0a1e'; g.fillRect(0, 1400, 1080, 520);
+  add(() => { const rg = g.createRadialGradient(540, 1150, 20, 540, 1150, 620); rg.addColorStop(0, 'rgba(255,40,60,0.30)'); rg.addColorStop(1, 'rgba(255,40,60,0)'); g.fillStyle = rg; g.fillRect(0, 500, 1080, 1100); });
+  g.save(); g.translate(250, 1450); g.scale(-0.85, 0.85); g.translate(-300, -975); skinwalker(g, { pose: 'crouch', t: 1.4, eyes: 1, mouth: 0.9, smile: 1, reach: 0.65 }); g.restore();
+  tallThing(860, 1460, 0.78, { face: 'dark', dark: 0.25, reach: 0.3, t: 0.4, eyeY: 70 });
+  add(() => { const rg = g.createRadialGradient(540, 1280, 10, 540, 1280, 220); rg.addColorStop(0, 'rgba(255,240,200,0.32)'); rg.addColorStop(1, 'rgba(255,240,200,0)'); g.fillStyle = rg; g.fillRect(250, 1000, 580, 500); });
+  hero(540 - 300 * 0.5, 1440 - 975 * 0.5, 0.5, { expr: 'shock', look: 0 }); dog(552, 1440 - 170, 0.29, { pose: 'crouch', ears: 'down', t: 0, flip: true });
+  const vg = g.createRadialGradient(540, 1100, 250, 540, 1000, 1150); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.7)'); g.fillStyle = vg; g.fillRect(0, 0, 1080, 1920);
+  const big = (txt, y, size, col) => { g.save(); g.font = `900 ${size}px "Inter Display", "DejaVu Sans", sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round';
+    let sz = size; while (g.measureText(txt).width > 1000) { sz -= 4; g.font = `900 ${sz}px "Inter Display", sans-serif`; }
+    g.lineWidth = sz * 0.2; g.strokeStyle = '#000'; g.shadowColor = 'rgba(0,0,0,0.9)'; g.shadowBlur = 30; g.strokeText(txt, 540, y); g.shadowBlur = 0; if (col !== '#ffffff') { g.shadowColor = col; g.shadowBlur = 40; } g.fillStyle = col; g.fillText(txt, 540, y); g.restore(); };
+  big('HER VOICE', 210, 170, '#ff2a3a'); big('THE FULL MOVIE', 370, 104, '#ffffff'); big('IS OUT NOW', 490, 104, '#ffe23a');
+  g.save(); g.textAlign = 'center'; g.fillStyle = '#e6e0f5'; g.font = '800 54px "Inter Display", sans-serif'; g.shadowColor = 'rgba(0,0,0,0.9)'; g.shadowBlur = 20; g.fillText('All 8 parts. One story.', 540, 1555); g.fillStyle = '#c6ff3a'; g.fillText('Watch it on YouTube', 540, 1630); g.restore();
+  return true; };
 window.renderThumb = (n, k = 2) => { cv.width = W * k; cv.height = H * k; g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, W, H); THUMBS[n](); return true; };
 document.fonts.load('900 92px "Inter Display"').then(() => { window.ready = true; });
 </script></body></html>
