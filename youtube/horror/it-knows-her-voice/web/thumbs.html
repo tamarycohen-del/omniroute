@@ -398,6 +398,22 @@ const THUMBS = {
     g.save(); g.font = '900 120px "Inter Display", sans-serif'; g.textAlign = 'center'; g.lineWidth = 22; g.strokeStyle = '#000'; g.strokeText('VS', 560, 1180); g.fillStyle = '#ff2a3a'; g.fillText('VS', 560, 1180); g.restore();
     logo(); g.save(); g.translate(760, 1760); g.rotate(0.03); g.font = '900 76px "Inter Display", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; const w = g.measureText('FINALE').width + 70; g.fillStyle = '#ffe23a'; g.beginPath(); g.roundRect(-w / 2, -58, w, 116, 22); g.fill(); g.lineWidth = 8; g.strokeStyle = '#000'; g.stroke(); g.fillStyle = '#000'; g.fillText('FINALE', 0, 4); g.restore(); },
 };
+
+// landscape (1920x1080) thumbnail for the full movie
+window.renderMovie = (k = 1) => { cv.width = 1920 * k; cv.height = 1080 * k; g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, 1920, 1080); T = 1.0;
+  g.fillStyle = lin(0, 0, 0, 1080, [[0, '#0a0a26'], [1, '#1e1a46']]); g.fillRect(0, 0, 1920, 1080);
+  g.fillStyle = 'rgba(255,255,255,0.5)'; for (let i = 0; i < 70; i++) g.fillRect((i * 263) % 1920, (i * 151) % 520, 3, 3);
+  g.save(); g.translate(420, 0); woods(980, 0.95); g.translate(-1300, 0); woods(980, 0.95); g.restore();
+  g.fillStyle = '#0b0a1e'; g.fillRect(0, 960, 1920, 200);
+  add(() => { const rg = g.createRadialGradient(960, 760, 20, 960, 760, 700); rg.addColorStop(0, 'rgba(255,40,60,0.28)'); rg.addColorStop(1, 'rgba(255,40,60,0)'); g.fillStyle = rg; g.fillRect(0, 0, 1920, 1080); });
+  g.save(); g.translate(460, 1060); g.scale(-1.15, 1.15); g.translate(-300, -975); skinwalker(g, { pose: 'crouch', t: 1.4, eyes: 1, mouth: 0.9, smile: 1, reach: 0.7 }); g.restore();
+  tallThing(1520, 1070, 0.95, { face: 'dark', dark: 0.25, reach: 0.4, t: 0.4, eyeY: 70 });
+  add(() => { const rg = g.createRadialGradient(960, 860, 10, 960, 860, 260); rg.addColorStop(0, 'rgba(255,240,200,0.30)'); rg.addColorStop(1, 'rgba(255,240,200,0)'); g.fillStyle = rg; g.fillRect(600, 500, 720, 600); });
+  hero(960 - 300 * 0.62, 1040 - 975 * 0.62, 0.62, { expr: 'shock', look: 0 }); dog(975, 1040 - 210, 0.36, { pose: 'crouch', ears: 'down', t: 0, flip: true });
+  const vg = g.createRadialGradient(960, 600, 300, 960, 560, 1150); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, 1920, 1080);
+  const big = (txt, y, size, col) => { g.save(); g.font = `900 ${size}px "Inter Display", "DejaVu Sans", sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = size * 0.2; g.strokeStyle = '#000'; g.shadowColor = 'rgba(0,0,0,0.9)'; g.shadowBlur = 30; g.strokeText(txt, 960, y); g.shadowBlur = 0; if (col !== '#ffffff') { g.shadowColor = col; g.shadowBlur = 40; } g.fillStyle = col; g.fillText(txt, 960, y); g.restore(); };
+  big('HER VOICE', 150, 190, '#ff2a3a'); big('THE MOVIE', 315, 110, '#ffe23a');
+  return true; };
 window.renderThumb = (n, k = 2) => { cv.width = W * k; cv.height = H * k; g.setTransform(k, 0, 0, k, 0, 0); g.clearRect(0, 0, W, H); THUMBS[n](); return true; };
 document.fonts.load('900 92px "Inter Display"').then(() => { window.ready = true; });
 </script></body></html>
