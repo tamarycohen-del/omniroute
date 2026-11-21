@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """HER VOICE movie thumbnail: the user's illustration, regraded to the series palette + title/badge.  python3 make_thumb_movie.py SRC"""
-import sys
+import sys, os
+NO_SUB = os.environ.get('NO_SUB') == '1'
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageChops
 import numpy as np
 src=Image.open(sys.argv[1]).convert('RGB')
@@ -37,9 +38,11 @@ out=out.filter(ImageFilter.UnsharpMask(radius=2,percent=70,threshold=3))
 n=(np.random.default_rng(1).normal(0,4,(H,W,1))).astype(np.float32)
 out=Image.fromarray(np.clip(np.asarray(out).astype(np.float32)+n,0,255).astype(np.uint8))
 FB='/usr/share/fonts/opentype/inter/InterDisplay-Black.otf'; f=ImageFont.truetype(FB,96); fb=ImageFont.truetype(FB,58)
-dr=ImageDraw.Draw(out); t='THE MOVIE'; w=dr.textlength(t,font=f); x=(W-w)/2; y=258
-gl=Image.new('RGBA',(W,H),(0,0,0,0)); ImageDraw.Draw(gl).text((x,y),t,font=f,fill=(255,226,58,170)); out.paste(gl.filter(ImageFilter.GaussianBlur(14)),(0,0),gl.filter(ImageFilter.GaussianBlur(14)))
-dr=ImageDraw.Draw(out); dr.text((x,y),t,font=f,fill=(255,226,58),stroke_width=12,stroke_fill=(0,0,0))
+if not NO_SUB:
+    dr=ImageDraw.Draw(out); t='THE MOVIE'; w=dr.textlength(t,font=f); x=(W-w)/2; y=258
+    gl=Image.new('RGBA',(W,H),(0,0,0,0)); ImageDraw.Draw(gl).text((x,y),t,font=f,fill=(255,226,58,170)); out.paste(gl.filter(ImageFilter.GaussianBlur(14)),(0,0),gl.filter(ImageFilter.GaussianBlur(14)))
+    dr=ImageDraw.Draw(out); dr.text((x,y),t,font=f,fill=(255,226,58),stroke_width=12,stroke_fill=(0,0,0))
+dr=ImageDraw.Draw(out)
 bt='ALL 8 PARTS'; bw=dr.textlength(bt,font=fb); bx,by=W-bw-120,H-150
 dr.rounded_rectangle((bx-34,by-18,bx+bw+34,by+82),radius=22,fill=(255,42,58),outline=(0,0,0),width=7); dr.text((bx,by-4),bt,font=fb,fill=(255,255,255))
-out.save('thumbnail_movie.jpg',quality=93,subsampling=0)
+out.save('thumbnail_movie_clean.jpg' if NO_SUB else 'thumbnail_movie.jpg',quality=93,subsampling=0)
