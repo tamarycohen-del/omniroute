@@ -51,3 +51,49 @@ Check every script against these before recording:
 
 ## Upload checklist
 Instagram reels: ALWAYS pass cover_url (the part thumbnail, as a public r2 URL) to INSTAGRAM_POST_IG_USER_MEDIA. The cover cannot be changed via the API after publishing.
+
+## Production craft (also for LAST LIGHT and every new series)
+Adapted from the directing and technique guides of [Lemo-Opuscar](https://github.com/lemomo-ai/lemo-opuscar) by Lemomo (LemoLab), licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/); summarized in our own words and changed to fit our vertical choice-shorts. Lines marked (ours) come from our own mistakes.
+
+**Before writing**
+- World logic first (ours): every rule of the world (who can go where, when, why) is set up on screen BEFORE the moment that depends on it. Ask "why doesn't the monster just attack now?" for every beat. (Part 1 of LAST LIGHT shipped a draft where the creatures came out in daylight; fixed with "They can't touch sunlight... but the shadows were getting longer.")
+- Choices must come out of the story's own rules (ours): both options use what the episode established (sound, light, the radio), both risky, easy to argue about. Never two random actions.
+- Pick 1-2 reference works for this episode: write what to learn (pacing, camera grammar, color logic, sound) and what not to take (characters, designs, shots, music).
+- One subject, one goal, one turn. Hook in the first 3 s. The ending echoes the opening.
+- Write a short treatment before drawing: beat sheet by the second, shot list (framing, camera move, duration, WHY), and a sound table per section (ambience, foley, music state).
+
+**Sound**
+- Every visible action has a sound that matches its material (metal radio, cloth backpack, claws on asphalt, glass).
+- Three layers: ambience, foley, music/drone. Duck ambience and music under the voice.
+- At least two real silences (or near-silences) before the turn or the peak; the first sound after the silence is one of the most important in the film.
+- Use sound as a transition at least twice: bring the next scene's sound in early, or let the last scene's sound run over the cut.
+- Voice: compress it first, then balance by RMS, about 10 dB above the music. Keep 20-120 Hz about 3 dB under the rest so drones don't eat phone speakers.
+
+**Rhythm and reading**
+- Vary the pace: fast and slow, one clear acceleration, one held breath. One even speed = failure. Don't cut on every beat.
+- A caption stays at least 1.8 s and at least spoken length + 0.6 s. On-screen text holds about (letters / 15 + 1.5) s after it finishes appearing. Title or choice cards at least 4 s.
+- In TTS text spell numbers out; in captions write digits.
+
+**Camera and staging**
+- At least four different camera moves (push, pull, pan, parallax, tracking) and real framing changes. One signature shot people remember.
+- At key moments the subject fills at least a third of the frame height (our full-body walking shots are too small: go closer for every emotional beat).
+- Transitions made from the world itself (a shadow sweeping, a door closing, static) rather than default fades.
+
+**Performance**
+- Anticipation, action, follow-through on every meaningful move. Characters change emotion, they don't just slide.
+- Blend poses with easing; never switch a pose inside an `if` at a time threshold (Biscuit's stand -> crouch snap). Exception: a deliberate one-frame comic pop.
+- Check every expression at final size (worried vs angry is one eyebrow flip).
+
+**Most common failures (check every render)**
+Subject too small or against the frame edge · too dark to read or color on the same color · captions covering the subject · a gag or scare too fast to understand · blank frames in transitions · an effect that doesn't follow the subject after the camera moves (use one world -> screen function).
+
+**Rendering**
+- Deterministic frames: no `Math.random()` without a seed, no state carried between frames, so any chunk can render alone.
+- Add film grain in ffmpeg, not on the canvas (grain drawn in the page makes frames slow and incompressible).
+
+**Review before delivery (one fix round)**
+1. Contact sheet of a frame every 1-2 s; at least two passes.
+2. 0.2 s strips of every key action (falls, grabs, jumps, reveals).
+3. On the final mp4: `youtube/tools/review.sh <file.mp4>` (loudness about -14 LUFS, black frames, whisper of the final mix).
+4. Watch it once at full speed with sound.
+Fix everything found in one round, check once more, then deliver. Later notes from the user are new rounds: change only what they ask.
