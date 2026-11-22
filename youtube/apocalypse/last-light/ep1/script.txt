@@ -1,4 +1,4 @@
-LAST LIGHT - PART 1  (final v5: action first, the user's scene, two choices)  ~40 s
+LAST LIGHT - PART 1  (v6: extended to ~70 s on request; action first, two choices)
 Card in the corner: SUNSET 00:59 (counting down). No gore.
 
 time   | narration (the kid, Clancy)                     | on screen
@@ -11,3 +11,5 @@ time   | narration (the kid, Clancy)                     | on screen
 32-40  | Comment your choice.                            | two red choice cards: THROW THE UV FLARE / SPRINT TO THE ARMORED SUV
 
 Pinned comment: "🔦 THROW THE FLARE or 🚙 SPRINT TO THE SUV? Most-liked answer decides Part 2 👇"
+
+v6 extension (70 s): Two minutes earlier -> Biscuit finds a scratched backpack in the road -> a radio inside, still on -> it says "Help me... please." in the kid's own voice -> "That was my voice. I never said that." -> Biscuit growls -> they pour out -> "They hunt by sound. So we hid." behind a rusted car -> one comes closer -> the radio beeps, every head turns -> "Three seconds. Choose." -> same two choices.

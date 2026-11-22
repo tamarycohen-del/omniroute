@@ -73,7 +73,7 @@ const hollowHead = (x, y, r, mouth, rot = 0) => { g.save(); g.translate(x, y); g
   g.restore(); };
 // side view crouched, feet at (x,y); face 1 = looking right. o: mouth 0..1, lean 0..1 (about to charge), crawl 0..1, phase
 const hollow = (x, y, s, o = {}) => { const ph = (o.phase || 0) + T * (o.speed || 1), br = Math.sin(ph * 5) * 6; const m = o.mouth ?? 0.2, ln = o.lean ?? 0.3;
-  g.save(); g.translate(x, y); g.scale(s * (o.face ?? 1), s); g.lineCap = 'round'; g.lineJoin = 'round'; if (o.dim) g.filter = `brightness(${o.dim})`;
+  g.save(); g.translate(x, y); g.scale(s * (o.face ?? 1), s); g.lineCap = 'round'; g.lineJoin = 'round'; if (o.dim) g.globalAlpha = o.dim;
   const hip = [-40, -300 + br * 0.5], sh = [90 + 60 * ln, -430 + 50 * ln + br], head = [190 + 90 * ln, -470 + 60 * ln + br];
   plimb([hip, [-120, -170], [-60, 0]]); plimb([hip, [10, -150], [60, 0]]); // legs (bent)
   g.fillStyle = PALE; g.strokeStyle = O; g.lineWidth = 12; g.beginPath(); g.moveTo(hip[0] - 50, hip[1]); g.quadraticCurveTo(hip[0] + 20, hip[1] - 200, sh[0], sh[1] - 30); g.lineTo(sh[0] + 30, sh[1] + 40); g.quadraticCurveTo(hip[0] + 60, hip[1] - 40, hip[0] + 30, hip[1] + 30); g.closePath(); g.fill(); g.stroke();
@@ -151,7 +151,7 @@ const SCENES = {
   voice(u) { g.fillStyle = '#20141c'; g.fillRect(0, 0, W, H); g.save(); shake(0.08); cam(1, 540, 960); worldAt(140 * 6.9 - 400); g.fillStyle = 'rgba(10,4,14,0.55)'; g.fillRect(-400, -400, 2000, 2800);
     handWith(640, 1150, 1.0, { talk: u < 2.4 ? 1 : 0, rot: -0.15 }); g.restore(); if (u < 2.4) bigText('"HELP ME... PLEASE."', 1640, sm(u / 0.2), '#7affa0', 70); },
   mine(u) { g.fillStyle = '#20141c'; g.fillRect(0, 0, W, H); g.save(); cam(1 + 0.12 * sm(u / 3), 540, 760); worldAt(140 * 6.9 - 400); g.fillStyle = 'rgba(10,4,14,0.4)'; g.fillRect(-400, -400, 2000, 2800); heroClose({ look: 0.2, expr: 'shock' }); g.restore(); },
-  hide(u) { const k = sm(u / 6); g.save(); cam(1.1, 600, 1250); worldAt(140 * 6.9 + 300); doorway(1300, GY + 40, 0.75);
+  hide(u) { const k = sm(u / 12); g.save(); cam(1.1, 600, 1250); worldAt(140 * 6.9 + 300); doorway(1300, GY + 40, 0.75);
     const cx = lerp(1100, 760, k); hollow(cx, GY + 60, 0.42, { face: -1, mouth: 0.15, lean: 0.2 + 0.4 * k, phase: 0.7, speed: 0.4 }); hollow(1200, GY + 40, 0.4, { face: -1, mouth: 0.1, lean: 0.2, phase: 2, speed: 0.3, dim: 0.7 });
     // kid + Biscuit crouched behind the car (car drawn after = in front)
     g.save(); g.translate(0, 120); hero(260 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: 'scared' }); g.restore(); dog(470, GY + 200, 0.38, { pose: 'crouch', ears: 'down', tail: 0, look: 1 });
@@ -176,8 +176,8 @@ const SCENES = {
     if (u > 1.6) { const b = Math.sin(T * 6) * 12; bigText('COMMENT 👇', 1760 + b, sm((u - 1.6) / 0.3), '#c6ff3a', 80); } },
 };
 const lerp = (a, b, u) => a + (b - a) * u;
-const SHOTS = [[0, 'flash'], [1.95, 'rewind'], [4.4, 'walk'], [11.3, 'growl'], [18.6, 'pour'], [25.4, 'freeze'], [31.9, 'choice']];
-window.TOTAL = 38.0;
+const SHOTS = [[0, 'flash'], [1.95, 'rewind'], [4.4, 'walk'], [9.3, 'backpack'], [13.9, 'radio'], [18.4, 'voice'], [22.6, 'mine'], [26.6, 'growl'], [33.5, 'pour'], [38.8, 'hide'], [52.6, 'beep'], [57.2, 'freeze'], [63.6, 'choice']];
+window.TOTAL = 70.0;
 const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0]]; };
 let CHUNKS = [];
 const buildChunks = () => { CHUNKS = []; let cur = []; WORDS.forEach((w, i) => { cur.push(w); const end = /[.?!:,]$|\.\.\.$/.test(w.w) || cur.length >= 4; if (end) { CHUNKS.push(cur); cur = []; } }); if (cur.length) CHUNKS.push(cur); };
