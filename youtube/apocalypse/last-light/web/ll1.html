@@ -132,10 +132,15 @@ const worldAt = (scroll, o = {}) => { sky(o.sun || 0); towers(scroll); nearBuild
 const cars = (scroll) => { rustCar(-200 - scroll + 0, GY + 120, 0.55, { col: '#6a3a2a' }); rustCar(1350 - scroll, GY + 110, 0.5, { col: '#4a4a5a', flip: true }); rustCar(2600 - scroll, GY + 120, 0.55, { col: '#5a4a2a' }); };
 
 
-const endWide = (u, desat) => { g.save(); cam(1.0, 720, 1200); worldAt(140 * 6.9 + 300); doorway(1150, GY + 40, 0.75);
+const endWide = (u, desat) => { g.save(); cam(1.0, 720, 1200); worldAt(140 * 6.9 + 300); shade(700); doorway(1150, GY + 40, 0.75);
   [[760, 0], [900, 1], [1040, 2], [1160, 3]].forEach(([x, i]) => hollow(x, GY + 50 + 20 * (i % 2), 0.42, { face: -1, mouth: 1, lean: 1, reach: 0.2, phase: i, speed: 0 }));
   g.save(); g.translate(0, 120); hero(260 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: 'shock' }); g.restore(); dog(470, GY + 200, 0.38, { pose: 'crouch', ears: 'down', tail: 0, t: 0 });
   rustCar(420, GY + 330, 0.75, { col: '#6a3a2a' }); g.restore(); grade(desat); };
+
+// tower shadow: everything right of x0 (world units) is in shadow; the Hollow stay inside it
+const shade = (x0) => { g.save(); g.fillStyle = 'rgba(18,8,40,0.6)'; g.beginPath(); g.moveTo(x0 + 260, -900); g.lineTo(4000, -900); g.lineTo(4000, 3000); g.lineTo(x0 - 120, 3000); g.lineTo(x0 - 60, GY + 600); g.lineTo(x0, GY - 20); g.closePath(); g.fill();
+  add(() => { g.fillStyle = lin(x0 - 500, 0, x0, 0, [[0, 'rgba(255,170,90,0)'], [1, 'rgba(255,170,90,0.22)']]); g.fillRect(x0 - 500, GY - 30, 500, 900); });
+  g.strokeStyle = 'rgba(255,190,110,0.55)'; g.lineWidth = 6; g.beginPath(); g.moveTo(x0, GY - 20); g.lineTo(x0 - 60, GY + 600); g.stroke(); g.restore(); };
 const SCENES = {
   flash(u) { // flash-forward: they leap, freeze
     const fz = Math.min(u, 0.55), z = 0.9 + 0.9 * sm(fz / 0.55); g.save(); shake(u < 0.55 ? 1 : 0.15); worldAt(2400); g.fillStyle = 'rgba(20,5,10,0.35)'; g.fillRect(0, 0, W, H);
@@ -156,18 +161,18 @@ const SCENES = {
   voice(u) { g.fillStyle = '#20141c'; g.fillRect(0, 0, W, H); g.save(); shake(0.08); cam(1, 540, 960); worldAt(140 * 6.9 - 400); g.fillStyle = 'rgba(10,4,14,0.55)'; g.fillRect(-400, -400, 2000, 2800);
     handWith(640, 1150, 1.0, { talk: u < 2.4 ? 1 : 0, rot: -0.15 }); g.restore(); if (u < 2.4) bigText('"HELP ME... PLEASE."', 1640, sm(u / 0.2), '#7affa0', 70); },
   mine(u) { g.fillStyle = '#20141c'; g.fillRect(0, 0, W, H); g.save(); cam(1 + 0.12 * sm(u / 3), 540, 760); worldAt(140 * 6.9 - 400); g.fillStyle = 'rgba(10,4,14,0.4)'; g.fillRect(-400, -400, 2000, 2800); heroClose({ look: 0.2, expr: 'shock' }); g.restore(); },
-  hide(u) { const k = sm(u / 12); g.save(); cam(1.1, 600, 1250); worldAt(140 * 6.9 + 300); doorway(1300, GY + 40, 0.75);
-    const cx = lerp(1100, 760, k); hollow(cx, GY + 60, 0.42, { face: -1, mouth: 0.15, lean: 0.2 + 0.4 * k, phase: 0.7, speed: 0.4 }); hollow(1200, GY + 40, 0.4, { face: -1, mouth: 0.1, lean: 0.2, phase: 2, speed: 0.3, dim: 0.7 });
+  hide(u) { const k = sm(u / 12); g.save(); cam(1.1, 600, 1250); worldAt(140 * 6.9 + 300); const ed = lerp(980, 720, k); shade(ed); doorway(1300, GY + 40, 0.75);
+    const cx = Math.max(ed + 40, lerp(1100, 760, k)); hollow(cx, GY + 60, 0.42, { face: -1, mouth: 0.15, lean: 0.2 + 0.4 * k, phase: 0.7, speed: 0.4 }); hollow(1200, GY + 40, 0.4, { face: -1, mouth: 0.1, lean: 0.2, phase: 2, speed: 0.3, dim: 0.7 });
     // kid + Biscuit crouched behind the car (car drawn after = in front)
     g.save(); g.translate(0, 120); hero(260 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: 'scared' }); g.restore(); dog(470, GY + 200, 0.38, { pose: 'crouch', ears: 'down', tail: 0, look: 1 });
     rustCar(420, GY + 330, 0.75, { col: '#6a3a2a' }); g.restore();
     if (u > 1.2) { g.save(); g.globalAlpha = 0.5 + 0.3 * Math.sin(T * 5); g.fillStyle = '#fff'; g.font = '900 46px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('🤫', 330, 1050); g.restore(); } },
   beep(u) { if (u < 1.4) { g.fillStyle = '#1a0e14'; g.fillRect(0, 0, W, H); g.save(); shake(0.4); cam(1.1, 540, 960); worldAt(140 * 6.9 + 300); g.fillStyle = 'rgba(10,4,14,0.6)'; g.fillRect(-400, -400, 2000, 2800); handWith(600, 1150, 1.05, { beep: true, rot: -0.1 }); g.restore(); bigText('BEEP!', 560, 1, '#ff3a3a', 150); }
-    else { const v = u - 1.4; g.save(); cam(1.25, 760, 1220); worldAt(140 * 6.9 + 300); doorway(1300, GY + 40, 0.75); [[760, 0], [900, 1], [1040, 2], [1160, 3]].forEach(([x, i]) => hollow(x, GY + 50 + 20 * (i % 2), 0.42, { face: -1, mouth: sm((v - i * 0.12) / 0.3), lean: 0.9, reach: 0.2, phase: i, speed: 0.2 })); rustCar(420, GY + 330, 0.75, { col: '#6a3a2a' }); g.restore(); } },
-  growl(u) { const z = 1.0 + 0.35 * sm(u / 6), fx = lerp(540, 760, sm(u / 6)); g.save(); cam(z, fx, 1180); worldAt(140 * 6.9); doorway(980, GY + 40, 0.75, { inside: () => { if (u > 3.5) { g.globalAlpha = sm((u - 3.5) / 2) * 0.55; hollowHead(-60, -120, 40, 0.1); g.globalAlpha = 1; } } });
+    else { const v = u - 1.4; g.save(); cam(1.25, 760, 1220); worldAt(140 * 6.9 + 300); shade(710); doorway(1300, GY + 40, 0.75); [[760, 0], [900, 1], [1040, 2], [1160, 3]].forEach(([x, i]) => hollow(x, GY + 50 + 20 * (i % 2), 0.42, { face: -1, mouth: sm((v - i * 0.12) / 0.3), lean: 0.9, reach: 0.2, phase: i, speed: 0.2 })); rustCar(420, GY + 330, 0.75, { col: '#6a3a2a' }); g.restore(); } },
+  growl(u) { const z = 1.0 + 0.35 * sm(u / 6), fx = lerp(540, 760, sm(u / 6)); g.save(); cam(z, fx, 1180); worldAt(140 * 6.9); shade(780); doorway(980, GY + 40, 0.75, { inside: () => { if (u > 3.5) { g.globalAlpha = sm((u - 3.5) / 2) * 0.55; hollowHead(-60, -120, 40, 0.1); g.globalAlpha = 1; } } });
     hero(330 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: u > 1.5 ? 'scared' : 'worried' }); dog(620, GY + 125, 0.42, { pose: 'crouch', ears: 'down', growl: true, tail: 0, shake: 0.3 }); g.restore(); },
-  pour(u) { const k = sm(u / 5.5); g.save(); shake(0.25 + 0.5 * k); cam(1.15 - 0.1 * k, 700, 1220); worldAt(140 * 6.9); doorway(980, GY + 40, 0.75);
-    const pos = [[880, 0.0], [1000, 0.6], [760, 1.2], [1110, 1.8], [640, 2.4]]; pos.forEach(([x, d], i) => { const a = sm((u - d) / 0.8); if (a <= 0) return; const xx = lerp(980, x - 120 * k, a); hollow(xx, GY + 40 + 30 * (i % 2), 0.42, { face: -1, mouth: 0.3 + 0.7 * Math.abs(Math.sin(T * 3 + i)), lean: 0.4 + 0.6 * k, crawl: 1, phase: i * 1.3, dim: lerp(0.4, 1, a) }); });
+  pour(u) { const k = sm(u / 5.5); g.save(); shake(0.25 + 0.5 * k); cam(1.15 - 0.1 * k, 700, 1220); worldAt(140 * 6.9); const ed = lerp(780, 700, k); shade(ed); doorway(980, GY + 40, 0.75);
+    const pos = [[880, 0.0], [1000, 0.6], [760, 1.2], [1110, 1.8], [640, 2.4]]; pos.forEach(([x, d], i) => { const a = sm((u - d) / 0.8); if (a <= 0) return; const xx = Math.max(ed + 50, lerp(980, x - 120 * k, a)); hollow(xx, GY + 40 + 30 * (i % 2), 0.42, { face: -1, mouth: 0.3 + 0.7 * Math.abs(Math.sin(T * 3 + i)), lean: 0.4 + 0.6 * k, crawl: 1, phase: i * 1.3, dim: lerp(0.4, 1, a) }); });
     hero(330 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: 'shock' }); dog(620, GY + 125, 0.42, { pose: 'crouch', ears: 'down', growl: true, bark: Math.sin(T * 9) > 0.5, tail: 0, shake: 0.6 }); g.restore(); },
   freeze(u) { endWide(u, 0.3 + 0.5 * sm(u / 0.4)); const r = 120 + 8 * Math.sin(T * 6); g.save(); g.strokeStyle = '#ffe14a'; g.lineWidth = 7; g.setLineDash([18, 14]);
     if (u > 0.6) { g.globalAlpha = sm((u - 0.6) / 0.3); g.beginPath(); g.arc(250, 1420, r * 1.5, 0, 7); g.stroke(); }
