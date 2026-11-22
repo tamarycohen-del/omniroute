@@ -99,6 +99,25 @@ const flareHand = (x, y, s, glow = 0) => { g.save(); g.translate(x, y); g.scale(
   for (const [w, c] of [[110, O], [86, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = w; g.lineCap = 'round'; g.beginPath(); g.moveTo(-400, 520); g.lineTo(-140, 120); g.stroke(); }
   for (let k = 0; k < 4; k++) { for (const [w, c] of [[48, O], [30, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(-110, -30 + k * 60); g.lineTo(60, -40 + k * 60); g.stroke(); } }
   g.restore(); };
+
+const walkie = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s); g.rotate(o.rot || 0); g.lineJoin = 'round';
+  g.strokeStyle = O; g.lineWidth = 14; g.beginPath(); g.moveTo(60, -230); g.lineTo(60, -420); g.stroke(); g.strokeStyle = '#2a2a30'; g.lineWidth = 8; g.stroke();
+  rr(-110, -250, 220, 420, 34, '#2c2e2a'); g.strokeStyle = O; g.lineWidth = 12; g.beginPath(); g.roundRect(-110, -250, 220, 420, 34); g.stroke();
+  rr(-80, -200, 160, 130, 14, '#151714'); g.fillStyle = '#3a3c36'; for (let r = 0; r < 4; r++) for (let c = 0; c < 6; c++) { g.beginPath(); g.arc(-60 + c * 24, -175 + r * 28, 6, 0, 7); g.fill(); }
+  rr(-80, -40, 160, 70, 10, o.beep ? '#ff3a3a' : '#7ad88a'); g.fillStyle = '#0a1a0c'; g.font = '700 30px "DejaVu Sans Mono", monospace'; g.textAlign = 'center'; g.fillText(o.beep ? 'CH 9 !' : 'CH 9', 0, 6);
+  const led = o.beep ? (Math.floor(T * 8) % 2 ? '#ff2a2a' : '#4a0a0a') : (o.talk ? '#3aff6a' : '#1a4a22'); g.fillStyle = led; g.beginPath(); g.arc(-70, -225, 12, 0, 7); g.fill();
+  if (o.beep || o.talk) add(() => { const c = o.beep ? '255,40,40' : '60,255,110'; const rg = g.createRadialGradient(-70, -225, 2, -70, -225, 120); rg.addColorStop(0, `rgba(${c},0.8)`); rg.addColorStop(1, `rgba(${c},0)`); g.fillStyle = rg; g.fillRect(-200, -350, 260, 260); });
+  g.strokeStyle = 'rgba(220,215,200,0.85)'; g.lineWidth = 6; for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(-90 + k * 26, 50 + k * 8); g.lineTo(40 + k * 26, 150 + k * 8); g.stroke(); } // claw scratches
+  if (o.talk) { g.strokeStyle = '#3aff6a'; g.lineWidth = 6; g.beginPath(); for (let i = 0; i <= 40; i++) { const xx = -150 - 200 + i * 10, yy = -130 + Math.sin(i * 0.9 + T * 30) * 40 * Math.sin(i / 40 * Math.PI) * o.talk; i ? g.lineTo(xx, yy) : g.moveTo(xx, yy); } g.stroke(); }
+  g.restore(); };
+const bag = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s); g.lineJoin = 'round'; g.fillStyle = 'rgba(0,0,0,0.4)'; g.beginPath(); g.ellipse(0, 6, 220, 22, 0, 0, 7); g.fill();
+  g.fillStyle = '#3e5a3a'; g.strokeStyle = O; g.lineWidth = 12; g.beginPath(); g.moveTo(-200, 0); g.quadraticCurveTo(-220, -200, -60, -230); g.lineTo(80, -230); g.quadraticCurveTo(220, -200, 200, 0); g.closePath(); g.fill(); g.stroke();
+  rr(-110, -120, 220, 100, 20, '#34502f'); g.stroke(); g.strokeStyle = 'rgba(220,215,200,0.85)'; g.lineWidth = 7; for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(-150 + k * 30, -200); g.lineTo(-40 + k * 30, -40); g.stroke(); }
+  if (o.open) { g.fillStyle = '#0a0a08'; g.beginPath(); g.ellipse(10, -225, 120, 26, 0, 0, 7); g.fill(); }
+  g.restore(); };
+const handWith = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s); for (const [w, c] of [[110, O], [86, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = w; g.lineCap = 'round'; g.beginPath(); g.moveTo(-420, 640); g.lineTo(-120, 160); g.stroke(); }
+  walkie(0, 0, 1, o); for (let k = 0; k < 3; k++) for (const [w, c] of [[48, O], [30, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(-150, 40 + k * 55); g.lineTo(90, 30 + k * 55); g.stroke(); } g.restore(); };
+const heroClose = (o = {}) => { g.save(); g.translate(-120, -300); g.scale(2.2, 2.2); rr(196, 600, 96, 170, 26, '#5a4630'); whiteStick(P, { beanie: '#2a2a36', ...o }); g.restore(); };
 const choiceCard = (x, y, txt, a, col = '#ff4d5e') => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(0.85 + 0.15 * a, 0.85 + 0.15 * a);
   let fs = 60; g.font = `900 ${fs}px "DejaVu Sans", sans-serif`; while (g.measureText(txt).width > 860 && fs > 30) { fs -= 2; g.font = `900 ${fs}px "DejaVu Sans", sans-serif`; }
   const w = g.measureText(txt).width + 80; rr(-w / 2, -62, w, 112, 28, 'rgba(10,6,16,0.9)'); g.strokeStyle = col; g.lineWidth = 7; g.beginPath(); g.roundRect(-w / 2, -62, w, 112, 28); g.stroke();
@@ -121,9 +140,25 @@ const SCENES = {
     if (u >= 0.55) { grade(0.8); bigText('WHAT DO YOU DO?', 1580, sm((u - 0.55) / 0.15), '#ff4d5e', 104); } },
   rewind(u) { const sc = 2400 - 2400 * sm(u / 2.3); worldAt(sc); cars(sc - 1800); hero(380 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1 }); dog(640, GY + 120, 0.42, { pose: 'stand', ears: 'up' });
     g.fillStyle = 'rgba(255,255,255,0.07)'; for (let y = (T * 900) % 40; y < H; y += 40) g.fillRect(0, y, W, 6); for (let k = 0; k < 6; k++) { const y = hash(Math.floor(T * 20) + k) * H; g.fillStyle = 'rgba(255,255,255,0.18)'; g.fillRect(0, y, W, 4 + hash(k + T) * 14); }
-    grade(0.5); bigText('◀◀  10 SECONDS EARLIER', 420, 1, '#ffffff', 72); },
+    grade(0.5); bigText('◀◀  2 MINUTES EARLIER', 420, 1, '#ffffff', 72); },
   walk(u) { const sc = u * 140; g.save(); cam(1.0, 540, 960); worldAt(sc); cars(sc - 600); const st = Math.sin(u * 11.4);
     hero(330 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, step: st, swing: st * 0.5 }); dog(620, GY + 125, 0.42, { pose: 'stand', ears: 'up', tail: 0.6 }); g.restore(); },
+
+  backpack(u) { const z = 1 + 0.5 * sm((u - 0.6) / 2.5); g.save(); cam(z, lerp(540, 470, sm(u / 3)), lerp(960, 1330, sm(u / 3))); worldAt(140 * 6.9 - 400); cars(140 * 6.9 - 1000); bag(640, GY + 150, 0.42, {});
+    hero(250 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: 'worried' }); dog(560, GY + 130, 0.42, { pose: u > 0.8 ? 'crouch' : 'stand', ears: 'up', tail: 0.5, look: 1 }); g.restore(); },
+  radio(u) { g.fillStyle = '#20141c'; g.fillRect(0, 0, W, H); g.save(); cam(1 + 0.04 * u, 540, 960); worldAt(140 * 6.9 - 400); g.fillStyle = 'rgba(10,4,14,0.5)'; g.fillRect(-400, -400, 2000, 2800);
+    bag(540, 1900, 1.6, { open: true }); const up = sm(u / 1.2); handWith(600, 1700 - 600 * up, 1.0, { talk: 0, rot: -0.15 }); g.restore(); },
+  voice(u) { g.fillStyle = '#20141c'; g.fillRect(0, 0, W, H); g.save(); shake(0.08); cam(1, 540, 960); worldAt(140 * 6.9 - 400); g.fillStyle = 'rgba(10,4,14,0.55)'; g.fillRect(-400, -400, 2000, 2800);
+    handWith(640, 1150, 1.0, { talk: u < 2.4 ? 1 : 0, rot: -0.15 }); g.restore(); if (u < 2.4) bigText('"HELP ME... PLEASE."', 1640, sm(u / 0.2), '#7affa0', 70); },
+  mine(u) { g.fillStyle = '#20141c'; g.fillRect(0, 0, W, H); g.save(); cam(1 + 0.12 * sm(u / 3), 540, 760); worldAt(140 * 6.9 - 400); g.fillStyle = 'rgba(10,4,14,0.4)'; g.fillRect(-400, -400, 2000, 2800); heroClose({ look: 0.2, expr: 'shock' }); g.restore(); },
+  hide(u) { const k = sm(u / 6); g.save(); cam(1.1, 600, 1250); worldAt(140 * 6.9 + 300); doorway(1300, GY + 40, 0.75);
+    const cx = lerp(1100, 760, k); hollow(cx, GY + 60, 0.42, { face: -1, mouth: 0.15, lean: 0.2 + 0.4 * k, phase: 0.7, speed: 0.4 }); hollow(1200, GY + 40, 0.4, { face: -1, mouth: 0.1, lean: 0.2, phase: 2, speed: 0.3, dim: 0.7 });
+    // kid + Biscuit crouched behind the car (car drawn after = in front)
+    g.save(); g.translate(0, 120); hero(260 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: 'scared' }); g.restore(); dog(470, GY + 200, 0.38, { pose: 'crouch', ears: 'down', tail: 0, look: 1 });
+    rustCar(420, GY + 330, 0.75, { col: '#6a3a2a' }); g.restore();
+    if (u > 1.2) { g.save(); g.globalAlpha = 0.5 + 0.3 * Math.sin(T * 5); g.fillStyle = '#fff'; g.font = '900 46px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('🤫', 330, 1050); g.restore(); } },
+  beep(u) { if (u < 1.4) { g.fillStyle = '#1a0e14'; g.fillRect(0, 0, W, H); g.save(); shake(0.4); cam(1.1, 540, 960); worldAt(140 * 6.9 + 300); g.fillStyle = 'rgba(10,4,14,0.6)'; g.fillRect(-400, -400, 2000, 2800); handWith(600, 1150, 1.05, { beep: true, rot: -0.1 }); g.restore(); bigText('BEEP!', 560, 1, '#ff3a3a', 150); }
+    else { const v = u - 1.4; g.save(); cam(1.25, 760, 1220); worldAt(140 * 6.9 + 300); doorway(1300, GY + 40, 0.75); [[760, 0], [900, 1], [1040, 2], [1160, 3]].forEach(([x, i]) => hollow(x, GY + 50 + 20 * (i % 2), 0.42, { face: -1, mouth: sm((v - i * 0.12) / 0.3), lean: 0.9, reach: 0.2, phase: i, speed: 0.2 })); rustCar(420, GY + 330, 0.75, { col: '#6a3a2a' }); g.restore(); } },
   growl(u) { const z = 1.0 + 0.35 * sm(u / 6), fx = lerp(540, 760, sm(u / 6)); g.save(); cam(z, fx, 1180); worldAt(140 * 6.9); doorway(980, GY + 40, 0.75, { inside: () => { if (u > 3.5) { g.globalAlpha = sm((u - 3.5) / 2) * 0.55; hollowHead(-60, -120, 40, 0.1); g.globalAlpha = 1; } } });
     hero(330 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: u > 1.5 ? 'scared' : 'worried' }); dog(620, GY + 125, 0.42, { pose: 'crouch', ears: 'down', growl: true, tail: 0, shake: 0.3 }); g.restore(); },
   pour(u) { const k = sm(u / 5.5); g.save(); shake(0.25 + 0.5 * k); cam(1.15 - 0.1 * k, 700, 1220); worldAt(140 * 6.9); doorway(980, GY + 40, 0.75);
