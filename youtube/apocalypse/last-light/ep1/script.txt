@@ -1,20 +1,18 @@
-LAST LIGHT - PART 1  (draft v2 - no link to HER VOICE, same character looks + Biscuit only; her-voice-script structure + storytelling principles)
+LAST LIGHT - PART 1  (draft v3 - no rules, no repeats; no link to HER VOICE, same character looks + Biscuit only; her-voice-script structure + storytelling principles)
 Card: DAY 300 · SUNSET 00:12 (counts down).   ~210 words, ~85 s.   Narrator: the kid (Clancy). Mimic line: a young girl's voice, made wrong.
 
 #   | narration                                                                                  | on screen
 1   | Three hundred days ago, everyone in my city disappeared.                                   | Cold open: a huge empty avenue, rusted cars, weeds through the asphalt, a traffic light still blinking
-1b  | Tonight... someone called for help.                                                         | A black doorway, a whisper of light inside (PROMISE, pays off at line 10)
+1b  | Tonight... someone called for help.                                                         | A black doorway, a whisper of light inside (PROMISE, pays off at line 13: it was them)
 2   | The city is so quiet now, you can hear the traffic lights click.                          | Close on the traffic light: click, green to red, nobody there
 3   | It's just me and Biscuit. The last dog in the city. He still sleeps on my feet every night. | The kid walking with his backpack, Biscuit trotting beside him ("that's my dog" moment)
-4   | Rule one: be home before the sun goes down.                                                | The SUNSET counter in the corner turns red: 00:12
-5   | Today, we went too far. Twenty blocks from home.                                           | A hand-drawn map on cardboard, home circled far away
+4   | We always made it home before dark.                                                         | The SUNSET counter in the corner turns red: 00:12
+5   | Today, we didn't. Twenty blocks from home.                                                  | A hand-drawn map on cardboard, home circled far away
 6   | The sun was touching the buildings... when Biscuit stopped.                                | Orange sun between skyscrapers; Biscuit freezes mid-step
 7   | Ears flat. Growling at a black doorway.                                                    | Biscuit's lip curls; the dark entrance of an abandoned building
 8   | Then, from inside... a voice.                                                              | RE-HOOK (~28 s): all sound drops out
 9   | (A GIRL'S VOICE from the dark, own take) "Hello? Is someone out there? Please... help me."  | Only darkness in the doorway
-10  | Nobody has talked to me in three hundred days. And Biscuit was growling at the voice.     | The kid's face, frozen; Biscuit growling
-11  | That's rule number two. If someone calls for help after sunset... don't answer.            | Text on screen: RULE 2 - DON'T ANSWER
-12  | Because they copy the voices of the people they took.                                      | Silhouettes of people fading into the dark
+10  | Nobody has talked to me in three hundred days. So who was that?                            | The kid's face, frozen
 13  | Then the dark moved.                                                                       | Shapes shift inside the doorway
 14  | Pale. No eyes. More than I could count.                                                    | The Hollow crawl out: pale, eyeless, heads tilting. PAUSE CLUE: spray paint on the wall behind them, "DON'T TRUST THE RADIO", visible ~1 s, not mentioned
 15  | They tilted their heads... listening for me.                                               | Heads turning slowly toward the camera
@@ -27,6 +25,7 @@ Recording: narrator in two takes (1-8 and 10-19); line 9 = a young girl's voice 
 Pinned comment: "🔦 FLARE, 🚙 CAR or 🤫 HIDE? Most-liked answer decides Part 2. And did you read the wall behind them? 👀"
 
 Plot decisions (user, Nov 22): a brand-new story with no link to HER VOICE - same character looks and the dog's name only.
- a) The voice in the dark is a girl asking for help (a Hollow copying someone it took).
+ a) The voice in the dark is a girl asking for help; viewers work out it was one of them copying a voice (never explained out loud).
+ d) No 'rules' and no repeated lines (user).
  b) Pause clue for later: "DON'T TRUST THE RADIO".
  c) Three choices.
