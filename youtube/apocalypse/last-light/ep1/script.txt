@@ -1,31 +1,13 @@
-LAST LIGHT - PART 1  (draft v3 - no rules, no repeats; no link to HER VOICE, same character looks + Biscuit only; her-voice-script structure + storytelling principles)
-Card: DAY 300 · SUNSET 00:12 (counts down).   ~210 words, ~85 s.   Narrator: the kid (Clancy). Mimic line: a young girl's voice, made wrong.
+LAST LIGHT - PART 1  (final v5: action first, the user's scene, two choices)  ~40 s
+Card in the corner: SUNSET 00:59 (counting down). No gore.
 
-#   | narration                                                                                  | on screen
-1   | Three hundred days ago, everyone in my city disappeared.                                   | Cold open: a huge empty avenue, rusted cars, weeds through the asphalt, a traffic light still blinking
-1b  | Tonight... someone called for help.                                                         | A black doorway, a whisper of light inside (PROMISE, pays off at line 13: it was them)
-2   | The city is so quiet now, you can hear the traffic lights click.                          | Close on the traffic light: click, green to red, nobody there
-3   | It's just me and Biscuit. The last dog in the city. He still sleeps on my feet every night. | The kid walking with his backpack, Biscuit trotting beside him ("that's my dog" moment)
-4   | We always made it home before dark.                                                         | The SUNSET counter in the corner turns red: 00:12
-5   | Today, we didn't. Twenty blocks from home.                                                  | A hand-drawn map on cardboard, home circled far away
-6   | The sun was touching the buildings... when Biscuit stopped.                                | Orange sun between skyscrapers; Biscuit freezes mid-step
-7   | Ears flat. Growling at a black doorway.                                                    | Biscuit's lip curls; the dark entrance of an abandoned building
-8   | Then, from inside... a voice.                                                              | RE-HOOK (~28 s): all sound drops out
-9   | (A GIRL'S VOICE from the dark, own take) "Hello? Is someone out there? Please... help me."  | Only darkness in the doorway
-10  | Nobody has talked to me in three hundred days. So who was that?                            | The kid's face, frozen
-13  | Then the dark moved.                                                                       | Shapes shift inside the doorway
-14  | Pale. No eyes. More than I could count.                                                    | The Hollow crawl out: pale, eyeless, heads tilting. PAUSE CLUE: spray paint on the wall behind them, "DON'T TRUST THE RADIO", visible ~1 s, not mentioned
-15  | They tilted their heads... listening for me.                                               | Heads turning slowly toward the camera
-16  | Biscuit pressed against my leg. I could hear my heart. So could they.                     | Heartbeat SFX; the Hollow freeze, then lean closer
-17  | I had one UV flare. The keys to the armored car across the street. And one dark place to hide. | Quick inserts: the flare, the keys, an armored SUV, a dark storefront
-18  | So... do you throw the flare? Run for the car? Or hide... and stay silent?                | Three choice cards (red): THROW THE UV FLARE / RUN FOR THE ARMORED CAR / HIDE AND STAY SILENT
-19  | Comment your choice. Part 2 follows you.                                                    | Comment arrow, "PART 1"
+time   | narration (the kid, Clancy)                     | on screen
+0-2    | (none)                                          | FLASH-FORWARD: pale eyeless creatures mid-leap toward the camera, screeching; freeze; text WHAT DO YOU DO?
+2-4    | Ten seconds earlier...                          | rewind blur
+4-12   | One hour of daylight left. We were almost home. | empty overgrown avenue, rusted cars, weeds, skyscrapers, orange sunset; the kid (backpack) + Biscuit walking
+12-18  | Biscuit never growls.                           | Biscuit freezes mid-step, growling at the black entrance of an abandoned building
+18-25  | (silence, then a screech)                       | the creatures pour out of the dark, screeching, getting ready to charge
+25-32  | Three seconds. Choose.                          | freeze, colors drain; the kid's hand on a UV flare; an armored SUV glints across the street
+32-40  | Comment your choice.                            | two red choice cards: THROW THE UV FLARE / SPRINT TO THE ARMORED SUV
 
-Recording: narrator in two takes (1-8 and 10-19); line 9 = a young girl's voice (pick from creative_list_voices), processed wrong (lower ghost copy + echo).
-Pinned comment: "🔦 FLARE, 🚙 CAR or 🤫 HIDE? Most-liked answer decides Part 2. And did you read the wall behind them? 👀"
-
-Plot decisions (user, Nov 22): a brand-new story with no link to HER VOICE - same character looks and the dog's name only.
- a) The voice in the dark is a girl asking for help; viewers work out it was one of them copying a voice (never explained out loud).
- d) No 'rules' and no repeated lines (user).
- b) Pause clue for later: "DON'T TRUST THE RADIO".
- c) Three choices.
+Pinned comment: "🔦 THROW THE FLARE or 🚙 SPRINT TO THE SUV? Most-liked answer decides Part 2 👇"
