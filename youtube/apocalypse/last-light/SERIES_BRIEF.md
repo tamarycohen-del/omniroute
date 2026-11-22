@@ -3,7 +3,7 @@ Genre reference (feel only, nothing copied): the lone-survivor-in-an-empty-city-
 tropes (empty overgrown city, survivor + dog, safe days / deadly nights, pale night creatures, UV light, a barricaded
 home base, a radio searching for survivors). We do NOT copy any film's names, scenes, characters, creature design or plot.
 
-Cast (same designs as HER VOICE, same age): the kid (beanie, now with a backpack, UV flashlight, UV flares, an old walkie-talkie)
+Cast (same LOOKS as the HER VOICE characters and the dog is called Biscuit - otherwise NO link to HER VOICE): the kid (beanie, now with a backpack, UV flashlight, UV flares, an old walkie-talkie)
 and Biscuit (the dachshund; growls at the creatures first; sleeps on the kid's feet).
 World: 300 days since the city went quiet. Days are safe. At sunset the Hollow come out.
 The Hollow (our design): pale, eyeless, hunt by sound, and COPY the voices of people they took.
