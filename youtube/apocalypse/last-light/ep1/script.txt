@@ -1,0 +1,32 @@
+LAST LIGHT - PART 1  (draft v1; her-voice-script structure + storytelling principles)
+Card: DAY 300 · SUNSET 00:12 (counts down).   ~210 words, ~85 s.   Narrator: the kid (Clancy). Mimic line: Mom's voice (Tammy), made wrong.
+
+#   | narration                                                                                  | on screen
+1   | Three hundred days ago, everyone in my city disappeared.                                   | Cold open: a huge empty avenue, rusted cars, weeds through the asphalt, a traffic light still blinking
+1b  | Tonight... one of them called my name.                                                     | A black doorway, a whisper of light inside (PROMISE, pays off at line 10)
+2   | The city is so quiet now, you can hear the traffic lights click.                          | Close on the traffic light: click, green to red, nobody there
+3   | It's just me and Biscuit. The last dog in the city. He still sleeps on my feet every night. | The kid walking with his backpack, Biscuit trotting beside him ("that's my dog" moment)
+4   | Rule one: be home before the sun goes down.                                                | The SUNSET counter in the corner turns red: 00:12
+5   | Today, we went too far. Twenty blocks from home.                                           | A hand-drawn map on cardboard, home circled far away
+6   | The sun was touching the buildings... when Biscuit stopped.                                | Orange sun between skyscrapers; Biscuit freezes mid-step
+7   | Ears flat. Growling at a black doorway.                                                    | Biscuit's lip curls; the dark entrance of an abandoned building
+8   | Then, from inside... a voice.                                                              | RE-HOOK (~28 s): all sound drops out
+9   | (MOM'S VOICE from the dark, own take) "Buddy? It's Mom. Come inside... it's safe."         | Only darkness in the doorway
+10  | That was my mom's voice. My mom has been gone for three hundred days.                     | The kid's face, frozen
+11  | That's rule number two. If someone calls your name after sunset... don't answer.           | Text on screen: RULE 2 - DON'T ANSWER
+12  | Because they learn your voice. And they use it.                                            | Said twice (short, then simple) for new viewers
+13  | Then the dark moved.                                                                       | Shapes shift inside the doorway
+14  | Pale. No eyes. More than I could count.                                                    | The Hollow crawl out: pale, eyeless, heads tilting. PAUSE CLUE: spray paint on the wall behind them, "DON'T TRUST THE RADIO", visible ~1 s, not mentioned
+15  | They tilted their heads... listening for me.                                               | Heads turning slowly toward the camera
+16  | Biscuit pressed against my leg. I could hear my heart. So could they.                     | Heartbeat SFX; the Hollow freeze, then lean closer
+17  | I had one UV flare. The keys to the armored car across the street. And one dark place to hide. | Quick inserts: the flare, the keys, an armored SUV, a dark storefront
+18  | So... do you throw the flare? Run for the car? Or hide... and stay silent?                | Three choice cards (red): THROW THE UV FLARE / RUN FOR THE ARMORED CAR / HIDE AND STAY SILENT
+19  | Comment your choice. Part 2 follows you.                                                    | Comment arrow, "PART 1"
+
+Recording: narrator in two takes (1-8 and 10-19); line 9 = Mom's voice (Tammy), processed wrong (lower ghost copy + echo).
+Pinned comment: "🔦 FLARE, 🚙 CAR or 🤫 HIDE? Most-liked answer decides Part 2. And did you read the wall behind them? 👀"
+
+Plot decisions to confirm:
+ a) The kid's Mom is one of the people who disappeared, and a Hollow uses her voice. She says "buddy" (a wink for HER VOICE fans, but works alone).
+ b) Pause clue for later: "DON'T TRUST THE RADIO" (sets up the survivor radio broadcast as a trap later in the series).
+ c) Three choices instead of two.
