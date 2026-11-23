@@ -112,3 +112,4 @@ Retention held flat at ~45% from 0:20 to 1:01, then fell to ~5% during the 14 s 
 - End on a cliffhanger beat AFTER the cards appear (a knock, the light blinking again, the counter dropping), cut hard to black on the peak. No slow fade, no long hold.
 - Design the last frame to loop into the first (same image or sound), so replays count.
 - Also: the first 3 s lost ~45% (100% -> 55% by 0:10). The first frame must already show the strongest image of the episode in motion, not a slow tilt.
+- User note on Part 1: the slow opening still held people, so keep the calm "world rule" first line, but load the first 5 s with sound (water rush, a hit on the first frame, a creak, rain) and one more visual event. Less whispering in the narration: whisper only 1-2 key lines per episode; the rest in a normal, tense storyteller voice (viewers get bored of constant whispers).
