@@ -113,3 +113,14 @@ Retention held flat at ~45% from 0:20 to 1:01, then fell to ~5% during the 14 s 
 - Design the last frame to loop into the first (same image or sound), so replays count.
 - Also: the first 3 s lost ~45% (100% -> 55% by 0:10). The first frame must already show the strongest image of the episode in motion, not a slow tilt.
 - User note on Part 1 (corrected): the opening was boring even if it held some viewers. Keep only the elements that worked (the one-line world rule as the first line, the drowned-city image, the mystery "Nobody knows why") and make the opening more interesting: start in motion on the strongest image (e.g. water bursting through a window, a floor going under), load the first 5 s with sound (a hit on frame 1, water rush, creak, rain) and at least two visual events in the first 5 s. Less whispering: whisper only 1-2 key lines per episode; the rest in a normal, tense storyteller voice.
+
+## Animation quality bar (same style, better craft; user note 2026-11-23)
+Keep the look (white stick kid with beanie, Biscuit, flat 2D shapes, dark palette). Quality means craft, not pixels. Weak spots seen in FLOOR 40 Part 1: characters standing still, rooms static, flat light, one layer per shot, hard cuts. Every shot must have:
+- **Acting**: the kid and Biscuit move with intent (turn head, step, flinch, point, crouch, breathe harder when scared), with anticipation -> action -> settle, eased between poses. Expressions change inside a shot. Biscuit reacts first (ears, tail, sniff, growl).
+- **Secondary motion**: something always moves besides the subject (water lapping, rain, dust, flicker, swaying cables, floating debris, steam of breath).
+- **Light**: a key light with direction (window light, flashlight cone, lightning flash), cast shadows on floor/walls, rim light on characters at night, light that changes inside the shot.
+- **Depth**: at least 3 layers (foreground silhouette, subject, background) with parallax when the camera moves; atmospheric haze on far layers.
+- **Camera with purpose**: push-in on emotion, whip/shake on impacts, slow drift otherwise; never a locked static frame for more than 2 s.
+- **Detail props** that tell the story (tally marks, labels, wet stains, cracks) drawn with texture, not plain rectangles.
+- **Transitions made in the world**: water wipe, light flash, lightning, a wave covering the lens, match cuts.
+- Check: render a contact sheet and ask "is anything in this frame not moving?" for each shot.
