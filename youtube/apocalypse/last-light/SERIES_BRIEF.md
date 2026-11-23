@@ -10,3 +10,6 @@ The Hollow (our design): pale, eyeless, hunt by sound, and COPY the voices of pe
 Rules: 1) be home before sunset. 2) if someone calls your name after sunset, don't answer. 3) UV light burns them.
 Format: 80-90 s per part, 3 choices at the end, the most-liked comment decides the next part; every part must work for a new viewer.
 Card in the corner: DAY 300 + SUNSET countdown. No gore.
+
+## Status (2026-11-23)
+Stopped after Part 1 by the user's decision. Part 1 is published (YouTube zvTVxSnAPYA, Instagram DgDmg0qAl6Z); no Part 2.
