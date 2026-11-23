@@ -101,6 +101,6 @@ Fix everything found in one round, check once more, then deliver. Later notes fr
 ## Research without YouTube API quota
 Agent Reach (MIT, github.com/Panniantong/Agent-Reach) is installed with uv in the cloud session (needs youtube.com and reddit.com allowed in the environment; both are). Read-only:
 - `agent-reach youtube search "<query>"` → titles, channels, view counts, durations (yt-dlp, no API quota).
-- `agent-reach youtube subtitle <url>` → a competitor's script/hook as text.
+- `agent-reach youtube subtitle <url>` → a competitor's script as text. Blocked from the cloud container (YouTube's "confirm you're not a bot" check on datacenter IPs, tested 2026-11-23); works on the user's own computer.
 - `agent-reach reddit search "<query>"` → story ideas and what people say about a genre.
 Never connect it to the channel's Instagram/X accounts (account automation risk). Composio stays for uploads and comments. In a fresh container reinstall: `uv tool install https://github.com/Panniantong/Agent-Reach/releases/latest/download/agent-reach.zip && agent-reach setup`.
