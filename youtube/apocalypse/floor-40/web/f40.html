@@ -98,6 +98,15 @@ const SC = {
   seat(u) { g.fillStyle = '#3c5a64'; g.fillRect(0, 0, W, H); g.save(); cam(1.6, 540, 1150); boat(540, 1300, 1.0, {}); g.restore();
     dog(560, 1500 + 20 * Math.sin(T * 14), 1.3, { pose: 'crouch', ears: 'up', tail: 0.8 }); const p = sm((u - 1) / 0.6); if (p > 0) { g.save(); g.translate(300, 1380 - 100 * p); g.rotate(-0.3); g.fillStyle = '#ece4cc'; g.fillRect(0, 0, 160, 110); g.restore(); } },
   torn(u) { paper([['...DON\'T TRUST...', sm(u / 0.5)]], { torn: true }); drip(u); },
+  hands(u) { // under the water, looking up at the boat's bottom: pale handprints on the outside of the hull
+    g.fillStyle = lin(0, 0, 0, 1920, [[0, '#4a8a96'], [0.35, '#1c4650'], [1, '#04121a']]); g.fillRect(-200, -200, 1500, 2400);
+    add(() => { for (let i = 0; i < 7; i++) { const x = 100 + i * 150 + Math.sin(T + i) * 40; g.fillStyle = 'rgba(200,240,255,0.06)'; g.beginPath(); g.moveTo(x, -100); g.lineTo(x + 60, -100); g.lineTo(x + 260, 1900); g.lineTo(x + 160, 1900); g.fill(); } });
+    g.save(); cam(1 + 0.12 * sm(u / 4), 540, 1000); g.save(); g.translate(540, 1080 + Math.sin(T * 2) * 10); g.fillStyle = '#b8482a'; g.strokeStyle = O; g.lineWidth = 14; g.beginPath(); g.ellipse(0, 0, 470, 150, 0, 0, 7); g.fill(); g.stroke();
+    g.fillStyle = 'rgba(40,70,50,0.5)'; for (let i = 0; i < 14; i++) { g.beginPath(); g.ellipse(-400 + hash(i) * 800, -100 + hash(i + 4) * 200, 30, 12, 0, 0, 7); g.fill(); }
+    const hp = (x, y, r, a) => { g.save(); g.translate(x, y); g.rotate(r); g.globalAlpha = a; g.fillStyle = '#e8ecea'; g.beginPath(); g.ellipse(0, 0, 34, 42, 0, 0, 7); g.fill(); for (let f = -2; f <= 2; f++) { g.save(); g.rotate(f * 0.22); g.beginPath(); g.ellipse(0, -110, 9, 62, 0, 0, 7); g.fill(); g.restore(); } g.restore(); };
+    [[-250, 20, -0.3], [-80, -30, 0.1], [140, 30, 0.35], [300, -20, -0.15]].forEach(([x, y, r], i) => hp(x, y, r, sm((u - 0.6 - i * 0.35) / 0.4) * 0.85)); g.restore();
+    const sh = sm((u - 2.2) / 1.5); if (sh > 0) { g.fillStyle = `rgba(0,6,10,${0.6 * sh})`; g.beginPath(); g.ellipse(540, 1700 - 200 * sh, 520, 180, 0, 0, 7); g.fill(); } g.restore();
+    g.strokeStyle = 'rgba(220,245,255,0.5)'; g.lineWidth = 3; for (let i = 0; i < 18; i++) { const y = 1900 - ((T * 160 + i * 140) % 2000), x = 200 + hash(i) * 700 + Math.sin(T * 2 + i) * 20; g.beginPath(); g.arc(x, y, 6 + hash(i + 2) * 8, 0, 7); g.stroke(); } },
   fits(u) { g.save(); cam(0.85 + 0.05 * u, 540, 1000); sky(0); city(WY, 0); farTower(860, WY + 20, 0.55, {}); water(WY, 0); boat(420, WY + 230, 0.35, {});
     g.fillStyle = '#5a6270'; g.fillRect(-300, -1400, 360, 1400 + WY); hero(120 - 300 * 0.3, WY - 975 * 0.3 + 10, 0.3, { look: 1 }); dog(220, WY + 6, 0.22, { pose: 'stand', ears: 'up' }); g.restore(); },
   choice(u, d, t) { g.save(); cam(0.9, 540, 1050); sky(0); city(WY, 0); farTower(860, WY + 20, 0.55, {}); water(WY, 0); boat(420, WY + 230, 0.35, {}); g.fillStyle = '#5a6270'; g.fillRect(-300, -1400, 360, 1400 + WY); hero(120 - 300 * 0.3, WY - 975 * 0.3 + 10, 0.3, { look: 1, expr: 'worried' }); dog(220, WY + 6, 0.22, { pose: 'stand', ears: 'up', t: 0 }); g.restore();
@@ -105,7 +114,7 @@ const SC = {
     if (ANCH.comment != null && t > ANCH.comment) bigText('COMMENT 👇', 1760 + Math.sin(T * 6) * 12, sm((t - ANCH.comment) / 0.3), '#c6ff3a', 80); },
 };
 // beats: [scene, word anchor, occurrence, lead seconds]
-const BEATS = [['open', null], ['forty', 'we', 1], ['stair31', 'last', 1], ['tally', 'nine', 1], ['rain', 'rain', 1], ['cans', 'cans', 1], ['six', 'six', 1], ['night', 'then', 1], ['blink', 'three', 1], ['flash', 'flashed', 1, 0.25], ['out', 'went', 1, 0.35], ['scary', 'that', 1], ['boat', 'this', 1], ['empty', 'empty', 1], ['note', 'floor', 3, 0.1], ['tower', 'floors', 1, 0.7], ['seat', 'biscuit', 1], ['torn', 'same', 1], ['fits', 'fits', 1, 0.7], ['choice', 'so', 1]];
+const BEATS = [['open', null], ['forty', 'we', 1], ['stair31', 'last', 1], ['tally', 'nine', 1], ['rain', 'rain', 1], ['cans', 'cans', 1], ['six', 'six', 1], ['night', 'then', 1], ['blink', 'three', 1], ['flash', 'flashed', 1, 0.25], ['out', 'went', 1, 0.35], ['scary', 'that', 1], ['boat', 'this', 1], ['empty', 'empty', 1], ['note', 'floor', 3, 0.1], ['tower', 'floors', 1, 0.7], ['seat', 'biscuit', 1], ['torn', 'same', 1], ['hands', 'handprints', 1, 1.3], ['fits', 'fits', 1, 0.7], ['choice', 'so', 1]];
 let SHOTS = [], ANCH = {};
 const norm = (w) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
 const find = (word, n) => { let c = 0; for (const w of WORDS) if (norm(w.w) === word && ++c === n) return w.s; return null; };
