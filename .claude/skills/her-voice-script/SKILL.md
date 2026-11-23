@@ -94,7 +94,7 @@ Subject too small or against the frame edge · too dark to read or color on the 
 **Review before delivery (one fix round)**
 1. Contact sheet of a frame every 1-2 s; at least two passes.
 2. 0.2 s strips of every key action (falls, grabs, jumps, reveals).
-3. On the final mp4: `youtube/tools/review.sh <file.mp4>` (loudness about -14 LUFS, black frames, whisper of the final mix).
+3. On the final mp4: `youtube/tools/review.sh <file.mp4>` (loudness about -14 LUFS, black frames, whisper of the final mix), then the `watch` skill with `--scene-threshold 0.12` (shots, cuts/min, mean shot length, 0-10 s hook frames). Target for our shorts: mean shot length 2-3 s. (LAST LIGHT Part 1 measured 14 shots, 12 cuts/min, mean 5.0 s: too slow.)
 4. Watch it once at full speed with sound.
 Fix everything found in one round, check once more, then deliver. Later notes from the user are new rounds: change only what they ask.
 
