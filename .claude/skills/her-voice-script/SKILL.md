@@ -104,3 +104,11 @@ Agent Reach (MIT, github.com/Panniantong/Agent-Reach) is installed with uv in th
 - `agent-reach youtube subtitle <url>` → a competitor's script as text. Blocked from the cloud container (YouTube's "confirm you're not a bot" check on datacenter IPs, tested 2026-11-23); works on the user's own computer.
 - `agent-reach reddit search "<query>"` → story ideas and what people say about a genre.
 Never connect it to the channel's Instagram/X accounts (account automation risk). Composio stays for uploads and comments. In a fresh container reinstall: `uv tool install https://github.com/Panniantong/Agent-Reach/releases/latest/download/agent-reach.zip && agent-reach setup`.
+
+## Ending rules (from FLOOR 40 Part 1 Instagram retention, 2026-11-23)
+Retention held flat at ~45% from 0:20 to 1:01, then fell to ~5% during the 14 s choice screen (static cards, quiet drone). The ending lost the viewers the whole story had kept.
+- The choice screen is at most 5-6 s. Cards appear while the last line is still being spoken, not after it.
+- The ending never goes static: keep motion under the cards (water rising, a shadow moving, the counter ticking) and a rising sound (heartbeat, riser, hit on each card), never a flat drone.
+- End on a cliffhanger beat AFTER the cards appear (a knock, the light blinking again, the counter dropping), cut hard to black on the peak. No slow fade, no long hold.
+- Design the last frame to loop into the first (same image or sound), so replays count.
+- Also: the first 3 s lost ~45% (100% -> 55% by 0:10). The first frame must already show the strongest image of the episode in motion, not a slow tilt.
