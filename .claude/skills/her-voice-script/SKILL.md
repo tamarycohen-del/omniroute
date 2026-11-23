@@ -7,6 +7,18 @@ description: Write the next part of the HER VOICE horror series ("Would You Open
 
 Read first: `youtube/horror/it-knows-her-voice/SERIES_BRIEF.md` (characters, full plot, open mysteries, rules) and the previous part's script/words (`partN/script.txt`, `web/wordsN.json`).
 
+## TOP PRIORITY: swipe rate (YouTube Shorts "Viewed vs swiped away" >= 80% viewed)
+The viewer decides in the first ~1 s, before any story. Everything in frame 0-30 serves this:
+- Frame 1 is the strongest, most readable image of the episode, already moving (no fade-in, no black, no slow tilt, no logo, no title card).
+- Sound from frame 0: a hit/impact plus the first spoken word starting at 0.0-0.2 s. No silent first second.
+- A big on-screen question or threat in the first frame, 3-6 words, top third, readable at thumbnail size (e.g. "THE WATER IS AT 31"), different from the captions.
+- A face or Biscuit visible in frame 1 with a clear emotion (shock, fear), large (at least 1/3 of frame height).
+- Something changes within the first 1.5 s (a cut, a splash, a light, a scream) to prove "this moves".
+- The corner card and title must not cover the key image in the first 2 s.
+- No context setup before the hook; the world rule comes as line 1 over the action, not before it.
+- Check before upload: export frames 0, 15, 30, 45 and judge them as a stranger scrolling: would I stop?
+- After upload: ask the user for Studio's "Viewed vs swiped away" for the short (not available in the public API) and log it in the series folder with what the first second showed, to learn which openings win.
+
 ## Inputs to collect
 1. The vote: pull comments + likes on the last part (YouTube `YOUTUBE_LIST_COMMENT_THREADS2`, Instagram `INSTAGRAM_GET_IG_MEDIA_COMMENTS`). Winner = most total likes; ignore the channel's own pinned comment.
 2. Stats of the last parts (views, avg watch time, saves, shares) to decide what to fix.
