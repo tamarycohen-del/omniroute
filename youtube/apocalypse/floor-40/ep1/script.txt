@@ -43,5 +43,5 @@ Visual pacing: 22 beats in 75 s (new image every ~3.4 s); inside beats 1, 9, 13,
 Hook test: the first frame already shows the drowned city; the first line states the rule.
 
 Decisions to confirm:
-1. Same character looks (the kid + Biscuit) or new characters?
+1. CONFIRMED by the user: the kid + Biscuit, same looks and same spirit (brave kid, loyal dog who senses danger).
 2. Title: FLOOR 40 / HIGH WATER / NINE NIGHTS.

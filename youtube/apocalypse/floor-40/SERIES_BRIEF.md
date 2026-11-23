@@ -6,7 +6,7 @@ So: one place, a visible countdown, resources that run out, and the viewers' cho
 
 ## World (one rule, shown on screen, never explained)
 The city is under water. Every night the water climbs exactly one floor. Nobody knows why.
-A kid and his dog Biscuit (same looks as our earlier characters) live on floor 40 of an office tower. The water is at floor 31.
+A kid and his dog Biscuit (same looks and spirit as our earlier characters, confirmed by the user) live on floor 40 of an office tower. The water is at floor 31.
 Corner card on every episode: FLOOR 40 / WATER 31 / NIGHTS LEFT 9. Each episode = one day, the number really goes down.
 
 ## What viewers track
