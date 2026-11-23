@@ -1,0 +1,47 @@
+FLOOR 40 - PART 1 ("Day 1")   ~75 s, 128 words, narrator = the kid (Clancy)
+Corner card all episode: FLOOR 40 · WATER 31 · NIGHTS LEFT 9
+
+ #  time   narration                                            on screen
+ 1  0-3    The water climbs one floor every night.             camera tilts down the outside of the tower: the whole city under water, only rooftops poke out
+ 2  3-6    We live on forty.                                    window of floor 40, the kid and Biscuit looking out
+ 3  6-9    Last night, it reached thirty-one.                   stairwell: dark water lapping at the sign "31", ripples
+ 4  9-12   Nine nights left. I counted twice.                   kid's hand chalks the 9th tally mark on the wall
+ 5  12-15  Rain for water.                                      bucket on the window ledge filling with rain
+ 6  15-18  Cans for food.                                       a shelf: six cans, the kid counts with a finger
+ 7  18-20  Six left.                                            close-up on the last can's label, Biscuit's nose pokes in
+ 8  20-23  Then, last night... a light.                         night: across the water, a light blinks in another tower
+ 9  23-27  Three short. Three long. Three short.                the blinks repeat; the kid's face lit by them  (PAUSE CLUE: it's SOS)
+10  27-30  I flashed back.                                      kid's flashlight through the glass, Biscuit's tail wagging
+11  30-33  The light went out.                                  the far tower goes dark; silence (1 s of near silence)
+12  33-36  That wasn't the scary part.                          hard cut to morning, a thump echoes up the stairwell
+13  36-40  This morning, a boat bumped into floor thirty-one.   small plastic boat knocking against the stairwell window at 31, empty
+14  40-44  Empty. Except for a note.                            the kid on the last dry step, fishing the boat closer with a broom
+15  44-48  "Floor fifty-two. We have food. Come before dark."   wet note, big handwriting, held to camera  (separate take, read by the kid)
+16  48-51  Fifty-two floors. That's twenty more nights.         across the water: the taller tower; the kid's finger traces its floors
+17  51-54  Then Biscuit found something under the seat.         Biscuit digs under the boat seat, pulls out a torn second page
+18  54-58  Same handwriting. Only two words left.               torn wet paper, only "...DON'T TRUST..." readable  (PAUSE CLUE: who wrote the rest?)
+19  58-61  And the boat only fits one kid... and one dog.       wide: tiny boat, the kid, Biscuit, the huge water, the far tower
+20  61-65  So... do I take the boat to fifty-two?              freeze, colors drain; red card 1 rises
+21  65-69  Or stay here, with six cans and nine nights?        red card 2 rises
+22  69-75  Comment your choice. Tomorrow, the water climbs again.   cards hold; corner card ticks NIGHTS LEFT 9 -> 8 on the last word
+
+Choice cards:  🚤 TAKE THE BOAT TO FLOOR 52   /   🏢 STAY ON FLOOR 40
+Pinned comment: "🚤 TAKE THE BOAT or 🏢 STAY ON FLOOR 40? Most-liked answer decides Part 2 👇"
+
+Why the choice works (built only from this episode's facts):
+- Boat: 20 more nights and food, but the torn note says DON'T TRUST... and it means crossing open water.
+- Stay: safe from strangers, but 6 cans and 9 nights is a dead end, and whoever sent the SOS may need help.
+
+Sound (the part viewers loved in LAST LIGHT: they feel inside the story):
+- Bed: water lapping in the stairwell, gusts against glass, distant tower creaks. Rain on the bucket (beat 5).
+- Foley on every action: chalk scrape, can clinks, flashlight click, boat thumping hollow plastic, wet paper.
+- Silences: before "The light went out" and before "Same handwriting".
+- Sound transitions: the morning thump starts over the end of the night shot (beat 11->12); rain over the cut 5->6.
+- The SOS blinks get a soft electronic beep each, so ears can count them too.
+
+Visual pacing: 22 beats in 75 s (new image every ~3.4 s); inside beats 1, 9, 13, 16 add a second camera move or insert, to reach 2-3 s per image.
+Hook test: the first frame already shows the drowned city; the first line states the rule.
+
+Decisions to confirm:
+1. Same character looks (the kid + Biscuit) or new characters?
+2. Title: FLOOR 40 / HIGH WATER / NINE NIGHTS.
