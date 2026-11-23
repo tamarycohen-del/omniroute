@@ -1,0 +1,124 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+// FLOOR 40 - Part 1. Shot times come from words1.json anchors (see BEATS), so the picture follows the voice.
+import { capCard, whiteStick } from './stick.js';
+import { biscuit } from './biscuit.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920, P = { g };
+const rr = (x, y, w, h, r, fill) => { g.beginPath(); g.roundRect(x, y, w, h, r); g.fillStyle = fill; g.fill(); };
+const lin = (x0, y0, x1, y1, st) => { const q = g.createLinearGradient(x0, y0, x1, y1); st.forEach(([o, c]) => q.addColorStop(o, c)); return q; };
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
+const lerp = (a, b, u) => a + (b - a) * u;
+const add = (fn) => { g.save(); g.globalCompositeOperation = 'lighter'; fn(); g.restore(); };
+const cam = (z, fx, fy) => { g.translate(W / 2, H / 2); g.scale(z, z); g.translate(-fx, -fy); };
+const hash = (n) => { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); };
+const O = '#121018';
+let T = 0, WORDS = [];
+const hero = (x, y, s, o = {}) => { const br = Math.sin(T * 2.4) * 0.012; g.save(); g.translate(x, y + 975 * s * br * 0.5); g.scale(s * (o.flip ? -1 : 1), s * (1 - br)); if (o.flip) g.translate(-600, 0); whiteStick(P, { beanie: '#2a2a36', ...o }); g.restore(); };
+const dog = (x, y, s, o = {}) => { const br = Math.sin(T * 3.2 + x * 0.02) * 0.02; g.save(); g.translate(x, y); g.scale(s, s * (1 + br)); biscuit(g, { tail: 0.15, ...o, t: o.t ?? T }); g.restore(); };
+const limb = (pts, w = 86) => { g.lineCap = 'round'; g.lineJoin = 'round'; for (const [ww, c] of [[w + 24, O], [w, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = ww; g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke(); } };
+
+// ---------- world ----------
+const sky = (night = 0) => { g.fillStyle = lin(0, -400, 0, 1300, night ? [[0, '#040814'], [1, '#10203a']] : [[0, '#4a5a6e'], [0.6, '#8a9aa6'], [1, '#c8c6b8']]); g.fillRect(-1400, -1400, 4000, 3200);
+  if (night) { g.fillStyle = 'rgba(220,230,255,0.7)'; for (let i = 0; i < 70; i++) g.fillRect(hash(i) * 2400 - 700, hash(i + 9) * 900 - 300, 3, 3); }
+  else { g.fillStyle = 'rgba(255,255,255,0.12)'; for (let k = 0; k < 4; k++) { g.beginPath(); g.ellipse(((T * 12 + k * 500) % 2200) - 600, 120 + k * 90, 380, 50, 0, 0, 7); g.fill(); } } };
+const WY = 1180; // horizon / water line in city shots
+const water = (y, night = 0, o = {}) => { g.fillStyle = lin(0, y, 0, y + 1400, night ? [[0, '#0c1c2c'], [1, '#02060c']] : [[0, '#3c5a64'], [1, '#0e1e26']]); g.fillRect(-1400, y, 4000, 3000);
+  g.strokeStyle = night ? 'rgba(150,180,220,0.18)' : 'rgba(220,235,240,0.25)'; g.lineWidth = 3; for (let k = 0; k < 26; k++) { const yy = y + 8 + k * k * 3.2, x = ((k * 173 + T * (20 + k)) % 1600) - 300; g.beginPath(); g.moveTo(x, yy); g.lineTo(x + 120 + k * 8, yy); g.stroke(); g.beginPath(); g.moveTo(x - 700, yy); g.lineTo(x - 620 + k * 6, yy); g.stroke(); } };
+const towerTop = (x, w, h, y, o = {}) => { g.fillStyle = o.col || '#3a4250'; g.fillRect(x, y - h, w, h); g.fillStyle = 'rgba(0,0,0,0.25)'; g.fillRect(x + w - 16, y - h, 16, h);
+  for (let r = 0; r < h / 60 - 0.5; r++) for (let c = 0; c < w / 50 - 1; c++) { g.fillStyle = (o.lit && hash(x + r * 7 + c) > 0.85) ? 'rgba(255,220,140,0.8)' : 'rgba(10,16,26,0.75)'; g.fillRect(x + 14 + c * 50, y - h + 20 + r * 60, 26, 34); }
+  g.fillStyle = 'rgba(200,220,230,0.12)'; g.fillRect(x, y, w, Math.min(160, h * 0.4)); };
+const city = (y, night = 0) => { const L = [[-300, 160, 120], [-90, 120, 210], [80, 180, 90], [330, 140, 260], [520, 200, 140], [770, 130, 320], [930, 170, 110], [1150, 150, 200]]; L.forEach(([x, w, h]) => towerTop(x, w, h, y, { col: night ? '#141c28' : '#4a5462' })); };
+const farTower = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s); g.fillStyle = o.night ? '#0e1622' : '#3a4452'; g.fillRect(-130, -1500, 260, 1500); g.fillRect(-40, -1600, 80, 100);
+  for (let r = 0; r < 22; r++) for (let c = 0; c < 4; c++) { g.fillStyle = 'rgba(8,12,20,0.8)'; g.fillRect(-110 + c * 58, -1470 + r * 66, 34, 40); }
+  if (o.blink) { add(() => { const rg = g.createRadialGradient(-52, -1430, 4, -52, -1430, 260); rg.addColorStop(0, 'rgba(255,245,200,1)'); rg.addColorStop(0.2, 'rgba(255,230,160,0.5)'); rg.addColorStop(1, 'rgba(255,230,160,0)'); g.fillStyle = rg; g.fillRect(-400, -1800, 700, 700); }); }
+  if (o.trace != null) { g.strokeStyle = '#ffd34a'; g.lineWidth = 10; const top = -1500 * o.trace; g.beginPath(); g.moveTo(160, 0); g.lineTo(160, top); g.stroke(); g.fillStyle = '#ffd34a'; g.font = '900 70px "DejaVu Sans", sans-serif'; g.fillText(String(31 + Math.round(21 * o.trace)), 190, top + 20); }
+  g.restore(); };
+// interior: window to the drowned city
+const room = (night = 0, o = {}) => { g.fillStyle = night ? '#0a0e18' : '#2a2a34'; g.fillRect(-400, -400, 1900, 2800);
+  g.save(); g.beginPath(); g.rect(90, 260, 900, 1000); g.clip(); g.translate(0, -120); sky(night); city(WY + 60, night); if (o.far) farTower(760, WY + 70, 0.5, { night, blink: o.blink, trace: o.trace }); water(WY + 60, night); g.restore();
+  g.strokeStyle = '#15151c'; g.lineWidth = 34; g.strokeRect(90, 260, 900, 1000); g.lineWidth = 16; g.beginPath(); g.moveTo(540, 260); g.lineTo(540, 1260); g.stroke();
+  g.fillStyle = night ? '#141826' : '#3a3a46'; g.fillRect(-400, 1260, 1900, 60); g.fillStyle = night ? '#0c0f18' : '#24242c'; g.fillRect(-400, 1320, 1900, 1200);
+  if (!night) { rr(60, 120, 140, 100, 10, '#d8d0b0'); g.fillStyle = '#1a1a22'; g.font = '900 64px "DejaVu Sans", sans-serif'; g.fillText('40', 88, 194); } };
+const stair = (o = {}) => { const m = o.morning || 0; g.fillStyle = lin(0, 0, 0, 1920, [[0, m ? '#4a4a52' : '#2a2c34'], [1, '#141418']]); g.fillRect(-400, -400, 1900, 2800);
+  add(() => { g.fillStyle = lin(0, 0, 0, 900, [[0, 'rgba(200,210,220,0.25)'], [1, 'rgba(0,0,0,0)']]); g.fillRect(300, -100, 500, 1000); });
+  for (let k = 0; k < 9; k++) { const y = 700 + k * 120, x = 160 + k * 60; g.fillStyle = '#3a3a42'; g.fillRect(x, y, 900, 30); g.fillStyle = '#26262c'; g.fillRect(x, y + 30, 900, 90); }
+  g.strokeStyle = '#555560'; g.lineWidth = 14; g.beginPath(); g.moveTo(140, 640); g.lineTo(760, 1640); g.stroke();
+  rr(620, 1140, 200, 140, 12, '#c8c0a0'); g.fillStyle = '#1a1a22'; g.font = '900 96px "DejaVu Sans", sans-serif'; g.fillText('31', 652, 1248);
+  const wl = 1250 + Math.sin(T * 1.6) * 8; g.save(); g.globalAlpha = 0.92; water(wl, 0); g.restore(); g.fillStyle = 'rgba(255,255,255,0.25)'; g.fillRect(-400, wl - 3, 1900, 6); };
+const boat = (x, y, s, o = {}) => { g.save(); g.translate(x, y + Math.sin(T * 2.2) * 8 * s); g.rotate(Math.sin(T * 1.7) * 0.03); g.scale(s, s); g.lineJoin = 'round';
+  g.fillStyle = '#d8562e'; g.strokeStyle = O; g.lineWidth = 12; g.beginPath(); g.moveTo(-320, -90); g.lineTo(320, -90); g.lineTo(240, 30); g.lineTo(-240, 30); g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = '#a83e1e'; g.fillRect(-300, -96, 600, 20); g.fillStyle = '#e6dcc0'; g.fillRect(-60, -150, 120, 60); g.strokeRect(-60, -150, 120, 60);
+  if (o.note) { g.fillStyle = '#f2ecd8'; g.save(); g.translate(0, -150); g.rotate(-0.2); g.fillRect(-36, -50, 72, 56); g.restore(); } g.restore(); };
+const paper = (lines, o = {}) => { g.fillStyle = '#20242c'; g.fillRect(-400, -400, 1900, 2800); g.save(); g.translate(540, 900); g.rotate(-0.04); g.fillStyle = '#ece4cc'; g.beginPath();
+  if (o.torn) { g.moveTo(-380, -260); for (let i = 0; i <= 12; i++) g.lineTo(-380 + i * 63, -260 + (i % 2 ? 26 : -18)); g.lineTo(380, 260); for (let i = 12; i >= 0; i--) g.lineTo(-380 + i * 63, 260 + (i % 2 ? -20 : 22)); } else g.rect(-400, -420, 800, 840); g.fill();
+  g.fillStyle = 'rgba(80,90,110,0.18)'; for (let i = 0; i < 9; i++) { g.beginPath(); g.ellipse(-300 + hash(i) * 600, -300 + hash(i + 3) * 600, 60 + hash(i + 6) * 90, 40, 0, 0, 7); g.fill(); }
+  g.fillStyle = '#1c2a4a'; g.textAlign = 'center'; g.font = 'italic 800 78px "DejaVu Serif", serif'; lines.forEach(([txt, a], i) => { if (a <= 0) return; g.globalAlpha = a; g.fillText(txt, 0, (i - (lines.length - 1) / 2) * 120 + 26); }); g.restore(); };
+const drip = (u) => { g.fillStyle = 'rgba(180,200,220,0.6)'; for (let i = 0; i < 6; i++) { const y = ((u * 300 + i * 260) % 1700); g.beginPath(); g.ellipse(200 + i * 140, y, 6, 12, 0, 0, 7); g.fill(); } };
+const choiceCard = (x, y, txt, a, col = '#ff4d5e') => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(0.85 + 0.15 * a, 0.85 + 0.15 * a);
+  let fs = 60; g.font = `900 ${fs}px "DejaVu Sans", sans-serif`; while (g.measureText(txt).width > 860 && fs > 30) { fs -= 2; g.font = `900 ${fs}px "DejaVu Sans", sans-serif`; }
+  const w = g.measureText(txt).width + 80; rr(-w / 2, -62, w, 112, 28, 'rgba(10,6,16,0.9)'); g.strokeStyle = col; g.lineWidth = 7; g.beginPath(); g.roundRect(-w / 2, -62, w, 112, 28); g.stroke(); g.fillStyle = col; g.textAlign = 'center'; g.fillText(txt, 0, 18); g.restore(); };
+const bigText = (txt, y, a, col = '#fff', fs = 100) => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.textAlign = 'center'; g.font = `900 ${fs}px "DejaVu Sans", sans-serif`; g.lineJoin = 'round'; g.lineWidth = 18; g.strokeStyle = '#0a0610'; g.strokeText(txt, 540, y); g.fillStyle = col; g.fillText(txt, 540, y); g.restore(); };
+const grade = (d) => { if (d <= 0) return; g.save(); g.globalCompositeOperation = 'saturation'; g.fillStyle = `rgba(128,128,128,${d})`; g.fillRect(0, 0, W, H); g.restore(); };
+const shake = (a) => g.translate(Math.sin(T * 53) * 14 * a, Math.sin(T * 41) * 10 * a);
+let NIGHTS = 9;
+const corner = () => { g.save(); rr(36, 60, 470, 150, 22, 'rgba(6,14,24,0.78)'); g.font = '800 30px "DejaVu Sans", sans-serif'; g.fillStyle = '#9fd0e8'; g.fillText('FLOOR 40  ·  WATER 31', 62, 112);
+  g.fillStyle = '#4ad0ff'; g.shadowColor = '#4ad0ff'; g.shadowBlur = 14; g.font = '800 52px "DejaVu Sans Mono", monospace'; g.fillText(`NIGHTS LEFT ${NIGHTS}`, 60, 180); g.restore();
+  g.save(); g.textAlign = 'right'; g.fillStyle = '#e8f4ff'; g.font = '900 46px "DejaVu Sans", sans-serif'; g.fillText('FLOOR 40', 1040, 120); g.fillStyle = 'rgba(232,244,255,0.75)'; g.font = '700 24px "DejaVu Sans", sans-serif'; g.fillText('D A Y  1', 1040, 158); g.restore(); };
+const sos = (u) => { const pat = [0.25, 0.25, 0.25, 0.7, 0.7, 0.7, 0.25, 0.25, 0.25]; let t = u % 4.6, k = 0; for (const d of pat) { if (t < d) return k < 9; t -= d; if (t < 0.18) return false; t -= 0.18; k++; } return false; };
+
+const SC = {
+  open(u) { const k = sm(u / 2.6); g.save(); cam(1, 540, lerp(-200, 960, k)); sky(0); city(WY, 0); water(WY, 0);
+    g.fillStyle = '#5a6270'; g.fillRect(-60, -2400, 520, 2400 + WY); for (let r = 0; r < 60; r++) for (let c = 0; c < 6; c++) { g.fillStyle = 'rgba(12,18,28,0.8)'; g.fillRect(-30 + c * 80, -2380 + r * 60, 46, 36); } g.fillStyle = 'rgba(210,230,240,0.3)'; g.fillRect(-60, WY - 6, 520, 12); g.restore(); },
+  forty(u) { g.save(); cam(1 + 0.06 * u, 540, 960); room(0); hero(330 - 300 * 1.0, 1900 - 975 * 1.0, 1.0, { look: 1 }); dog(660, 1890, 0.9, { pose: 'stand', ears: 'up', look: 1 }); g.restore(); },
+  stair31(u) { g.save(); cam(1.15 - 0.08 * u, 700, 1200); stair(); g.restore(); },
+  tally(u) { g.fillStyle = '#3a3a40'; g.fillRect(0, 0, W, H); g.save(); cam(1 + 0.05 * u, 540, 960); g.strokeStyle = '#e8e8e0'; g.lineWidth = 16; g.lineCap = 'round';
+    for (let i = 0; i < 9; i++) { const gx = 200 + Math.floor(i / 5) * 420 + (i % 5) * 70; const p = i < 8 ? 1 : sm((u - 0.3) / 0.6); if (i % 5 === 4) { g.beginPath(); g.moveTo(gx - 300, 1080); g.lineTo(gx - 300 + 330 * p, 820); g.stroke(); } else { g.beginPath(); g.moveTo(gx, 780); g.lineTo(gx, 780 + 320 * p); g.stroke(); } }
+    const p = sm((u - 0.3) / 0.6); limb([[900, 2100], [760, 1500], [690 + 0 * p, 780 + 320 * p]]); g.restore(); },
+  rain(u) { g.save(); cam(1.1, 540, 1000); room(0); g.strokeStyle = 'rgba(220,235,255,0.5)'; g.lineWidth = 3; for (let i = 0; i < 60; i++) { const x = (i * 97) % 900 + 90, y = ((T * 1400 + i * 211) % 1000) + 260; g.beginPath(); g.moveTo(x, y); g.lineTo(x - 10, y + 40); g.stroke(); }
+    rr(400, 1060, 280, 200, 20, '#5a7ab0'); g.strokeStyle = O; g.lineWidth = 10; g.beginPath(); g.roundRect(400, 1060, 280, 200, 20); g.stroke(); g.fillStyle = '#9fc8e8'; g.fillRect(414, 1090 - 20 * u, 252, 30); g.restore(); },
+  cans(u) { g.fillStyle = '#2c2a30'; g.fillRect(0, 0, W, H); g.save(); cam(1 + 0.05 * u, 540, 960); g.fillStyle = '#5a4630'; g.fillRect(40, 1180, 1000, 40);
+    for (let i = 0; i < 6; i++) { const x = 110 + i * 150; rr(x, 940, 120, 240, 14, '#b8bcc4'); g.fillStyle = ['#c8402e', '#e8a030', '#3a8a4e'][i % 3]; g.fillRect(x, 1000, 120, 120); g.strokeStyle = O; g.lineWidth = 8; g.strokeRect(x, 940, 120, 240); }
+    const i = Math.min(5, Math.floor(u * 3.2)); limb([[300 + i * 150, 2100], [200 + i * 150, 1500], [170 + i * 150, 1240]], 70); g.restore(); },
+  six(u) { g.fillStyle = '#2c2a30'; g.fillRect(0, 0, W, H); g.save(); cam(1.6, 540, 1000); rr(380, 760, 320, 560, 30, '#b8bcc4'); g.fillStyle = '#c8402e'; g.fillRect(380, 900, 320, 280); g.fillStyle = '#fff'; g.font = '900 64px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('BEANS', 540, 1060); g.restore();
+    dog(1080 - 300 * sm(u / 0.8), 1500, 1.6, { pose: 'stand', ears: 'up', flip: true, tail: 0.6 }); },
+  night(u) { g.save(); cam(1 + 0.15 * sm(u / 3), 760, 700); room(1, { far: true, blink: u > 1.2 && Math.sin(u * 8) > 0 }); g.restore(); },
+  blink(u) { const on = sos(u); g.save(); cam(1.6, 760, 620); room(1, { far: true, blink: on }); g.restore(); g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(0, 1200, W, 720);
+    g.save(); g.translate(0, 0); hero(150 - 300 * 1.3, 2150 - 975 * 1.3, 1.3, { look: 1, expr: 'worried' }); g.restore(); if (on) add(() => { g.fillStyle = 'rgba(255,240,190,0.18)'; g.fillRect(0, 0, W, H); }); },
+  flash(u) { g.save(); cam(1.05, 540, 960); room(1, { far: true }); const on = Math.sin(u * 12) > -0.2;
+    if (on) add(() => { g.fillStyle = 'rgba(255,250,220,0.35)'; g.beginPath(); g.moveTo(560, 1180); g.lineTo(980, 560); g.lineTo(1100, 760); g.closePath(); g.fill(); });
+    hero(300 - 300 * 1.0, 1900 - 975 * 1.0, 1.0, { look: 1, arm: 'flash', expr: 'neutral' }); dog(700, 1890, 0.9, { pose: 'stand', ears: 'up', tail: 1, look: 1 }); g.restore(); },
+  out(u) { g.save(); cam(1.6, 760, 620); room(1, { far: true }); g.restore(); g.fillStyle = `rgba(0,0,0,${0.3 * sm(u)})`; g.fillRect(0, 0, W, H); },
+  scary(u) { g.save(); shake(u < 0.5 ? 0.6 : 0.05); cam(1.05, 640, 1100); stair({ morning: 1 }); g.restore(); },
+  boat(u) { g.save(); cam(1.1 - 0.05 * u, 640, 1180); stair({ morning: 1 }); boat(420 + 40 * Math.sin(T * 0.8), 1280, 0.9, { note: true }); g.restore(); },
+  empty(u) { g.save(); cam(1, 600, 1150); stair({ morning: 1 }); boat(360 + 60 * sm(u / 3), 1280, 0.9, { note: true }); hero(760 - 300 * 0.85, 1180 - 975 * 0.85, 0.85, { look: -1, arm: 'reach', expr: 'worried' });
+    g.strokeStyle = '#8a5a30'; g.lineWidth = 16; g.beginPath(); g.moveTo(640, 830); g.lineTo(380 + 60 * sm(u / 3), 1140); g.stroke(); dog(980, 1080, 0.6, { pose: 'stand', ears: 'up', look: -1, flip: true }); g.restore(); },
+  note(u, d) { const a = (k) => sm((u - k * d / 3.2) / 0.3); paper([['Floor 52.', a(0)], ['We have food.', a(1)], ['Come before dark.', a(2)]]); drip(u); },
+  tower(u) { g.save(); cam(1.25, 700, 760); room(0, { far: true, trace: sm(u / 2.5) }); g.restore(); },
+  seat(u) { g.fillStyle = '#3c5a64'; g.fillRect(0, 0, W, H); g.save(); cam(1.6, 540, 1150); boat(540, 1300, 1.0, {}); g.restore();
+    dog(560, 1500 + 20 * Math.sin(T * 14), 1.3, { pose: 'crouch', ears: 'up', tail: 0.8 }); const p = sm((u - 1) / 0.6); if (p > 0) { g.save(); g.translate(300, 1380 - 100 * p); g.rotate(-0.3); g.fillStyle = '#ece4cc'; g.fillRect(0, 0, 160, 110); g.restore(); } },
+  torn(u) { paper([['...DON\'T TRUST...', sm(u / 0.5)]], { torn: true }); drip(u); },
+  fits(u) { g.save(); cam(0.85 + 0.05 * u, 540, 1000); sky(0); city(WY, 0); farTower(860, WY + 20, 0.55, {}); water(WY, 0); boat(420, WY + 230, 0.35, {});
+    g.fillStyle = '#5a6270'; g.fillRect(-300, -1400, 360, 1400 + WY); hero(120 - 300 * 0.3, WY - 975 * 0.3 + 10, 0.3, { look: 1 }); dog(220, WY + 6, 0.22, { pose: 'stand', ears: 'up' }); g.restore(); },
+  choice(u, d, t) { g.save(); cam(0.9, 540, 1050); sky(0); city(WY, 0); farTower(860, WY + 20, 0.55, {}); water(WY, 0); boat(420, WY + 230, 0.35, {}); g.fillStyle = '#5a6270'; g.fillRect(-300, -1400, 360, 1400 + WY); hero(120 - 300 * 0.3, WY - 975 * 0.3 + 10, 0.3, { look: 1, expr: 'worried' }); dog(220, WY + 6, 0.22, { pose: 'stand', ears: 'up', t: 0 }); g.restore();
+    grade(0.8); g.fillStyle = 'rgba(4,8,14,0.45)'; g.fillRect(0, 0, W, H); choiceCard(540, 560, '🚤 TAKE THE BOAT TO FLOOR 52', sm(u / 0.3)); const t2 = (ANCH.stay ?? (t + 3)) - (t - u); g.save(); g.globalAlpha = sm((u - t2 + 0.2) / 0.3); g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('OR', 540, 700); g.restore(); choiceCard(540, 820, '🏢 STAY ON FLOOR 40', sm((u - t2) / 0.3));
+    if (ANCH.comment != null && t > ANCH.comment) bigText('COMMENT 👇', 1760 + Math.sin(T * 6) * 12, sm((t - ANCH.comment) / 0.3), '#c6ff3a', 80); },
+};
+// beats: [scene, word anchor, occurrence, lead seconds]
+const BEATS = [['open', null], ['forty', 'we', 1], ['stair31', 'last', 1], ['tally', 'nine', 1], ['rain', 'rain', 1], ['cans', 'cans', 1], ['six', 'six', 1], ['night', 'then', 1], ['blink', 'three', 1], ['flash', 'flashed', 1, 0.25], ['out', 'went', 1, 0.35], ['scary', 'that', 1], ['boat', 'this', 1], ['empty', 'empty', 1], ['note', 'floor', 3, 0.1], ['tower', 'floors', 1, 0.7], ['seat', 'biscuit', 1], ['torn', 'same', 1], ['fits', 'fits', 1, 0.7], ['choice', 'so', 1]];
+let SHOTS = [], ANCH = {};
+const norm = (w) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
+const find = (word, n) => { let c = 0; for (const w of WORDS) if (norm(w.w) === word && ++c === n) return w.s; return null; };
+const buildShots = () => { SHOTS = BEATS.map(([sc, w, n, lead]) => [w ? Math.max(0, find(w, n) - (lead ?? 0.15)) : 0, sc]); ANCH.stay = find('stay', 1); ANCH.comment = find('comment', 1); ANCH.again = find('again', 1); window.TOTAL = WORDS[WORDS.length - 1].e + 3.5; };
+const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; const d = (SHOTS[i + 1] ? SHOTS[i + 1][0] : window.TOTAL) - SHOTS[i][0]; return [SHOTS[i][1], t - SHOTS[i][0], d]; };
+let CHUNKS = [];
+const buildChunks = () => { CHUNKS = []; let cur = []; WORDS.forEach((w) => { cur.push(w); if (/[.?!:,"]$|\.\.\.$/.test(w.w) || cur.length >= 4) { CHUNKS.push(cur); cur = []; } }); if (cur.length) CHUNKS.push(cur); };
+const captions = (t) => { const ch = CHUNKS.find((c, i) => t >= c[0].s - 0.05 && t < (CHUNKS[i + 1] ? Math.min(CHUNKS[i + 1][0].s - 0.05, c[c.length - 1].e + 0.6) : c[c.length - 1].e + 0.6)); if (!ch) return;
+  const hi = ch.findIndex((w) => t >= w.s && t < w.e + 0.08); g.save(); g.translate(240, 300); capCard(P, { words: ch.map((w) => w.w.toUpperCase()), hi: hi < 0 ? ch.length - 1 : hi }); g.restore(); };
+window.renderFrame = (f) => { const t = f / 30; T = t; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H); const [shot, u, d] = shotAt(t);
+  NIGHTS = ANCH.again != null && t > ANCH.again ? 8 : 9;
+  g.save(); g.translate(Math.sin(T * 1.3) * 4, Math.sin(T * 1.7) * 3); SC[shot](u, d, t); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.5)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  corner(); if (shot !== 'note' && shot !== 'torn' && shot !== 'choice') captions(t); return true; };
+fetch('./words1.json').then((r) => r.json()).then((w) => { WORDS = w; buildShots(); buildChunks(); window.ready = true; });
+</script></body></html>
