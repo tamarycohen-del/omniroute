@@ -16,6 +16,7 @@ The viewer decides in the first ~1 s, before any story. Everything in frame 0-30
 - Something changes within the first 1.5 s (a cut, a splash, a light, a scream) to prove "this moves".
 - The corner card and title must not cover the key image in the first 2 s.
 - No context setup before the hook; the world rule comes as line 1 over the action, not before it.
+- Proven formula (HER VOICE Part 8, 70.1% viewed, our best): line 1 starts at 0.0 s with "Imagine..." (viewer = hero) and states a paradox or impossible situation ("Imagine leading a monster... straight to another monster"); frame 1 shows the hero AND the threat together. Use this as the default opener and only test variations against it (log every result in youtube/SWIPE_LOG.md).
 - Check before upload: export frames 0, 15, 30, 45 and judge them as a stranger scrolling: would I stop?
 - After upload: ask the user for Studio's "Viewed vs swiped away" for the short (not available in the public API) and log it in the series folder with what the first second showed, to learn which openings win.
 
