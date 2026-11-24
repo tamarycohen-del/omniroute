@@ -17,8 +17,8 @@ World logic: the thing lives only below the water line and follows splashes (sho
 11 table    A table. Hot soup. Nobody there.                                         steaming bowl, empty chairs, window light
 12 never    The footprints went into this room... and never came out. (whisper)     prints lead to the middle of the room and stop
 13 closet   Biscuit didn't look at the soup. He growled at the closet.              Biscuit facing a dark, half-open closet
-14 choice   Eat while it's hot? Or open the closet? Comment your choice.            cards: 🍲 EAT THE SOUP / 🚪 OPEN THE CLOSET; then two knocks from inside, door jolts, hard cut
-Pinned comment: "🍲 EAT THE SOUP or 🚪 OPEN THE CLOSET? Most-liked answer decides Part 3 👇"
+14 choice   Eat while it's hot? Or open the closet? Comment your choice.            cards: 🍲 EAT THE SOUP AND REST / 🚪 OPEN THE CLOSET; then two knocks from inside, door jolts, hard cut
+Pinned comment: "🍲 EAT THE SOUP AND REST or 🚪 OPEN THE CLOSET? Most-liked answer decides Part 3 👇"
 
 v2 (user: too short, continue the story before the choice, no silence padding): after beat 13 added
 13a note2   Next to the bowl, a note. Same handwriting. "You must be starving."   paper close-up

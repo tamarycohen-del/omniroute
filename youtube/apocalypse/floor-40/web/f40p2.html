@@ -137,7 +137,7 @@ const SC = {
     dog(640, 1640, 0.8, { pose: 'crouch', ears: 'down', growl: true, shake: 0.5, tail: 0, flip: true }); g.restore(); },
   choice(u, d, t) { const knock = ANCH.end != null ? (t - ANCH.end) : -1; const jolt = knock > 0.1 && knock < 0.35 ? 1 : (knock > 0.55 && knock < 0.8 ? 1 : 0);
     g.save(); shake(jolt * 0.6); cam(1.15 + 0.15 * sm(u / 4), 300, 1000); roomInt({ open: 0.12, jolt }); dog(560, 1700, 0.7, { pose: 'crouch', ears: 'down', growl: true, shake: 0.4, tail: 0, flip: true }); g.restore();
-    g.fillStyle = 'rgba(4,8,14,0.35)'; g.fillRect(0, 0, W, H); choiceCard(540, 560, '🍲 EAT THE SOUP', sm(u / 0.25)); g.save(); g.globalAlpha = sm((u - 0.3) / 0.25); g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('OR', 540, 700); g.restore(); choiceCard(540, 820, '🚪 OPEN THE CLOSET', sm((u - 0.45) / 0.25));
+    g.fillStyle = 'rgba(4,8,14,0.35)'; g.fillRect(0, 0, W, H); choiceCard(540, 560, '🍲 EAT THE SOUP AND REST', sm(u / 0.25)); g.save(); g.globalAlpha = sm((u - 0.3) / 0.25); g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('OR', 540, 700); g.restore(); choiceCard(540, 820, '🚪 OPEN THE CLOSET', sm((u - 0.45) / 0.25));
     if (knock > 0.95) { g.fillStyle = '#000'; g.fillRect(0, 0, W, H); } },
 };
 // beats: [scene, word anchor, occurrence, lead seconds]
