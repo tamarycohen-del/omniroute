@@ -61,6 +61,14 @@ while tt < end + 0.1:
     place(thud(52, 0.3, 20), tt, 0.5); place(thud(52, 0.3, 20), tt + 0.18, 0.35); tt += 0.5
 ris = bp(rng.standard_normal(N), 400, 6000) * env(sec['eat'] - 0.15, end + 0.12, 2.5, 0.01) * 0.15; addst(ris)
 for k in (0.12, 0.57): place(thud(70, 0.5, 9), end + k, 1.0, -0.3); place(burst(0.08, 200, 3000, 50), end + k, 0.8, -0.3)
+
+# added beats: note paper, closet door creak, water trickle under the door
+n0 = first('next'); place(burst(0.5, 1500, 8000, 6), n0 + 1.6, 0.25)
+d0 = first('door')
+if d0:
+    n = int(1.4 * SR); x = np.arange(n) / SR; cr = np.sin(2 * np.pi * (140 + 90 * x) * x) * bp(rng.standard_normal(n), 100, 2500) * np.exp(-x * 1.2); place(cr, d0 + 0.3, 0.5, -0.3)
+s0 = first('spreading.') or first('spreading')
+if s0: addst(bp(rng.standard_normal(N), 800, 5000) * env(s0 - 1.2, first('eat') + 0.5, 0.6, 0.4) * 0.07 * (0.6 + 0.4 * np.sin(2 * np.pi * 7 * t)), -0.3)
 # drone under the night-free parts
 dr = np.sin(2 * np.pi * 49 * t) + 0.5 * np.sin(2 * np.pi * 73.5 * t)
 addst(dr * 0.05 * env(sec['stop'] - 0.3, sec['free'], 0.1, 0.5) + dr * 0.06 * env(sec['prints'], end + 0.95, 0.5, 0.01))

@@ -124,13 +124,22 @@ const SC = {
   table(u) { g.save(); cam(1.25 - 0.1 * sm(u / 3), 700, 1100); roomInt({}); g.restore(); },
   never(u) { g.save(); cam(1.0, 700, 1300); roomInt({ prints: u / 1.5 }); g.restore(); if (Math.sin(T * 23) > 0.85) { g.fillStyle = 'rgba(0,0,0,0.4)'; g.fillRect(0, 0, W, H); } },
   closet(u) { g.save(); cam(1.15, 450, 1150); roomInt({ open: 0.12 + 0.03 * Math.sin(T * 2) }); hero(820 - 300 * 0.8, 1880 - 975 * 0.8, 0.8, { look: -1, expr: 'scared' }); dog(560, 1700, 0.7, { pose: 'crouch', ears: 'down', growl: true, shake: 0.4, tail: 0, flip: true }); g.restore(); },
+  note2(u) { g.save(); cam(1.6 - 0.1 * sm(u / 3), 720, 1120); roomInt({}); g.save(); g.translate(560, 1150); g.rotate(-0.08); g.fillStyle = '#ece4cc'; g.fillRect(-70, -40, 140, 90); g.restore(); g.restore();
+    if (u > 1.6) { paper([['You must be', sm((u - 1.6) / 0.3)], ['starving.', sm((u - 2.0) / 0.3)]]); drip(u); } },
+  hungry(u) { g.save(); cam(1.5, 700, 1350); roomInt({}); dog(820, 1560, 1.0, { pose: 'stand', ears: 'down', tail: 0.1, look: 1, worried: true }); g.restore();
+    g.save(); g.globalAlpha = 0.6 + 0.3 * Math.sin(T * 4); g.strokeStyle = 'rgba(255,255,255,0.6)'; g.lineWidth = 6; for (let i = 0; i < 3; i++) { g.beginPath(); g.arc(760 + i * 40, 1240 - (T * 40 + i * 30) % 120, 10, 0, 7); g.stroke(); } g.restore(); },
+  door(u) { const op = 0.12 + 0.12 * sm((u - 0.6) / 1.2); g.save(); shake(u > 0.6 && u < 1.0 ? 0.3 : 0.03); cam(1.6 + 0.15 * sm(u / 3), 260, 950); roomInt({ open: op }); g.restore();
+    if (u > 0.8) add(() => { g.fillStyle = `rgba(160,220,230,${0.12 * sm((u - 0.8) / 1)})`; g.fillRect(0, 0, W, H); }); },
+  spread(u) { g.save(); cam(1.3, 400, 1330); roomInt({ open: 0.25 }); const k = sm(u / 2); g.fillStyle = 'rgba(30,70,85,0.9)'; g.beginPath(); g.ellipse(260 + 200 * k, 1340 + 60 * k, 80 + 460 * k, 16 + 110 * k, 0, 0, 7); g.fill();
+    add(() => { g.strokeStyle = 'rgba(190,235,255,0.6)'; g.lineWidth = 5; g.beginPath(); g.ellipse(260 + 200 * k, 1340 + 60 * k, 80 + 460 * k, 16 + 110 * k, 0, 0, 7); g.stroke(); for (let i = 0; i < 3; i++) { const r = ((T * 0.8 + i / 3) % 1); g.globalAlpha = 1 - r; g.beginPath(); g.ellipse(260 + 200 * k, 1340 + 60 * k, (80 + 460 * k) * r, (16 + 110 * k) * r, 0, 0, 7); g.stroke(); } g.globalAlpha = 1; });
+    dog(640, 1640, 0.8, { pose: 'crouch', ears: 'down', growl: true, shake: 0.5, tail: 0, flip: true }); g.restore(); },
   choice(u, d, t) { const knock = ANCH.end != null ? (t - ANCH.end) : -1; const jolt = knock > 0.1 && knock < 0.35 ? 1 : (knock > 0.55 && knock < 0.8 ? 1 : 0);
     g.save(); shake(jolt * 0.6); cam(1.15 + 0.15 * sm(u / 4), 300, 1000); roomInt({ open: 0.12, jolt }); dog(560, 1700, 0.7, { pose: 'crouch', ears: 'down', growl: true, shake: 0.4, tail: 0, flip: true }); g.restore();
     g.fillStyle = 'rgba(4,8,14,0.35)'; g.fillRect(0, 0, W, H); choiceCard(540, 560, '🍲 EAT THE SOUP', sm(u / 0.25)); g.save(); g.globalAlpha = sm((u - 0.3) / 0.25); g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('OR', 540, 700); g.restore(); choiceCard(540, 820, '🚪 OPEN THE CLOSET', sm((u - 0.45) / 0.25));
     if (knock > 0.95) { g.fillStyle = '#000'; g.fillRect(0, 0, W, H); } },
 };
 // beats: [scene, word anchor, occurrence, lead seconds]
-const BEATS = [['hook', null], ['comments', 'most', 1], ['cross', '200', 1], ['paddle', 'every', 1], ['stop', 'then', 1], ['throw', 'so', 2], ['free', 'five', 1], ['stairs', 'other', 1, 0.3], ['prints', 'wet', 1], ['climb', '20', 1], ['table', 'table', 1, 0.3], ['never', 'footprints', 2, 0.3], ['closet', 'biscuit', 2], ['choice', 'eat', 1]];
+const BEATS = [['hook', null], ['comments', 'most', 1], ['cross', '200', 1], ['paddle', 'every', 1], ['stop', 'then', 1], ['throw', 'so', 2], ['free', 'five', 1], ['stairs', 'other', 1, 0.3], ['prints', 'wet', 1], ['climb', '20', 1], ['table', 'table', 1, 0.3], ['never', 'footprints', 2, 0.3], ['closet', 'biscuit', 2], ['note2', 'next', 1], ['hungry', 'biscuit', 3], ['door', 'door', 1, 0.9], ['spread', 'spreading', 1, 1.2], ['choice', 'eat', 1]];
 let SHOTS = [], ANCH = {};
 const norm = (w) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
 const find = (word, n) => { let c = 0; for (const w of WORDS) if (norm(w.w) === word && ++c === n) return w.s; return null; };
@@ -144,6 +153,6 @@ window.renderFrame = (f) => { const t = f / 30; T = t; g.setTransform(1, 0, 0, 1
   
   g.save(); g.translate(Math.sin(T * 1.3) * 4, Math.sin(T * 1.7) * 3); SC[shot](u, d, t); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
   const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.5)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
-  if (!(shot === 'choice' && t > ANCH.end + 0.95)) { corner(); if (shot !== 'comments' && shot !== 'choice') captions(t); } return true; };
+  if (!(shot === 'choice' && t > ANCH.end + 0.95)) { corner(); if (shot !== 'comments' && shot !== 'choice' && shot !== 'note2') captions(t); } return true; };
 fetch('./words2.json').then((r) => r.json()).then((w) => { WORDS = w; buildShots(); buildChunks(); window.ready = true; });
 </script></body></html>

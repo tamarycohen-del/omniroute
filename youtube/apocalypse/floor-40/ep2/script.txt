@@ -19,3 +19,11 @@ World logic: the thing lives only below the water line and follows splashes (sho
 13 closet   Biscuit didn't look at the soup. He growled at the closet.              Biscuit facing a dark, half-open closet
 14 choice   Eat while it's hot? Or open the closet? Comment your choice.            cards: 🍲 EAT THE SOUP / 🚪 OPEN THE CLOSET; then two knocks from inside, door jolts, hard cut
 Pinned comment: "🍲 EAT THE SOUP or 🚪 OPEN THE CLOSET? Most-liked answer decides Part 3 👇"
+
+v2 (user: too short, continue the story before the choice, no silence padding): after beat 13 added
+13a note2   Next to the bowl, a note. Same handwriting. "You must be starving."   paper close-up
+13b hungry  Biscuit hadn't eaten in two days.                                    Biscuit looking at the steaming soup
+13c door    Then the closet door moved. Just a little. From inside.              closet door opens an inch, creak
+13d spread  And from under the door... water was spreading.  (whisper)          puddle spreading with ripples, Biscuit growls
+then the choice (unchanged). Length 49 s -> 66 s.
+Note for the brief: it CAN leave the water (wet long-toed prints), it hunts by splashes in the water.
