@@ -20,7 +20,7 @@ The viewer decides in the first ~1 s, before any story. Everything in frame 0-30
 - From the installed short-form skills (youtube-shorts, short-form-video, hook-writer): about 85% watch MUTED, so frame 1 must work with no sound: ONE hook line as on-screen text, nothing else competing. Our frames 0-1.5 s had 4 text layers (corner card, title tag, top text, captions): hide the corner card, title tag and captions until ~1.5 s.
 - 9:16 safe zone: key subject + hook text inside the center 900x1400; keep bottom ~320 px and right ~120 px free of anything important (YouTube UI covers them).
 - First frame bright and high-contrast (not grey/dark), strongest image already in motion; a visual change every 2-4 s at uneven intervals.
-- Seed audience: Shorts are first shown to people who watched the channel before. The channel's past Shorts are history/education (e.g. the Einstein short), so a horror opener may be swiped by that seed audience. Keep the niche consistent and do the planned rename (Votefear) so the seed audience becomes horror viewers.
+- Seed audience: the channel has posted horror daily for over a week (user, 2026-11-24), so a history-audience mismatch is NOT the main cause of the ~57-62% viewed. Treat the first second itself (clutter, contrast, muted readability, motion) as the cause and test it episode by episode.
 - Check before upload: export frames 0, 15, 30, 45 and judge them as a stranger scrolling: would I stop?
 - After upload: ask the user for Studio's "Viewed vs swiped away" for the short (not available in the public API) and log it in the series folder with what the first second showed, to learn which openings win.
 
