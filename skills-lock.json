@@ -1,12 +1,47 @@
 {
   "version": 2,
   "skills": {
+    "ad-hook-analyzer": {
+      "source": "mbfinotti/advertising-skills",
+      "commit": "ab1eb51a249978c9b7bd24b3d589c713a6198fd3",
+      "sourceType": "github",
+      "skillPath": "skills/ad-hook-analyzer/SKILL.md",
+      "computedHash": "fa057c0d7948bd4b83319f74712b743070e1252f9ca4f395a351c1b57ff04735"
+    },
     "find-skills": {
       "source": "vercel-labs/skills",
       "commit": "57217cf86ba38148a57af9e90d14a4c049558330",
       "sourceType": "github",
       "skillPath": "skills/find-skills/SKILL.md",
       "computedHash": "7bc223e2aafbdbf6e50ea243ba6ef67fe432bb069ab439fea0390795dac0bf7f"
+    },
+    "hook-writer": {
+      "source": "social-media-skills/skills",
+      "commit": "f28cef2b7067ec64e79c9d85421c022c06659e03",
+      "sourceType": "github",
+      "skillPath": "skills/hook-writer/SKILL.md",
+      "computedHash": "8bed89a2afd944a962b28c6bd2c3480c69c56936d90d5f2ed5e7c5427a1da058"
+    },
+    "short-form-video": {
+      "source": "iart-ai/tiktok-video-skills",
+      "commit": "88e7152fc2710fa16852d013959cfd988a8adc8b",
+      "sourceType": "github",
+      "skillPath": "skills/short-form-video/SKILL.md",
+      "computedHash": "f55f26c6bb88e7391044300c8db24e732a7ba3e4f632b392201526fdf7a87e86"
+    },
+    "youtube-shorts": {
+      "source": "social-media-skills/skills",
+      "commit": "f28cef2b7067ec64e79c9d85421c022c06659e03",
+      "sourceType": "github",
+      "skillPath": "skills/youtube-shorts/SKILL.md",
+      "computedHash": "849e8368eed3cc704c37e3bdab72c8dde5244189999dc8ae542db6a79401d9e2"
+    },
+    "yt-retention": {
+      "source": "Jakeschincariol/youtube-agent-skill",
+      "commit": "a2feb2104981a375ffd4f87ee04f4f5344ac43c6",
+      "sourceType": "github",
+      "skillPath": "skills/yt-retention/SKILL.md",
+      "computedHash": "86753b8ad02e72c47d35cc0d67de767d8359aa21b1a64051f9751ad2548335f5"
     }
   }
 }

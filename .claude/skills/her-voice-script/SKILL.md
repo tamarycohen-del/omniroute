@@ -17,6 +17,10 @@ The viewer decides in the first ~1 s, before any story. Everything in frame 0-30
 - The corner card and title must not cover the key image in the first 2 s.
 - No context setup before the hook; the world rule comes as line 1 over the action, not before it.
 - HER VOICE Part 8 (70.1%) is our best so far but still 10 points under the 80% target: use it as a data point, not a template (user's instruction). Each episode tests a stronger opener and logs the result in youtube/SWIPE_LOG.md.
+- From the installed short-form skills (youtube-shorts, short-form-video, hook-writer): about 85% watch MUTED, so frame 1 must work with no sound: ONE hook line as on-screen text, nothing else competing. Our frames 0-1.5 s had 4 text layers (corner card, title tag, top text, captions): hide the corner card, title tag and captions until ~1.5 s.
+- 9:16 safe zone: key subject + hook text inside the center 900x1400; keep bottom ~320 px and right ~120 px free of anything important (YouTube UI covers them).
+- First frame bright and high-contrast (not grey/dark), strongest image already in motion; a visual change every 2-4 s at uneven intervals.
+- Seed audience: Shorts are first shown to people who watched the channel before. The channel's past Shorts are history/education (e.g. the Einstein short), so a horror opener may be swiped by that seed audience. Keep the niche consistent and do the planned rename (Votefear) so the seed audience becomes horror viewers.
 - Check before upload: export frames 0, 15, 30, 45 and judge them as a stranger scrolling: would I stop?
 - After upload: ask the user for Studio's "Viewed vs swiped away" for the short (not available in the public API) and log it in the series folder with what the first second showed, to learn which openings win.
 
