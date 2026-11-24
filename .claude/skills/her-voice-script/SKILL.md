@@ -137,3 +137,6 @@ Keep the look (white stick kid with beanie, Biscuit, flat 2D shapes, dark palett
 - **Detail props** that tell the story (tally marks, labels, wet stains, cracks) drawn with texture, not plain rectangles.
 - **Transitions made in the world**: water wipe, light flash, lightning, a wave covering the lens, match cuts.
 - Check: render a contact sheet and ask "is anything in this frame not moving?" for each shot.
+
+## Real sound effects (SFX Kit, CC0)
+96 CC0 sounds from github.com/wyzowl/sfx-kit live in `youtube/sfx/sfx-kit` (cinematic hits, thunder, door slams, booms, sub drops, risers, reverse whooshes, impacts/knocks on wood, whooshes, foley, mechanical, clocks, water gurgle/bubbles). Use them instead of synthesized hits: `youtube/tools/sfxkit.py` -> `Kit().place(L, R, id, at=t)` puts the sound's SYNC point exactly on the frame; `under_voice=True` applies its under-voiceover level. Keep synthesized beds only for continuous ambience (water lapping, wind, rain), which the kit doesn't have. Frame-0 impact: `cinematic-drum-big` or `cinematic-thunder-big`; knocks: `impact-medium-firm`; scares: `cinematic-slam-big`, `boom-drop-strong`; build-ups: a riser ending on the cut.
