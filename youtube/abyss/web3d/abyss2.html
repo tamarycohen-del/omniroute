@@ -1,0 +1,155 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+// ABYSS #2 "It's right under the boat" - realistic-ish 3D (three.js), no narration, deterministic per frame.
+import * as THREE from './node_modules/three/build/three.module.js';
+const W = 1080, H = 1920, out = document.getElementById('c'), ctx = out.getContext('2d');
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); }, lerp = (a, b, u) => a + (b - a) * u;
+const hash = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+window.TOTAL = 25.5;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(W, H, false); renderer.setPixelRatio(1); renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(62, W / H, 0.05, 2000);
+
+// ---------- uniforms shared by the water ----------
+const U = { uTime: { value: 0 }, uBulge: { value: 0 }, uEye: { value: new THREE.Vector2(10, -16) }, uFlash: { value: 0 }, uTorch: { value: new THREE.Vector3(0, 0, -20) }, uTorchOn: { value: 1 }, uLight: { value: 0 } };
+const waveGLSL = `
+uniform float uTime; uniform float uBulge; uniform vec2 uEye;
+vec3 gerstner(vec2 p, vec2 dir, float amp, float wl, float sp){ float k = 6.2831/wl; float f = k*(dot(dir,p) - sp*uTime); return vec3(dir.x*amp*cos(f), amp*sin(f), dir.y*amp*cos(f)); }
+vec3 waves(vec2 p){ vec3 d = vec3(0.);
+  d += gerstner(p, normalize(vec2(1.,0.3)), 0.55, 18., 2.2); d += gerstner(p, normalize(vec2(-0.4,1.)), 0.35, 11., 1.8);
+  d += gerstner(p, normalize(vec2(0.7,-0.8)), 0.18, 6., 1.4); d += gerstner(p, normalize(vec2(-1.,-0.2)), 0.08, 2.7, 1.1);
+  float r = length(p - uEye); d.y += uBulge * 3.2 * exp(-r*r/60.) - uBulge*0.9*exp(-pow(r-9.,2.)/12.); return d; }`;
+const waterMat = new THREE.ShaderMaterial({ uniforms: U, side: THREE.DoubleSide, transparent: false,
+  vertexShader: waveGLSL + `
+  varying vec3 vW; varying vec3 vN;
+  void main(){ vec3 p = position.xzy; p = vec3(position.x, 0., -position.y);
+    vec3 d = waves(p.xz); vec3 w = p + d;
+    float e = 0.15; vec3 dx = (vec3(p.x+e,0.,p.z) + waves(p.xz+vec2(e,0.))) - w; vec3 dz = (vec3(p.x,0.,p.z+e) + waves(p.xz+vec2(0.,e))) - w;
+    vN = normalize(cross(dz, dx)); vW = w; gl_Position = projectionMatrix * viewMatrix * vec4(w,1.); }`,
+  fragmentShader: `
+  uniform float uTime; uniform float uFlash; uniform vec3 uTorch; uniform float uTorchOn; uniform float uLight;
+  varying vec3 vW; varying vec3 vN;
+  float h(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+  void main(){ vec3 V = normalize(cameraPosition - vW); vec3 N = normalize(vN); if(!gl_FrontFacing) N = -N;
+    vec3 moonDir = normalize(vec3(-0.4, 0.35, -1.));
+    if(gl_FrontFacing){ // seen from above
+      float fres = pow(1. - max(dot(N,V),0.), 4.);
+      vec3 deep = vec3(0.005,0.02,0.035), sky = vec3(0.05,0.08,0.13) + uFlash*vec3(0.7,0.75,0.9);
+      vec3 R = reflect(-V, N); float spec = pow(max(dot(R, moonDir),0.), 220.)*2.2 + pow(max(dot(R, moonDir),0.), 30.)*0.15;
+      vec3 c = mix(deep, sky, clamp(fres*1.2,0.,1.)) + vec3(0.75,0.82,0.95)*spec;
+      // flashlight pool
+      float tr = length(vW.xz - uTorch.xz); c += uTorchOn * vec3(1.,0.93,0.75) * 0.55 * exp(-tr*tr/14.) * (0.6+0.4*max(dot(N,vec3(0,1,0)),0.));
+      c += vec3(0.6,0.7,0.8) * 0.05 * smoothstep(0.55, 0.8, N.y) * h(floor(vW.xz*4.+uTime));
+      float dist = length(vW - cameraPosition); c = mix(c, vec3(0.03,0.045,0.07) + uFlash*0.5, 1. - exp(-dist*0.012));
+      gl_FragColor = vec4(c, 1.);
+    } else { // seen from below: bright rippled ceiling
+      float a = max(dot(-N, vec3(0,-1,0)),0.);
+      vec3 c = vec3(0.10,0.22,0.30) * (0.4 + 0.9*pow(a,6.)) + uLight*vec3(0.2,0.3,0.35);
+      float dist = length(vW - cameraPosition); c = mix(c, vec3(0.008,0.035,0.06), 1. - exp(-dist*0.05));
+      gl_FragColor = vec4(c,1.);
+    } }` });
+const water = new THREE.Mesh(new THREE.PlaneGeometry(260, 260, 520, 520), waterMat); scene.add(water);
+
+// ---------- sky ----------
+const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, uniforms: { uFlash: U.uFlash }, vertexShader: `varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+  fragmentShader: `uniform float uFlash; varying vec3 vP; float h(vec3 p){ return fract(sin(dot(p, vec3(12.9898,78.233,37.719)))*43758.5453); }
+  void main(){ vec3 d = normalize(vP); float y = max(d.y, 0.); vec3 c = mix(vec3(0.05,0.075,0.11), vec3(0.008,0.012,0.025), pow(y, .5));
+    vec3 m = normalize(vec3(-0.4,0.35,-1.)); float md = dot(d,m); c += vec3(0.85,0.9,1.)*smoothstep(0.9993,0.9996,md) + vec3(0.25,0.3,0.4)*pow(max(md,0.),60.)*0.5;
+    float n = h(floor(d*90.)); c *= 0.85 + 0.15*n; c += uFlash*vec3(0.55,0.6,0.75)*(0.5+0.5*y); gl_FragColor = vec4(c,1.); }` });
+const sky = new THREE.Mesh(new THREE.SphereGeometry(900, 32, 16), skyMat); scene.add(sky);
+
+// ---------- boat (POV bow) ----------
+const wood = new THREE.MeshStandardMaterial({ color: 0x3a2a1c, roughness: 0.85 });
+const boat = new THREE.Group();
+{ const sh = new THREE.Shape(); sh.moveTo(-0.9, 0.6); sh.quadraticCurveTo(-0.9, -1.2, 0, -2.2); sh.quadraticCurveTo(0.9, -1.2, 0.9, 0.6); sh.lineTo(-0.9, 0.6);
+  const deck = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.12, bevelEnabled: true, bevelSize: 0.04, bevelThickness: 0.04 }), wood); deck.rotation.x = -Math.PI / 2; deck.position.set(0, 0.35, 0.2); boat.add(deck);
+  for (const sx of [-1, 1]) { const g2 = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.25, 2.6), new THREE.MeshStandardMaterial({ color: 0x24190f, roughness: 0.9 })); g2.position.set(sx * 0.75, 0.5, -0.4); g2.rotation.y = -sx * 0.32; boat.add(g2); } }
+scene.add(boat); boat.visible = false;
+
+// ---------- lights ----------
+const moon = new THREE.DirectionalLight(0xb8c8ff, 0.55); moon.position.set(-40, 35, -100); scene.add(moon);
+const hemi = new THREE.HemisphereLight(0x223347, 0x02060a, 0.35); scene.add(hemi);
+const torch = new THREE.SpotLight(0xfff0d0, 60, 90, 0.32, 0.5, 1.2); scene.add(torch); scene.add(torch.target);
+const flashLight = new THREE.PointLight(0xc8d8ff, 0, 400, 1.0); flashLight.position.set(-30, 60, -60); scene.add(flashLight);
+const deepLight = new THREE.DirectionalLight(0x6fa8c8, 0.0); deepLight.position.set(0, 50, 0); scene.add(deepLight);
+
+// ---------- rain ----------
+const RN = 1800, rainGeo = new THREE.BufferGeometry(), rainPos = new Float32Array(RN * 6); rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPos, 3));
+const rain = new THREE.LineSegments(rainGeo, new THREE.LineBasicMaterial({ color: 0x9fb4c8, transparent: true, opacity: 0.35 })); scene.add(rain);
+const updRain = (t, c) => { for (let i = 0; i < RN; i++) { const x = c.x + (hash(i) - 0.5) * 40, z = c.z + (hash(i + 7) - 0.5) * 40 - 8; const y = 14 - ((t * 18 + hash(i + 3) * 30) % 30) + 1; rainPos.set([x, y, z, x - 0.05, y - 0.7, z], i * 6); } rainGeo.attributes.position.needsUpdate = true; };
+
+// ---------- underwater: marine snow + god rays ----------
+const SN = 2500, snowGeo = new THREE.BufferGeometry(), snowPos = new Float32Array(SN * 3); for (let i = 0; i < SN; i++) snowPos.set([(hash(i * 3) - 0.5) * 80, -hash(i * 5) * 120, (hash(i * 7) - 0.5) * 80], i * 3);
+snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
+const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0x9fc4d8, size: 0.12, transparent: true, opacity: 0.6, sizeAttenuation: true })); scene.add(snow);
+const rayMat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, uniforms: { uO: { value: 0 } },
+  vertexShader: `varying vec2 vU; void main(){ vU = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+  fragmentShader: `uniform float uO; varying vec2 vU; void main(){ float a = (1.-vU.y) * smoothstep(0.,0.3,vU.x)*smoothstep(1.,0.7,vU.x); gl_FragColor = vec4(vec3(0.35,0.6,0.7), a*0.12*uO); }` });
+const rays = new THREE.Group(); for (let i = 0; i < 7; i++) { const p = new THREE.Mesh(new THREE.PlaneGeometry(3, 60), rayMat); p.position.set((hash(i) - 0.5) * 30, -30, (hash(i + 4) - 0.5) * 20 - 5); p.rotation.set(0, hash(i + 2) * 3, 0.12 * (hash(i + 5) - 0.5)); rays.add(p); } scene.add(rays);
+
+// ---------- the creature (colossal, pale, ridged) ----------
+const cg = new THREE.SphereGeometry(1, 96, 64); { const p = cg.attributes.position; for (let i = 0; i < p.count; i++) { let x = p.getX(i), y = p.getY(i), z = p.getZ(i); const ridge = 0.06 * Math.sin(z * 22) * Math.sin(Math.atan2(y, x) * 9) + 0.04 * Math.sin(x * 31 + z * 17); const r = 1 + ridge; p.setXYZ(i, x * r, y * r * 0.62, z * r * 3.6); } cg.computeVertexNormals(); }
+const creatureMat = new THREE.MeshStandardMaterial({ color: 0x9fb0a6, roughness: 0.5, metalness: 0.05, emissive: 0x0c1614 });
+const creature = new THREE.Mesh(cg, creatureMat); creature.scale.setScalar(16); scene.add(creature);
+const barn = new THREE.InstancedMesh(new THREE.SphereGeometry(0.03, 6, 4), new THREE.MeshStandardMaterial({ color: 0xc9cdb8, roughness: 0.9 }), 500); { const m = new THREE.Matrix4(); for (let i = 0; i < 500; i++) { const th = hash(i) * 6.28, z = (hash(i + 1) - 0.5) * 6; m.makeTranslation(Math.cos(th) * 1.0, Math.sin(th) * 0.62, z); barn.setMatrixAt(i, m); } } creature.add(barn);
+
+// ---------- the eye ----------
+const eyeGroup = new THREE.Group(); scene.add(eyeGroup);
+const eyeMat = new THREE.ShaderMaterial({ uniforms: { uLook: { value: 0 } }, vertexShader: `varying vec3 vN; varying vec3 vP; void main(){ vN = normalize(normalMatrix*normal); vP = position; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+  fragmentShader: `uniform float uLook; varying vec3 vN; varying vec3 vP;
+  void main(){ vec3 p = normalize(vP); vec2 q = vec2(p.x + 0.15*uLook, p.y); float r = length(q); vec3 sclera = vec3(0.55,0.45,0.32) * (0.8 + 0.2*sin(p.x*60.+p.y*40.)); sclera = mix(sclera, vec3(0.35,0.08,0.05), smoothstep(0.55,0.95,r)*0.6);
+    vec3 iris = mix(vec3(1.0,0.78,0.18), vec3(0.55,0.18,0.02), smoothstep(0.05,0.42,r)); iris *= 0.85 + 0.15*sin(atan(q.y,q.x)*40.);
+    vec3 c = mix(iris, sclera, smoothstep(0.42,0.47,r)); float pupil = smoothstep(0.075,0.06,abs(q.x)) * step(r,0.4); c = mix(c, vec3(0.), pupil);
+    c *= step(0., p.z) * 0.9 + 0.1; vec3 L = normalize(vec3(-0.4,0.6,0.7)); float s = pow(max(dot(reflect(-L, normalize(vN)), vec3(0,0,1)),0.), 60.); c += s*0.9;
+    gl_FragColor = vec4(c,1.); }` });
+const eyeBall = new THREE.Mesh(new THREE.SphereGeometry(5, 64, 48), eyeMat); eyeGroup.add(eyeBall);
+const lidMat = new THREE.MeshStandardMaterial({ color: 0x4a524c, roughness: 0.6 });
+const lidTop = new THREE.Mesh(new THREE.SphereGeometry(5.35, 48, 32, 0, Math.PI * 2, 0, Math.PI / 2), lidMat), lidBot = new THREE.Mesh(new THREE.SphereGeometry(5.35, 48, 32, 0, Math.PI * 2, 0, Math.PI / 2), lidMat); lidBot.rotation.x = Math.PI;
+ 
+
+// ---------- camera timeline ----------
+// 0-6.2 surface POV in the boat; 6.2-7.0 dip under; 7-17 under water, creature rises; 17-17.6 back up; 17.6-24.6 eye surfaces; 24.6 cut.
+const pov = (t) => { const bob = Math.sin(t * 1.3) * 0.12 + Math.sin(t * 2.1) * 0.05; return new THREE.Vector3(0, 1.05 + bob, 1.4); };
+window.renderFrame = (f) => {
+  const t = f / 30; U.uTime.value = t; const surfaceShot = t < 6.4 || (t >= 17.2 && t < 24.6), underShot = t >= 6.4 && t < 17.2;
+  boat.position.set(0, Math.sin(t * 1.3) * 0.12, 0); boat.rotation.set(Math.sin(t * 1.1) * 0.04, 0, Math.sin(t * 0.9) * 0.05);
+  // flash of lightning
+  const fl = (t < 0.12) || (t > 2.0 && t < 2.15) || (t > 19.2 && t < 19.32) || (t > 19.45 && t < 19.6) ? 1 : 0; U.uFlash.value = fl; flashLight.intensity = fl * 900;
+  // creature path (under the boat), eye emergence
+  const rise = sm((t - 8.5) / 7.5); creature.position.set(4 - 10 * rise, lerp(-120, -34, rise), lerp(-30, 4, rise)); creature.rotation.set(-0.25 + 0.2 * rise, 0.6 + 0.3 * Math.sin(t * 0.2), 0.1);
+  creature.visible = underShot; snow.visible = underShot; rays.visible = underShot;
+  const em = sm((t - 18.2) / 3.0); U.uBulge.value = surfaceShot ? sm((t - 17.4) / 1.2) * (1 - 0.6 * em) : 0; eyeGroup.visible = t > 18 && surfaceShot;
+  eyeGroup.position.set(10, lerp(-10, 0.2, em) + Math.sin(t * 1.2) * 0.15, -16); eyeGroup.lookAt(0, 1.4, 1.4);
+  const blink = t > 22.6 && t < 23.1 ? Math.sin((t - 22.6) / 0.5 * Math.PI) : 0, open = em * (1 - blink);
+  eyeBall.scale.set(1, Math.max(0.04, open), 1); eyeMat.uniforms.uLook.value = Math.sin(t * 0.6) * 0.5;
+  // camera
+  if (surfaceShot) { const p = pov(t); let look;
+    if (t < 6.4) { look = new THREE.Vector3(lerp(-6, 4, sm(t / 5)), lerp(-0.6, -2.2, sm((t - 3) / 3)), -14); const dip = sm((t - 5.6) / 0.8); p.y -= dip * 1.3; p.z -= dip * 0.4; }
+    else { const k = sm((t - 17.2) / 0.6); p.y = lerp(-0.3, p.y, k); look = new THREE.Vector3(lerp(2, 9, sm((t - 17.4) / 1.6)), lerp(-1, 0.6, em), -16); if (t > 21.8) { const pb = sm((t - 21.8) / 2.5); p.x -= pb * 1.2; p.z += pb * 3.5; p.y += pb * 0.6; } }
+    camera.position.copy(p); camera.lookAt(look); camera.fov = t < 6.4 ? 62 : lerp(62, 55, em); scene.fog = new THREE.FogExp2(0x070b12, 0.006); scene.background = null; sky.visible = true; deepLight.intensity = 0; hemi.intensity = 0.35; torch.visible = t < 6.4;
+    renderer.toneMappingExposure = 1.15;
+  } else { const u = (t - 6.4) / 10.8; const p = new THREE.Vector3(0.6 + Math.sin(t * 0.4) * 0.4, lerp(-1.2, -6, sm(u * 1.6)), 2.5); camera.position.copy(p);
+    camera.lookAt(lerp(0.3, 2, u), lerp(-20, -40, sm(u)), lerp(-4, 0, u)); camera.fov = 70; scene.background = new THREE.Color(0x03141f); scene.fog = new THREE.FogExp2(0x062433, lerp(0.035, 0.014, sm((t - 9) / 5))); sky.visible = false; deepLight.intensity = 2.2; hemi.intensity = 0.8; torch.visible = true;
+    snow.position.y = (t * 1.5) % 20; U.uLight.value = 0.4; renderer.toneMappingExposure = 1.35; rayMat.uniforms.uO.value = 1; }
+  camera.updateProjectionMatrix();
+  // torch follows the look direction, scanning
+  const dir = new THREE.Vector3(); camera.getWorldDirection(dir); torch.position.copy(camera.position).add(new THREE.Vector3(0.25, -0.2, 0)); torch.target.position.copy(camera.position).add(dir.multiplyScalar(20)).add(new THREE.Vector3(Math.sin(t * 0.9) * 2, 0, 0)); torch.target.updateMatrixWorld();
+  U.uTorch.value.copy(torch.target.position); U.uTorchOn.value = t < 6.4 ? (Math.sin(t * 23) > -0.95 ? 1 : 0.3) : 0;
+  rain.visible = surfaceShot; if (surfaceShot) updRain(t, camera.position);
+  // shake on the eye
+  const shk = (t > 18.2 && t < 19.8) ? 0.06 * (1 - (t - 18.2) / 1.6) : 0; camera.position.x += Math.sin(t * 57) * shk; camera.position.y += Math.sin(t * 43) * shk;
+  renderer.render(scene, camera);
+  // ---- 2D composite: grain, vignette, text ----
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(renderer.domElement, 0, 0);
+  const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.6)'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = 'rgba(255,255,255,0.035)'; for (let i = 0; i < 2200; i++) { const x = hash(i + f * 13.1) * W, y = hash(i * 1.7 + f * 7.3) * H; ctx.fillRect(x, y, 2, 2); }
+  const txt = (s, y, fs, col, a) => { if (a <= 0) return; ctx.save(); ctx.globalAlpha = a; ctx.textAlign = 'center'; ctx.font = `900 ${fs}px "DejaVu Sans", sans-serif`; ctx.lineJoin = 'round'; ctx.lineWidth = 14; ctx.strokeStyle = 'rgba(0,0,0,0.85)'; ctx.strokeText(s, W / 2, y); ctx.fillStyle = col; ctx.fillText(s, W / 2, y); ctx.restore(); };
+  txt('SONAR: 40 METERS LONG', 430, 72, '#ffffff', t < 3.2 ? 1 : sm((3.6 - t) / 0.4));
+  txt('IT’S RIGHT UNDER THE BOAT', 530, 62, '#ff5a5a', t < 3.2 ? 1 : sm((3.6 - t) / 0.4));
+  if (t > 24.6) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); }
+  return true; };
+window.ready = true;
+</script></body></html>
