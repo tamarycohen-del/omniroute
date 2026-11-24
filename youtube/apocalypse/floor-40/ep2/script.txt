@@ -5,7 +5,7 @@ voice at 0.0, impact on frame 0; whispers only on 2 lines; ending: cards appear 
 World logic: the thing lives only below the water line and follows splashes (shown in beat 4 before it matters in beat 6).
 
  1 hook     You told me to take the boat. So did something under the water.        over-under: kid paddling / pale hand slaps the hull from below. TOP TEXT: SOMETHING IS UNDER THE BOAT
- 2 comments Most of you said: take the boat. One of you said: don't let Biscuit starve.   4 real IG comments pop in over dark water
+ 2 comments Most of you said: take the boat. One of you said: please don't eat Biscuit. (funny callback to the real comment)   4 real IG comments pop in over dark water
  3 cross    Two hundred meters of open water to floor fifty-two.                    wide, boat between drowned rooftops, tower 52 ahead
  4 paddle   Every time my paddle hit the water... the shadow under us moved.        over-under: each paddle splash, the shadow below turns
  5 stop     Then the boat stopped. Something was holding it. (whisper)              boat jerks; pale fingers curl over the rim; Biscuit growls

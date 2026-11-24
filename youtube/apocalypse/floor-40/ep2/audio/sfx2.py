@@ -27,7 +27,7 @@ def thud(f0=45, dur=1.6, dec=2.4):
     n = int(dur * SR); x = np.arange(n) / SR; return np.sin(2 * np.pi * (f0 + 50 * np.exp(-x * 10)) * x) * np.exp(-x * dec) + bp(rng.standard_normal(n), 60, 500) * np.exp(-x * 7) * 0.5
 def wsplash(dur=0.7):
     n = int(dur * SR); x = np.arange(n) / SR; return bp(rng.standard_normal(n), 300, 6000) * np.exp(-x * 7) * (1 - np.exp(-x * 80))
-sec = {k: first(*v) if isinstance(v, tuple) else first(v) for k, v in dict(most='most', cross='200', paddle='every', stop='then', throw=('so', 2), free='five', stairs='other', prints='wet', climb='20', table='table', never=('footprints', 2), closet=('biscuit', 2), eat='eat').items()}
+sec = {k: first(*v) if isinstance(v, tuple) else first(v) for k, v in dict(most='most', cross='200', paddle='every', stop='then', throw=('so', 2), free='five', stairs='other', prints='wet', climb='20', table='table', never=('footprints', 2), closet=('biscuit', 2), eat=('eat', 2)).items()}
 end = V[-1]['e']
 # water bed (outdoor until the stairs), stair drips/echo, room tone
 wb = bp(rng.standard_normal(N), 80, 900); wb /= np.abs(wb).max(); lap = 0.55 + 0.45 * np.sin(2 * np.pi * t / 2.1) ** 2
