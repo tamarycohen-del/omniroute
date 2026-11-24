@@ -10,6 +10,7 @@ import json, os, subprocess
 import numpy as np
 
 ROOT = os.path.join(os.path.dirname(__file__), '..', 'sfx', 'sfx-kit')
+EAR = os.path.join(os.path.dirname(__file__), '..', 'sfx', 'earshot')
 
 
 class Kit:
@@ -42,3 +43,27 @@ class Kit:
         seg = x[a - i0:b - i0]
         L[a:b] += seg[:, 0] * gain * (1 - pan) ** 0.5
         R[a:b] += seg[:, 1] * gain * (1 + pan) ** 0.5
+
+    # ---- earshot files (youtube/sfx/earshot/<name>.ogg): ambience loops and foley one-shots ----
+    def ear(self, name):
+        key = 'ear:' + name
+        if key not in self._cache:
+            raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', os.path.join(EAR, name + '.ogg'), '-ac', '2', '-ar', str(self.sr), '-f', 'f32le', '-'],
+                                 capture_output=True, check=True).stdout
+            self._cache[key] = np.frombuffer(raw, np.float32).reshape(-1, 2).copy()
+        return self._cache[key]
+
+    def shot(self, L, R, name, at, gain=1.0, pan=0.0):
+        """One-shot that STARTS at `at` seconds."""
+        x = self.ear(name); i0 = int(at * self.sr); a, b = max(0, i0), min(len(L), i0 + len(x))
+        if b > a:
+            L[a:b] += x[a - i0:b - i0, 0] * gain * (1 - pan) ** 0.5; R[a:b] += x[a - i0:b - i0, 1] * gain * (1 + pan) ** 0.5
+
+    def bed(self, L, R, name, start, end, gain=1.0, fade=0.8):
+        """Loop an ambience from `start` to `end` with fades (earshot loops are seamless)."""
+        x = self.ear(name); a, b = int(start * self.sr), min(len(L), int(end * self.sr))
+        if b <= a:
+            return
+        n = b - a; reps = int(np.ceil(n / len(x))); y = np.tile(x, (reps, 1))[:n]
+        f = max(1, int(fade * self.sr)); env = np.ones(n); env[:f] = np.linspace(0, 1, min(f, n)); env[-f:] = np.minimum(env[-f:], np.linspace(1, 0, min(f, n)))
+        L[a:b] += y[:, 0] * env * gain; R[a:b] += y[:, 1] * env * gain
