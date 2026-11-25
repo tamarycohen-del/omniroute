@@ -19,8 +19,12 @@ HOW IT WAS MADE (free, local, no paid generation or credits)
   Picture: source_code/hk.html - every frame drawn in code (HTML canvas 2D): inked comic outlines, flat
            navy / muted green / black palette, hatching, grain, vignette. One farmhouse design used in every
            shot. Frames rendered with Playwright (Chromium), encoded with ffmpeg.
-  Sound:   source_code/mix.py - original music synthesised in numpy (low drone, sparse piano, rising pulse,
-           dissonant pad) + CC0 effects from youtube/sfx/sfx-kit and youtube/sfx/earshot (wind, snow steps,
+  Sound:   source_code/mix.py - original music synthesised in numpy (low F drone, rising pulse, dissonant pad,
+           and a detuned music box playing "Tonight You Belong to Me" (Lee David / Billy Rose, 1926; the
+           composition is public domain in the US since 2022) that slowly winds down at the end. The melody was
+           transcribed by pitch-tracking the 1927 Gene Austin record (archive.org) as a reference only; no
+           recording is in the mix. Note: outside the US (e.g. EU) the composition may still be protected.
+           Music box alone: assets/musicbox_only.wav) + CC0 effects from youtube/sfx/sfx-kit and youtube/sfx/earshot (wind, snow steps,
            creaks, distant thunder, paper, impacts). Music ducks under the voice; loudnorm to -14 LUFS.
   Rebuild: python source_code/words.py narration.wav ; python source_code/mix.py narration.wav source_code/lines.json assets/mix.wav
            serve source_code/ and call window.renderFrame(f) for f = 0..2061 (see youtube scratch r2d.mjs);
