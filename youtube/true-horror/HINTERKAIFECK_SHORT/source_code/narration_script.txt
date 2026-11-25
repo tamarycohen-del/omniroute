@@ -1,0 +1,21 @@
+# emotion | text | speed | pause_ms   (VoiceStudio / OmniVoice, emotion from youtube/sfx/voice-emotions)
+tense   | In 1922, a family living on an isolated German farm began noticing something terrifying... | 1.05 | 300
+curious | Footprints appeared in the snow, leading from the nearby forest straight toward their farmhouse. | 1.05 | 250
+tense   | But there were no footprints leading back. | 1.0 | 450
+curious | The family also reported hearing footsteps in the attic. | 1.05 | 250
+whisper | When they searched, nobody was there. | 1.0 | 450
+tense   | Then, on March 31st, something terrible happened. | 1.0 | 300
+calm    | Six people at the farm were killed. | 0.95 | 500
+calm    | Four days passed before their disappearance was discovered. | 1.05 | 250
+curious | When neighbors finally entered the property, the entire household was gone. | 1.05 | 300
+tense   | But investigators noticed something deeply unsettling. | 1.0 | 250
+dread   | The farm appeared to have remained active after the murders. | 1.0 | 250
+calm    | The animals had been fed. | 1.0 | 200
+calm    | Smoke had reportedly been seen coming from the chimney. | 1.05 | 300
+whisper | Someone may have stayed there. | 1.0 | 350
+tense   | But who? | 1.0 | 500
+curious | Police questioned more than 100 suspects over the following years. | 1.08 | 200
+tense   | Nobody was ever identified as the killer. | 1.0 | 350
+calm    | The farmhouse was eventually demolished. | 1.05 | 250
+dread   | And the mystery of Hinterkaifeck remains unsolved. | 1.0 | 600
+whisper | More than a century later... nobody knows who was inside that farmhouse. | 1.0 | 300
