@@ -6,7 +6,7 @@ Template: `HINTERKAIFECK_SHORT/` (copy its source_code and adapt). One video per
 <!-- User wants FAMILIAR cases first so viewers connect fast (2026-11-26). -->
 - [x] Hinterkaifeck (1922) — YT -5NZ8rYXTD8, IG DgLciMIBK6v
 - [x] Dyatlov Pass (1959) — YT 04qr1nBzhfs, IG DgN6Vc9h2Ix
-- [~] Bermuda Triangle: Flight 19 (1945) — IN PRODUCTION / READY in NEXT_UPLOAD.json for 2026-11-27 — familiar name, hook: five planes vanished + the rescue plane too
+- [~] Bermuda Triangle: Flight 19 (1945) — READY (NEXT_UPLOAD.json, publishes 2026-11-27 22:00) — familiar name, hook: five planes vanished + the rescue plane too
 - [ ] D.B. Cooper (1971)
 - [ ] Amelia Earhart (1937)
 - [ ] Mary Celeste (1872)
