@@ -1,0 +1,77 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Cap,DejaVu Sans,92,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,7,0,5,60,60,0
+Style: Top,DejaVu Sans,64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,6,0,8,60,60,250
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:01.18,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}10{\c&HFFFFFF&} {\c&H3FD2FF&}SECONDS{\c&HFFFFFF&} LEFT
+Dialogue: 0,0:00:01.18,0:00:02.16,Cap,,0,0,0,,{\pos(540,1430)}IN ROUND {\c&H3FD2FF&}1,{\c&HFFFFFF&}
+Dialogue: 0,0:00:02.16,0:00:02.74,Cap,,0,0,0,,{\pos(540,1430)}YOU'RE ON THE
+Dialogue: 0,0:00:02.74,0:00:03.60,Cap,,0,0,0,,{\pos(540,1430)}ROPES.
+Dialogue: 0,0:00:03.78,0:00:04.32,Cap,,0,0,0,,{\pos(540,1430)}YOUR LEGS ARE
+Dialogue: 0,0:00:04.32,0:00:05.36,Cap,,0,0,0,,{\pos(540,1430)}SHAKING,
+Dialogue: 0,0:00:05.38,0:00:06.04,Cap,,0,0,0,,{\pos(540,1430)}AND THE MAN
+Dialogue: 0,0:00:06.04,0:00:06.62,Cap,,0,0,0,,{\pos(540,1430)}IN FRONT OF
+Dialogue: 0,0:00:06.62,0:00:07.88,Cap,,0,0,0,,{\pos(540,1430)}YOU HAS NEVER
+Dialogue: 0,0:00:07.88,0:00:10.00,Cap,,0,0,0,,{\pos(540,1430)}LOOKED MORE CALM.
+Dialogue: 0,0:00:10.20,0:00:10.82,Cap,,0,0,0,,{\pos(540,1430)}IF YOU'RE STILL
+Dialogue: 0,0:00:10.82,0:00:11.46,Cap,,0,0,0,,{\pos(540,1430)}STANDING AT THE
+Dialogue: 0,0:00:11.46,0:00:12.06,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}BELL,{\c&HFFFFFF&}
+Dialogue: 0,0:00:12.06,0:00:13.32,Cap,,0,0,0,,{\pos(540,1430)}THE {\c&H3FD2FF&}LOOP{\c&HFFFFFF&} {\c&H3FD2FF&}ENDS.{\c&HFFFFFF&}
+Dialogue: 0,0:00:13.32,0:00:14.52,Cap,,0,0,0,,{\pos(540,1430)}IF YOU {\c&H3FD2FF&}FALL,{\c&HFFFFFF&}
+Dialogue: 0,0:00:14.52,0:00:15.02,Cap,,0,0,0,,{\pos(540,1430)}YOU WAKE UP
+Dialogue: 0,0:00:15.02,0:00:15.64,Cap,,0,0,0,,{\pos(540,1430)}IN BED,
+Dialogue: 0,0:00:15.64,0:00:16.42,Cap,,0,0,0,,{\pos(540,1430)}AGAIN,
+Dialogue: 0,0:00:16.42,0:00:17.56,Cap,,0,0,0,,{\pos(540,1430)}FOR THE {\c&H3FD2FF&}1000TH{\c&HFFFFFF&}
+Dialogue: 0,0:00:17.56,0:00:18.40,Cap,,0,0,0,,{\pos(540,1430)}TIME.
+Dialogue: 0,0:00:18.96,0:00:19.68,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}LOOP{\c&HFFFFFF&} {\c&H3FD2FF&}1,{\c&HFFFFFF&}
+Dialogue: 0,0:00:19.68,0:00:20.64,Cap,,0,0,0,,{\pos(540,1430)}THE {\c&H3FD2FF&}BELL{\c&HFFFFFF&} RINGS,
+Dialogue: 0,0:00:20.64,0:00:21.16,Cap,,0,0,0,,{\pos(540,1430)}YOU PUT YOUR
+Dialogue: 0,0:00:21.16,0:00:22.14,Cap,,0,0,0,,{\pos(540,1430)}HANDS UP.
+Dialogue: 0,0:00:22.14,0:00:23.24,Cap,,0,0,0,,{\pos(540,1430)}YOU BLINK,
+Dialogue: 0,0:00:23.24,0:00:23.90,Cap,,0,0,0,,{\pos(540,1430)}YOU'RE ON THE
+Dialogue: 0,0:00:23.90,0:00:24.60,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}FLOOR,{\c&HFFFFFF&}
+Dialogue: 0,0:00:24.60,0:00:25.92,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}11{\c&HFFFFFF&} {\c&H3FD2FF&}SECONDS.{\c&HFFFFFF&}
+Dialogue: 0,0:00:26.16,0:00:27.04,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}LOOP{\c&HFFFFFF&} {\c&H3FD2FF&}2,{\c&HFFFFFF&}
+Dialogue: 0,0:00:27.04,0:00:28.06,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}9{\c&HFFFFFF&} {\c&H3FD2FF&}SECONDS.{\c&HFFFFFF&}
+Dialogue: 0,0:00:28.06,0:00:28.52,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}LOOP{\c&HFFFFFF&} {\c&H3FD2FF&}10.{\c&HFFFFFF&}
+Dialogue: 0,0:00:28.52,0:00:29.54,Cap,,0,0,0,,{\pos(540,1430)}YOU NEVER EVEN
+Dialogue: 0,0:00:29.54,0:00:31.06,Cap,,0,0,0,,{\pos(540,1430)}SEE THE {\c&H3FD2FF&}PUNCH.{\c&HFFFFFF&}
+Dialogue: 0,0:00:31.34,0:00:32.30,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}LOOP{\c&HFFFFFF&} {\c&H3FD2FF&}40,{\c&HFFFFFF&}
+Dialogue: 0,0:00:32.30,0:00:32.80,Cap,,0,0,0,,{\pos(540,1430)}YOU LAST A
+Dialogue: 0,0:00:32.80,0:00:33.80,Cap,,0,0,0,,{\pos(540,1430)}FULL {\c&H3FD2FF&}MINUTE.{\c&HFFFFFF&}
+Dialogue: 0,0:00:33.80,0:00:34.70,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}LOOP{\c&HFFFFFF&} {\c&H3FD2FF&}1000.{\c&HFFFFFF&}
+Dialogue: 0,0:00:34.70,0:00:35.90,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}10{\c&HFFFFFF&} {\c&H3FD2FF&}SECONDS{\c&HFFFFFF&} LEFT,
+Dialogue: 0,0:00:35.90,0:00:36.50,Cap,,0,0,0,,{\pos(540,1430)}YOU'RE ON THE
+Dialogue: 0,0:00:36.50,0:00:37.32,Cap,,0,0,0,,{\pos(540,1430)}ROPES.
+Dialogue: 0,0:00:37.58,0:00:38.86,Cap,,0,0,0,,{\pos(540,1430)}YOU STOP RUNNING,
+Dialogue: 0,0:00:38.86,0:00:39.34,Cap,,0,0,0,,{\pos(540,1430)}YOU STEP IN
+Dialogue: 0,0:00:39.34,0:00:40.04,Cap,,0,0,0,,{\pos(540,1430)}CLOSE,
+Dialogue: 0,0:00:40.04,0:00:40.50,Cap,,0,0,0,,{\pos(540,1430)}YOU TIE UP
+Dialogue: 0,0:00:40.50,0:00:41.58,Cap,,0,0,0,,{\pos(540,1430)}HIS ARMS.
+Dialogue: 0,0:00:41.58,0:00:42.58,Cap,,0,0,0,,{\pos(540,1430)}5 {\c&H3FD2FF&}SECONDS,{\c&HFFFFFF&}
+Dialogue: 0,0:00:42.58,0:00:43.60,Cap,,0,0,0,,{\pos(540,1430)}HE BREAKS FREE,
+Dialogue: 0,0:00:43.60,0:00:44.46,Cap,,0,0,0,,{\pos(540,1430)}THE HOOK COMES,
+Dialogue: 0,0:00:44.46,0:00:45.56,Cap,,0,0,0,,{\pos(540,1430)}YOU {\c&H3FD2FF&}DROP.{\c&HFFFFFF&}
+Dialogue: 0,0:00:45.60,0:00:46.48,Cap,,0,0,0,,{\pos(540,1430)}THE REFEREE IS
+Dialogue: 0,0:00:46.48,0:00:47.50,Cap,,0,0,0,,{\pos(540,1430)}COUNTING.
+Dialogue: 0,0:00:47.62,0:00:48.52,Cap,,0,0,0,,{\pos(540,1430)}6,
+Dialogue: 0,0:00:48.52,0:00:49.94,Cap,,0,0,0,,{\pos(540,1430)}7,
+Dialogue: 0,0:00:50.08,0:00:51.30,Cap,,0,0,0,,{\pos(540,1430)}8.
+Dialogue: 0,0:00:51.36,0:00:52.10,Cap,,0,0,0,,{\pos(540,1430)}YOUR LEGS SAY
+Dialogue: 0,0:00:52.10,0:00:52.86,Cap,,0,0,0,,{\pos(540,1430)}NO.
+Dialogue: 0,0:00:52.86,0:00:53.62,Cap,,0,0,0,,{\pos(540,1430)}YOUR MIND SAYS
+Dialogue: 0,0:00:53.62,0:00:55.22,Cap,,0,0,0,,{\pos(540,1430)}ONE MORE TIME.
+Dialogue: 0,0:00:55.40,0:00:56.26,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}NINE.{\c&HFFFFFF&}
+Dialogue: 0,0:00:56.30,0:00:57.22,Cap,,0,0,0,,{\pos(540,1430)}YOU STAND UP.
+Dialogue: 0,0:00:57.22,0:00:58.48,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}DING.{\c&HFFFFFF&}
+Dialogue: 0,0:00:58.52,0:00:59.50,Cap,,0,0,0,,{\pos(540,1430)}THE {\c&H3FD2FF&}BELL.{\c&HFFFFFF&}
+Dialogue: 0,0:01:01.66,0:01:02.44,Cap,,0,0,0,,{\pos(540,1430)}THEN {\c&H3FD2FF&}TYSON{\c&HFFFFFF&} TAPS
+Dialogue: 0,0:01:02.44,0:01:03.40,Cap,,0,0,0,,{\pos(540,1430)}YOUR GLOVES AND
+Dialogue: 0,0:01:03.40,0:01:03.92,Cap,,0,0,0,,{\pos(540,1430)}SAYS,
+Dialogue: 0,0:01:03.92,0:01:04.86,Cap,,0,0,0,,{\pos(540,1430)}{\c&H3FD2FF&}GOOD.{\c&HFFFFFF&}
+Dialogue: 0,0:00:00.00,0:01:06.00,Top,,0,0,0,,SURVIVE ONE ROUND\NWITH {\c&H3FD2FF&}PRIME TYSON{\c&HFFFFFF&}
