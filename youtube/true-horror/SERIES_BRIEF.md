@@ -10,7 +10,7 @@ Template: `HINTERKAIFECK_SHORT/` (copy its source_code and adapt). One video per
 - [ ] Flannan Isles lighthouse keepers (1900)
 - [ ] Roanoke lost colony (1590)
 - [ ] The Sodder children (1945)
-- [ ] The Somerton Man (1948)
+- [ ] The Yuba County Five (1978)
 
 ## Format
 - 9:16, 1080x1920, 30 fps, 55–70 s, English. Hook line on frame 0, the eeriest concrete detail first.
