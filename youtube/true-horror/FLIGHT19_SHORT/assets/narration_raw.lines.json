@@ -1,0 +1,122 @@
+[
+ {
+  "emotion": "tense",
+  "text": "In 1945, five Navy bombers flew out over the Atlantic... and vanished.",
+  "s": 0.0,
+  "e": 4.72
+ },
+ {
+  "emotion": "dread",
+  "text": "Then the plane sent to find them vanished too.",
+  "s": 5.02,
+  "e": 8.22
+ },
+ {
+  "emotion": "calm",
+  "text": "It was December fifth. A routine training flight from Fort Lauderdale, Florida.",
+  "s": 8.67,
+  "e": 13.47
+ },
+ {
+  "emotion": "calm",
+  "text": "Five Avenger torpedo bombers. Fourteen men.",
+  "s": 13.67,
+  "e": 16.59
+ },
+ {
+  "emotion": "calm",
+  "text": "Their leader, Lieutenant Charles Taylor, was an experienced pilot.",
+  "s": 16.84,
+  "e": 21.04
+ },
+ {
+  "emotion": "tense",
+  "text": "But about ninety minutes in, something went wrong.",
+  "s": 21.34,
+  "e": 24.33
+ },
+ {
+  "emotion": "dread",
+  "text": "Taylor radioed that both of his compasses had stopped working.",
+  "s": 24.63,
+  "e": 29.03
+ },
+ {
+  "emotion": "curious",
+  "text": "He believed they were over the Florida Keys.",
+  "s": 29.33,
+  "e": 31.74
+ },
+ {
+  "emotion": "tense",
+  "text": "They were most likely far out over the ocean.",
+  "s": 31.99,
+  "e": 34.66
+ },
+ {
+  "emotion": "dread",
+  "text": "The weather turned. The sun went down. Their fuel ran low.",
+  "s": 35.01,
+  "e": 38.93
+ },
+ {
+  "emotion": "whisper",
+  "text": "Their last messages faded into static.",
+  "s": 39.23,
+  "e": 41.63
+ },
+ {
+  "emotion": "calm",
+  "text": "That night, a rescue flying boat took off with thirteen men aboard.",
+  "s": 42.08,
+  "e": 46.2
+ },
+ {
+  "emotion": "tense",
+  "text": "It never came back either.",
+  "s": 46.45,
+  "e": 48.45
+ },
+ {
+  "emotion": "curious",
+  "text": "A passing tanker reported flames on the water.",
+  "s": 48.75,
+  "e": 51.31
+ },
+ {
+  "emotion": "dread",
+  "text": "No wreckage from Flight 19 was ever conclusively found.",
+  "s": 51.61,
+  "e": 55.89
+ },
+ {
+  "emotion": "calm",
+  "text": "Twenty-seven men were lost in a single night.",
+  "s": 56.19,
+  "e": 59.15
+ },
+ {
+  "emotion": "calm",
+  "text": "The Navy first blamed the flight leader... then changed its verdict to causes or reasons unknown.",
+  "s": 59.55,
+  "e": 65.43
+ },
+ {
+  "emotion": "tense",
+  "text": "Years later, this flight helped create the legend of the Bermuda Triangle.",
+  "s": 65.78,
+  "e": 70.14
+ },
+ {
+  "emotion": "dread",
+  "text": "Broken compasses. A storm. Or something else?",
+  "s": 70.44,
+  "e": 73.6
+ },
+ {
+  "emotion": "whisper",
+  "text": "What do you think happened to Flight 19?",
+  "s": 74.0,
+  "e": 76.76
+ }
+]
