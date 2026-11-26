@@ -1,3 +1,5 @@
+> **STATUS (2026-11-26): STOPPED.** The user ended the interactive (choose-your-path) horror series. Do not make new parts. Channel focus is now daily true-horror Shorts (youtube/true-horror/SERIES_BRIEF.md).
+
 # FLOOR 40 (working title) - series brief
 
 Research (Agent Reach, 2026-11-23): the apocalypse videos with millions of views are "locked inside one place, Day 1 to Day N" survival stories

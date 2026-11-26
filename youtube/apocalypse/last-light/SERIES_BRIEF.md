@@ -1,3 +1,5 @@
+> **STATUS (2026-11-26): STOPPED.** Interactive horror series ended by the user.
+
 # LAST LIGHT (working title) - interactive animated apocalypse series
 Genre reference (feel only, nothing copied): the lone-survivor-in-an-empty-city-with-his-dog story. We take the genre
 tropes (empty overgrown city, survivor + dog, safe days / deadly nights, pale night creatures, UV light, a barricaded

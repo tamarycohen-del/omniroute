@@ -1,3 +1,5 @@
+> **STATUS (2026-11-26): STOPPED.** The user ended the interactive (choose-your-path) horror series. Do not make new parts. Channel focus is now daily true-horror Shorts (youtube/true-horror/SERIES_BRIEF.md).
+
 You are helping me write the next episode of my YouTube Shorts / Instagram Reels horror series. Read everything below first.
 
 === SERIES ===
