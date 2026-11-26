@@ -16,6 +16,19 @@ Template: `HINTERKAIFECK_SHORT/` (copy its source_code and adapt). One video per
 - [ ] The Sodder children (1945)
 - [ ] The Yuba County Five (1978)
 
+## HOOK RULES (researched 2026-11-26; apply to every video)
+1. First spoken words = the single most shocking CONCRETE fact (no date, no background first). Date/place go to line 3.
+   e.g. "Five Navy bombers vanished in the Bermuda Triangle. Then the plane sent to find them… vanished too."
+2. Use the FAMILIAR name in the first 2 seconds (Bermuda Triangle, D.B. Cooper, Amelia Earhart…).
+3. Frame 0: BIG on-screen hook text, max 2 lines (~150px, white + yellow/red), top area (y≈330/470), saying the
+   same thing as the voice — many viewers start muted. Second line can swap when the twist lands.
+4. Frame 0 is already moving: fast punch-in/zoom (no static opening), eerie sound from frame 0.
+5. Open a loop in the hook (a question or impossible detail) and PAY IT OFF later; re-hook around 40% ("It never came
+   back either.", "But that wasn't the strangest part.").
+6. Thumbnail/cover = the same promise as the hook (2-3 big words).
+Sources: fluxnote.io unsolved-cases strategy, vidiq viral Shorts hooks 2026, opus.pro hook formulas, dev.to "Hook
+Engineering 2026", shortsfast continuous-curiosity, socialmediaexaminer Shorts hooks & curiosity loops.
+
 ## Format
 - 9:16, 1080x1920, 30 fps, 55–70 s, English. Hook line on frame 0, the eeriest concrete detail first.
 - ~20 short narration lines (script file like `narration_script.txt`: `emotion | text | speed | pause_ms`).

@@ -172,7 +172,7 @@ const navyDocs = (o = {}) => { g.fillStyle = '#0d1014'; g.fillRect(-500, -500, 2
 
 // ---------- shots ----------
 const SC = {
-  s1(u) { g.save(); cam(1.0, 540, 1000); duskSky(0); sea(1200); formation(700 + u * 90, 760, 1.0, clamp(1 - (u - 2.8) / 0.8)); g.restore(); },
+  s1(u) { g.save(); cam(1.35 - 0.3 * sm(u / 0.7), 620, 900); duskSky(0); sea(1200); formation(700 + u * 90, 760, 1.0, clamp(1 - (u - 2.8) / 0.8)); g.restore(); },
   s2(u) { g.save(); cam(1.0, 540, 1000); sky(1); sea(1200, 1); mariner(560 + u * 60, 760, 0.9, clamp(1 - (u - 1.6) / 1.0)); g.restore(); },
   s3(u) { g.save(); cam(1.05, 540, 1050); g.fillStyle = lin(0, -500, 0, 1200, [[0, '#6a8aa6'], [1, '#cfd8dc']]); g.fillRect(-500, -500, 2100, 2900); g.fillStyle = '#5b6a52'; g.fillRect(-500, 1150, 2100, 1200); inked([[-500, 1300], [1600, 1300], [1600, 1460], [-500, 1460]], '#4a4d50'); g.strokeStyle = '#e8e8e8'; g.lineWidth = 8; g.setLineDash([60, 40]); g.beginPath(); g.moveTo(-500, 1380); g.lineTo(1600, 1380); g.stroke(); g.setLineDash([]);
     inked([[600, 1150], [600, 900], [760, 820], [920, 900], [920, 1150]], '#6d6a62'); for (let i = 0; i < 3; i++) avenger(150 + i * 230, 1250, 0.38); g.restore(); },
@@ -208,7 +208,11 @@ window.renderFrame = (f) => { const t = f / 30; T = t; g.setTransform(1, 0, 0, 1
   g.save(); g.translate(Math.sin(T * 0.8) * 3, Math.sin(T * 1.1) * 2); SC[shot](u); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
   g.fillStyle = 'rgba(10,30,40,0.12)'; g.fillRect(0, 0, W, H); const vg = g.createRadialGradient(W / 2, H / 2, H * 0.28, W / 2, H / 2, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.65)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
   for (let i = 0; i < 2200; i++) { const v = hash(i + f * 7.13); g.fillStyle = v > 0.5 ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.08)'; g.fillRect(hash(i * 1.31 + f) * W, hash(i * 2.7 + f * 3) * H, 2, 2); }
-  const TT = { s1: 'DECEMBER 5, 1945.', s3: 'NAS FORT LAUDERDALE, FLORIDA', s4: '5 AVENGERS · 14 MEN', s5: 'LT. CHARLES TAYLOR', s12: 'PBM MARINER · 13 MEN', s16: 'MEN LOST IN ONE NIGHT', s18: 'THE BERMUDA TRIANGLE' };
+  const TT = { s3: 'DECEMBER 5, 1945 · FLORIDA', s4: '5 AVENGERS · 14 MEN', s5: 'LT. CHARLES TAYLOR', s12: 'PBM MARINER · 13 MEN', s16: 'MEN LOST IN ONE NIGHT', s18: 'THE BERMUDA TRIANGLE' };
+  // frame-0 hook text (readable on mute), two lines max, matches the spoken line
+  const hookTxt = (a, b, col2, al) => { g.save(); g.globalAlpha = al; g.textAlign = 'center'; g.lineJoin = 'round'; for (const [txt, y, col] of [[a, 330, '#ffffff'], [b, 470, col2]]) { let fs = 150; g.font = `italic 900 ${fs}px "DejaVu Sans", sans-serif`; while (g.measureText(txt).width > 980) { fs -= 6; g.font = `italic 900 ${fs}px "DejaVu Sans", sans-serif`; } g.lineWidth = 22; g.strokeStyle = '#000'; g.strokeText(txt, 540, y); g.fillStyle = col; g.fillText(txt, 540, y); } g.restore(); };
+  if (shot === 's1') hookTxt('5 BOMBERS', 'VANISHED', '#ffd23f', 1);
+  if (shot === 's2') hookTxt('THEN THE RESCUE', 'PLANE VANISHED', '#ff3b30', sm(u / 0.15));
   if (TT[shot]) titleCard(TT[shot], sm(u / 0.3), 360, shot === 's18' ? '#ff3b30' : '#e8dcc0', 80);
   const endT = LINES[LINES.length - 1].e + 0.2;
   if (shot === 's20' && t > endT) { const a = sm((t - endT) / 0.5); g.fillStyle = `rgba(0,0,0,${0.55 * a})`; g.fillRect(0, 0, W, H); titleCard('FLIGHT 19', a, 820, '#e8dcc0', 120); titleCard('— 1945 —', a, 930, '#e8dcc0', 70); titleCard('NEVER FOUND.', a, 1090, '#ff3b30', 110); }
