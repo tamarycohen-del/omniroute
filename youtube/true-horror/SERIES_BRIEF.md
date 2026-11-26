@@ -4,7 +4,7 @@ Template: `HINTERKAIFECK_SHORT/` (copy its source_code and adapt). One video per
 
 ## Case queue (take the first one not yet done; mark it done here)
 - [x] Hinterkaifeck (1922) — YT -5NZ8rYXTD8, IG DgLciMIBK6v
-- [ ] Dyatlov Pass (1959)
+- [x] Dyatlov Pass (1959) — YT 04qr1nBzhfs, IG DgN6Vc9h2Ix
 - [ ] Mary Celeste (1872)
 - [ ] Villisca axe murders (1912) — no gore, no bodies, like Hinterkaifeck
 - [ ] Flannan Isles lighthouse keepers (1900)
