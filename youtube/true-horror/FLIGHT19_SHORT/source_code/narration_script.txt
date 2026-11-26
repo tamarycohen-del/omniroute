@@ -1,0 +1,20 @@
+tense   | In 1945, five Navy bombers flew out over the Atlantic... and vanished. | 1.05 | 300
+dread   | Then the plane sent to find them vanished too. | 1.0 | 450
+calm    | It was December fifth. A routine training flight from Fort Lauderdale, Florida. | 1.08 | 200
+calm    | Five Avenger torpedo bombers. Fourteen men. | 1.0 | 250
+calm    | Their leader, Lieutenant Charles Taylor, was an experienced pilot. | 1.05 | 300
+tense   | But about ninety minutes in, something went wrong. | 1.05 | 300
+dread   | Taylor radioed that both of his compasses had stopped working. | 1.0 | 300
+curious | He believed they were over the Florida Keys. | 1.05 | 250
+tense   | They were most likely far out over the ocean. | 1.05 | 350
+dread   | The weather turned. The sun went down. Their fuel ran low. | 1.0 | 300
+whisper | Their last messages faded into static. | 1.0 | 450
+calm    | That night, a rescue flying boat took off with thirteen men aboard. | 1.05 | 250
+tense   | It never came back either. | 1.0 | 300
+curious | A passing tanker reported flames on the water. | 1.05 | 300
+dread   | No wreckage from Flight 19 was ever conclusively found. | 1.0 | 300
+calm    | Twenty-seven men were lost in a single night. | 1.0 | 400
+calm    | The Navy first blamed the flight leader... then changed its verdict to causes or reasons unknown. | 1.05 | 350
+tense   | Years later, this flight helped create the legend of the Bermuda Triangle. | 1.05 | 300
+dread   | Broken compasses. A storm. Or something else? | 1.0 | 400
+whisper | What do you think happened to Flight 19? | 1.0 | 300
