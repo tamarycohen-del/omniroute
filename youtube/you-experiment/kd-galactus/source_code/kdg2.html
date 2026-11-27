@@ -62,9 +62,9 @@ const P = {
   dribB:   { lean: 0.22, sh: [0.75, -0.35], el: [0.05, 0.55], hip: [0.5, -0.3], kn: [-0.7, -0.55], head: 0.05, ball: 1 },
   hesi:    { lean: 0.05, sh: [0.6, -0.5], el: [0.3, 0.7], hip: [0.25, -0.55], kn: [-0.35, -0.2], head: -0.05, ball: 0.5 },
   drive:   { lean: 0.42, sh: [0.95, -0.6], el: [-0.1, 0.6], hip: [0.85, -0.55], kn: [-1.1, -0.2], head: 0.1, ball: 0.7 },
-  load:    { lean: 0.12, sh: [2.3, 2.0], el: [1.0, 1.2], hip: [0.5, -0.1], kn: [-1.0, -0.8], head: -0.05 },
-  shoot:   { lean: -0.04, sh: [3.0, 2.75], el: [0.15, 0.35], hip: [0.1, -0.15], kn: [-0.15, -0.3], head: -0.12 },
-  follow:  { lean: -0.06, sh: [2.9, 2.6], el: [0.6, 0.5], hip: [0.05, -0.2], kn: [-0.4, -0.5], head: -0.15 },
+  load:    { lean: 0.1, sh: [2.3, 2.0], el: [1.0, 1.2], hip: [0.45, 0.15], kn: [-0.9, -0.75], head: -0.05 },
+  shoot:   { lean: -0.04, sh: [3.0, 2.75], el: [0.15, 0.35], hip: [0.18, 0.02], kn: [-0.3, -0.12], head: -0.12 },
+  follow:  { lean: -0.06, sh: [2.9, 2.6], el: [0.6, 0.5], hip: [0.22, 0.05], kn: [-0.45, -0.25], head: -0.15 },
   wing:    { lean: 0, sh: [-1.62, 1.62], el: [0, 0], hip: [-0.14, 0.14], kn: [0, 0], head: 0 },
   flex:    { lean: -0.05, sh: [-2.2, 2.2], el: [-1.6, 1.6], hip: [-0.2, 0.2], kn: [-0.1, -0.1], head: -0.1 },
   shrug:   { lean: 0, sh: [-0.9, 0.9], el: [1.3, -1.3], hip: [-0.1, 0.1], kn: [0, 0], head: 0.12 },
@@ -99,8 +99,8 @@ const kd = (x, y, s, pose, o = {}) => { g.save(); g.translate(x, y - (o.jump || 
     return [hx + Math.cos(a) * 26, hy + Math.sin(a) * 26]; };
   arm(0, true); leg(0, true); leg(1, false);
   // shorts: one garment = convex hull of the waistband and both thigh openings (so no leg can ever poke out of it)
-  { const pts = [[-66, -34], [66, -34], [-60, 10], [60, 10]]; const ends = [];
-    for (const i of [0, 1]) { const hx = i ? 20 : -20; const [kx, ky] = L(i); const ex = lerp(hx, kx, 0.58), ey = lerp(0, ky, 0.58); const a = Math.atan2(ky, kx - hx), nx = Math.cos(a), ny = Math.sin(a); const px = -ny * 46, py = nx * 46; pts.push([ex + px, ey + py], [ex - px, ey - py], [hx + px, py], [hx - px, -py]); ends.push([ex, ey]); }
+  { const pts = [[-54, -34], [54, -34], [-48, 4], [48, 4]]; const ends = [];
+    for (const i of [0, 1]) { const hx = i ? 20 : -20; const [kx, ky] = L(i); const ex = lerp(hx, kx, 0.58), ey = lerp(0, ky, 0.58); const a = Math.atan2(ky, kx - hx), nx = Math.cos(a), ny = Math.sin(a); const px = -ny * 40, py = nx * 40; pts.push([ex + px, ey + py], [ex - px, ey - py], [hx + px, py], [hx - px, -py]); ends.push([ex, ey]); }
     const hull = (P) => { P = P.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]); const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); const lo = [], up = []; for (const p of P) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop(); lo.push(p); } for (const p of P.slice().reverse()) { while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop(); up.push(p); } return lo.slice(0, -1).concat(up.slice(0, -1)); };
     const H = hull(pts); g.lineJoin = 'round'; g.beginPath(); H.forEach(([px, py], k) => k ? g.lineTo(px, py) : g.moveTo(px, py)); g.closePath(); g.fillStyle = C.blue; g.fill(); const sq = g.createLinearGradient(-80, 0, 80, 0); sq.addColorStop(0, 'rgba(0,0,0,0.25)'); sq.addColorStop(0.6, 'rgba(0,0,0,0)'); sq.addColorStop(1, 'rgba(140,110,255,0.25)'); g.fillStyle = sq; g.fill(); g.strokeStyle = C.gold; g.lineWidth = 9; g.stroke();
     g.strokeStyle = 'rgba(8,20,50,0.55)'; g.lineWidth = 5; g.beginPath(); g.moveTo(0, 20); g.lineTo((ends[0][0] + ends[1][0]) / 2, Math.max(ends[0][1], ends[1][1]) - 6); g.stroke(); }
