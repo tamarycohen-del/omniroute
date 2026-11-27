@@ -72,13 +72,30 @@ const kd = (x, y, s, pose, o = {}) => { g.save(); g.translate(x, y - (o.jump || 
   const [k0x, k0y] = L(0), [k1x, k1y] = L(1); g.fillStyle = C.blue; g.beginPath(); g.moveTo(-70, -30); g.lineTo(70, -30); g.lineTo(lerp(18, k1x, 0.55) + 42, lerp(0, k1y, 0.55)); g.lineTo(lerp(18, k1x, 0.55) - 30, lerp(0, k1y, 0.55) + 10); g.lineTo(0, 40); g.lineTo(lerp(-18, k0x, 0.55) + 30, lerp(0, k0y, 0.55) + 10); g.lineTo(lerp(-18, k0x, 0.55) - 42, lerp(0, k0y, 0.55)); g.closePath(); g.fill(); g.strokeStyle = C.gold; g.lineWidth = 9; g.stroke();
   drawLeg(1, false);
   // jersey (tapered torso, rotated by lean)
-  g.save(); g.rotate(p.lean); g.fillStyle = C.blue; g.beginPath(); g.moveTo(-64, -300); g.lineTo(64, -300); g.lineTo(52, 0); g.lineTo(-52, 0); g.closePath(); g.fill(); const jq = g.createLinearGradient(-64, 0, 64, 0); jq.addColorStop(0, 'rgba(255,255,255,0.12)'); jq.addColorStop(0.6, 'rgba(0,0,0,0)'); jq.addColorStop(1, 'rgba(120,90,255,0.35)'); g.fillStyle = jq; g.fill();
-  g.strokeStyle = C.gold; g.lineWidth = 10; g.beginPath(); g.moveTo(-64, -300); g.lineTo(-52, 0); g.moveTo(64, -300); g.lineTo(52, 0); g.stroke(); g.beginPath(); g.moveTo(-34, -300); g.quadraticCurveTo(0, -250, 34, -300); g.stroke();
-  g.fillStyle = C.gold; g.font = font(30, 900, ''); g.textAlign = 'center'; g.fillText('WARRIORS', 0, -215); g.font = font(96, 900, ''); g.lineWidth = 6; g.strokeStyle = '#0b1c40'; g.strokeText('35', 0, -110); g.fillText('35', 0, -110);
-  // neck + head
-  g.fillStyle = C.skin; g.fillRect(-18, -340, 36, 50); g.translate(0, -390); g.rotate(p.head); g.beginPath(); g.ellipse(0, 0, 50, 60, 0, 0, 7); g.fill(); g.fillStyle = '#120a06'; g.beginPath(); g.ellipse(0, -28, 52, 34, 0, Math.PI, 0); g.fill(); g.fillStyle = '#fff'; g.fillRect(-52, -30, 104, 15);
-  g.fillStyle = '#1a0f08'; g.beginPath(); g.ellipse(0, 42, 34, 18, 0, 0, Math.PI); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.ellipse(22, 2, 9, o.focus ? 4 : 7, 0, 0, 7); g.fill(); g.fillStyle = '#000'; g.beginPath(); g.arc(25, 2, 4, 0, 7); g.fill(); g.strokeStyle = '#000'; g.lineWidth = 5; g.beginPath(); g.moveTo(10, -10); g.lineTo(38, o.focus ? -4 : -12); g.stroke();
-  g.strokeStyle = 'rgba(170,130,255,0.7)'; g.lineWidth = 6; g.beginPath(); g.arc(0, 0, 58, -0.8, 0.9); g.stroke(); g.restore();
+  // jersey: Warriors-style blue tank, gold V-neck (white inner line), wide gold armholes, circle crest with bridge + 35
+  g.save(); g.rotate(p.lean); g.fillStyle = C.blue; g.beginPath(); g.moveTo(-40, -305); g.quadraticCurveTo(-70, -250, -60, -190); g.lineTo(-54, 0); g.lineTo(54, 0); g.lineTo(60, -190); g.quadraticCurveTo(70, -250, 40, -305); g.lineTo(18, -305); g.lineTo(0, -255); g.lineTo(-18, -305); g.closePath(); g.fill();
+  const jq = g.createLinearGradient(-64, 0, 64, 0); jq.addColorStop(0, 'rgba(255,255,255,0.10)'); jq.addColorStop(0.55, 'rgba(0,0,0,0)'); jq.addColorStop(1, 'rgba(120,90,255,0.32)'); g.fillStyle = jq; g.fill();
+  g.lineJoin = 'round'; g.strokeStyle = C.gold; g.lineWidth = 13; g.beginPath(); g.moveTo(-40, -305); g.quadraticCurveTo(-70, -250, -60, -190); g.moveTo(40, -305); g.quadraticCurveTo(70, -250, 60, -190); g.stroke();
+  g.strokeStyle = C.gold; g.lineWidth = 12; g.beginPath(); g.moveTo(-20, -305); g.lineTo(0, -252); g.lineTo(20, -305); g.stroke(); g.strokeStyle = '#fff'; g.lineWidth = 3; g.beginPath(); g.moveTo(-26, -305); g.lineTo(0, -243); g.lineTo(26, -305); g.stroke();
+  g.strokeStyle = '#e9eef7'; g.lineWidth = 6; g.beginPath(); g.moveTo(-57, -180); g.lineTo(-52, 0); g.moveTo(57, -180); g.lineTo(52, 0); g.stroke();
+  // crest
+  g.save(); g.translate(0, -150); g.fillStyle = C.gold; g.beginPath(); g.arc(0, 0, 66, 0, 7); g.fill(); g.strokeStyle = '#143e8c'; g.lineWidth = 5; g.beginPath(); g.arc(0, 0, 47, 0, 7); g.stroke();
+  const arcText = (s, r, top) => { g.font = font(14, 900, ''); g.fillStyle = '#143e8c'; g.textAlign = 'center'; const n = s.length, span = 2.3; for (let i = 0; i < n; i++) { const a = (top ? -Math.PI / 2 : Math.PI / 2) + (top ? 1 : -1) * (i - (n - 1) / 2) * (span / n); g.save(); g.rotate(a + (top ? Math.PI / 2 : -Math.PI / 2)); g.fillText(s[i], 0, top ? -r : r + 10); g.restore(); } };
+  arcText('GOLDEN STATE', 52, true); arcText('WARRIORS', 52, false);
+  g.save(); g.beginPath(); g.arc(0, 0, 45, 0, 7); g.clip(); g.fillStyle = '#143e8c'; g.fillRect(-26, -38, 7, 60); g.fillRect(17, -38, 7, 60); g.fillRect(-46, 14, 92, 6); g.strokeStyle = '#143e8c'; g.lineWidth = 2.5; for (const [a, b] of [[-22, 20], [-22, -48], [20, 48], [20, -20]]) { g.beginPath(); g.moveTo(a, -36); g.quadraticCurveTo((a + b) / 2, 4, b, 14); g.stroke(); } for (let i = -40; i <= 40; i += 8) { g.beginPath(); g.moveTo(i, 14); g.lineTo(i, Math.abs(i) < 20 ? -10 + Math.abs(i) : 0); g.stroke(); } g.restore();
+  g.font = font(40, 900, ''); g.fillStyle = '#143e8c'; g.lineWidth = 6; g.strokeStyle = C.gold; g.strokeText('35', 6, 8); g.fillText('35', 6, 8); g.restore();
+  // neck + head (low-cut hair, full beard + moustache, no headband — like the reference photo)
+  g.fillStyle = C.skin; g.fillRect(-19, -345, 38, 55); g.translate(0, -395); g.rotate(p.head);
+  g.fillStyle = C.skin; g.beginPath(); g.ellipse(-36, 4, 11, 17, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(4, 0, 46, 64, 0, 0, 7); g.fill();
+  const fq = g.createLinearGradient(-50, 0, 50, 0); fq.addColorStop(0, 'rgba(0,0,0,0.25)'); fq.addColorStop(0.6, 'rgba(255,255,255,0.06)'); fq.addColorStop(1, 'rgba(160,120,255,0.25)'); g.fillStyle = fq; g.fill();
+  g.fillStyle = '#0d0805'; g.beginPath(); g.moveTo(-42, -8); g.quadraticCurveTo(-50, -64, 4, -66); g.quadraticCurveTo(44, -64, 48, -26); g.quadraticCurveTo(28, -42, 6, -40); g.quadraticCurveTo(-26, -36, -34, -4); g.closePath(); g.fill();
+  g.fillStyle = '#120a06'; g.beginPath(); g.moveTo(-34, 8); g.quadraticCurveTo(-30, 44, -4, 62); g.quadraticCurveTo(22, 70, 40, 40); g.lineTo(44, 14); g.quadraticCurveTo(38, 36, 24, 36); g.quadraticCurveTo(10, 30, 0, 34); g.quadraticCurveTo(-18, 34, -26, 8); g.closePath(); g.fill();
+  g.beginPath(); g.moveTo(4, 26); g.quadraticCurveTo(24, 18, 42, 26); g.lineTo(42, 31); g.quadraticCurveTo(24, 24, 4, 31); g.closePath(); g.fill();
+  g.fillStyle = '#7b3f2c'; g.beginPath(); g.ellipse(26, 38, 13, 4, 0, 0, 7); g.fill();
+  g.strokeStyle = '#2a170d'; g.lineWidth = 4; g.beginPath(); g.moveTo(34, -2); g.quadraticCurveTo(46, 12, 40, 18); g.stroke();
+  g.fillStyle = '#0d0805'; g.beginPath(); g.moveTo(10, -22); g.quadraticCurveTo(26, -28, 42, -20); g.lineTo(42, -16); g.quadraticCurveTo(26, -22, 10, -17); g.fill(); g.beginPath(); g.moveTo(-14, -20); g.quadraticCurveTo(-4, -25, 4, -21); g.lineTo(4, -17); g.quadraticCurveTo(-4, -20, -14, -16); g.fill();
+  g.fillStyle = '#fff'; g.beginPath(); g.ellipse(27, -7, 10, o.focus ? 4 : 6.5, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(-6, -7, 7, o.focus ? 3 : 5.5, 0, 0, 7); g.fill(); g.fillStyle = '#1a0c05'; g.beginPath(); g.arc(30, -7, 4.5, 0, 7); g.arc(-4, -7, 3.5, 0, 7); g.fill();
+  g.strokeStyle = 'rgba(170,130,255,0.7)'; g.lineWidth = 6; g.beginPath(); g.arc(4, 0, 64, -0.8, 0.9); g.stroke(); g.restore();
   const hand = drawArm(1, false); g.restore();
   // ball
   let bp = null; if (p.ball !== undefined && !o.noBall) { const bx = hand[0] + 20, byTop = hipY + hand[1] + 30; const bounceY = lerp(byTop, -40, Math.abs(Math.sin(T * (o.bspeed || 7)))); bp = [bx, p.ball >= 0.99 ? bounceY : lerp(byTop, bounceY, p.ball)]; }
