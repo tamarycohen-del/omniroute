@@ -1,74 +1,74 @@
 [
  {
   "emotion": "urgent",
-  "text": "Jordan or LeBron. Who actually wins one on one?",
+  "text": "Prime LeBron. Prime Jordan. Who actually wins one on one?",
   "s": 0.0,
-  "e": 3.0
+  "e": 3.6
  },
  {
   "emotion": "curious",
   "text": "Let's settle it. Right here. Right now.",
-  "s": 3.45,
-  "e": 5.65
+  "s": 4.05,
+  "e": 6.25
  },
  {
   "emotion": "calm",
   "text": "Michael Jordan. Six foot six. Six trips to the Finals. Six championships. He never lost one.",
-  "s": 6.15,
-  "e": 11.91
+  "s": 6.75,
+  "e": 12.55
  },
  {
   "emotion": "urgent",
   "text": "Ten scoring titles. Thirty point one points a game. The highest average in NBA history.",
-  "s": 12.36,
-  "e": 17.8
+  "s": 13.0,
+  "e": 18.44
  },
  {
   "emotion": "calm",
   "text": "LeBron James. Six foot nine. Two hundred fifty pounds. Four championships.",
-  "s": 18.3,
-  "e": 23.1
+  "s": 18.94,
+  "e": 23.74
  },
  {
   "emotion": "urgent",
   "text": "More than forty thousand career points. The all time scoring king.",
-  "s": 23.55,
-  "e": 27.76
+  "s": 24.19,
+  "e": 28.43
  },
  {
   "emotion": "tense",
   "text": "So we tip it off. First to eleven.",
-  "s": 28.26,
-  "e": 30.35
+  "s": 28.93,
+  "e": 31.09
  },
  {
   "emotion": "urgent",
   "text": "Jordan scores first. LeBron answers with a dunk! Jordan, fadeaway. LeBron, right back at him.",
-  "s": 30.8,
-  "e": 36.32
+  "s": 31.54,
+  "e": 37.0
  },
  {
   "emotion": "tense",
   "text": "Nine all. Next bucket wins.",
-  "s": 36.77,
-  "e": 38.81
+  "s": 37.45,
+  "e": 39.49
  },
  {
   "emotion": "warm",
   "text": "Jordan hits the jumper. Eleven to nine. He guards too. Nine times first team all defense.",
-  "s": 39.26,
-  "e": 44.82
+  "s": 39.94,
+  "e": 45.5
  },
  {
   "emotion": "tense",
   "text": "But a seven game series? That's a different story.",
-  "s": 45.37,
-  "e": 48.44
+  "s": 46.05,
+  "e": 49.01
  },
  {
   "emotion": "urgent",
   "text": "Who wins? Comment Jordan, or LeBron.",
-  "s": 48.89,
-  "e": 51.25
+  "s": 49.46,
+  "e": 51.78
  }
 ]

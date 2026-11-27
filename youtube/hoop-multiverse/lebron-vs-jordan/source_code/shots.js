@@ -25,7 +25,7 @@ const buildShots = () => {
   { const d7 = LINES[8].s - LINES[7].s; const nm = WORDS.filter((w) => w.s >= LINES[7].s - 0.1 && w.s <= LINES[7].e + 0.2 && /^(jordan|lebron)/i.test(w.w.replace(/[^a-z]/gi, ''))); BEATS = nm.length >= 4 ? [0, nm[1].s - LINES[7].s, nm[2].s - LINES[7].s, nm[3].s - LINES[7].s, d7] : [0, d7 * 0.25, d7 * 0.5, d7 * 0.75, d7]; }
   // 0 hook: frame 0 is already moving
   S.push((u, d) => { const k = ease(u / d); g.save(); cam(lerp(0.86, 1.08, k), 540, 1100); arena(u); jord(250, mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5))), { bspeed: 7 }); lebr(830, mixP(P.stand, P.flex, 0.5 + 0.5 * Math.sin(T * 3))); g.restore(); speedLines(540, 1100, 0.12, 40);
-    slam('WHO WINS?', 540, 330, 190, C.white, u + 0.3); slam('JORDAN vs LEBRON', 540, 520, 88, GOLDL, u + 0.1, { glow: GOLDL, maxW: 980 });
+    slam('WHO WINS?', 540, 290, 190, C.white, u + 0.3); slam('PRIME JORDAN', 540, 450, 104, RED, u + 0.15, { glow: RED, maxW: 980 }); slam('vs PRIME LEBRON', 540, 580, 104, GOLDL, u + 0.05, { glow: GOLDL, maxW: 980 });
     const vk = back((u - 0.5) / 0.35); if (u > 0.5) { g.save(); g.translate(540, 980); g.scale(clamp(vk, 0, 1.2), clamp(vk, 0, 1.2)); g.fillStyle = '#0a0620'; g.beginPath(); g.arc(0, 0, 90, 0, 7); g.fill(); g.strokeStyle = '#7fe7ff'; g.lineWidth = 8; g.shadowColor = '#7fe7ff'; g.shadowBlur = 30; g.stroke(); g.shadowBlur = 0; txt('VS', 0, 30, 84, C.white, { stroke: 8 }); g.restore(); } });
   // 1 settle it
   S.push((u, d) => { g.save(); cam(lerp(1.0, 1.25, ease(u / d)), 540, 1150, 0.02 * Math.sin(T * 2)); arena(u); jord(360, P.stand); lebr(720, P.stand); const by = 840 + Math.sin(T * 4) * 25; glow(540, by, 220, '255,170,60', 0.5); ball(540, by, 44, T * 5); g.restore(); speedLines(540, 900, 0.18, 50);
@@ -78,7 +78,7 @@ const buildShots = () => {
   // 11 CTA / end card
   S.push((u, d) => { nebula(T * 20, 0); glow(540, 1000, 900, '150,110,255', 0.22); bigNum('WHO WINS?', 540, 400, 190, C.white, u + 0.3); bigNum('COMMENT YOUR PICK', 540, 540, 70, '#7fe7ff', u, { maxW: 980 });
     const pul = 1 + 0.03 * Math.sin(T * 6); g.save(); g.translate(270, 1000); g.scale(pul, pul); portrait(0, 0, 210, LOOK.jordan, false); g.restore(); g.save(); g.translate(810, 1000); g.scale(2 - pul, 2 - pul); portrait(0, 0, 210, LOOK.lebron, true); g.restore();
-    bigNum('JORDAN', 270, 1320, 82, RED, u - 0.3); bigNum('LEBRON', 810, 1320, 82, GOLDL, u - 0.4); if (u > d - 1.1) { g.fillStyle = `rgba(5,4,20,${clamp((u - (d - 1.1)) / 0.25) * 0.85})`; g.fillRect(0, 0, W, H); bigNum('MULTIVERSE HOOPS', 540, 960, 96, C.white, u - (d - 1.0), { maxW: 980, glow: VIO }); } });
+    bigNum('PRIME JORDAN', 270, 1320, 64, RED, u - 0.3, { maxW: 440 }); bigNum('PRIME LEBRON', 810, 1320, 64, GOLDL, u - 0.4, { maxW: 440 }); if (u > d - 1.1) { g.fillStyle = `rgba(5,4,20,${clamp((u - (d - 1.1)) / 0.25) * 0.85})`; g.fillRect(0, 0, W, H); bigNum('MULTIVERSE HOOPS', 540, 960, 96, C.white, u - (d - 1.0), { maxW: 980, glow: VIO }); } });
   SH = S.map((fn, i) => [i === 0 ? 0 : LINES[i].s, fn]);
   SH.dur = (i) => (i + 1 < SH.length ? LINES[i + 1].s : window.TOTAL) - SH[i][0];
 };

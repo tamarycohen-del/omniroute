@@ -53,10 +53,10 @@ html = txt + '\n' + measure + '\n' + shots + '\n' + tail_txt + '\n'
 thumb = '''
 window.renderThumb = () => { T = 2.4; g.setTransform(1, 0, 0, 1, 0, 0); g.save(); cam(1.0, 540, 1000); arena(0.5); glow(540, 900, 700, '255,255,255', 0.12); jord(250, mixP(P.stand, P.flex, 0.0), { k: 1.12 }); lebr(830, P.stand, { k: 1.12 }); g.restore(); speedLines(540, 1000, 0.2, 60);
   const vg = g.createRadialGradient(W / 2, 1000, H * 0.3, W / 2, 1000, H * 0.8); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.5)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
-  g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(0, 70, W, 520); txt('WHO WINS?', 540, 270, 200, C.white); txt('JORDAN', 540, 430, 150, RED); txt('vs LEBRON', 540, 570, 130, GOLDL, { glow: GOLDL });
+  g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(0, 70, W, 520); txt('WHO WINS?', 540, 250, 190, C.white); txt('PRIME JORDAN', 540, 410, 112, RED, { maxW: 980 }); txt('vs PRIME LEBRON', 540, 545, 104, GOLDL, { glow: GOLDL, maxW: 980 });
   g.save(); g.translate(540, 1000); g.fillStyle = '#0a0620'; g.beginPath(); g.arc(0, 0, 100, 0, 7); g.fill(); g.strokeStyle = '#7fe7ff'; g.lineWidth = 9; g.shadowColor = '#7fe7ff'; g.shadowBlur = 34; g.stroke(); g.shadowBlur = 0; txt('VS', 0, 34, 96, C.white, { stroke: 8 }); g.restore(); return true; };
 '''
 html += thumb
-html += "Promise.all([fetch('./words.json').then((r) => r.json()), fetch('./lines.json').then((r) => r.json())]).then(([w, ln]) => { WORDS = w; LINES = ln; window.TOTAL = ln[ln.length - 1].e + 1.3; buildShots(); window.ready = true; });\n</script></body></html>\n"
+html += "Promise.all([fetch('./words.json').then((r) => r.json()), fetch('./lines.json').then((r) => r.json())]).then(([w, ln]) => { WORDS = w; LINES = ln; window.TOTAL = ln[ln.length - 1].e + 1.6; buildShots(); window.ready = true; });\n</script></body></html>\n"
 open(os.path.join(HERE, 'lbmj.html'), 'w').write(html)
 print('built', len(html))

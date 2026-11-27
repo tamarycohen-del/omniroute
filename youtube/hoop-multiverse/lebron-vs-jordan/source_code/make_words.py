@@ -16,5 +16,19 @@ for k, w in enumerate(out):
     t = t.replace('LeBron,', 'LeBron')
     if t.startswith('"') or t == '': continue
     res.append({'w': t, 's': w['s'], 'e': w['e']})
+# spelled-out numbers -> numerals (Whisper writes either form), so shots can key on e.g. /^30/ or /^6'9/
+RULES = [(['six', 'foot', 'six'], "6'6\""), (['six', 'foot', 'nine'], "6'9\""), (['thirty', 'point', 'one'], '30.1'), (['two', 'hundred', 'fifty'], '250'), (['forty', 'thousand'], '40,000'),
+         (['ten'], '10'), (['four'], '4'), (['eleven'], '11'), (['nine'], '9'), (['seven'], '7'), (['six'], '6')]
+norm = lambda x: re.sub(r'[^a-z]', '', x.lower())
+final = []; k = 0
+while k < len(res):
+    for seq, rep in RULES:
+        if [norm(r['w']) for r in res[k:k + len(seq)]] == seq:
+            final.append({'w': rep, 's': res[k]['s'], 'e': res[k + len(seq) - 1]['e']}); k += len(seq); break
+    else:
+        final.append(res[k]); k += 1
+for q in range(len(final) - 1):
+    if norm(final[q]['w']) == 'for' and norm(final[q + 1]['w']) == 'championships': final[q]['w'] = '4'
+res = final
 json.dump(res, open(sys.argv[2], 'w'))
 print(' '.join(f"{x['w']}@{x['s']}" for x in res))

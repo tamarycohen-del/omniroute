@@ -1,5 +1,5 @@
 # emotion | text | speed | pause_ms     (one line = one shot; 11 lines)
-urgent | Jordan or LeBron. Who actually wins one on one? | 1.05 | 450
+urgent | Prime LeBron. Prime Jordan. Who actually wins one on one? | 1.05 | 450
 curious | Let's settle it. Right here. Right now. | 1.0 | 500
 calm | Michael Jordan. Six foot six. Six trips to the Finals. Six championships. He never lost one. | 1.0 | 450
 urgent | Ten scoring titles. Thirty point one points a game. The highest average in NBA history. | 1.05 | 500

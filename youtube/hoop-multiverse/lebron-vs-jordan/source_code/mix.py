@@ -13,7 +13,7 @@ voice_p, lines_p, words_p, out_p = sys.argv[1:5]
 LINES = json.load(open(lines_p)); WORDS = json.load(open(words_p))
 raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', voice_p, '-ac', '2', '-ar', str(SR), '-f', 'f32le', '-'], capture_output=True, check=True).stdout
 V = np.frombuffer(raw, np.float32).reshape(-1, 2)
-TOTAL = LINES[-1]['e'] + 1.3
+TOTAL = LINES[-1]['e'] + 1.6
 N = int(TOTAL * SR); t = np.arange(N) / SR
 rng = np.random.default_rng(11)
 S0 = [0.0] + [l['s'] for l in LINES[1:]]           # shot starts
@@ -120,7 +120,12 @@ kit.place(L, R, 'impact-medium-soft', S0[11] + 0.3, 0.4)
 VL = np.zeros(N); VR = np.zeros(N); n = min(N, len(V)); VL[:n] = V[:n, 0]; VR[:n] = V[:n, 1]
 env = np.convolve(np.abs(VL), np.ones(int(0.25 * SR)) / int(0.25 * SR), mode='same'); duck = 1 - 0.45 * np.clip(env / (env.max() * 0.3), 0, 1)
 L = L * duck + VL; R = R * duck + VR
-fo = int(0.4 * SR); L[-fo:] *= np.linspace(1, 0, fo); R[-fo:] *= np.linspace(1, 0, fo)
+# the user's sound: "Well, bye guys!" as the sign-off, landing right after the last word (its 'bye guys' sits in the short end card)
+cl = np.frombuffer(subprocess.run(['ffmpeg', '-v', 'error', '-i', os.path.join(os.path.dirname(__file__), '..', 'assets', 'well_bye_guys.mp3'), '-ac', '2', '-ar', str(SR), '-f', 'f32le', '-'], capture_output=True, check=True).stdout, np.float32).reshape(-1, 2)
+act = lambda a: np.sqrt(np.mean(a[np.abs(a) > 0.01] ** 2))
+gain = 0.9 * act(V) / act(cl); c0 = int((LINES[-1]['e'] - 0.25) * SR); c1 = min(N, c0 + len(cl))
+L[c0:c1] += cl[:c1 - c0, 0] * gain; R[c0:c1] += cl[:c1 - c0, 1] * gain
+fo = int(0.12 * SR); L[-fo:] *= np.linspace(1, 0, fo); R[-fo:] *= np.linspace(1, 0, fo)
 X = np.stack([L, R], 1).astype(np.float32)
 subprocess.run(['ffmpeg', '-y', '-v', 'error', '-f', 'f32le', '-ar', str(SR), '-ac', '2', '-i', '-', '-af',
                 'acompressor=threshold=-20dB:ratio=3:attack=10:release=200,loudnorm=I=-14:TP=-1.5:LRA=11,alimiter=limit=0.7:level=false', '-ar', str(SR), out_p], input=X.tobytes(), check=True)
