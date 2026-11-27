@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#000"><canvas id="c" width="2560" height="1440"></canvas><script>
+// MULTIVERSE HOOPS — YouTube banner 2560x1440. Everything important sits inside the 1546x423 safe area (centre), shown on all devices.
+const c = document.getElementById('c'), g = c.getContext('2d'), W = 2560, H = 1440, hsh = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+const glow = (x, y, r, col, a) => { const q = g.createRadialGradient(x, y, 1, x, y, r); q.addColorStop(0, `rgba(${col},${a})`); q.addColorStop(1, `rgba(${col},0)`); g.fillStyle = q; g.fillRect(x - r, y - r, 2 * r, 2 * r); };
+const bg = g.createLinearGradient(0, 0, W, 0); bg.addColorStop(0, '#070514'); bg.addColorStop(0.5, '#1b0f45'); bg.addColorStop(1, '#070514'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
+g.globalCompositeOperation = 'lighter'; glow(700, 720, 900, '120,60,255', 0.25); glow(1900, 700, 900, '30,140,255', 0.18); glow(1280, 720, 700, '255,140,60', 0.12); g.globalCompositeOperation = 'source-over';
+for (let i = 0; i < 900; i++) { const r = hsh(i + 9) * 3 + 0.6; g.fillStyle = `rgba(255,255,255,${0.25 + hsh(i + 3) * 0.7})`; g.beginPath(); g.arc(hsh(i) * W, hsh(i + 1) * H, r, 0, 7); g.fill(); }
+// perspective court grid fading into space
+g.strokeStyle = 'rgba(255,199,44,0.12)'; g.lineWidth = 2; for (let i = -30; i <= 30; i++) { g.beginPath(); g.moveTo(1280 + i * 160, H); g.lineTo(1280 + i * 18, 900); g.stroke(); } for (let j = 0; j < 9; j++) { const y = 900 + Math.pow(j / 9, 2) * 540; g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+// little worlds (the multiverse)
+const ball = (x, y, R, ringA = -0.35) => { const ring = (front) => { g.save(); g.translate(x, y); g.rotate(ringA); g.lineCap = 'round'; for (const [w, col] of [[R * 0.18, 'rgba(255,199,44,0.25)'], [R * 0.075, '#ffc72c'], [R * 0.025, '#fff3c4']]) { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); g.ellipse(0, 0, R * 1.5, R * 0.43, 0, front ? 0 : Math.PI, front ? Math.PI : 2 * Math.PI); g.stroke(); } g.restore(); };
+  ring(false); const q = g.createRadialGradient(x - R * 0.34, y - R * 0.37, R * 0.1, x, y, R); q.addColorStop(0, '#ffb56a'); q.addColorStop(0.55, '#f07a1c'); q.addColorStop(1, '#8a3507'); g.fillStyle = q; g.beginPath(); g.arc(x, y, R, 0, 7); g.fill();
+  g.save(); g.beginPath(); g.arc(x, y, R, 0, 7); g.clip(); g.strokeStyle = '#2a1205'; g.lineWidth = R * 0.055; g.beginPath(); g.moveTo(x - R, y); g.lineTo(x + R, y); g.moveTo(x, y - R); g.lineTo(x, y + R); g.stroke(); g.beginPath(); g.arc(x - R * 1.32, y, R * 1.1, -0.95, 0.95); g.stroke(); g.beginPath(); g.arc(x + R * 1.32, y, R * 1.1, Math.PI - 0.95, Math.PI + 0.95); g.stroke(); g.restore(); ring(true); };
+ball(690, 720, 165, -0.4);
+for (const [x, y, r, col] of [[2250, 620, 60, '#7fe7ff'], [2230, 1010, 40, '#b8a6ff'], [560, 470, 30, '#ffc72c'], [300, 1000, 80, '#5fc4a8'], [2300, 360, 70, '#9b7dff']]) { const q = g.createRadialGradient(x - r * 0.4, y - r * 0.4, 2, x, y, r); q.addColorStop(0, '#ffffff'); q.addColorStop(1, col); g.fillStyle = q; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+// a comet ball arcing into a hoop on the right
+g.lineCap = 'round'; for (let i = 0; i < 40; i++) { const k = i / 40, x = 1600 + k * 260, y = 760 - Math.sin(k * Math.PI) * 260 + k * 60; g.strokeStyle = `rgba(255,${150 + 80 * k},60,${k * 0.8})`; g.lineWidth = 3 + k * 14; g.beginPath(); g.moveTo(x, y); g.lineTo(x + 8, y - 6); g.stroke(); }
+g.fillStyle = '#ff8a2a'; g.beginPath(); g.arc(1866, 790, 16, 0, 7); g.fill();
+g.strokeStyle = '#d8dde6'; g.lineWidth = 10; g.beginPath(); g.moveTo(2010, 640); g.lineTo(2010, 900); g.stroke(); g.fillStyle = 'rgba(230,240,255,0.55)'; g.fillRect(1990, 650, 14, 110); g.strokeStyle = '#ff7a1a'; g.lineWidth = 8; g.beginPath(); g.ellipse(1935, 745, 52, 12, 0, 0, 7); g.stroke(); g.strokeStyle = 'rgba(255,255,255,0.8)'; g.lineWidth = 3; for (let i = 0; i < 7; i++) { g.beginPath(); g.moveTo(1885 + i * 16, 747); g.lineTo(1905 + i * 10, 805); g.stroke(); }
+// title (inside the safe area 507..2053 x 508..931)
+g.textAlign = 'center'; g.lineJoin = 'round'; const T = (s, y, size, fill, glowCol, stroke = 18) => { g.font = `italic 900 ${size}px "DejaVu Sans", sans-serif`; g.shadowColor = glowCol; g.shadowBlur = 50; g.lineWidth = stroke; g.strokeStyle = '#05040d'; g.strokeText(s, 1360, y); g.shadowBlur = 0; g.fillStyle = fill; g.fillText(s, 1360, y); };
+const tq = g.createLinearGradient(0, 560, 0, 760); tq.addColorStop(0, '#ffe08a'); tq.addColorStop(1, '#ffb21c');
+T('MULTIVERSE', 690, 150, '#ffffff', 'rgba(150,110,255,0.9)'); T('HOOPS', 840, 160, tq, 'rgba(255,170,40,0.9)');
+g.font = '700 44px "DejaVu Sans", sans-serif'; g.fillStyle = '#cfc4ff'; g.fillText('WHAT IF NBA LEGENDS PLAYED THE IMPOSSIBLE?', 1360, 915);
+window.ready = true;
+</script></body></html>
