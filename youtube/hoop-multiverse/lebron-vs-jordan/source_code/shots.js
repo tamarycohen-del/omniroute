@@ -73,7 +73,7 @@ const buildShots = () => {
     jord(lx - 330 + 50 * clamp((u - tJ) / 0.4), u < tJ - 0.2 ? POSE.guard : P.flex, { jump: 55 * jp });
     lebr(lx, u < tJ ? mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5))) : u < tJ + 0.2 ? mixP(P.load, P.shoot, ease((u - tJ) / 0.2)) : P.shoot, { jump: 175 * jp, holdBall: u >= tJ && u < tR, noBall: u >= tR, bspeed: 6 });
     if (u >= tR) { const k = clamp((u - tR) / 0.9); const sx = lx - 62, sy = GY - 175 * jp - 790 * SL / 0.8 * 0.98; const pts = []; for (let i = 0; i <= 12; i++) pts.push(flightPt(sx, sy, rim[0], rim[1], k * i / 12, 430)); comet(pts, 22); ball(pts[12][0], pts[12][1], 36, T * 10); }
-    g.restore(); board(10, 10, 1, 0, 0); if (u > tCut) { g.fillStyle = `rgba(3,2,12,${clamp((u - tCut) / 0.18)})`; g.fillRect(0, 0, W, H); } });
+    g.restore(); board(10, 10, 1, 0, 0); if (u > tCut) { g.fillStyle = `rgba(3,2,12,${clamp((u - tCut) / 0.18)})`; g.fillRect(0, 0, W, H); const ho = clamp((u - tCut - 0.5) / 0.5); if (ho > 0) { g.save(); g.globalAlpha = ho * 0.9; txt('MULTIVERSE HOOPS', 540, 980, 70, '#b9a4ff', { glow: '#9b6bff', maxW: 900, stroke: 8 }); g.restore(); } } });
   // 10 did it go in? (dark: we never see it)
   S.push((u, d) => { g.fillStyle = '#03020c'; g.fillRect(0, 0, W, H); const pul = 1 + 0.04 * Math.sin(T * 5); glow(540, 900, 700 * pul, '150,110,255', 0.16 + 0.05 * Math.sin(T * 5)); g.save(); g.translate(540, 900); g.scale(pul, pul); g.globalAlpha = 0.95; txt('?', 0, 190, 620, '#2a1d52', { stroke: 0, glow: '#9b6bff' }); g.restore();
     const tD = wt(10, /^did/, 0, 0.1), tY = wt(10, /^you/, 0, 1.4); bigNum('DID IT GO IN?', 540, 420, 112, C.white, u - tD, { maxW: 980, glow: '#9b6bff' }); if (u > tY) bigNum('YOU DECIDE.', 540, 1400, 120, GOLDL, u - tY, { maxW: 980 }); });
@@ -81,6 +81,7 @@ const buildShots = () => {
   S.push((u, d) => { nebula(T * 20, 0); glow(540, 1000, 900, '150,110,255', 0.22); bigNum('WHO WINS?', 540, 400, 190, C.white, u + 0.3); bigNum('COMMENT YOUR PICK', 540, 540, 70, '#7fe7ff', u, { maxW: 980 });
     const pul = 1 + 0.03 * Math.sin(T * 6); g.save(); g.translate(270, 1000); g.scale(pul, pul); portrait(0, 0, 210, LOOK.jordan, false); g.restore(); g.save(); g.translate(810, 1000); g.scale(2 - pul, 2 - pul); portrait(0, 0, 210, LOOK.lebron, true); g.restore();
     bigNum('PRIME JORDAN', 270, 1320, 64, RED, u - 0.3, { maxW: 440 }); bigNum('PRIME LEBRON', 810, 1320, 64, GOLDL, u - 0.4, { maxW: 440 }); if (u > d - 1.1) { g.fillStyle = `rgba(5,4,20,${clamp((u - (d - 1.1)) / 0.25) * 0.85})`; g.fillRect(0, 0, W, H); bigNum('MULTIVERSE HOOPS', 540, 960, 96, C.white, u - (d - 1.0), { maxW: 980, glow: VIO }); } });
+  S.splice(10); // the video now ends on the last shot (cut to black) + the sign-off sound; shots 10/11 (question + CTA card) are unused
   SH = S.map((fn, i) => [i === 0 ? 0 : LINES[i].s, fn]);
   SH.dur = (i) => (i + 1 < SH.length ? LINES[i + 1].s : window.TOTAL) - SH[i][0];
 };

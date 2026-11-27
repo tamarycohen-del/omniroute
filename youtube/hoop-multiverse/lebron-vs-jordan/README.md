@@ -19,3 +19,5 @@ LeBron 6'9", 250 lb, 4 titles, more than 40,000 career points (all-time leading 
 Sources: NBA.com / Basketball-Reference career pages.
 
 Sign-off sound: assets/well_bye_guys.mp3 (the user's clip) is mixed in right after the last word (see mix.py). Whole pipeline after a new narration: `source_code/run.sh <voice.wav>`.
+
+Ending (user, 2026-11-27): the video ends on LeBron's last shot, cut to black; no question card, no CTA. The user's clip plays alone in the black as the outro (mix.py: starts right after the cut, music/sfx off). 10 narration lines / 10 shots.
