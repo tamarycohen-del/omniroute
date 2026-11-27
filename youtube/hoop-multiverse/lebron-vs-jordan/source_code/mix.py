@@ -13,7 +13,7 @@ voice_p, lines_p, words_p, out_p = sys.argv[1:5]
 LINES = json.load(open(lines_p)); WORDS = json.load(open(words_p))
 raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', voice_p, '-ac', '2', '-ar', str(SR), '-f', 'f32le', '-'], capture_output=True, check=True).stdout
 V = np.frombuffer(raw, np.float32).reshape(-1, 2)
-TOTAL = LINES[-1]['e'] + 2.3
+TOTAL = LINES[-1]['e'] + 0.5
 N = int(TOTAL * SR); t = np.arange(N) / SR
 rng = np.random.default_rng(11)
 S0 = [0.0] + [l['s'] for l in LINES[1:]]           # shot starts
@@ -117,14 +117,11 @@ tR = S0[9] + wt(9, r"^shoots", 0, 3.0)                       # last shot: dribbl
 for q in range(5): bounce(S0[9] + 0.15 + q * 0.4, 0.28)
 kit.place(L, R, 'riser-1s-soft', tR - 0.8, 0.35); kit.place(L, R, 'impact-light-soft', tR, 0.4)
 
+CLIPS = json.load(open(os.path.join(os.path.dirname(lines_p), 'clips.json')))   # the user's 'LeBron James!' shout replaces the narrator's word (insert_clip.py); it is part of the voice track, so music ducks under it
+for c in CLIPS: kit.place(L, R, 'impact-light-firm', c['s'] + 0.55, 0.30)
 VL = np.zeros(N); VR = np.zeros(N); n = min(N, len(V)); VL[:n] = V[:n, 0]; VR[:n] = V[:n, 1]
 env = np.convolve(np.abs(VL), np.ones(int(0.25 * SR)) / int(0.25 * SR), mode='same'); duck = 1 - 0.45 * np.clip(env / (env.max() * 0.3), 0, 1)
 L = L * duck + VL; R = R * duck + VR
-# the user's sound "Well, bye guys!" = the outro: plays alone in the black right after the cut (music and sfx are off, no voice)
-cl = np.frombuffer(subprocess.run(['ffmpeg', '-v', 'error', '-i', os.path.join(os.path.dirname(__file__), '..', 'assets', 'well_bye_guys.mp3'), '-ac', '2', '-ar', str(SR), '-f', 'f32le', '-'], capture_output=True, check=True).stdout, np.float32).reshape(-1, 2)
-act = lambda a: np.sqrt(np.mean(a[np.abs(a) > 0.01] ** 2))
-gain = 1.15 * act(V) / act(cl); c0 = int((tcut + 0.1) * SR); c1 = min(N, c0 + len(cl))
-L[c0:c1] += cl[:c1 - c0, 0] * gain; R[c0:c1] += cl[:c1 - c0, 1] * gain
 fo = int(0.12 * SR); L[-fo:] *= np.linspace(1, 0, fo); R[-fo:] *= np.linspace(1, 0, fo)
 X = np.stack([L, R], 1).astype(np.float32)
 subprocess.run(['ffmpeg', '-y', '-v', 'error', '-f', 'f32le', '-ar', str(SR), '-ac', '2', '-i', '-', '-af',

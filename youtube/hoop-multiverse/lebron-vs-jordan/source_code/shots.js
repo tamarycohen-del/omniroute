@@ -1,5 +1,6 @@
 // ---------- Jordan vs LeBron: shots (each voice line = one shot; times come from lines.json) ----------
-let LINES = [], SH = [], BEATS = [0, 1, 2, 3, 4];
+let LINES = [], SH = [], BEATS = [0, 1, 2, 3, 4], CLIPS = [];
+const clipOn = (i) => (CLIPS[i] && T >= CLIPS[i].s && T <= CLIPS[i].e ? Math.max(0, 1 - Math.abs((T - CLIPS[i].s) / (CLIPS[i].e - CLIPS[i].s) - 0.45) * 1.4) : 0); // 1 while the user's 'LeBron James!' sound plays
 const SJ = 0.8 * 78 / 83, SL = 0.8 * 81 / 83, GY = 1500; // 6'6" and 6'9" relative to the 6'11" rig at 0.8
 const RED = '#ff3b4a', GOLDL = '#fdb927', VIO = '#9b6bff';
 const POSE = { fade: { ...P.shoot, lean: -0.3, hip: [0.3, 0.0], kn: [-0.2, -0.35] }, guard: { lean: 0.05, sh: [-1.7, 1.7], el: [-1.0, 1.0], hip: [-0.3, 0.3], kn: [-0.5, -0.5], head: 0 }, crouch: { lean: 0.12, sh: [-0.45, 0.3], el: [-0.55, 0.3], hip: [0.5, -0.4], kn: [-0.7, -0.55], head: 0.05, ball: 0 } };
@@ -26,7 +27,7 @@ const buildShots = () => {
   const S = [];
   { const d7 = LINES[8].s - LINES[7].s; const nm = WORDS.filter((w) => w.s >= LINES[7].s - 0.1 && w.s <= LINES[7].e + 0.2 && /^(jordan|lebron)/i.test(w.w.replace(/[^a-z]/gi, ''))); BEATS = nm.length >= 4 ? [0, nm[1].s - LINES[7].s, nm[2].s - LINES[7].s, nm[3].s - LINES[7].s, d7] : [0, d7 * 0.25, d7 * 0.5, d7 * 0.75, d7]; }
   // 0 hook: the open loop first (tied 10-10, one shot left), then the title; fast from frame 0
-  S.push((u, d) => { const k = ease(u / d); g.save(); cam(lerp(0.9, 1.1, k), 540, 1120); arena(u); hoop(HX, GY, HKS, 9); hoopL(9); jord(300, POSE.guard); lebr(760, mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5))), { bspeed: 6 }); g.restore(); speedLines(540, 1100, 0.14, 40); board(10, 10, 1, 0, 0);
+  S.push((u, d) => { const k = ease(u / d); g.save(); cam(lerp(0.9, 1.1, k), 540, 1120); arena(u); hoop(HX, GY, HKS, 9); hoopL(9); jord(300, POSE.guard); glow(760, 1050, 420, '253,185,39', 0.6 * clipOn(0)); lebr(760, mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5))), { bspeed: 6 }); g.restore(); speedLines(540, 1100, 0.14, 40); board(10, 10, 1, 0, 0);
     slam('WHO WINS?', 540, 400, 180, C.white, u + 0.3); slam('PRIME JORDAN', 540, 540, 100, RED, u + 0.15, { glow: RED, maxW: 980 }); slam('vs PRIME LEBRON', 540, 660, 100, GOLDL, u + 0.05, { glow: GOLDL, maxW: 980 }); });
   // 1 who takes it
   S.push((u, d) => { g.save(); cam(lerp(1.0, 1.25, ease(u / d)), 540, 1150, 0.02 * Math.sin(T * 2)); arena(u); jord(360, P.stand); lebr(720, P.stand); const by = 840 + Math.sin(T * 4) * 25; glow(540, by, 220, '255,170,60', 0.5); ball(540, by, 44, T * 5); g.restore(); speedLines(540, 900, 0.18, 50);
@@ -38,7 +39,7 @@ const buildShots = () => {
   S.push((u, d) => { g.save(); cam(1.0, 540, 1100); arena(u); const a10 = wt(3, /^10/, 0, 0.2), a30 = wt(3, /^30/, 0, 1.6), aHi = wt(3, /^highest/, 0, 3.3); jord(540, mixP(P.stand, P.flex, ease((u - a10) / 0.7)), { k: 1.12 }); g.restore(); glow(540, 700, 700, '255,59,74', 0.12);
     if (u < a30 - 0.05) { bigNum('10', 540, 400, 260, RED, u - a10); bigNum('SCORING TITLES', 540, 530, 86, C.white, u - a10 - 0.25); } else { const n = lerp(0, 30.1, ease((u - a30) / 0.9)); bigNum(n.toFixed(1), 540, 400, 250, RED, u - a30); bigNum('POINTS PER GAME', 540, 530, 80, C.white, u - a30 - 0.2); if (u > aHi) bigNum('#1 IN NBA HISTORY', 540, 660, 70, GOLDL, u - aHi, { maxW: 980 }); } });
   // 4 LeBron resume
-  S.push((u, d) => { g.save(); cam(1.0, 540, 1100); arena(u); const b69 = wt(4, /^6'9/, 0, 1.0), b250 = wt(4, /^250/, 0, 2.2), b4 = wt(4, /^4$/, 0, 3.6); lebr(540, mixP(P.stand, P.flex, ease((u - b69) / 0.7)), { k: 1.12 }); measure(970, GY, GY - 900 * SL * 1.12, '6\'9"', GOLDL, (u - b69) / 0.7, -1, 78); g.restore();
+  S.push((u, d) => { g.save(); cam(1.0, 540, 1100); arena(u); const b69 = wt(4, /^6'9/, 0, 1.0), b250 = wt(4, /^250/, 0, 2.2), b4 = wt(4, /^4$/, 0, 3.6); glow(540, 1000, 480, '253,185,39', 0.6 * clipOn(1)); lebr(540, mixP(P.stand, P.flex, ease((u - b69) / 0.7)), { k: 1.12 }); measure(970, GY, GY - 900 * SL * 1.12, '6\'9"', GOLDL, (u - b69) / 0.7, -1, 78); g.restore();
     glow(540, 800, 700, '253,185,39', 0.12); bigNum('250 LBS', 540, 300, 130, C.white, u - b250); bigNum('4 TITLES', 540, 460, 130, GOLDL, u - b4); });
   // 5 LeBron scoring king
   S.push((u, d) => { g.save(); cam(1.0, 540, 1100); arena(u); const c40 = wt(5, /^40/, 0, 0.5), cKing = wt(5, /^all-time/, 0, 2.6); lebr(540, mixP(P.stand, P.flex, ease((u - c40) / 0.7)), { k: 1.12 }); g.restore(); glow(540, 700, 700, '253,185,39', 0.12);
@@ -73,7 +74,7 @@ const buildShots = () => {
     jord(lx - 330 + 50 * clamp((u - tJ) / 0.4), u < tJ - 0.2 ? POSE.guard : P.flex, { jump: 55 * jp });
     lebr(lx, u < tJ ? mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5))) : u < tJ + 0.2 ? mixP(P.load, P.shoot, ease((u - tJ) / 0.2)) : P.shoot, { jump: 175 * jp, holdBall: u >= tJ && u < tR, noBall: u >= tR, bspeed: 6 });
     if (u >= tR) { const k = clamp((u - tR) / 0.9); const sx = lx - 62, sy = GY - 175 * jp - 790 * SL / 0.8 * 0.98; const pts = []; for (let i = 0; i <= 12; i++) pts.push(flightPt(sx, sy, rim[0], rim[1], k * i / 12, 430)); comet(pts, 22); ball(pts[12][0], pts[12][1], 36, T * 10); }
-    g.restore(); board(10, 10, 1, 0, 0); if (u > tCut) { g.fillStyle = `rgba(3,2,12,${clamp((u - tCut) / 0.18)})`; g.fillRect(0, 0, W, H); const ho = clamp((u - tCut - 0.5) / 0.5); if (ho > 0) { g.save(); g.globalAlpha = ho * 0.9; txt('MULTIVERSE HOOPS', 540, 980, 70, '#b9a4ff', { glow: '#9b6bff', maxW: 900, stroke: 8 }); g.restore(); } } });
+    g.restore(); board(10, 10, 1, 0, 0); if (u > tCut) { g.fillStyle = `rgba(3,2,12,${clamp((u - tCut) / 0.18)})`; g.fillRect(0, 0, W, H); } });
   // 10 did it go in? (dark: we never see it)
   S.push((u, d) => { g.fillStyle = '#03020c'; g.fillRect(0, 0, W, H); const pul = 1 + 0.04 * Math.sin(T * 5); glow(540, 900, 700 * pul, '150,110,255', 0.16 + 0.05 * Math.sin(T * 5)); g.save(); g.translate(540, 900); g.scale(pul, pul); g.globalAlpha = 0.95; txt('?', 0, 190, 620, '#2a1d52', { stroke: 0, glow: '#9b6bff' }); g.restore();
     const tD = wt(10, /^did/, 0, 0.1), tY = wt(10, /^you/, 0, 1.4); bigNum('DID IT GO IN?', 540, 420, 112, C.white, u - tD, { maxW: 980, glow: '#9b6bff' }); if (u > tY) bigNum('YOU DECIDE.', 540, 1400, 120, GOLDL, u - tY, { maxW: 980 }); });
