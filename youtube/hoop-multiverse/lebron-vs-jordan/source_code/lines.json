@@ -1,74 +1,74 @@
 [
  {
   "emotion": "urgent",
-  "text": "Prime LeBron. Prime Jordan. Who actually wins one on one?",
+  "text": "Prime LeBron. Prime Jordan. Tied game. One shot left.",
   "s": 0.0,
-  "e": 3.6
+  "e": 3.2
  },
  {
   "emotion": "curious",
-  "text": "Let's settle it. Right here. Right now.",
-  "s": 4.05,
-  "e": 6.08
+  "text": "Who takes it? Let's find out.",
+  "s": 3.5,
+  "e": 5.34
  },
  {
   "emotion": "calm",
   "text": "Michael Jordan. Six foot six. Six trips to the Finals. Six championships. He never lost one.",
-  "s": 6.58,
-  "e": 12.38
+  "s": 5.64,
+  "e": 10.9
  },
  {
   "emotion": "urgent",
   "text": "Ten scoring titles. Thirty point one points a game. The highest average in NBA history.",
-  "s": 12.83,
-  "e": 18.27
+  "s": 11.25,
+  "e": 16.37
  },
  {
   "emotion": "calm",
   "text": "LeBron James. Six foot nine. Two hundred fifty pounds. Four championships.",
-  "s": 18.77,
-  "e": 23.57
+  "s": 16.72,
+  "e": 21.12
  },
  {
   "emotion": "urgent",
   "text": "More than forty thousand career points. The all time scoring king.",
-  "s": 24.02,
-  "e": 28.24
+  "s": 21.47,
+  "e": 25.43
  },
  {
   "emotion": "tense",
   "text": "So we tip it off. First to eleven.",
-  "s": 28.74,
-  "e": 30.85
+  "s": 25.78,
+  "e": 27.86
  },
  {
   "emotion": "urgent",
   "text": "Jordan scores first. LeBron answers with a dunk! Jordan, fadeaway. LeBron, right back at him.",
-  "s": 31.3,
-  "e": 36.82
+  "s": 28.31,
+  "e": 33.83
  },
  {
   "emotion": "tense",
   "text": "Ten all. Next bucket wins.",
-  "s": 37.27,
-  "e": 39.27
+  "s": 34.28,
+  "e": 36.28
  },
  {
   "emotion": "tense",
   "text": "Last shot. Ball in LeBron's hands. He rises up... and shoots.",
-  "s": 39.72,
-  "e": 43.52
+  "s": 36.73,
+  "e": 40.53
  },
  {
   "emotion": "tense",
   "text": "Did it go in? You decide.",
-  "s": 43.87,
-  "e": 45.83
+  "s": 40.88,
+  "e": 42.89
  },
  {
   "emotion": "urgent",
   "text": "Who wins? Comment Jordan, or LeBron.",
-  "s": 46.23,
-  "e": 48.59
+  "s": 43.29,
+  "e": 45.65
  }
 ]

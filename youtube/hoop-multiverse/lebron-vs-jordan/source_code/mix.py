@@ -95,7 +95,7 @@ def crowd(at, dur, g=0.5):                  # roar: band-limited noise swell
 kit = Kit(SR)
 for s in S0[1:]: kit.place(L, R, 'whoosh-fast-soft', s, 0.30)
 for at in np.arange(0.2, S0[1] - 0.2, 0.34): bounce(at, 0.30)
-kit.place(L, R, 'riser-1s-soft', ST(1, wt(1, r"^right", 1, 1.5) - 0.9), 0.35); kit.place(L, R, 'impact-medium-firm', ST(1, wt(1, r"^right", 1, 1.5)), 0.5)
+kit.place(L, R, 'riser-1s-soft', ST(1, wt(1, r"^let", 0, 0.7) - 0.6), 0.35); kit.place(L, R, 'impact-medium-firm', ST(1, wt(1, r"^let", 0, 0.7)), 0.5)
 for u in (wt(2, r"^trips", 0, 2.2) - 0.05, wt(2, r"^championships", 0, 3.4) - 0.0, wt(2, r"^never", 0, 4.6)): kit.place(L, R, 'impact-light-firm', ST(2, u), 0.38)
 kit.place(L, R, 'impact-light-firm', ST(3, wt(3, r"^10", 0, 0.2)), 0.4); kit.place(L, R, 'impact-light-firm', ST(3, wt(3, r"^30", 0, 1.6)), 0.4); kit.place(L, R, 'impact-medium-soft', ST(3, wt(3, r"^highest", 0, 3.3)), 0.4)
 kit.place(L, R, 'impact-light-firm', ST(4, wt(4, r"^250", 0, 2.2)), 0.38); kit.place(L, R, 'impact-light-firm', ST(4, wt(4, r"^4$", 0, 3.6)), 0.38)

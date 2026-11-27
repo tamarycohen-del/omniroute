@@ -14,6 +14,8 @@ const board = (a, b, alpha = 1, pa = 0, pb = 0) => { g.save(); g.globalAlpha = a
 const flightPt = (sx, sy, ex, ey, k, arc) => [lerp(sx, ex, k), lerp(sy, ey, k) - Math.sin(k * Math.PI) * arc];
 const HX = 1020, HKS = 0.78; // hoop post x, real scale (same as the players)
 const rimPos = () => [HX - 240 * HKS, GY - 1300 * HKS];
+const HXL = 60, rimPosL = () => [HXL + 240 * HKS, GY - 1300 * HKS];                    // left hoop (mirrored): LeBron attacks this one, Jordan the right one
+const hoopL = (net) => { g.save(); g.translate(HXL, 0); g.scale(-1, 1); hoop(0, GY, HKS, net); g.restore(); };
 const crown = (x, y, s, a = 1) => { g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(s, s); g.fillStyle = GOLDL; g.beginPath(); g.moveTo(-90, 40); g.lineTo(-100, -50); g.lineTo(-45, -5); g.lineTo(0, -75); g.lineTo(45, -5); g.lineTo(100, -50); g.lineTo(90, 40); g.closePath(); g.fill(); g.strokeStyle = '#7a5200'; g.lineWidth = 6; g.stroke(); g.fillStyle = '#fff3b0'; for (const px of [-100, 0, 100]) { g.beginPath(); g.arc(px, px === 0 ? -82 : -56, 11, 0, 7); g.fill(); } g.restore(); };
 const bigNum = (s, x, y, size, col, u, o = {}) => { if (u <= 0) return; const k = back(u / 0.3); g.save(); g.translate(x, y); g.scale(lerp(1.8, 1, clamp(k)), lerp(1.8, 1, clamp(k))); g.globalAlpha = clamp(u / 0.1); txt(s, 0, 0, size, col, { glow: col, ...o }); g.restore(); };
 const portrait = (cx, cy, r, look, flip) => { g.save(); g.beginPath(); g.arc(cx, cy, r, 0, 7); g.clip(); const gr = g.createRadialGradient(cx, cy, 10, cx, cy, r); gr.addColorStop(0, look === LOOK.jordan ? '#5a1020' : '#3a1a66'); gr.addColorStop(1, '#0a0620'); g.fillStyle = gr; g.fillRect(cx - r, cy - r, 2 * r, 2 * r); const s = 1.75; player(cx + (flip ? -10 : 10), cy + 835 * s - 20, s, { ...P.stand, ball: undefined }, { look, flip, noBall: true }); g.restore(); g.save(); g.strokeStyle = look === LOOK.jordan ? RED : GOLDL; g.lineWidth = 12; g.shadowColor = g.strokeStyle; g.shadowBlur = 30; g.beginPath(); g.arc(cx, cy, r, 0, 7); g.stroke(); g.restore(); };
@@ -23,13 +25,12 @@ const wt = (i, re, nth = 0, dflt = 0) => { const a = LINES[i].s - 0.05, b = LINE
 const buildShots = () => {
   const S = [];
   { const d7 = LINES[8].s - LINES[7].s; const nm = WORDS.filter((w) => w.s >= LINES[7].s - 0.1 && w.s <= LINES[7].e + 0.2 && /^(jordan|lebron)/i.test(w.w.replace(/[^a-z]/gi, ''))); BEATS = nm.length >= 4 ? [0, nm[1].s - LINES[7].s, nm[2].s - LINES[7].s, nm[3].s - LINES[7].s, d7] : [0, d7 * 0.25, d7 * 0.5, d7 * 0.75, d7]; }
-  // 0 hook: frame 0 is already moving
-  S.push((u, d) => { const k = ease(u / d); g.save(); cam(lerp(0.86, 1.08, k), 540, 1100); arena(u); jord(250, mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5))), { bspeed: 7 }); lebr(830, mixP(P.stand, P.flex, 0.5 + 0.5 * Math.sin(T * 3))); g.restore(); speedLines(540, 1100, 0.12, 40);
-    slam('WHO WINS?', 540, 290, 190, C.white, u + 0.3); slam('PRIME JORDAN', 540, 450, 104, RED, u + 0.15, { glow: RED, maxW: 980 }); slam('vs PRIME LEBRON', 540, 580, 104, GOLDL, u + 0.05, { glow: GOLDL, maxW: 980 });
-    const vk = back((u - 0.5) / 0.35); if (u > 0.5) { g.save(); g.translate(540, 980); g.scale(clamp(vk, 0, 1.2), clamp(vk, 0, 1.2)); g.fillStyle = '#0a0620'; g.beginPath(); g.arc(0, 0, 90, 0, 7); g.fill(); g.strokeStyle = '#7fe7ff'; g.lineWidth = 8; g.shadowColor = '#7fe7ff'; g.shadowBlur = 30; g.stroke(); g.shadowBlur = 0; txt('VS', 0, 30, 84, C.white, { stroke: 8 }); g.restore(); } });
-  // 1 settle it
+  // 0 hook: the open loop first (tied 10-10, one shot left), then the title; fast from frame 0
+  S.push((u, d) => { const k = ease(u / d); g.save(); cam(lerp(0.9, 1.1, k), 540, 1120); arena(u); hoop(HX, GY, HKS, 9); hoopL(9); jord(300, POSE.guard); lebr(760, mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5))), { bspeed: 6 }); g.restore(); speedLines(540, 1100, 0.14, 40); board(10, 10, 1, 0, 0);
+    slam('WHO WINS?', 540, 400, 180, C.white, u + 0.3); slam('PRIME JORDAN', 540, 540, 100, RED, u + 0.15, { glow: RED, maxW: 980 }); slam('vs PRIME LEBRON', 540, 660, 100, GOLDL, u + 0.05, { glow: GOLDL, maxW: 980 }); });
+  // 1 who takes it
   S.push((u, d) => { g.save(); cam(lerp(1.0, 1.25, ease(u / d)), 540, 1150, 0.02 * Math.sin(T * 2)); arena(u); jord(360, P.stand); lebr(720, P.stand); const by = 840 + Math.sin(T * 4) * 25; glow(540, by, 220, '255,170,60', 0.5); ball(540, by, 44, T * 5); g.restore(); speedLines(540, 900, 0.18, 50);
-    slam("LET'S SETTLE IT.", 540, 360, 120, C.white, u); const tN = wt(1, /^right/, 1, 1.5); if (u > tN) slam('RIGHT NOW.', 540, 520, 150, GOLDL, u - tN, { glow: GOLDL }); });
+    slam('WHO TAKES IT?', 540, 360, 130, C.white, u); const tN = wt(1, /^let/, 0, 0.7); if (u > tN) slam("LET'S FIND OUT.", 540, 520, 110, GOLDL, u - tN, { glow: GOLDL, maxW: 980 }); });
   // 2 Jordan resume
   S.push((u, d) => { g.save(); cam(1.0, 540, 1100); arena(u); const t0 = wt(2, /^6'6/, 0, 1.0), t1 = wt(2, /^trips/, 0, 2.2), t2 = wt(2, /^championships/, 0, 3.4), t3 = wt(2, /^never/, 0, 4.6); jord(540, mixP(P.stand, P.flex, ease((u - t0) / 0.7)), { k: 1.12 }); measure(110, GY, GY - 900 * SJ * 1.12, '6\'6"', RED, (u - t0) / 0.7, 1, 78); g.restore();
     glow(540, 800, 700, '255,59,74', 0.12); bigNum('6 FINALS', 540, 300, 120, C.white, u - t1 + 0.35); bigNum('6 TITLES', 540, 440, 120, RED, u - t2 + 0.3); bigNum('NEVER LOST', 540, 600, 120, GOLDL, u - t3); });
@@ -45,32 +46,33 @@ const buildShots = () => {
   // 6 tip-off
   S.push((u, d) => { const tOff = wt(6, /^off/, 0, 1.0), jp = Math.sin(clamp((u - tOff) / 1.2) * Math.PI); g.save(); cam(1.0, 540, 1100); arena(u); jord(360, jp > 0.02 ? P.shoot : P.stand, { jump: 190 * jp, noBall: true }); lebr(720, jp > 0.02 ? P.shoot : P.stand, { jump: 215 * jp, noBall: true });
     const bk = clamp((u - tOff - 0.4) / 1.2); ball(540, 1000 - Math.sin(bk * Math.PI) * 360 + (bk > 0.9 ? 0 : 0), 44, T * 8); g.restore(); board(0, 0, ease(u / 0.5)); if (u > tOff + 0.8) shock(540, 640, (u - tOff - 0.8) / 0.7, 500, '255,230,160'); });
-  // 7 four beats of 1-on-1
-  S.push((u, d) => { let b = 0; while (b < 3 && u >= BEATS[b + 1]) b++; const bd = BEATS[b + 1] - BEATS[b], v = (u - BEATS[b]) / bd; const scores = [[0, 0], [2, 0], [2, 2], [4, 2], [4, 4]]; const rim = rimPos();
-    const sc = scores[b + (v > 0.78 ? 1 : 0)]; const pulseA = b === 0 && v > 0.78 || b === 2 && v > 0.78 ? 1 - (v - 0.78) / 0.22 : 0, pulseB = (b === 1 || b === 3) && v > 0.78 ? 1 - (v - 0.78) / 0.22 : 0;
-    g.save(); if (v > 0.78 && v < 0.86) shake(10); cam(1.0, 540, 1100); arena(u, 2100); hoop(HX, GY, HKS, v > 0.78 ? (v - 0.78) * 0.9 * bd : 9);
-    const arcBall = (sx, sy, k, arc, col) => { const pts = []; for (let i = 0; i <= 12; i++) pts.push(flightPt(sx, sy, rim[0], rim[1], k * i / 12, arc)); if (k > 0 && k < 1) { comet(pts, 22); } const p = pts[12]; ball(p[0], p[1], 36, T * 10); };
-    if (b === 0 || b === 2) { // Jordan: jumper / fadeaway, LeBron contests
+  // 7 four beats of 1-on-1: Jordan attacks the RIGHT hoop, LeBron the LEFT hoop
+  S.push((u, d) => { let b = 0; while (b < 3 && u >= BEATS[b + 1]) b++; const bd = BEATS[b + 1] - BEATS[b], v = (u - BEATS[b]) / bd; const scores = [[0, 0], [2, 0], [2, 2], [4, 2], [4, 4]]; const rimR = rimPos(), rimLf = rimPosL();
+    const sc = scores[b + (v > 0.78 ? 1 : 0)]; const pulseA = (b === 0 || b === 2) && v > 0.78 ? 1 - (v - 0.78) / 0.22 : 0, pulseB = (b === 1 || b === 3) && v > 0.78 ? 1 - (v - 0.78) / 0.22 : 0;
+    const net = (v > 0.78 ? (v - 0.78) * 0.9 * bd : 9); g.save(); if (v > 0.78 && v < 0.86) shake(10); cam(1.0, 540, 1100); arena(u, 2100); hoop(HX, GY, HKS, b % 2 === 0 ? net : 9); hoopL(b % 2 === 1 ? net : 9);
+    const arcBall = (sx, sy, rim, k, arc) => { const pts = []; for (let i = 0; i <= 12; i++) pts.push(flightPt(sx, sy, rim[0], rim[1], k * i / 12, arc)); if (k > 0 && k < 1) comet(pts, 22); const p = pts[12]; ball(p[0], p[1], 36, T * 10); };
+    if (b === 0 || b === 2) { // Jordan: jumper / fadeaway at the right hoop, LeBron contests
       const x0 = b === 0 ? 380 : 330, rel = 0.45, jp = Math.sin(clamp(v / 0.62) * Math.PI), pose = v < 0.2 ? mixP(P.load, b === 2 ? POSE.fade : P.shoot, ease(v / 0.2)) : (b === 2 ? POSE.fade : P.shoot);
       lebr(x0 + 350 - 50 * clamp(v / 0.4), v < 0.4 ? POSE.guard : P.flex, { jump: 70 * jp });
       jord(x0, pose, { jump: 160 * jp, holdBall: v < rel, noBall: v >= rel });
-      if (v >= rel && v < 0.97) { const k = clamp((v - rel) / 0.33); const sx = x0 + (b === 2 ? 30 : 60), sy = GY - 160 * jp - 790 * SJ / 0.8 * 0.98; arcBall(sx, sy, k, 420, 0); }
-    } else { // LeBron: drive + dunk (b==1) / pull-up (b==3); Jordan defends
-      if (b === 1) { const lx = lerp(430, 820, ease(clamp(v / 0.6))), jp = Math.sin(clamp((v - 0.35) / 0.4) * Math.PI), pose = v < 0.35 ? mixP(P.dribA, P.drive, ease(v / 0.35)) : v < 0.8 ? P.follow : P.stand;
-        jord(lx - 230, v < 0.35 ? P.drive : POSE.guard, { jump: 40 * jp }); const draw = (i) => lebr(lx - i * 55, pose, { flip: false, jump: 300 * jp, holdBall: v < 0.7, noBall: v >= 0.7 || i > 0, bspeed: 9 }); if (v > 0.1 && v < 0.6) ghost(draw, 3); else draw(0);
-        if (v >= 0.7) { const hk = clamp((v - 0.7) / 0.1); ball(lerp(lx + 70, rim[0], hk), lerp(GY - 300 * jp - 900 * SL / 0.8 * 0.95, rim[1] + 20 * hk, hk), 36, T * 8); } if (v > 0.74 && v < 1.0) { shock(rim[0], rim[1], (v - 0.74) / 0.26, 700); burst(rim[0], rim[1], (v - 0.74) / 0.26, 36, '253,185,39', 500); } }
-      else { const lx = 640, jp = Math.sin(clamp(v / 0.62) * Math.PI), rel = 0.45; jord(lx - 350 + 40 * clamp(v / 0.4), v < 0.4 ? POSE.guard : P.flex, { flip: true, jump: 60 * jp });
-        lebr(lx, v < 0.2 ? mixP(P.load, P.shoot, ease(v / 0.2)) : P.shoot, { flip: false, jump: 170 * jp, holdBall: v < rel, noBall: v >= rel }); if (v >= rel && v < 0.97) { const k = clamp((v - rel) / 0.33); arcBall(lx + 60, GY - 170 * jp - 790 * SL / 0.8 * 0.98, k, 400, 0); } } }
-    g.restore(); board(sc[0], sc[1], 1, pulseA, pulseB); if (v > 0.8 && b === 1) slam('DUNK!', 540, 470, 150, GOLDL, (v - 0.8) * 4, { glow: GOLDL }); if (v > 0.8 && b === 3) slam('RIGHT BACK!', 540, 470, 130, GOLDL, (v - 0.8) * 4, { glow: GOLDL, maxW: 980 }); if (v > 0.8 && b === 2) slam('FADEAWAY!', 540, 470, 120, RED, (v - 0.8) * 4, { glow: RED }); });
+      if (v >= rel && v < 0.97) arcBall(x0 + (b === 2 ? 30 : 60), GY - 160 * jp - 790 * SJ / 0.8 * 0.98, rimR, clamp((v - rel) / 0.33), 420);
+    } else if (b === 1) { // LeBron drives to the LEFT hoop and dunks; Jordan chases
+      const lx = lerp(700, 330, ease(clamp(v / 0.6))), jp = Math.sin(clamp((v - 0.35) / 0.4) * Math.PI), pose = v < 0.35 ? mixP(P.dribA, P.drive, ease(v / 0.35)) : v < 0.8 ? P.follow : P.stand;
+      jord(lx + 230, v < 0.35 ? P.drive : POSE.guard, { flip: true, jump: 40 * jp }); const draw = (i) => lebr(lx + i * 55, pose, { jump: 300 * jp, holdBall: v < 0.7, noBall: v >= 0.7 || i > 0, bspeed: 9 }); if (v > 0.1 && v < 0.6) ghost(draw, 3); else draw(0);
+      if (v >= 0.7) { const hk = clamp((v - 0.7) / 0.1); ball(lerp(lx - 70, rimLf[0], hk), lerp(GY - 300 * jp - 900 * SL / 0.8 * 0.95, rimLf[1] + 20 * hk, hk), 36, T * 8); } if (v > 0.74 && v < 1.0) { shock(rimLf[0], rimLf[1], (v - 0.74) / 0.26, 700); burst(rimLf[0], rimLf[1], (v - 0.74) / 0.26, 36, '253,185,39', 500); }
+    } else { // LeBron pull-up jumper at the LEFT hoop, Jordan between him and the rim
+      const lx = 470, jp = Math.sin(clamp(v / 0.62) * Math.PI), rel = 0.45; jord(lx - 330 + 40 * clamp(v / 0.4), v < 0.4 ? POSE.guard : P.flex, { jump: 60 * jp });
+      lebr(lx, v < 0.2 ? mixP(P.load, P.shoot, ease(v / 0.2)) : P.shoot, { jump: 170 * jp, holdBall: v < rel, noBall: v >= rel }); if (v >= rel && v < 0.97) arcBall(lx - 62, GY - 170 * jp - 790 * SL / 0.8 * 0.98, rimLf, clamp((v - rel) / 0.33), 400); }
+    g.restore(); board(sc[0], sc[1], 1, pulseA, pulseB); if (v > 0.8 && b === 1) slam('DUNK!', 540, 470, 150, GOLDL, (v - 0.8) * 4, { glow: GOLDL }); if (v > 0.8 && b === 2) slam('FADEAWAY!', 540, 470, 120, RED, (v - 0.8) * 4, { glow: RED }); if (v > 0.8 && b === 3) slam('RIGHT BACK!', 540, 470, 130, GOLDL, (v - 0.8) * 4, { glow: GOLDL, maxW: 980 }); });
   // 8 ten all
   S.push((u, d) => { const k = ease(u / d); g.save(); cam(lerp(1.0, 1.25, k), 540, 1150); arena(u, 2000); jord(320, mixP(POSE.crouch, P.dribB, Math.abs(Math.sin(T * 6))), { bspeed: 6 }); lebr(740, POSE.guard); g.restore(); const n10 = wt(8, /^10/, 0, 0.1), nx = wt(8, /^next/, 0, 0.9), ups = u < n10 ? [4, 4] : [10, 10];
     board(ups[0], ups[1], 1, u < n10 ? 0 : clamp(1 - (u - n10) / 0.3), u < n10 ? 0 : clamp(1 - (u - n10) / 0.3)); if (u > nx) slam('NEXT BUCKET WINS', 540, 400, 100, C.white, u - nx, { maxW: 980, glow: '#7fe7ff' }); });
-  // 9 the last shot: LeBron rises up and shoots; we cut away before we see it land
-  S.push((u, d) => { const rim = rimPos(); const tR = wt(9, /^shoots/, 0, 3.0), tJ = tR - 0.45, lx = 640, jp = Math.sin(clamp((u - tJ) / 0.62) * Math.PI), tCut = tR + 0.34;
-    g.save(); cam(lerp(1.0, 1.1, ease(u / (tR + 0.5))), 600, 1100); arena(u, 2100); hoop(HX, GY, HKS, 9);
-    jord(lx - 330 + 50 * clamp((u - tJ) / 0.4), u < tJ - 0.2 ? POSE.guard : P.flex, { flip: true, jump: 55 * jp });
-    lebr(lx, u < tJ ? mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5))) : u < tJ + 0.2 ? mixP(P.load, P.shoot, ease((u - tJ) / 0.2)) : P.shoot, { flip: false, jump: 175 * jp, holdBall: u >= tJ && u < tR, noBall: u >= tR, bspeed: 6 });
-    if (u >= tR) { const k = clamp((u - tR) / 0.9); const sx = lx + 62, sy = GY - 175 * jp - 790 * SL / 0.8 * 0.98; const pts = []; for (let i = 0; i <= 12; i++) pts.push(flightPt(sx, sy, rim[0], rim[1], k * i / 12, 430)); comet(pts, 22); ball(pts[12][0], pts[12][1], 36, T * 10); }
+  // 9 the last shot: LeBron rises up at the LEFT hoop and shoots; we cut away before we see it land
+  S.push((u, d) => { const rim = rimPosL(); const tR = wt(9, /^shoots/, 0, 3.0), tJ = tR - 0.45, lx = 470, jp = Math.sin(clamp((u - tJ) / 0.62) * Math.PI), tCut = tR + 0.34;
+    g.save(); cam(lerp(1.0, 1.06, ease(u / (tR + 0.5))), 540, 1100); arena(u, 2100); hoop(HX, GY, HKS, 9); hoopL(9);
+    jord(lx - 330 + 50 * clamp((u - tJ) / 0.4), u < tJ - 0.2 ? POSE.guard : P.flex, { jump: 55 * jp });
+    lebr(lx, u < tJ ? mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5))) : u < tJ + 0.2 ? mixP(P.load, P.shoot, ease((u - tJ) / 0.2)) : P.shoot, { jump: 175 * jp, holdBall: u >= tJ && u < tR, noBall: u >= tR, bspeed: 6 });
+    if (u >= tR) { const k = clamp((u - tR) / 0.9); const sx = lx - 62, sy = GY - 175 * jp - 790 * SL / 0.8 * 0.98; const pts = []; for (let i = 0; i <= 12; i++) pts.push(flightPt(sx, sy, rim[0], rim[1], k * i / 12, 430)); comet(pts, 22); ball(pts[12][0], pts[12][1], 36, T * 10); }
     g.restore(); board(10, 10, 1, 0, 0); if (u > tCut) { g.fillStyle = `rgba(3,2,12,${clamp((u - tCut) / 0.18)})`; g.fillRect(0, 0, W, H); } });
   // 10 did it go in? (dark: we never see it)
   S.push((u, d) => { g.fillStyle = '#03020c'; g.fillRect(0, 0, W, H); const pul = 1 + 0.04 * Math.sin(T * 5); glow(540, 900, 700 * pul, '150,110,255', 0.16 + 0.05 * Math.sin(T * 5)); g.save(); g.translate(540, 900); g.scale(pul, pul); g.globalAlpha = 0.95; txt('?', 0, 190, 620, '#2a1d52', { stroke: 0, glow: '#9b6bff' }); g.restore();
