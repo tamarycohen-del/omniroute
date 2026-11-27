@@ -256,6 +256,8 @@ window.renderThumb = () => { T = 2.2; g.setTransform(1, 0, 0, 1, 0, 0);
   g.save(); cam(Z16, FX16, FY16); nebula(0, 0); planet(560, 2700, 1100, 0.9);
   // storm glow behind the giant
   const gl = g.createRadialGradient(1900, 300, 50, 1900, 300, 1700); gl.addColorStop(0, 'rgba(190,150,255,0.55)'); gl.addColorStop(1, 'rgba(120,80,220,0)'); g.fillStyle = gl; g.fillRect(-2000, -2000, 8000, 6000);
+  for (let k = 0; k < 90; k++) { const cx = -1800 + hash(k * 3 + 1) * 3200, cy = -900 + hash(k * 5 + 2) * 1500, r = 260 + hash(k * 7 + 3) * 520, dk = 0.35 + hash(k * 11 + 4) * 0.5; const q = g.createRadialGradient(cx, cy, 10, cx, cy, r); q.addColorStop(0, `rgba(${40 + 50 * (1 - dk) | 0},${34 + 40 * (1 - dk) | 0},${60 + 50 * (1 - dk) | 0},${0.55 * dk})`); q.addColorStop(1, 'rgba(10,8,25,0)'); g.fillStyle = q; g.fillRect(cx - r, cy - r, 2 * r, 2 * r); }
+  for (let k = 0; k < 30; k++) { const cx = -1800 + hash(k * 13 + 5) * 3000, cy = -400 + hash(k * 17 + 6) * 1200, r = 140 + hash(k * 19) * 260; const q = g.createRadialGradient(cx, cy, 5, cx, cy, r); q.addColorStop(0, 'rgba(150,120,200,0.16)'); q.addColorStop(1, 'rgba(100,70,170,0)'); g.fillStyle = q; g.fillRect(cx - r, cy - r, 2 * r, 2 * r); }
   giant(GX16, 1560, 1.05, { hand: HAND16, eyes: 1.9 });
   // purple lightning
   g.save(); g.globalCompositeOperation = 'lighter'; g.lineJoin = 'round'; g.lineCap = 'round';
@@ -263,11 +265,15 @@ window.renderThumb = () => { T = 2.2; g.setTransform(1, 0, 0, 1, 0, 0);
     for (const [w, a, col] of [[44, 0.12, '150,110,255'], [16, 0.35, '190,160,255'], [5, 0.95, '240,230,255']]) { g.strokeStyle = `rgba(${col},${a})`; g.lineWidth = w; g.beginPath(); pts.forEach(([px, py], k) => k ? g.lineTo(px, py) : g.moveTo(px, py)); g.stroke(); } }
   g.restore();
   g.fillStyle = '#0a0620'; for (let k = 0; k < 60; k++) { const bx = -1500 + k * 95, bh = 140 + hash(k * 3 + 1) * 420; g.fillRect(bx, 1560 - bh, 80, bh + 400); g.fillStyle = 'rgba(255,190,90,0.55)'; for (let w = 0; w < 5; w++) if (hash(k * 7 + w) > 0.6) g.fillRect(bx + 14 + (w % 2) * 34, 1560 - bh + 40 + Math.floor(w / 2) * 90, 14, 22); g.fillStyle = '#0a0620'; }
+  g.fillStyle = '#0a0620'; g.fillRect(900, 700, 110, 900); g.fillRect(930, 560, 50, 150); g.fillRect(948, 360, 14, 210);
+  g.fillStyle = '#0a0620'; g.fillRect(-1200, 1180, 90, 420); g.beginPath(); g.arc(-1155, 1150, 46, 0, 7); g.fill(); g.fillRect(-1105, 1020, 18, 140); g.beginPath(); g.moveTo(-1096, 1010); for (let a = 0; a < 7; a++) g.lineTo(-1096 + Math.cos(-1.2 + a * 0.35) * 70, 1010 + Math.sin(-1.2 + a * 0.35) * 70); g.fill();
+  for (const [fx, fy] of [[200, 1500], [1500, 1520], [2300, 1490], [-700, 1510]]) { const q = g.createRadialGradient(fx, fy, 5, fx, fy, 260); q.addColorStop(0, 'rgba(255,150,40,0.7)'); q.addColorStop(1, 'rgba(255,90,20,0)'); g.fillStyle = q; g.fillRect(fx - 260, fy - 260, 520, 520); }
   g.fillStyle = '#160a36'; g.fillRect(-2000, 1530, 8000, 800);
   kd(KDX16, 1560, KS16, P.shoot, { jump: 260, holdBall: true });
+  g.save(); g.globalCompositeOperation = 'lighter'; g.lineCap = 'round'; for (const [w, a, col] of [[46, 0.12, '150,110,255'], [18, 0.4, '190,150,255'], [6, 0.95, '245,235,255']]) { g.strokeStyle = `rgba(${col},${a})`; g.lineWidth = w; g.beginPath(); g.moveTo(BX16 - 620, BY16 + 760); g.quadraticCurveTo(BX16 - 300, BY16 + 120, BX16, BY16); g.stroke(); } g.restore();
   g.restore(); speedLines(560, 540, 0.2);
   const vg = g.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 0.95); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.6)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
   txt('COULD KEVIN DURANT', 50, 90, 64, C.white, { align: 'left', maxW: 700 }); txt('HESI PULL-UP', 50, 168, 64, C.white, { align: 'left', maxW: 700 }); txt('OVER GALACTUS?', 50, 258, 88, C.gold, { align: 'left', glow: C.gold, maxW: 700 }); return true; };
-const Z16 = 0.44, FX16 = 900, FY16 = 340, GX16 = 1840, HAND16 = 0.9, KDX16 = 330, KS16 = 1.15;
+const BX16 = 409, BY16 = -24, Z16 = 0.44, FX16 = 900, FY16 = 340, GX16 = 1840, HAND16 = 0.9, KDX16 = 330, KS16 = 1.15;
 fetch('./words.json').then((r) => r.json()).then((w) => { WORDS = w; window.ready = true; });
 </script></body></html>
