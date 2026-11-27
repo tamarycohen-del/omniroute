@@ -1,3 +1,5 @@
+> **STATUS (2026-11-27): STOPPED by the user.** History Oops is becoming the basketball channel; no more true-horror uploads. Flight 19 (ready, never published) stays in FLIGHT19_SHORT/.
+
 # TRUE HORROR — daily unsolved-case Shorts (History Oops + Instagram)
 
 Template: `HINTERKAIFECK_SHORT/` (copy its source_code and adapt). One video per day, published ~22:00 Israel.
