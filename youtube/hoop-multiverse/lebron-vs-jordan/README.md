@@ -1,0 +1,19 @@
+# Who would win: LeBron James or Michael Jordan? (Multiverse Hoops, vertical Short 1080x1920, 52.5 s)
+
+Version 1 = FREE voice (OmniVoice narration, emotion per line) + original numpy music + synthesized swish/crowd/whistle + CC0 sfx-kit.
+Plan (user): later swap the narration to ElevenLabs. Nothing else has to be rebuilt:
+
+1. Generate the narration from `source_code/script.txt` (12 lines, one per shot) with ElevenLabs -> `assets/voice_el.mp3` (one take, estimate credits first).
+2. Word timings: `python youtube/you-experiment/kd-galactus/source_code/words.py assets/voice_el.mp3` -> `voice_el_words.json`,
+   then `python source_code/make_words.py assets/voice_el_words.json source_code/words.json`.
+3. `source_code/lines.json` = start/end of each of the 12 lines (same format as `assets/voice_free.lines.json`; shot i starts at line i).
+   Easiest: split the ElevenLabs take per line, or match the first word of each line in words.json.
+4. `python source_code/build.py` (writes lbmj.html), `python source_code/mix.py assets/voice_el.mp3 source_code/lines.json source_code/words.json assets/mix.wav`,
+   render frames with `r2d.mjs` (ROOT=source_code, lbmj.html) in 6 chunks, encode with assets/mix.wav. All on-screen text, counters, the 1-on-1 beats,
+   scoring sounds and captions are keyed to the word times, so they follow the new voice automatically.
+
+Look: Jordan = bald, Bulls red #23; LeBron = headband + beard, Lakers purple/gold #23; same QA'd rig as the KD video (shorts are one convex hull, arms stay on their side),
+jersey wordmark/number are fitted inside the shirt and un-mirrored when a player is flipped.
+Facts used (all well documented): Jordan 6'6", 6 Finals / 6 titles / never lost a Finals, 10 scoring titles, 30.1 career ppg (highest in NBA history),
+9x All-Defensive First Team; LeBron 6'9", 250 lb, 4 titles, more than 40,000 career points (all-time leading scorer). The 11-9 game is a fictional what-if.
+Sources: NBA.com / Basketball-Reference career pages.
