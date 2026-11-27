@@ -3,8 +3,9 @@
 set -e
 S=${S:-/tmp/claude-0/-home-user-omniroute/15d9757d-ec8c-501a-9cf6-046c47f37ef5/scratchpad}
 D=$(cd "$(dirname "$0")/.." && pwd); V=$(realpath ${1:-$D/assets/voice_free.wav})
-cd $D && ffmpeg -y -v error -i assets/voice_free.mp3 -t $(python3 -c "import json;print(json.load(open('assets/orig_lines.json'))[-1]['e']+0.3)") -ar 48000 -ac 2 assets/voice_base.wav
-python3 source_code/insert_clip.py assets/voice_base.wav assets/orig_words.json assets/orig_lines.json assets/well_bye_guys.mp3 assets/voice_mod.wav source_code/words.json source_code/lines.json source_code/clips.json
+N=${N:-el}   # which narration: el = ElevenLabs takes (assets/voice_el.wav), free = the OmniVoice version
+cd $D && cp assets/voice_$N.wav assets/voice_base.wav
+python3 source_code/insert_clip.py assets/voice_base.wav assets/orig_${N}_words.json assets/orig_${N}_lines.json assets/well_bye_guys.mp3 assets/voice_mod.wav source_code/words.json source_code/lines.json source_code/clips.json
 V=$D/assets/voice_mod.wav
 python3 source_code/build.py && python3 source_code/mix.py $V source_code/lines.json source_code/words.json assets/mix.wav | tail -1
 TOT=$(python3 -c "import json;print(int((json.load(open('source_code/lines.json'))[-1]['e']+0.5)*30)+1)")

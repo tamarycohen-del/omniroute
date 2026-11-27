@@ -205,16 +205,16 @@ const buildShots = () => {
       jord(lx + 230, v < 0.35 ? P.drive : POSE.guard, { flip: true, jump: 40 * jp }); const draw = (i) => lebr(lx + i * 55, pose, { jump: 300 * jp, holdBall: v < 0.7, noBall: v >= 0.7 || i > 0, bspeed: 9 }); if (v > 0.1 && v < 0.6) ghost(draw, 3); else draw(0);
       if (v >= 0.7) { const hk = clamp((v - 0.7) / 0.1); ball(lerp(lx - 70, rimLf[0], hk), lerp(GY - 300 * jp - 900 * SL / 0.8 * 0.95, rimLf[1] + 20 * hk, hk), 36, T * 8); } if (v > 0.74 && v < 1.0) { shock(rimLf[0], rimLf[1], (v - 0.74) / 0.26, 700); burst(rimLf[0], rimLf[1], (v - 0.74) / 0.26, 36, '253,185,39', 500); }
     } else { // LeBron pull-up jumper at the LEFT hoop, Jordan between him and the rim
-      const lx = 470, jp = Math.sin(clamp(v / 0.62) * Math.PI), rel = 0.45; jord(lx - 330 + 40 * clamp(v / 0.4), v < 0.4 ? POSE.guard : P.flex, { jump: 60 * jp });
+      const lx = 610, jp = Math.sin(clamp(v / 0.62) * Math.PI), rel = 0.45; jord(lx - 380 + 40 * clamp(v / 0.4), v < 0.4 ? POSE.guard : P.flex, { jump: 60 * jp });
       lebr(lx, v < 0.2 ? mixP(P.load, P.shoot, ease(v / 0.2)) : P.shoot, { jump: 170 * jp, holdBall: v < rel, noBall: v >= rel }); if (v >= rel && v < 0.97) arcBall(lx - 62, GY - 170 * jp - 790 * SL / 0.8 * 0.98, rimLf, clamp((v - rel) / 0.33), 400); }
     g.restore(); board(sc[0], sc[1], 1, pulseA, pulseB); if (v > 0.8 && b === 1) slam('DUNK!', 540, 470, 150, GOLDL, (v - 0.8) * 4, { glow: GOLDL }); if (v > 0.8 && b === 2) slam('FADEAWAY!', 540, 470, 120, RED, (v - 0.8) * 4, { glow: RED }); if (v > 0.8 && b === 3) slam('RIGHT BACK!', 540, 470, 130, GOLDL, (v - 0.8) * 4, { glow: GOLDL, maxW: 980 }); });
   // 8 ten all
-  S.push((u, d) => { const k = ease(u / d); g.save(); cam(lerp(1.0, 1.25, k), 540, 1150); arena(u, 2000); jord(320, mixP(POSE.crouch, P.dribB, Math.abs(Math.sin(T * 6))), { bspeed: 6 }); lebr(740, POSE.guard); g.restore(); const n10 = wt(8, /^10/, 0, 0.1), nx = wt(8, /^next/, 0, 0.9), ups = u < n10 ? [4, 4] : [10, 10];
+  S.push((u, d) => { const k = ease(u / d); g.save(); cam(lerp(1.0, 1.1, k), 540, 1150); arena(u, 2000); jord(300, mixP(POSE.crouch, P.dribB, Math.abs(Math.sin(T * 6))), { bspeed: 6 }); lebr(700, POSE.guard); g.restore(); const n10 = wt(8, /^10/, 0, 0.1), nx = wt(8, /^next/, 0, 0.9), ups = u < n10 ? [4, 4] : [10, 10];
     board(ups[0], ups[1], 1, u < n10 ? 0 : clamp(1 - (u - n10) / 0.3), u < n10 ? 0 : clamp(1 - (u - n10) / 0.3)); if (u > nx) slam('NEXT BUCKET WINS', 540, 400, 100, C.white, u - nx, { maxW: 980, glow: '#7fe7ff' }); });
   // 9 the last shot: LeBron rises up at the LEFT hoop and shoots; we cut away before we see it land
-  S.push((u, d) => { const rim = rimPosL(); const tR = wt(9, /^shoots/, 0, 3.0), tJ = tR - 0.45, lx = 470, jp = Math.sin(clamp((u - tJ) / 0.62) * Math.PI), tCut = tR + 0.34;
-    g.save(); cam(lerp(1.0, 1.06, ease(u / (tR + 0.5))), 540, 1100); arena(u, 2100); hoop(HX, GY, HKS, 9); hoopL(9);
-    jord(lx - 330 + 50 * clamp((u - tJ) / 0.4), u < tJ - 0.2 ? POSE.guard : P.flex, { jump: 55 * jp });
+  S.push((u, d) => { const rim = rimPosL(); const tR = wt(9, /^shoots/, 0, 3.0), tJ = tR - 0.45, lx = 610, jp = Math.sin(clamp((u - tJ) / 0.62) * Math.PI), tCut = tR + 0.34;
+    g.save(); cam(lerp(1.0, 1.03, ease(u / (tR + 0.5))), 540, 1100); arena(u, 2100); hoop(HX, GY, HKS, 9); hoopL(9);
+    jord(lx - 380 + 50 * clamp((u - tJ) / 0.4), u < tJ - 0.2 ? POSE.guard : P.flex, { jump: 55 * jp });
     lebr(lx, u < tJ ? mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5))) : u < tJ + 0.2 ? mixP(P.load, P.shoot, ease((u - tJ) / 0.2)) : P.shoot, { jump: 175 * jp, holdBall: u >= tJ && u < tR, noBall: u >= tR, bspeed: 6 });
     if (u >= tR) { const k = clamp((u - tR) / 0.9); const sx = lx - 62, sy = GY - 175 * jp - 790 * SL / 0.8 * 0.98; const pts = []; for (let i = 0; i <= 12; i++) pts.push(flightPt(sx, sy, rim[0], rim[1], k * i / 12, 430)); comet(pts, 22); ball(pts[12][0], pts[12][1], 36, T * 10); }
     g.restore(); board(10, 10, 1, 0, 0); if (u > tCut) { g.fillStyle = `rgba(3,2,12,${clamp((u - tCut) / 0.18)})`; g.fillRect(0, 0, W, H); } });

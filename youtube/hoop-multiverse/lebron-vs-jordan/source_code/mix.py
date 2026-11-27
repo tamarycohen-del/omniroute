@@ -118,7 +118,7 @@ for q in range(5): bounce(S0[9] + 0.15 + q * 0.4, 0.28)
 kit.place(L, R, 'riser-1s-soft', tR - 0.8, 0.35); kit.place(L, R, 'impact-light-soft', tR, 0.4)
 
 CLIPS = json.load(open(os.path.join(os.path.dirname(lines_p), 'clips.json')))   # the user's 'LeBron James!' shout replaces the narrator's word (insert_clip.py); it is part of the voice track, so music ducks under it
-for c in CLIPS: kit.place(L, R, 'impact-light-firm', c['s'] + 0.55, 0.30)
+for c in CLIPS: kit.place(L, R, 'impact-light-firm', c['s'] + 0.45, 0.20)
 VL = np.zeros(N); VR = np.zeros(N); n = min(N, len(V)); VL[:n] = V[:n, 0]; VR[:n] = V[:n, 1]
 env = np.convolve(np.abs(VL), np.ones(int(0.25 * SR)) / int(0.25 * SR), mode='same'); duck = 1 - 0.45 * np.clip(env / (env.max() * 0.3), 0, 1)
 L = L * duck + VL; R = R * duck + VR

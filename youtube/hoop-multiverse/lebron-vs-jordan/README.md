@@ -23,3 +23,8 @@ Sign-off sound: assets/well_bye_guys.mp3 (the user's clip) is mixed in right aft
 Ending (user, 2026-11-27): the video ends on LeBron's last shot, cut to black; no question card, no CTA. The user's clip plays alone in the black as the outro (mix.py: starts right after the cut, music/sfx off). 10 narration lines / 10 shots.
 
 Sound clip (assets/well_bye_guys.mp3, from the user): it replaces the narrator's spoken 'LeBron' in the hook and 'LeBron James' at the start of his intro (source_code/insert_clip.py; later words/lines shift, so all timings stay in sync). NOTE: automatic transcription of the clip is inconsistent ('Well, bye guys!' / 'LeBron James.'), so the user must confirm what it says. The video no longer ends with the channel name or the clip: it ends on the cut to black. Pipeline: `source_code/run.sh` (orig_words/orig_lines = the plain narration timings).
+
+FINAL (ElevenLabs, 2026-11-27): narration = 10 per-line takes, voice Clancy (FLpz0UhC9a7CIfUSBo6S), eleven_v4, 615 credits (assets/el/l0..l9.mp3, text in source_code/make_voice_el.py).
+Rebuild: `python source_code/make_voice_el.py` (writes assets/voice_el.wav + lines), whisper words -> `make_words.py` -> assets/orig_el_words.json / orig_el_lines.json, then `N=el source_code/run.sh`.
+The user's clip replaces the narrator's spoken 'LeBron' (hook) and 'LeBron James' (intro); joins are cut at the quietest point with 12 ms fades (no clicks).
+Publishing is scheduled (send_later trig_012SGr8vLsHRkzT32X2ycddS, 2026-11-28 21:45 Israel): YouTube Multiverse Hoops + Instagram Reels, public, with the thumbnail.

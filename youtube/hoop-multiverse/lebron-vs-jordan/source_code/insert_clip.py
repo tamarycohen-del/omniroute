@@ -9,10 +9,14 @@ dec = lambda p: np.frombuffer(subprocess.run(['ffmpeg', '-v', 'error', '-i', p, 
 V = dec(base); C = dec(clip_p)
 W = json.load(open(wj)); L = json.load(open(lj))
 act = lambda a: np.sqrt(np.mean(a[np.abs(a) > 0.01] ** 2))
-C = C[int(0.30 * SR):int(1.74 * SR)] * (1.1 * act(V) / act(C))
+C = C[int(0.30 * SR):int(1.74 * SR)] * (1.0 * act(V) / act(C))
 C[:int(0.01 * SR)] *= np.linspace(0, 1, int(0.01 * SR))[:, None]; C[-int(0.04 * SR):] *= np.linspace(1, 0, int(0.04 * SR))[:, None]
 lead = 0.12                                   # seconds of the clip before the shout starts
 isLB = lambda w: re.match(r'^lebron', re.sub('[^a-z]', '', w['w'].lower()))
+def valley(t0, before, after):                # quietest 10 ms near t0 (so the cut never lands inside a sound)
+    i0 = int((t0 - before) * SR); i1 = int((t0 + after) * SR); h = int(0.01 * SR)
+    best = min(range(i0, i1, h // 2), key=lambda i: float(np.sqrt(np.mean(V[i:i + h] ** 2))))
+    return (best + h // 2) / SR
 cuts = []                                      # (cut start, cut end) in seconds, in the ORIGINAL timeline
 # 1) hook: "Prime [LeBron]. Prime Jordan."   2) his intro: "[LeBron James]. 6'9" ..."
 for li, nxt_re in ((0, None), (4, None)):
@@ -20,12 +24,16 @@ for li, nxt_re in ((0, None), (4, None)):
     ws = [i for i, w in enumerate(W) if a <= w['s'] < b]
     first = next(i for i in ws if isLB(W[i]))
     last = first + (1 if re.match(r'^james', re.sub('[^a-z]', '', W[first + 1]['w'].lower())) else 0) if first + 1 < len(W) else first
-    cs = W[first]['s'] - 0.03; ce = W[last + 1]['s'] - 0.05
+    cs = valley(W[first]['s'] - 0.03, 0.10, 0.05); ce = valley(W[last + 1]['s'] - 0.05, 0.10, 0.04)
     cuts.append((cs, ce, first, last))
 out = []; pos = 0.0; shifts = []
 for cs, ce, f, l in cuts:
-    out.append(V[int(pos * SR):int(cs * SR)]); out.append(np.zeros((int(0.02 * SR), 2), np.float32)); out.append(C); pos = ce
-out.append(V[int(pos * SR):]); X = np.concatenate(out)
+    seg = V[int(pos * SR):int(cs * SR)].copy(); fo = int(0.012 * SR); seg[-fo:] *= np.linspace(1, 0, fo)[:, None]
+    if pos > 0: seg[:fo] *= np.linspace(0, 1, fo)[:, None]
+    out.append(seg); out.append(np.zeros((int(0.02 * SR), 2), np.float32)); out.append(C); pos = ce
+tail = V[int(pos * SR):].copy(); fi = int(0.012 * SR); tail[:fi] *= np.linspace(0, 1, fi)[:, None]; out.append(tail)
+# fade-in of the segment that follows the first clip as well
+X = np.concatenate(out)
 sf = np.zeros(len(X)); 
 import soundfile as sf
 sf.write(out_wav, X, SR)
