@@ -89,7 +89,7 @@ const kd = (x, y, s, pose, o = {}) => { g.save(); g.translate(x, y - (o.jump || 
     g.fillStyle = back ? '#9aa1ad' : '#1d428a'; g.fillRect(fx - 28, fy + 8, 82, 7); g.fillStyle = C.gold; g.fillRect(fx + 2, fy - 10, 26, 6);
     return [kx, ky]; };
   const sleeve = (i, back) => { const hx = i ? 20 : -20; const [kx, ky] = L(i); const ex = lerp(hx, kx, 0.55), ey = lerp(0, ky, 0.55); bone(hx, -10, ex, ey, 86, C.gold); bone(hx, -10, lerp(hx, ex, 0.97), lerp(-10, ey, 0.97), 74, back ? C.blue2 : C.blue); };
-  const torsoTop = [Math.sin(p.lean) * -300, -Math.cos(p.lean) * 300];
+  const torsoTop = [Math.sin(p.lean) * 300, -Math.cos(p.lean) * 300]; // same rotation as the jersey (g.rotate(lean))
   const shp = (sd) => [torsoTop[0] + sd * 56 * Math.cos(p.lean), torsoTop[1] + 18 + sd * 56 * Math.sin(p.lean)];
   const arm = (i, back) => { const sd = i ? 1 : -1; const [sx, sy] = shp(sd); const [ex, ey, hx, hy] = limb(sx, sy, p.sh[i], 205, p.el[i], 195, 0); const sk = back ? '#4d2c19' : C.skin;
     bone(sx, sy, ex, ey, 40, sk); bulge(sx, sy, ex, ey, 0.4, 25, sk); bone(ex, ey, hx, hy, 32, sk); bulge(ex, ey, hx, hy, 0.28, 19, sk); g.fillStyle = sk; g.beginPath(); g.arc(sx, sy, 30, 0, 7); g.fill(); if (!back) { rim(sx, sy, ex, ey, 40); rim(ex, ey, hx, hy, 32); }
