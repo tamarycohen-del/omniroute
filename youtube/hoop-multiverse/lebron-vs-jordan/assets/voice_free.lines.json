@@ -9,66 +9,66 @@
   "emotion": "curious",
   "text": "Let's settle it. Right here. Right now.",
   "s": 4.05,
-  "e": 6.25
+  "e": 6.08
  },
  {
   "emotion": "calm",
   "text": "Michael Jordan. Six foot six. Six trips to the Finals. Six championships. He never lost one.",
-  "s": 6.75,
-  "e": 12.55
+  "s": 6.58,
+  "e": 12.38
  },
  {
   "emotion": "urgent",
   "text": "Ten scoring titles. Thirty point one points a game. The highest average in NBA history.",
-  "s": 13.0,
-  "e": 18.44
+  "s": 12.83,
+  "e": 18.27
  },
  {
   "emotion": "calm",
   "text": "LeBron James. Six foot nine. Two hundred fifty pounds. Four championships.",
-  "s": 18.94,
-  "e": 23.74
+  "s": 18.77,
+  "e": 23.57
  },
  {
   "emotion": "urgent",
   "text": "More than forty thousand career points. The all time scoring king.",
-  "s": 24.19,
-  "e": 28.43
+  "s": 24.02,
+  "e": 28.24
  },
  {
   "emotion": "tense",
   "text": "So we tip it off. First to eleven.",
-  "s": 28.93,
-  "e": 31.09
+  "s": 28.74,
+  "e": 30.85
  },
  {
   "emotion": "urgent",
   "text": "Jordan scores first. LeBron answers with a dunk! Jordan, fadeaway. LeBron, right back at him.",
-  "s": 31.54,
-  "e": 37.0
+  "s": 31.3,
+  "e": 36.82
  },
  {
   "emotion": "tense",
-  "text": "Nine all. Next bucket wins.",
-  "s": 37.45,
-  "e": 39.49
- },
- {
-  "emotion": "warm",
-  "text": "Jordan hits the jumper. Eleven to nine. He guards too. Nine times first team all defense.",
-  "s": 39.94,
-  "e": 45.5
+  "text": "Ten all. Next bucket wins.",
+  "s": 37.27,
+  "e": 39.27
  },
  {
   "emotion": "tense",
-  "text": "But a seven game series? That's a different story.",
-  "s": 46.05,
-  "e": 49.01
+  "text": "Last shot. Ball in LeBron's hands. He rises up... and shoots.",
+  "s": 39.72,
+  "e": 43.52
+ },
+ {
+  "emotion": "tense",
+  "text": "Did it go in? You decide.",
+  "s": 43.87,
+  "e": 45.83
  },
  {
   "emotion": "urgent",
   "text": "Who wins? Comment Jordan, or LeBron.",
-  "s": 49.46,
-  "e": 51.78
+  "s": 46.23,
+  "e": 48.59
  }
 ]

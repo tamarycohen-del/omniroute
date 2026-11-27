@@ -1,4 +1,4 @@
-# Who would win: LeBron James or Michael Jordan? (Multiverse Hoops, vertical Short 1080x1920, 52.5 s)
+# Prime Jordan vs Prime LeBron: who would win? (Multiverse Hoops, vertical Short 1080x1920, ~50 s, nobody wins)
 
 Version 1 = FREE voice (OmniVoice narration, emotion per line) + original numpy music + synthesized swish/crowd/whistle + CC0 sfx-kit.
 Plan (user): later swap the narration to ElevenLabs. Nothing else has to be rebuilt:
@@ -15,5 +15,7 @@ Plan (user): later swap the narration to ElevenLabs. Nothing else has to be rebu
 Look: Jordan = bald, Bulls red #23; LeBron = headband + beard, Lakers purple/gold #23; same QA'd rig as the KD video (shorts are one convex hull, arms stay on their side),
 jersey wordmark/number are fitted inside the shirt and un-mirrored when a player is flipped.
 Facts used (all well documented): Jordan 6'6", 6 Finals / 6 titles / never lost a Finals, 10 scoring titles, 30.1 career ppg (highest in NBA history),
-9x All-Defensive First Team; LeBron 6'9", 250 lb, 4 titles, more than 40,000 career points (all-time leading scorer). The 11-9 game is a fictional what-if.
+LeBron 6'9", 250 lb, 4 titles, more than 40,000 career points (all-time leading scorer). The one-on-one is a fictional what-if: tied 10-10, LeBron takes the last shot, we cut to black before it lands ("Did it go in? You decide.").
 Sources: NBA.com / Basketball-Reference career pages.
+
+Sign-off sound: assets/well_bye_guys.mp3 (the user's clip) is mixed in right after the last word (see mix.py). Whole pipeline after a new narration: `source_code/run.sh <voice.wav>`.

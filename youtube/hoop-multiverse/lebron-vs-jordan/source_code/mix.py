@@ -57,7 +57,8 @@ for q in range(int(TOTAL / beat) + 1):
         hi = i0 + int(h * beat / 2 * SR); nn = int(0.05 * SR)
         if hi + nn < N: hat = rng.standard_normal(nn) * np.exp(-np.arange(nn) / nn * 7); M[hi:hi + nn] += (0.07 if h == 0 else 0.12) * np.diff(np.concatenate([[0], hat]))
 # energy map: calm for the résumés, up for the 1-on-1, drop for the cliffhanger
-energy = np.interp(t, [0, S0[2] - 0.5, S0[6], S0[7], S0[9], S0[10] - 0.05, S0[10], S0[11], TOTAL], [0.9, 0.75, 1.0, 1.15, 1.1, 0.35, 0.5, 0.9, 0.7])
+tcut = S0[9] + wt(9, r"^shoots", 0, 3.0) + 0.34
+energy = np.interp(t, [0, S0[2] - 0.5, S0[6], S0[7], S0[9], tcut - 0.05, tcut + 0.15, S0[11], TOTAL], [0.9, 0.75, 1.0, 1.15, 1.1, 1.0, 0.18, 0.5, 0.7])
 M *= energy; M /= np.max(np.abs(M)) + 1e-9
 L = M * 0.16; R = M * 0.16
 
@@ -112,9 +113,11 @@ for b in range(4):                                                         # the
     if b == 3: crowd(sc + 0.05, 1.8, 0.5)
 kit.place(L, R, 'riser-2s-strong', S0[8] + 0.2, 0.30)
 for q in range(8): bounce(S0[8] + 0.4 + q * 0.38, 0.30)
-tS9 = wt(9, r"^jumper", 0, 1.0) - 0.45 + 0.85; swish(S0[9] + tS9, 0.62); crowd(S0[9] + tS9 + 0.05, 2.4, 0.6); kit.place(L, R, 'cinematic-drum-big', S0[9] + wt(9, r"^11", 0, 1.4), 0.55); kit.place(L, R, 'impact-light-firm', S0[9] + wt(9, r"^guards", 0, 3.2), 0.4)
-kit.place(L, R, 'faller-2s-soft', S0[10] + wt(10, r"^different", 0, 2.2) - 0.3, 0.4)
-for i in range(7): kit.place(L, R, 'impact-light-soft', S0[10] + wt(10, r"^7", 0, 0.6) + i * 0.15, 0.18)
+tR = S0[9] + wt(9, r"^shoots", 0, 3.0)                       # last shot: dribbles, rise, release, then CUT to black (no swish, no result)
+for q in range(5): bounce(S0[9] + 0.15 + q * 0.4, 0.28)
+kit.place(L, R, 'riser-1s-soft', tR - 0.8, 0.35); kit.place(L, R, 'impact-light-soft', tR, 0.4)
+kit.place(L, R, 'faller-2s-soft', tR + 0.3, 0.4)
+for q in range(6): bounce(S0[10] + 0.2 + q * 0.7, 0.32 - 0.03 * q)   # heartbeat while we wait
 kit.place(L, R, 'impact-medium-soft', S0[11] + 0.3, 0.4)
 
 VL = np.zeros(N); VR = np.zeros(N); n = min(N, len(V)); VL[:n] = V[:n, 0]; VR[:n] = V[:n, 1]

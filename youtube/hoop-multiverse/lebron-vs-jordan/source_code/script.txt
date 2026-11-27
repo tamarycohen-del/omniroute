@@ -7,7 +7,7 @@ calm | LeBron James. Six foot nine. Two hundred fifty pounds. Four championships
 urgent | More than forty thousand career points. The all time scoring king. | 1.05 | 500
 tense | So we tip it off. First to eleven. | 1.0 | 450
 urgent | Jordan scores first. LeBron answers with a dunk! Jordan, fadeaway. LeBron, right back at him. | 1.1 | 450
-tense | Nine all. Next bucket wins. | 1.0 | 450
-warm | Jordan hits the jumper. Eleven to nine. He guards too. Nine times first team all defense. | 1.0 | 550
-tense | But a seven game series? That's a different story. | 1.0 | 450
+tense | Ten all. Next bucket wins. | 1.0 | 450
+tense | Last shot. Ball in LeBron's hands. He rises up... and shoots. | 0.95 | 350
+tense | Did it go in? You decide. | 0.95 | 400
 urgent | Who wins? Comment Jordan, or LeBron. | 1.05 | 300
