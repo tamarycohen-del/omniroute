@@ -26,6 +26,8 @@ Template: `HINTERKAIFECK_SHORT/` (copy its source_code and adapt). One video per
 5. Open a loop in the hook (a question or impossible detail) and PAY IT OFF later; re-hook around 40% ("It never came
    back either.", "But that wasn't the strangest part.").
 6. Thumbnail/cover = the same promise as the hook (2-3 big words).
+7. ENDING (user feedback 2026-11-27): after the final question the end card is SHORT — video ends ~1.2 s after the
+   last word (card fades in over 0.25 s, ~1 s on screen). TOTAL = last line end + 1.3 in both the page and mix.py.
 Sources: fluxnote.io unsolved-cases strategy, vidiq viral Shorts hooks 2026, opus.pro hook formulas, dev.to "Hook
 Engineering 2026", shortsfast continuous-curiosity, socialmediaexaminer Shorts hooks & curiosity loops.
 

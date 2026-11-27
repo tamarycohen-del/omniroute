@@ -13,7 +13,7 @@ nar_p, lines_p, out_p = sys.argv[1:4]
 raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', nar_p, '-ac', '2', '-ar', str(SR), '-f', 'f32le', '-'], capture_output=True, check=True).stdout
 V = np.frombuffer(raw, np.float32).reshape(-1, 2)
 LN = json.load(open(lines_p))
-TOTAL = LN[-1]['e'] + 2.6
+TOTAL = LN[-1]['e'] + 1.3
 N = int(TOTAL * SR)
 t = np.arange(N) / SR
 rng = np.random.default_rng(7)
@@ -94,7 +94,7 @@ VL = np.zeros(N); VR = np.zeros(N); n = min(N, len(V)); VL[:n] = V[:n, 0]; VR[:n
 env = np.abs(VL)
 k = int(0.25 * SR); env = np.convolve(env, np.ones(k) / k, mode='same'); duck = 1 - 0.35 * np.clip(env / (env.max() * 0.3), 0, 1)
 L = L * duck + VL; R = R * duck + VR
-fo = int(1.0 * SR); L[-fo:] *= np.linspace(1, 0, fo); R[-fo:] *= np.linspace(1, 0, fo)
+fo = int(0.4 * SR); L[-fo:] *= np.linspace(1, 0, fo); R[-fo:] *= np.linspace(1, 0, fo)
 X = np.stack([L, R], 1).astype(np.float32)
 p = subprocess.run(['ffmpeg', '-y', '-v', 'error', '-f', 'f32le', '-ar', str(SR), '-ac', '2', '-i', '-', '-af',
                     'acompressor=threshold=-20dB:ratio=3:attack=10:release=200,loudnorm=I=-14:TP=-1:LRA=11,alimiter=limit=0.89', '-ar', str(SR), out_p], input=X.tobytes())
