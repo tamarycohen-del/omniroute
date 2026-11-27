@@ -1,0 +1,273 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1920" height="1080"></canvas>
+<script>
+// KD vs the planet-eater — high-energy 2D action animation, every frame drawn in code (canvas 2D).
+// Skeleton-rigged KD (Golden State colours, #35), original cosmic-giant design (no copied costume), VFX: speed lines,
+// afterimages, impact frames, shockwaves, particles, comet trails, camera shake, slow motion.
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1920, H = 1080;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); }, lerp = (a, b, u) => a + (b - a) * u;
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3), easeIn = (x) => Math.pow(clamp(x), 3), back = (x) => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const hash = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+let T = 0, WORDS = [];
+const C = { blue: '#1d428a', blue2: '#14306a', gold: '#ffc72c', skin: '#6e4128', skinL: '#8a5636', white: '#f4f1ea', red: '#ff3b30', violet: '#3a2f52', violet2: '#1c1528', violetL: '#9b86c9', glowV: '150,110,255', ink: '#04050b', orange: '#ff7a1a', ice: '#9ee7ff' };
+const font = (s, w = 900, it = 'italic ') => `${it}${w} ${s}px "DejaVu Sans", sans-serif`;
+const txt = (s, x, y, size, col = C.white, o = {}) => { g.save(); g.font = font(size); g.textAlign = o.align || 'center'; g.lineJoin = 'round'; let fs = size; while (g.measureText(s).width > (o.maxW || 980)) { fs -= 4; g.font = font(fs); }
+  if (o.glow) { g.shadowColor = o.glow; g.shadowBlur = 40; } g.lineWidth = o.stroke || 16; g.strokeStyle = '#000'; g.strokeText(s, x, y); g.shadowBlur = 0; g.fillStyle = col; g.fillText(s, x, y); g.restore(); };
+const slam = (s, x, y, size, col, u, o = {}) => { if (u <= 0) return; const k = back(u / 0.25); g.save(); g.translate(x, y); g.scale(lerp(2.4, 1, clamp(k)), lerp(2.4, 1, clamp(k))); g.rotate((o.rot || -0.04) * (1 - clamp(u / 0.25))); g.globalAlpha = clamp(u / 0.12); txt(s, 0, 0, size, col, o); g.restore(); };
+const glow = (x, y, r, col, a) => { if (r <= 0) return; g.save(); g.globalCompositeOperation = 'lighter'; const rg = g.createRadialGradient(x, y, 1, x, y, r); rg.addColorStop(0, `rgba(${col},${a})`); rg.addColorStop(1, `rgba(${col},0)`); g.fillStyle = rg; g.fillRect(x - r, y - r, 2 * r, 2 * r); g.restore(); };
+const cam = (z, fx, fy, rot = 0) => { g.translate(W / 2, H / 2); g.rotate(rot); g.scale(z, z); g.translate(-fx, -fy); };
+let SHK = 0; const shake = (a) => { g.translate((hash(Math.floor(T * 30)) - 0.5) * a * 2, (hash(Math.floor(T * 30) + 7) - 0.5) * a * 2); };
+
+// ---------- environment ----------
+const nebula = (dx = 0, dy = 0) => { const q = g.createLinearGradient(0, -1200, 0, 3000); q.addColorStop(0, '#05061a'); q.addColorStop(0.5, '#140b3a'); q.addColorStop(1, '#070818'); g.fillStyle = q; g.fillRect(-3000, -3000, 8000, 9000);
+  for (let i = 0; i < 7; i++) glow(hash(i) * 1600 - 260 + dx * 0.3, hash(i + 3) * 2600 - 400 + dy * 0.3, 500 + hash(i + 7) * 500, ['120,60,255', '30,140,255', '255,60,160', '40,220,200'][i % 4], 0.16);
+  for (let l = 0; l < 3; l++) for (let i = 0; i < 140; i++) { const k = l * 0.35 + 0.2, x = ((hash(i + l * 300) * 2600 - 760 + dx * k) % 2600 + 2600) % 2600 - 760, y = ((hash(i + 5 + l * 300) * 3800 - 900 + dy * k) % 3800 + 3800) % 3800 - 900, r = (1 + l) * (0.8 + hash(i + 9) * 1.4); g.fillStyle = `rgba(255,255,255,${(0.35 + 0.65 * Math.abs(Math.sin(T * 1.7 + i))) * (0.4 + l * 0.3)})`; g.fillRect(x, y, r, r); } };
+const planet = (x, y, r, a = 1) => { if (r < 3) return; g.save(); g.globalAlpha = a; const q = g.createRadialGradient(x - r * 0.35, y - r * 0.45, r * 0.05, x, y, r); q.addColorStop(0, '#5fc4a8'); q.addColorStop(0.5, '#1f6b5c'); q.addColorStop(1, '#071d1b'); g.fillStyle = q; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill();
+  g.save(); g.clip(); g.strokeStyle = 'rgba(180,255,230,0.12)'; g.lineWidth = r * 0.05; for (let i = 0; i < 6; i++) { g.beginPath(); g.ellipse(x, y - r + i * r * 0.36, r * 1.1, r * 0.08, 0.1, 0, 7); g.stroke(); } g.restore();
+  g.strokeStyle = 'rgba(140,255,225,0.6)'; g.lineWidth = r * 0.02; g.beginPath(); g.arc(x, y, r, Math.PI * 1.05, Math.PI * 1.95); g.stroke(); glow(x, y, r * 1.3, '80,230,200', 0.2); g.restore(); };
+const court = (x, y, w, o = {}) => { g.save(); g.translate(x, y); const h = w * 0.2; const q = g.createLinearGradient(0, -h, 0, 0); q.addColorStop(0, '#9b6234'); q.addColorStop(1, '#d99a5c'); g.fillStyle = q; g.beginPath(); g.moveTo(-w / 2, 0); g.lineTo(w / 2, 0); g.lineTo(w / 2 - w * 0.1, -h); g.lineTo(-w / 2 + w * 0.1, -h); g.closePath(); g.fill();
+  g.save(); g.clip(); g.strokeStyle = 'rgba(80,40,10,0.25)'; g.lineWidth = 3; for (let i = -20; i < 20; i++) { g.beginPath(); g.moveTo(i * w * 0.05, 0); g.lineTo(i * w * 0.04, -h); g.stroke(); } glow(0, -h * 0.4, w * 0.4, '255,220,160', 0.25); g.restore();
+  g.strokeStyle = 'rgba(255,255,255,0.9)'; g.lineWidth = Math.max(2, w * 0.004); g.beginPath(); g.moveTo(0, 0); g.lineTo(0, -h); g.stroke(); g.beginPath(); g.ellipse(0, -h / 2, w * 0.07, h * 0.2, 0, 0, 7); g.stroke();
+  g.fillStyle = C.blue; g.fillRect(-w / 2, 0, w, w * 0.02); g.fillStyle = C.gold; g.fillRect(-w / 2, w * 0.02, w, w * 0.008); glow(0, w * 0.03, w * 0.6, '255,199,44', 0.12);
+  if (o.crack) { g.strokeStyle = '#000'; g.lineWidth = w * 0.006; g.beginPath(); g.moveTo(-w * 0.2, -h); g.lineTo(-w * 0.05, -h * 0.4); g.lineTo(-w * 0.15, 0); g.moveTo(w * 0.1, -h); g.lineTo(w * 0.2, -h * 0.5); g.stroke(); } g.restore(); };
+// real scale: KD is ~900 units tall at scale 1 (6'11"), so 1 ft ≈ 130 units → rim at 10 ft = 1300 units. Side view. Returns rim centre.
+const hoop = (x, gy, ks, net = 9) => { if (!(net >= 0)) net = 9; g.save(); g.translate(x, gy); g.scale(ks, ks); const rimY = -1300; g.fillStyle = '#c9ced8'; g.fillRect(-16, -1560, 32, 1560); g.fillStyle = '#9aa2b0'; g.fillRect(-70, -12, 140, 24); g.fillRect(-120, -1500, 120, 22);
+  g.fillStyle = 'rgba(230,240,255,0.6)'; g.fillRect(-140, -1560, 22, 460); g.strokeStyle = '#fff'; g.lineWidth = 6; g.strokeRect(-140, -1560, 22, 460);
+  g.strokeStyle = C.orange; g.lineWidth = 12; g.beginPath(); g.ellipse(-240, rimY, 100, 22, 0, 0, 7); g.stroke(); g.lineWidth = 8; g.beginPath(); g.moveTo(-140, rimY); g.lineTo(-150, rimY); g.stroke();
+  g.strokeStyle = 'rgba(255,255,255,0.85)'; g.lineWidth = 4; const sw = Math.sin(net * 22) * 22 * Math.exp(-net * 3); for (let k = 0; k <= 8; k++) { const a = -340 + k * 25; g.beginPath(); g.moveTo(a, rimY + 4); g.lineTo(-270 + k * 15 + sw, rimY + 190); g.stroke(); } g.beginPath(); g.moveTo(-275 + sw, rimY + 120); g.lineTo(-195 + sw, rimY + 120); g.stroke();
+  if (net < 0.4) glow(-240, rimY + 60, 400, '255,199,44', 0.6 * (1 - net / 0.4)); g.restore(); return [x - 240 * ks, gy + rimY * ks]; };
+const ball = (x, y, r, spin = 0) => { g.save(); g.translate(x, y); g.rotate(spin); const q = g.createRadialGradient(-r * 0.35, -r * 0.35, r * 0.1, 0, 0, r); q.addColorStop(0, '#ffab5c'); q.addColorStop(1, '#c9500a'); g.fillStyle = q; g.beginPath(); g.arc(0, 0, r, 0, 7); g.fill(); g.strokeStyle = '#2a1205'; g.lineWidth = r * 0.09; g.beginPath(); g.moveTo(-r, 0); g.lineTo(r, 0); g.moveTo(0, -r); g.lineTo(0, r); g.stroke(); g.beginPath(); g.arc(-r * 1.25, 0, r * 0.9, -0.9, 0.9); g.stroke(); g.beginPath(); g.arc(r * 1.25, 0, r * 0.9, Math.PI - 0.9, Math.PI + 0.9); g.stroke(); g.restore(); };
+const comet = (pts, r) => { for (let i = 0; i < pts.length - 1; i++) { const k = i / pts.length; g.strokeStyle = `rgba(255,${150 + 80 * k},60,${k * 0.8})`; g.lineWidth = r * 2 * k; g.lineCap = 'round'; g.beginPath(); g.moveTo(...pts[i]); g.lineTo(...pts[i + 1]); g.stroke(); } const p = pts[pts.length - 1]; glow(p[0], p[1], r * 5, '255,170,60', 0.7); };
+
+
+// ---------- painterly smoke texture (fbm value noise, generated once) ----------
+const CLOUD = (() => { const n = 384, c = document.createElement('canvas'); c.width = c.height = n; const x = c.getContext('2d'), im = x.createImageData(n, n);
+  const r = (i, j) => { const v = Math.sin(i * 127.1 + j * 311.7) * 43758.5453; return v - Math.floor(v); }; const sm2 = (t) => t * t * (3 - 2 * t);
+  const vn = (px, py) => { const i = Math.floor(px), j = Math.floor(py), fx = sm2(px - i), fy = sm2(py - j); const a = r(i, j), b = r(i + 1, j), c2 = r(i, j + 1), d = r(i + 1, j + 1); return a + (b - a) * fx + (c2 - a) * fy + (a - b - c2 + d) * fx * fy; };
+  for (let yy = 0; yy < n; yy++) for (let xx = 0; xx < n; xx++) { let v = 0, amp = 0.55, f = 4 / n; for (let o = 0; o < 6; o++) { v += vn(xx * f, yy * f) * amp; f *= 2; amp *= 0.5; } const dx = xx / n - 0.5, dy = yy / n - 0.5, fall = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) * 2); const a = Math.max(0, Math.min(1, (v - 0.38) * 2.2)) * fall; const k = (yy * n + xx) * 4; im.data[k] = 70 + v * 90; im.data[k + 1] = 55 + v * 70; im.data[k + 2] = 95 + v * 110; im.data[k + 3] = a * 255; }
+  x.putImageData(im, 0, 0); return c; })();
+const smoke = (cx, cy, w, h, a, rot = 0) => { g.save(); g.globalAlpha = a; g.translate(cx, cy); g.rotate(rot); g.drawImage(CLOUD, -w / 2, -h / 2, w, h); g.restore(); };
+
+// ---------- VFX ----------
+const speedLines = (cx, cy, a = 1, n = 70, col = '255,255,255') => { g.save(); g.globalAlpha = a; for (let i = 0; i < n; i++) { const ang = hash(i + Math.floor(T * 24) * 0.1) * Math.PI * 2, r0 = 380 + hash(i + 7) * 300, r1 = r0 + 500 + hash(i + 3) * 900; g.strokeStyle = `rgba(${col},${0.25 + hash(i) * 0.5})`; g.lineWidth = 2 + hash(i + 1) * 8; g.beginPath(); g.moveTo(cx + Math.cos(ang) * r0, cy + Math.sin(ang) * r0); g.lineTo(cx + Math.cos(ang) * r1, cy + Math.sin(ang) * r1); g.stroke(); } g.restore(); };
+const shock = (x, y, u, rMax = 900, col = '255,230,160') => { if (u <= 0 || u >= 1) return; g.save(); g.strokeStyle = `rgba(${col},${1 - u})`; g.lineWidth = 40 * (1 - u); g.beginPath(); g.arc(x, y, rMax * ease(u), 0, 7); g.stroke(); g.lineWidth = 12 * (1 - u); g.beginPath(); g.arc(x, y, rMax * 0.7 * ease(u), 0, 7); g.stroke(); g.restore(); };
+const burst = (x, y, u, n = 60, col = '255,199,44', spread = 900) => { if (u <= 0 || u >= 1.5) return; for (let i = 0; i < n; i++) { const a = hash(i) * Math.PI * 2, d = spread * ease(u) * (0.3 + hash(i + 2) * 0.7); g.fillStyle = `rgba(${col},${clamp(1 - u)})`; g.beginPath(); g.arc(x + Math.cos(a) * d, y + Math.sin(a) * d, 4 + hash(i + 4) * 10, 0, 7); g.fill(); } };
+const motes = (a = 1) => { for (let i = 0; i < 60; i++) { const x = (hash(i) * 1200 + T * 40 * (0.5 + hash(i + 1))) % 1200 - 60, y = (hash(i + 2) * 2000 - T * 60 * (0.3 + hash(i + 3))) % 2000; g.fillStyle = `rgba(190,170,255,${0.3 * a})`; g.beginPath(); g.arc(x, (y + 2000) % 2000, 2 + hash(i + 5) * 4, 0, 7); g.fill(); } };
+
+// ---------- KD rig ----------
+// pose = angles in radians measured from straight down; positive = towards +x (facing right)
+const P = {
+  stand:   { lean: 0.02, sh: [-0.12, 0.12], el: [0.12, -0.12], hip: [-0.1, 0.1], kn: [-0.06, -0.04], head: 0 },
+  dribA:   { lean: 0.12, sh: [-0.45, 0.3], el: [-0.55, 0.3], hip: [0.45, -0.35], kn: [-0.65, -0.5], head: 0.05, ball: 0 },
+  dribB:   { lean: 0.15, sh: [-0.5, 0.45], el: [-0.5, 0.15], hip: [0.5, -0.3], kn: [-0.7, -0.55], head: 0.05, ball: 1 },
+  hesi:    { lean: 0.04, sh: [-0.65, 0.35], el: [-0.75, 0.45], hip: [0.25, -0.55], kn: [-0.35, -0.2], head: -0.05, ball: 0.5 },
+  drive:   { lean: 0.3, sh: [-0.95, 0.75], el: [-0.45, 0.35], hip: [0.85, -0.55], kn: [-1.1, -0.2], head: 0.1, ball: 0.7 },
+  load:    { lean: 0.08, sh: [-2.45, 2.45], el: [-1.25, 1.25], hip: [0.45, 0.15], kn: [-0.9, -0.75], head: -0.05 },
+  shoot:   { lean: -0.04, sh: [-2.75, 3.05], el: [-0.85, 0.08], hip: [0.18, 0.02], kn: [-0.3, -0.12], head: -0.12 },
+  follow:  { lean: -0.06, sh: [-2.6, 2.95], el: [-0.35, 0.75], hip: [0.22, 0.05], kn: [-0.45, -0.25], head: -0.15 },
+  wing:    { lean: 0, sh: [-1.62, 1.62], el: [0, 0], hip: [-0.14, 0.14], kn: [0, 0], head: 0 },
+  flex:    { lean: -0.05, sh: [-2.2, 2.2], el: [-1.6, 1.6], hip: [-0.2, 0.2], kn: [-0.1, -0.1], head: -0.1 },
+  shrug:   { lean: 0, sh: [-0.9, 0.9], el: [1.3, -1.3], hip: [-0.1, 0.1], kn: [0, 0], head: 0.12 },
+};
+const mixP = (a, b, u) => { const o = {}; for (const k in a) o[k] = Array.isArray(a[k]) ? a[k].map((v, i) => lerp(v, b[k][i], u)) : lerp(a[k], b[k] ?? a[k], u); return o; };
+const seg = (x1, y1, x2, y2, w1, w2, col, light = 1) => { const a = Math.atan2(y2 - y1, x2 - x1), nx = Math.sin(a), ny = -Math.cos(a); g.fillStyle = col; g.beginPath(); g.moveTo(x1 + nx * w1, y1 + ny * w1); g.lineTo(x2 + nx * w2, y2 + ny * w2); g.arc(x2, y2, w2, a - Math.PI / 2, a + Math.PI / 2); g.lineTo(x1 - nx * w1, y1 - ny * w1); g.arc(x1, y1, w1, a + Math.PI / 2, a + Math.PI * 1.5); g.fill();
+  if (light) { g.save(); g.clip(); g.strokeStyle = `rgba(${C.glowV === undefined ? '150,110,255' : '170,130,255'},0.55)`; g.lineWidth = 5; g.beginPath(); g.moveTo(x1 - nx * w1, y1 - ny * w1); g.lineTo(x2 - nx * w2, y2 - ny * w2); g.stroke(); g.restore(); } };
+const limb = (x, y, a1, l1, a2, l2, w) => { const ex = x + Math.sin(a1) * l1, ey = y + Math.cos(a1) * l1; const a = a1 + a2, hx = ex + Math.sin(a) * l2, hy = ey + Math.cos(a) * l2; return [ex, ey, hx, hy]; };
+// smooth limb: one stroked path per bone (round caps/joins => no seams), muscle bulges, rim light on the far edge
+const bone = (x1, y1, x2, y2, w, col) => { g.strokeStyle = col; g.lineWidth = w; g.lineCap = 'round'; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); };
+const rim = (x1, y1, x2, y2, w) => { const a = Math.atan2(y2 - y1, x2 - x1), nx = Math.sin(a) * w * 0.42, ny = -Math.cos(a) * w * 0.42; g.strokeStyle = 'rgba(185,150,255,0.45)'; g.lineWidth = 4; g.lineCap = 'round'; g.beginPath(); g.moveTo(x1 - nx, y1 - ny); g.lineTo(x2 - nx, y2 - ny); g.stroke(); };
+const bulge = (x1, y1, x2, y2, t, w, col) => { const cx = lerp(x1, x2, t), cy = lerp(y1, y2, t), a = Math.atan2(y2 - y1, x2 - x1); g.fillStyle = col; g.beginPath(); g.ellipse(cx, cy, Math.hypot(x2 - x1, y2 - y1) * 0.28, w, a, 0, 7); g.fill(); };
+const kd = (x, y, s, pose, o = {}) => { g.save(); g.translate(x, y - (o.jump || 0)); g.scale(s * (o.flip ? -1 : 1), s); const p = pose; const hipY = -440;
+  g.fillStyle = 'rgba(0,0,0,0.35)'; g.beginPath(); g.ellipse(0, (o.jump || 0) / s, 120, 18, 0, 0, 7); g.fill();
+  g.save(); g.translate(0, hipY);
+  const L = (i) => limb(i ? 20 : -20, 0, p.hip[i], 215, p.kn[i], 215, 0);
+  const leg = (i, back) => { const hx = i ? 20 : -20; const [kx, ky, fx, fy] = L(i); const sk = back ? '#4d2c19' : C.skin;
+    bone(hx, 0, kx, ky, 54, sk); bone(kx, ky, fx, fy - 10, 38, sk); bulge(kx, ky, fx, fy, 0.3, 24, sk); if (!back) { rim(hx, 0, kx, ky, 54); rim(kx, ky, fx, fy, 38); }
+    // sock + shoe (pointing forward = +x)
+    g.fillStyle = back ? '#cfd3da' : '#f4f5f8'; g.beginPath(); g.ellipse(fx, fy - 26, 21, 22, 0, 0, 7); g.fill();
+    g.fillStyle = back ? '#c9ccd3' : '#ffffff'; g.beginPath(); g.moveTo(fx - 30, fy - 12); g.quadraticCurveTo(fx - 34, fy + 12, fx - 22, fy + 14); g.lineTo(fx + 52, fy + 14); g.quadraticCurveTo(fx + 66, fy + 8, fx + 56, fy - 4); g.quadraticCurveTo(fx + 20, fy - 10, fx + 8, fy - 26); g.lineTo(fx - 24, fy - 26); g.closePath(); g.fill();
+    g.fillStyle = back ? '#9aa1ad' : '#1d428a'; g.fillRect(fx - 28, fy + 8, 82, 7); g.fillStyle = C.gold; g.fillRect(fx + 2, fy - 10, 26, 6);
+    return [kx, ky]; };
+  const sleeve = (i, back) => { const hx = i ? 20 : -20; const [kx, ky] = L(i); const ex = lerp(hx, kx, 0.55), ey = lerp(0, ky, 0.55); bone(hx, -10, ex, ey, 86, C.gold); bone(hx, -10, lerp(hx, ex, 0.97), lerp(-10, ey, 0.97), 74, back ? C.blue2 : C.blue); };
+  const torsoTop = [Math.sin(p.lean) * 300, -Math.cos(p.lean) * 300]; // same rotation as the jersey (g.rotate(lean))
+  const shp = (sd) => [torsoTop[0] + sd * 56 * Math.cos(p.lean), torsoTop[1] + 18 + sd * 56 * Math.sin(p.lean)];
+  const arm = (i, back) => { const sd = i ? 1 : -1; const [sx, sy] = shp(sd); const [ex, ey, hx, hy] = limb(sx, sy, p.sh[i], 205, p.el[i], 195, 0); const sk = back ? '#4d2c19' : C.skin;
+    bone(sx, sy, ex, ey, 40, sk); bulge(sx, sy, ex, ey, 0.4, 25, sk); bone(ex, ey, hx, hy, 32, sk); bulge(ex, ey, hx, hy, 0.28, 19, sk); g.fillStyle = sk; g.beginPath(); g.arc(sx, sy, 30, 0, 7); g.fill(); if (!back) { rim(sx, sy, ex, ey, 40); rim(ex, ey, hx, hy, 32); }
+    // wristband at the wrist, then the hand (palm + thumb) along the forearm
+    const a = Math.atan2(hy - ey, hx - ex); const wx = lerp(ex, hx, 0.84), wy = lerp(ey, hy, 0.84); g.save(); g.translate(wx, wy); g.rotate(a); g.fillStyle = back ? '#c9ccd3' : '#fff'; g.fillRect(-12, -19, 24, 38); g.restore();
+    g.save(); g.translate(hx, hy); g.rotate(a); g.fillStyle = sk; g.beginPath(); g.ellipse(22, 0, 30, 21, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(14, sd * -18 * (o.flip ? -1 : 1), 16, 8, -0.6, 0, 7); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 3; for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(34, -10 + k * 10); g.lineTo(48, -10 + k * 10); g.stroke(); } g.restore();
+    return [hx + Math.cos(a) * 26, hy + Math.sin(a) * 26]; };
+  arm(0, true); leg(0, true); leg(1, false);
+  // shorts: one garment = convex hull of the waistband and both thigh openings (so no leg can ever poke out of it)
+  { const pts = [[-54, -34], [54, -34], [-48, 4], [48, 4]]; const ends = [];
+    for (const i of [0, 1]) { const hx = i ? 20 : -20; const [kx, ky] = L(i); const ex = lerp(hx, kx, 0.58), ey = lerp(0, ky, 0.58); const a = Math.atan2(ky, kx - hx), nx = Math.cos(a), ny = Math.sin(a); const px = -ny * 40, py = nx * 40; pts.push([ex + px, ey + py], [ex - px, ey - py], [hx + px, py], [hx - px, -py]); ends.push([ex, ey]); }
+    const hull = (P) => { P = P.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]); const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); const lo = [], up = []; for (const p of P) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop(); lo.push(p); } for (const p of P.slice().reverse()) { while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop(); up.push(p); } return lo.slice(0, -1).concat(up.slice(0, -1)); };
+    const H = hull(pts); g.lineJoin = 'round'; g.beginPath(); H.forEach(([px, py], k) => k ? g.lineTo(px, py) : g.moveTo(px, py)); g.closePath(); g.fillStyle = C.blue; g.fill(); const sq = g.createLinearGradient(-80, 0, 80, 0); sq.addColorStop(0, 'rgba(0,0,0,0.25)'); sq.addColorStop(0.6, 'rgba(0,0,0,0)'); sq.addColorStop(1, 'rgba(140,110,255,0.25)'); g.fillStyle = sq; g.fill(); g.strokeStyle = C.gold; g.lineWidth = 9; g.stroke();
+    g.strokeStyle = 'rgba(8,20,50,0.55)'; g.lineWidth = 5; g.beginPath(); g.moveTo(0, 20); g.lineTo((ends[0][0] + ends[1][0]) / 2, Math.max(ends[0][1], ends[1][1]) - 6); g.stroke(); }
+  // jersey: Warriors-style blue tank, gold V-neck (white inner line), wide gold armholes, circle crest with bridge + 35
+  g.save(); g.rotate(p.lean); g.fillStyle = C.blue; g.beginPath(); g.moveTo(-40, -305); g.quadraticCurveTo(-70, -250, -60, -190); g.lineTo(-54, 0); g.lineTo(54, 0); g.lineTo(60, -190); g.quadraticCurveTo(70, -250, 40, -305); g.lineTo(18, -305); g.lineTo(0, -255); g.lineTo(-18, -305); g.closePath(); g.fill();
+  const jq = g.createLinearGradient(-64, 0, 64, 0); jq.addColorStop(0, 'rgba(255,255,255,0.10)'); jq.addColorStop(0.55, 'rgba(0,0,0,0)'); jq.addColorStop(1, 'rgba(120,90,255,0.32)'); g.fillStyle = jq; g.fill();
+  g.lineJoin = 'round'; g.strokeStyle = C.gold; g.lineWidth = 13; g.beginPath(); g.moveTo(-40, -305); g.quadraticCurveTo(-70, -250, -60, -190); g.moveTo(40, -305); g.quadraticCurveTo(70, -250, 60, -190); g.stroke();
+  g.strokeStyle = C.gold; g.lineWidth = 12; g.beginPath(); g.moveTo(-20, -305); g.lineTo(0, -252); g.lineTo(20, -305); g.stroke(); g.strokeStyle = '#fff'; g.lineWidth = 3; g.beginPath(); g.moveTo(-26, -305); g.lineTo(0, -243); g.lineTo(26, -305); g.stroke();
+  g.strokeStyle = '#e9eef7'; g.lineWidth = 6; g.beginPath(); g.moveTo(-57, -180); g.lineTo(-52, 0); g.moveTo(57, -180); g.lineTo(52, 0); g.stroke();
+  // crest
+  g.save(); g.translate(0, -150); g.scale(0.6, 0.6); g.fillStyle = C.gold; g.beginPath(); g.arc(0, 0, 66, 0, 7); g.fill(); g.strokeStyle = '#143e8c'; g.lineWidth = 5; g.beginPath(); g.arc(0, 0, 47, 0, 7); g.stroke();
+  const arcText = (s, r, top) => { g.font = font(14, 900, ''); g.fillStyle = '#143e8c'; g.textAlign = 'center'; const n = s.length, span = 2.3; for (let i = 0; i < n; i++) { const a = (top ? -Math.PI / 2 : Math.PI / 2) + (top ? 1 : -1) * (i - (n - 1) / 2) * (span / n); g.save(); g.rotate(a + (top ? Math.PI / 2 : -Math.PI / 2)); g.fillText(s[i], 0, top ? -r : r + 10); g.restore(); } };
+  arcText('GOLDEN STATE', 52, true); arcText('WARRIORS', 52, false);
+  g.save(); g.beginPath(); g.arc(0, 0, 45, 0, 7); g.clip(); g.fillStyle = '#143e8c'; g.fillRect(-26, -38, 7, 60); g.fillRect(17, -38, 7, 60); g.fillRect(-46, 14, 92, 6); g.strokeStyle = '#143e8c'; g.lineWidth = 2.5; for (const [a, b] of [[-22, 20], [-22, -48], [20, 48], [20, -20]]) { g.beginPath(); g.moveTo(a, -36); g.quadraticCurveTo((a + b) / 2, 4, b, 14); g.stroke(); } for (let i = -40; i <= 40; i += 8) { g.beginPath(); g.moveTo(i, 14); g.lineTo(i, Math.abs(i) < 20 ? -10 + Math.abs(i) : 0); g.stroke(); } g.restore();
+  g.font = font(40, 900, ''); g.fillStyle = '#143e8c'; g.lineWidth = 6; g.strokeStyle = C.gold; g.strokeText('35', 6, 8); g.fillText('35', 6, 8); g.restore();
+  // neck + head (low-cut hair, full beard + moustache, no headband — like the reference photo)
+  g.fillStyle = C.skin; g.fillRect(-19, -345, 38, 55); g.translate(0, -395); g.rotate(p.head);
+  g.fillStyle = C.skin; g.beginPath(); g.ellipse(-36, 4, 11, 17, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(4, 0, 46, 64, 0, 0, 7); g.fill();
+  const fq = g.createLinearGradient(-50, 0, 50, 0); fq.addColorStop(0, 'rgba(0,0,0,0.25)'); fq.addColorStop(0.6, 'rgba(255,255,255,0.06)'); fq.addColorStop(1, 'rgba(160,120,255,0.25)'); g.fillStyle = fq; g.fill(); g.fillStyle = 'rgba(255,210,170,0.16)'; g.beginPath(); g.ellipse(26, 8, 14, 8, -0.3, 0, 7); g.fill(); g.beginPath(); g.ellipse(14, -36, 18, 6, 0, 0, 7); g.fill(); g.fillStyle = 'rgba(0,0,0,0.18)'; g.beginPath(); g.ellipse(18, -12, 26, 7, 0, 0, 7); g.fill();
+  g.fillStyle = '#0d0805'; g.beginPath(); g.moveTo(-42, -8); g.quadraticCurveTo(-50, -64, 4, -66); g.quadraticCurveTo(44, -64, 48, -26); g.quadraticCurveTo(28, -42, 6, -40); g.quadraticCurveTo(-26, -36, -34, -4); g.closePath(); g.fill();
+  g.fillStyle = '#120a06'; g.beginPath(); g.moveTo(-34, 8); g.quadraticCurveTo(-30, 44, -4, 62); g.quadraticCurveTo(22, 70, 40, 40); g.lineTo(44, 14); g.quadraticCurveTo(38, 36, 24, 36); g.quadraticCurveTo(10, 30, 0, 34); g.quadraticCurveTo(-18, 34, -26, 8); g.closePath(); g.fill();
+  g.beginPath(); g.moveTo(4, 26); g.quadraticCurveTo(24, 18, 42, 26); g.lineTo(42, 31); g.quadraticCurveTo(24, 24, 4, 31); g.closePath(); g.fill();
+  g.fillStyle = '#7b3f2c'; g.beginPath(); g.ellipse(26, 38, 13, 4, 0, 0, 7); g.fill();
+  g.strokeStyle = '#2a170d'; g.lineWidth = 4; g.beginPath(); g.moveTo(34, -2); g.quadraticCurveTo(46, 12, 40, 18); g.stroke();
+  g.fillStyle = '#0d0805'; g.beginPath(); g.moveTo(10, -22); g.quadraticCurveTo(26, -28, 42, -20); g.lineTo(42, -16); g.quadraticCurveTo(26, -22, 10, -17); g.fill(); g.beginPath(); g.moveTo(-14, -20); g.quadraticCurveTo(-4, -25, 4, -21); g.lineTo(4, -17); g.quadraticCurveTo(-4, -20, -14, -16); g.fill();
+  g.fillStyle = '#fff'; g.beginPath(); g.ellipse(27, -7, 10, o.focus ? 4 : 6.5, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(-6, -7, 7, o.focus ? 3 : 5.5, 0, 0, 7); g.fill(); g.fillStyle = '#1a0c05'; g.beginPath(); g.arc(30, -7, 4.5, 0, 7); g.arc(-4, -7, 3.5, 0, 7); g.fill();
+  g.restore();
+  const hand = arm(1, false); g.restore();
+  let bp = null; if (p.ball !== undefined && !o.noBall) { const bx = hand[0] + 6, byTop = hipY + hand[1] + 40; const bounceY = lerp(byTop, -36, Math.abs(Math.sin(T * (o.bspeed || 7)))); bp = [bx, p.ball >= 0.99 ? bounceY : lerp(byTop, bounceY, p.ball)]; }
+  if (o.holdBall && !o.noBall) { bp = [hand[0] + 4, hipY + hand[1] + 6]; }
+  if (bp) ball(bp[0], bp[1], 36, T * 6);
+  g.restore(); return bp ? [x + bp[0] * s * (o.flip ? -1 : 1), y - (o.jump || 0) + bp[1] * s] : null; };
+const ghost = (fn, n = 4) => { for (let i = n; i >= 1; i--) { g.save(); g.globalAlpha = 0.12 * (n - i + 1) / n; g.filter = 'none'; fn(i); g.restore(); } g.save(); fn(0); g.restore(); };
+
+// ---------- the cosmic giant (original design) ----------
+// Galactus, styled after the user's reference: a dark, backlit silhouette in cosmic haze — tall ribbed crown helmet with
+// side discs and the two huge L-shaped fins, shadowed face, glowing violet eyes, angular armour plates, drifting rocks.
+const DK = '#16111f', DK2 = '#231b31', RIML = 'rgba(205,180,255,';
+const plate = (pts, col, rimA = 0.5) => { g.fillStyle = col; g.beginPath(); pts.forEach(([px, py], i) => i ? g.lineTo(px, py) : g.moveTo(px, py)); g.closePath(); g.fill(); g.strokeStyle = RIML + rimA + ')'; g.lineWidth = 6; g.beginPath(); for (let i = 0; i < pts.length - 1; i++) { const [ax, ay] = pts[i], [bx, by] = pts[i + 1]; if (bx > ax || by < ay) { g.moveTo(ax, ay); g.lineTo(bx, by); } } g.stroke(); };
+const giant = (x, y, s0, o = {}) => { const s = s0 * 0.75; /* head drawn 1.3x: keep helmet top at the official 28'9" */ g.save(); g.translate(x, y); g.scale(s, s); const zs = Math.abs(g.getTransform().a) || 1; const bl = (px) => `blur(${Math.max(0.5, px * zs * 3).toFixed(1)}px)`;
+  // 1. backlight bloom + soft rays from behind the upper right of the head
+  { const dq = g.createRadialGradient(0, -1700, 300, 0, -1700, 2800); dq.addColorStop(0, 'rgba(4,3,6,0.75)'); dq.addColorStop(1, 'rgba(4,3,6,0)'); g.fillStyle = dq; g.fillRect(-3000, -4600, 6000, 5200); } glow(420, -2080, 1300, '215,200,245', 0.32); g.save(); g.globalCompositeOperation = 'lighter'; smoke(560, -2150, 1300, 900, 0.35, 0.4); smoke(300, -2500, 1100, 800, 0.25, 1.4); g.restore(); glow(430, -2080, 800, '255,250,255', 0.85); glow(400, -2070, 320, '255,255,255', 1); glow(400, -2070, 140, '255,255,255', 1);
+  g.save(); g.filter = bl(14); g.globalCompositeOperation = 'lighter'; for (let i = 0; i < 18; i++) { const a = -Math.PI * 0.62 + i * 0.13 + Math.sin(T * 0.25 + i) * 0.02, len = 2400 + hash(i) * 1600; g.fillStyle = `rgba(215,200,255,${0.025 + hash(i + 3) * 0.025})`; g.beginPath(); g.moveTo(260, -2250); g.lineTo(260 + Math.cos(a - 0.035) * len, -2250 + Math.sin(a - 0.035) * len); g.lineTo(260 + Math.cos(a + 0.035) * len, -2250 + Math.sin(a + 0.035) * len); g.closePath(); g.fill(); } g.restore();
+  for (let k = 0; k < 5; k++) smoke(-900 + k * 520 + Math.sin(T * 0.2 + k) * 60, -2300 + (k % 2) * 400, 1600, 1100, 0.45, k);
+  // 2. smoky body mass: shoulders + chest dissolving downward
+  g.save(); g.filter = bl(10); const bq = g.createLinearGradient(0, -1800, 0, 300); bq.addColorStop(0, 'rgba(14,10,19,1)'); bq.addColorStop(0.55, 'rgba(13,9,17,0.94)'); bq.addColorStop(1, 'rgba(20,15,28,0)'); g.fillStyle = bq;
+  g.beginPath(); g.moveTo(-200, -1760); g.quadraticCurveTo(-700, -1750, -760, -1420); g.quadraticCurveTo(-820, -600, -620, 300); g.lineTo(620, 300); g.quadraticCurveTo(820, -600, 760, -1420); g.quadraticCurveTo(700, -1750, 200, -1760); g.closePath(); g.fill(); g.restore();
+  // armour hints catching the back light (right side brighter)
+  g.save(); g.filter = bl(3); g.strokeStyle = 'rgba(200,170,255,0.5)'; g.lineWidth = 12; g.beginPath(); g.moveTo(220, -1740); g.quadraticCurveTo(650, -1720, 740, -1400); g.stroke(); g.strokeStyle = 'rgba(200,170,255,0.22)'; g.beginPath(); g.moveTo(-220, -1740); g.quadraticCurveTo(-640, -1720, -720, -1420); g.stroke();
+  g.strokeStyle = 'rgba(160,130,210,0.18)'; g.lineWidth = 8; for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(-320 + i * 30, -1450 + i * 120); g.quadraticCurveTo(0, -1400 + i * 120, 320 - i * 30, -1450 + i * 120); g.stroke(); } g.restore();
+  // 3. arms: dark smoky limbs with a rim of light, hand with fingers
+  const arm = (sd, a, reachK = 1) => { const sx = sd * 520, sy = -1580; const ang = lerp(0.12, -2.75, a); const ex = sx + Math.sin(ang * sd) * 520 * sd * sd, ey = sy + Math.cos(ang) * 520; const ang2 = ang * 1.05; const hx = ex + Math.sin(ang2 * sd) * 560 * reachK, hy = ey + Math.cos(ang2) * 560 * reachK;
+    g.save(); g.filter = bl(4); bone(sx, sy, ex, ey, 260, '#1a1322'); bone(ex, ey, hx, hy, 220, '#1d1526'); g.restore(); g.save(); g.filter = bl(2); rim(sx, sy, ex, ey, 260); rim(ex, ey, hx, hy, 220); g.restore();
+    g.save(); g.translate(hx, hy); g.rotate(-ang2 * sd + (a > 0.5 ? Math.PI : 0)); g.filter = bl(2); g.fillStyle = '#1c1525'; g.beginPath(); g.ellipse(0, 40, 140, 115, 0, 0, 7); g.fill(); for (let f = 0; f < 4; f++) bone(-90 + f * 60, 100, -100 + f * 64, 240 + (f === 0 || f === 3 ? -30 : 0), 54, '#211a2b'); bone(120, 30, 210, -60, 60, '#211a2b'); g.strokeStyle = 'rgba(205,180,255,0.4)'; g.lineWidth = 6; g.beginPath(); g.ellipse(0, 40, 140, 115, 0, -1.2, 0.6); g.stroke(); g.restore(); return [hx, hy]; };
+  arm(-1, o.left || 0); const hp = arm(1, o.hand || 0, o.reach || 1);
+  g.save(); g.translate(0, -1700); g.scale(1.3, 1.3); g.translate(0, 1700);
+  // 4. fins in 3/4 view: left = L (out, then up, leaning in); right = sharp chevron pointing out-and-up
+  g.save(); g.filter = bl(1.5);
+  const finL = [[-270, -1930], [-720, -1950], [-800, -1990], [-680, -2800], [-500, -2770], [-600, -2120], [-270, -2120]];
+  const finR = [[320, -2020], [580, -2150], [880, -2460], [480, -2860], [330, -2760], [620, -2480], [450, -2330], [320, -2240]];
+  g.fillStyle = '#070509'; g.beginPath(); finL.forEach(([px, py], k) => k ? g.lineTo(px, py) : g.moveTo(px, py)); g.closePath(); g.fill(); g.strokeStyle = 'rgba(190,160,235,0.22)'; g.lineWidth = 6; g.beginPath(); g.moveTo(-270, -2120); g.lineTo(-600, -2120); g.lineTo(-500, -2770); g.stroke();
+  g.fillStyle = '#0d0910'; g.beginPath(); finR.forEach(([px, py], k) => k ? g.lineTo(px, py) : g.moveTo(px, py)); g.closePath(); g.fill(); g.strokeStyle = 'rgba(248,240,255,0.95)'; g.lineWidth = 7; g.beginPath(); g.moveTo(330, -2760); g.lineTo(480, -2860); g.lineTo(880, -2460); g.lineTo(580, -2150); g.stroke(); g.restore();
+  // 5. crown helmet, turned slightly to our right (face centre at x=+40)
+  g.save(); g.filter = bl(1.2); const FX = 40; const hq = g.createLinearGradient(-260, 0, 280, 0); hq.addColorStop(0, '#050306'); hq.addColorStop(0.55, '#0f0b13'); hq.addColorStop(0.85, '#1c1523'); hq.addColorStop(1, '#3a2d47'); g.fillStyle = hq;
+  g.beginPath(); g.moveTo(-290, -1760); g.lineTo(-305, -2150); g.lineTo(-282, -2470); g.quadraticCurveTo(-230, -2620, -120, -2650); g.lineTo(170, -2660); g.quadraticCurveTo(290, -2620, 320, -2480); g.lineTo(335, -2150); g.lineTo(315, -1760); g.closePath(); g.fill(); g.save(); g.clip(); g.globalCompositeOperation = 'multiply'; g.globalAlpha = 0.7; g.drawImage(CLOUD, -380, -2700, 780, 1050); g.restore();
+  
+  g.strokeStyle = 'rgba(0,0,0,0.6)'; g.lineWidth = 9; g.beginPath(); g.moveTo(-290, -2440); g.quadraticCurveTo(FX, -2490, 330, -2430); g.stroke(); g.beginPath(); g.moveTo(-292, -2350); g.quadraticCurveTo(FX, -2395, 332, -2340); g.stroke();
+  g.strokeStyle = 'rgba(248,240,255,0.9)'; g.lineWidth = 6; g.beginPath(); g.moveTo(170, -2660); g.quadraticCurveTo(290, -2620, 320, -2480); g.lineTo(335, -2150); g.lineTo(315, -1760); g.stroke(); for (let k = 0; k < 9; k++) { const xx = -250 + k * 66; g.strokeStyle = xx > 150 ? 'rgba(200,175,235,0.45)' : 'rgba(0,0,0,0.7)'; g.lineWidth = 10; g.beginPath(); g.moveTo(xx * 0.8, -2630); g.lineTo(xx, -2470); g.stroke(); }
+  for (const [cx, rr, lit] of [[FX - 95, 40, 0.3], [FX + 95, 42, 0.6]]) { g.fillStyle = '#100b14'; g.beginPath(); g.arc(cx, -2250, rr, 0, 7); g.fill(); g.strokeStyle = `rgba(215,190,255,${lit})`; g.lineWidth = 6; g.stroke(); g.beginPath(); g.arc(cx, -2250, rr * 0.45, 0, 7); g.stroke(); }
+  // 6. sculpted face: dark left half, lit right edge, deep brow, burning eyes, broad nose, set mouth, heavy chin
+  const fq = g.createLinearGradient(-160, 0, 230, 0); fq.addColorStop(0, '#030204'); fq.addColorStop(0.55, '#0b080e'); fq.addColorStop(0.85, '#191220'); fq.addColorStop(1, '#3a2b42'); g.fillStyle = fq;
+  g.beginPath(); g.moveTo(-200, -2140); g.lineTo(285, -2140); g.quadraticCurveTo(300, -1910, 250, -1790); g.quadraticCurveTo(170, -1650, FX, -1635); g.quadraticCurveTo(-100, -1650, -175, -1780); g.quadraticCurveTo(-215, -1910, -200, -2140); g.fill(); g.save(); g.clip(); g.globalCompositeOperation = 'multiply'; g.globalAlpha = 0.75; g.drawImage(CLOUD, -300, -2200, 640, 620); g.restore();
+  g.fillStyle = '#060408'; g.beginPath(); g.moveTo(-200, -2080); g.quadraticCurveTo(FX, -2020, 285, -2080); g.lineTo(270, -2020); g.quadraticCurveTo(FX, -1980, -190, -2025); g.closePath(); g.fill(); g.fillStyle = 'rgba(0,0,0,0.45)'; g.beginPath(); g.ellipse(FX - 150, -1870, 55, 90, -0.2, 0, 7); g.fill(); g.strokeStyle = 'rgba(150,120,175,0.35)'; g.lineWidth = 5; g.beginPath(); g.moveTo(FX + 170, -1940); g.quadraticCurveTo(FX + 205, -1870, FX + 175, -1800); g.stroke();
+  for (const [cx, w] of [[FX - 78, 58], [FX + 80, 62]]) { g.fillStyle = '#040305'; g.beginPath(); g.ellipse(cx, -1972, w, 30, 0, 0, 7); g.fill(); }
+  const ey = o.eyes ?? 1; for (const [cx, sd] of [[FX - 78, -1], [FX + 80, 1]]) { g.fillStyle = '#fff2ff'; g.beginPath(); g.moveTo(cx - 40, -1970 + sd * 2); g.quadraticCurveTo(cx, -1995 - 5 * ey, cx + 42, -1980); g.quadraticCurveTo(cx, -1958, cx - 40, -1970 + sd * 2); g.fill(); glow(cx, -1975, 80 + 60 * (ey - 1), '240,110,255', 0.9); glow(cx, -1977, 26, '255,230,255', 0.9); }
+  g.fillStyle = 'rgba(70,52,78,0.85)'; g.beginPath(); g.moveTo(FX + 6, -1955); g.lineTo(FX + 40, -1830); g.lineTo(FX + 4, -1812); g.lineTo(FX - 30, -1830); g.closePath(); g.fill(); g.fillStyle = 'rgba(150,120,170,0.35)'; g.beginPath(); g.moveTo(FX + 12, -1950); g.lineTo(FX + 40, -1832); g.lineTo(FX + 22, -1828); g.closePath(); g.fill();
+  g.strokeStyle = 'rgba(0,0,0,0.65)'; g.lineWidth = 7; g.beginPath(); g.moveTo(FX - 50, -1760); g.quadraticCurveTo(FX, -1772, FX + 55, -1760); g.stroke(); g.lineWidth = 5; for (const sd of [-1, 1]) { g.beginPath(); g.moveTo(FX + sd * 115, -1900); g.quadraticCurveTo(FX + sd * 100, -1800, FX + sd * 62, -1725); g.stroke(); }
+  g.strokeStyle = 'rgba(248,240,255,0.35)'; g.lineWidth = 4; g.beginPath(); g.moveTo(285, -2140); g.quadraticCurveTo(300, -1910, 250, -1790); g.quadraticCurveTo(170, -1650, FX, -1635); g.stroke();
+  if (o.mouth) { g.fillStyle = '#000'; g.beginPath(); g.ellipse(FX, -1760, 90 * o.mouth, 58 * o.mouth, 0, 0, 7); g.fill(); glow(FX, -1760, 220 * o.mouth, '255,80,220', 0.5); }
+  g.restore();
+  g.restore();
+  // 7. smoke drifting across (in front) + debris rocks at different depths
+  for (let k = 0; k < 9; k++) { const dx = ((T * (22 + k * 4) + k * 470) % 3000) - 1500, dy = -150 - k * 290 + Math.sin(T * 0.35 + k) * 50; smoke(dx, dy, 1500 + (k % 3) * 400, 700 + (k % 2) * 250, (dy < -1500 ? 0.25 : 0.55) + 0.1 * (k % 3), k * 0.7); }
+  for (let k = 0; k < 18; k++) { const depth = hash(k + 11), ax = hash(k) * 2800 - 1400, ay = -200 - hash(k + 3) * 2900 + Math.sin(T * 0.5 + k) * 50, r = 20 + depth * 55; g.save(); g.filter = bl(depth < 0.3 ? 6 : 1); g.translate(ax, ay); g.rotate(T * 0.3 + k); g.fillStyle = '#1b1522'; g.beginPath(); g.moveTo(-r, -r * 0.5); g.lineTo(-r * 0.2, -r); g.lineTo(r * 0.9, -r * 0.6); g.lineTo(r, r * 0.4); g.lineTo(-r * 0.4, r); g.closePath(); g.fill(); g.strokeStyle = 'rgba(210,185,255,0.45)'; g.lineWidth = 4; g.beginPath(); g.moveTo(r * 0.9, -r * 0.6); g.lineTo(r, r * 0.4); g.stroke(); g.restore(); }
+  g.restore(); return [x + hp[0] * s, y + hp[1] * s]; };
+const human = (x, y, s, freeze = 0) => { g.save(); g.translate(x, y); g.scale(-s, s); const col = freeze ? '#7a8fa8' : '#6b7280'; seg(-22, -440, -60, -230, 28, 22, col, 0); seg(-60, -230, -40, 0, 22, 16, col, 0); seg(22, -440, 70, -230, 28, 22, col, 0); seg(70, -230, 90, 0, 22, 16, col, 0); g.fillStyle = '#c4202e'; g.fillRect(-62, -740, 124, 310); seg(-60, -720, -220, -560, 20, 15, col, 0); seg(60, -720, 220, -560, 20, 15, col, 0); g.fillStyle = col; g.beginPath(); g.arc(0, -800, 58, 0, 7); g.fill();
+  if (freeze) { g.fillStyle = `rgba(160,230,255,${0.25 * freeze})`; g.fillRect(-280, -900, 560, 920); g.strokeStyle = `rgba(200,245,255,${freeze})`; g.lineWidth = 6; for (let i = 0; i < 8; i++) { g.beginPath(); g.moveTo(-280 + hash(i) * 560, -900); g.lineTo(-280 + hash(i + 1) * 560, 20); g.stroke(); } } g.restore(); };
+const measure = (x, y0, y1, label, col, k, side = 1, size = 80) => { const yy = lerp(y0, y1, ease(k)); g.save(); g.shadowColor = col; g.shadowBlur = 25; g.strokeStyle = col; g.lineWidth = 10; g.beginPath(); g.moveTo(x, y0); g.lineTo(x, yy); g.moveTo(x - 36, y0); g.lineTo(x + 36, y0); g.moveTo(x - 36, yy); g.lineTo(x + 36, yy); g.stroke(); for (let i = 0; i < 20; i++) { const ty = lerp(y0, yy, i / 20); g.beginPath(); g.moveTo(x, ty); g.lineTo(x + side * 18, ty); g.stroke(); } g.restore(); if (k > 0.5) txt(label, x + side * 50, (y0 + yy) / 2, size, col, { align: side > 0 ? 'left' : 'right', glow: col }); };
+
+// ---------- shots (word-anchored) ----------
+const SH = [
+  [0, (u) => { const k = ease(u / 2.4); g.save(); cam(lerp(0.55, 1.15, k), 560, lerp(220, 1420, k)); nebula(0, -k * 200); planet(560, 2400, 1000); giant(700, 1560, 1.02, { hand: 0.25 + 0.08 * Math.sin(T * 2), eyes: 1 + 0.5 * Math.sin(T * 3) ** 2 }); court(560, 1560, 1000); hoop(1180, 1560, 0.6); const ph = (T * 2.2) % 1; kd(330, 1560, 0.6, mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5)))); g.restore(); motes(1); }],
+  [5.3, (u) => { nebula(T * 60, 0); g.strokeStyle = 'rgba(120,200,255,0.25)'; g.lineWidth = 2; for (let i = -10; i < 20; i++) { g.beginPath(); g.moveTo(540 + i * 140 - 1000, 1920); g.lineTo(540 + (i - 5) * 40, 1100); g.stroke(); } for (let j = 0; j < 10; j++) { const yy = 1100 + Math.pow(j / 10, 2) * 820 + (T * 200 % 82); g.beginPath(); g.moveTo(0, yy); g.lineTo(1080, yy); g.stroke(); }
+    slam("LET'S DO", 540, 760, 170, C.white, u); slam('THE MATH', 540, 960, 200, C.gold, u - 0.25, { glow: C.gold }); ['6\'11"', '÷', '28\'9"', '= ?'].forEach((s, i) => slam(s, [180, 400, 640, 900][i], 1300 + Math.sin(T * 5 + i) * 25, 80, '#7fe7ff', u - 0.5 - i * 0.1)); }],
+  [6.8, (u) => { const k = ease(u / 3.4); g.save(); cam(lerp(1.0, 0.8, k), 540, 1150, 0.02 * Math.sin(T)); nebula(-u * 40, 0); glow(540, 1000, 800, '255,199,44', 0.15); court(540, 1760, 1500); kd(540, 1740, 1.25, u < 1.5 ? mixP(P.stand, P.wing, ease((u - 0.2) / 0.8)) : P.wing); measure(120, 1740, 1740 - 900 * 1.25, '6\'11"', C.gold, (u - 0.1) / 0.6, 1, 90);
+    if (u > 1.6) { const kk = ease((u - 1.6) / 0.6); g.save(); g.shadowColor = '#7fe7ff'; g.shadowBlur = 30; g.strokeStyle = '#7fe7ff'; g.lineWidth = 9; g.beginPath(); g.moveTo(540 - 605 * kk, 838); g.lineTo(540 + 605 * kk, 838); g.stroke(); g.restore(); } g.restore(); if (u > 1.7) slam('7\'5" WINGSPAN', 540, 330, 100, '#7fe7ff', u - 1.7, { glow: '#7fe7ff' }); }],
+  [10.3, (u) => { const k = ease(u / 2.6); g.save(); cam(lerp(1.1, 0.3, k), lerp(500, 1300, k), lerp(1650, 0, k)); nebula(0, u * 80); court(900, 1720, 4200); giant(1150, 1720, 1.7, { eyes: 1 + 0.6 * sm((u - 1.8) / 0.4) }); kd(260, 1720, 1.0, P.stand); measure(2350, 1720, 1720 - 3740, '28\'9"', C.gold, (u - 0.5) / 1.4, -1, 220); measure(120, 1720, 1720 - 900, '6\'11"', '#7fe7ff', (u - 0.5) / 1.4, -1, 150); g.restore(); if (u > 1.8) shock(540, 300, (u - 1.8) / 0.8, 700, '200,170,255'); slam('MARVEL LISTS: 28\'9"', 540, 270, 80, C.white, u - 0.2); }],
+  [13.4, (u) => { g.save(); cam(0.42, 560, 640); nebula(0, 0); court(560, 1720, 2800); giant(1080, 1720, 1.05, {}); for (let i = 0; i < 4; i++) { const k = back((u - i * 0.42) / 0.3); if (u - i * 0.42 > 0) { kd(260, 1720 - i * 558 * clamp(k, 0, 1.2), 0.62, P.stand); if (u - i * 0.42 < 0.3) burst(260, 1720 - i * 558 - 250, (u - i * 0.42) / 0.3, 24, '255,199,44', 300); } } g.restore(); const n = Math.min(4.15, (u / 2.0) * 4.15); slam(`${n.toFixed(2)}× KD`, 540, 330, 150, C.gold, u, { glow: C.gold }); }],
+  [16.8, (u) => { const k = ease(u / 1.0); g.save(); cam(lerp(0.5, 0.36, ease(u / 3)), 640, 400); nebula(0, 0); court(560, 1720, 2800); giant(860, 1720, 1.05, { hand: k * 0.98, eyes: 1.3 }); if (u > 0.7 && u < 1.6) shock(1200, -900, (u - 0.7) / 0.9, 1200, '200,170,255'); for (let i = 0; i < 4; i++) if (u > 2.4 + i * 0.35) { hoop(-60, 1720 - i * 806, 0.62); if (u < 2.75 + i * 0.35) burst(-210, 1720 - 806 - i * 806, (u - 2.4 - i * 0.35) / 0.35, 20, '255,122,26', 260); } g.restore(); slam('REACH ≈ 38 FT', 540, 290, 120, C.gold, u - 0.3, { glow: C.gold }); if (u > 2.4) slam('≈ 4 RIMS STACKED', 540, 430, 80, C.white, u - 2.4); }],
+  [22.0, (u) => { const slow = u < 1.9 ? u : 1.9 + (u - 1.9) * 0.25; g.save(); if (u > 1.9 && u < 2.3) shake(26); cam(0.44, 640, 560); nebula(0, 0); court(600, 1720, 2600); const hp = giant(900, 1720, 1.36, { hand: clamp(0.3 + slow * 0.04, 0, 0.36), eyes: 1.4 }); court(600, 1720, 2600); kd(260, 1720, 0.8, slow < 0.5 ? mixP(P.load, P.shoot, ease(slow / 0.5)) : P.follow, { jump: 220 * Math.sin(clamp(slow / 1.2) * Math.PI), noBall: true });
+    const kb = clamp((slow - 0.4) / 1.3); const bx = lerp(270, hp[0], kb), by = lerp(614, hp[1], kb) - Math.sin(kb * Math.PI) * 300; const pts = []; for (let i = 0; i <= 14; i++) { const kk = kb * i / 14; pts.push([lerp(270, hp[0], kk), lerp(614, hp[1], kk) - Math.sin(kk * Math.PI) * 300]); } if (slow > 0.4) { comet(pts, 26); ball(bx, by, 32, T * 10); } if (u > 1.9) shock(hp[0], hp[1], (u - 1.9) / 0.8, 900, '255,80,80'); g.restore();
+    if (u > 1.9) slam('IMPOSSIBLE', 540, 400, 170, C.red, u - 1.9, { glow: C.red }); if (u > 4.7) slam('BLOCKED.', 540, 1330, 110, C.white, u - 4.7); }],
+  [27.6, (u) => { nebula(0, 0); g.save(); cam(2.6, 560, 900); kd(540, 1700, 1.0, P.stand, { focus: u > 1.3 }); g.restore(); glow(600, 870, 300, '255,199,44', 0.2 * Math.abs(Math.sin(T * 3))); slam("A HESI ISN'T", 540, 420, 110, C.white, u); slam('ABOUT HEIGHT', 540, 560, 120, C.white, u - 0.2); if (u > 1.4) { slam("IT'S TIMING.", 540, 1760, 150, C.gold, u - 1.4, { glow: C.gold }); speedLines(560, 900, 0.5); } }],
+  [31.0, (u) => { g.save(); cam(0.9, 540, 1280); nebula(-u * 200, 0); court(540, 1720, 1600); const fz = clamp((u - 2.3) / 0.25); const phase = u < 1.0 ? 0 : u < 2.6 ? 1 : 2; const kx = phase < 2 ? lerp(180, 330, ease(u / 1.0)) : 330 + (u - 2.6) * 820;
+    const pose = phase === 0 ? mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 6))) : phase === 1 ? mixP(P.dribA, P.hesi, ease((u - 1.0) / 0.4)) : P.drive;
+    human(820, 1720, 0.85, fz); if (phase === 2) ghost((i) => kd(kx - i * 70, 1720, 0.85, pose, { bspeed: 10 }), 4); else kd(kx, 1720, 0.85, pose, { bspeed: phase ? 3 : 7 }); g.restore(); if (phase === 2) speedLines(540, 1100, 0.5);
+    slam('SLOW.', 200, 380, 88, C.gold, u - 0.9, { maxW: 300 }); slam('SELL.', 520, 380, 88, C.gold, u - 1.6, { maxW: 300 }); slam('GO.', 850, 380, 110, C.red, u - 2.6, { maxW: 300 }); if (fz) slam('FROZEN', 820, 820, 110, C.ice, u - 2.4, { glow: C.ice }); }],
+  [35.9, (u) => { nebula(0, 0); slam('4× LONGER ARM', 540, 330, 100, C.white, u); slam('≈ 2× SLOWER SWING', 540, 470, 100, C.gold, u - 0.4, { glow: C.gold });
+    const sw = (px, len, period, col, rgb) => { for (let tr = 6; tr >= 0; tr--) { const tt = T - tr * 0.03; const a = Math.sin(tt * 2 * Math.PI / period) * 0.85; const ex = px + Math.sin(a) * len, ey = 640 + Math.cos(a) * len; g.strokeStyle = tr ? `rgba(${rgb},${0.12})` : col; g.lineWidth = tr ? 30 : 22; g.lineCap = 'round'; g.beginPath(); g.moveTo(px, 640); g.lineTo(ex, ey); g.stroke(); if (!tr) { g.fillStyle = col; g.beginPath(); g.arc(ex, ey, 44, 0, 7); g.fill(); glow(ex, ey, 120, rgb, 0.5); } } };
+    sw(230, 230, 0.6, '#7fe7ff', '127,231,255'); sw(720, 920, 1.2, '#9b7dff', '155,125,255'); txt('KD', 230, 1060, 70, '#7fe7ff'); txt('GIANT', 720, 1700, 80, '#9b7dff'); }],
+  [41.7, (u) => { // the play
+    const z = u < 6.3 ? lerp(0.47, 0.55, ease(u / 6)) : lerp(0.55, 0.62, ease((u - 6.3) / 1.2)); const slow = u > 6.6 && u < 8.6; const tt = u;
+    g.save(); if (u > 1.9 && u < 2.3) shake(22); if (u > 9.3 && u < 9.7) shake(30); cam(z, u > 6.3 ? lerp(700, 760, ease(u - 6.3)) : 680, u > 6.3 ? lerp(760, 700, ease((u - 6.3) / 1.2)) : 760, u > 6.3 ? -0.03 : 0); nebula(-u * 30, 0); court(700, 1720, 2600);
+    const kx = u < 1.9 ? lerp(140, 280, ease(u / 1.9)) : u < 3.4 ? 280 : u < 6.3 ? lerp(280, 470, ease((u - 3.4) / 2.6)) : 470;
+    const hand = u < 1.9 ? 0.3 : u < 3.4 ? lerp(0.3, 0.02, ease((u - 1.9) / 0.5)) : u < 6.6 ? lerp(0.02, 0.55, ease((u - 3.4) / 3.2)) : lerp(0.55, 0.95, ease((u - 6.6) / 2.2));
+    const lunge = u > 1.9 && u < 3.4 ? ease((u - 1.9) / 0.4) : u >= 3.4 ? 1 - ease((u - 3.4) / 1.5) : 0;
+    const hp = giant(760 - lunge * 140, 1720, 1.33, { hand, left: lunge * 0.3, eyes: 1 + lunge * 0.8 }); court(700, 1720, 2600); const RIM = hoop(1560, 1720, 0.78, u - 9.3);
+    
+    const jump = u > 6.3 ? 330 * Math.sin(clamp((u - 6.3) / 3.0) * Math.PI) : 0;
+    const pose = u < 1.0 ? mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 6))) : u < 1.9 ? P.hesi : u < 6.3 ? P.drive : u < 6.8 ? mixP(P.load, P.shoot, ease((u - 6.3) / 0.5)) : P.follow;
+    const draw = (i) => kd(kx - i * 60, 1720, 0.78, pose, { jump, noBall: u > 6.6 || i > 0, bspeed: 9, focus: true });
+    if (u > 1.9 && u < 3.4) ghost(draw, 4); else draw(0);
+    if (u > 6.6) { const k = clamp((u - 6.6) / 2.7); const sx = kx + 30, sy = 1720 - jump - 900, ex = RIM[0], ey = RIM[1] - 10; const pts = []; for (let i = 0; i <= 16; i++) { const kk = k * i / 16; pts.push([lerp(sx, ex, kk), lerp(sy, ey, kk) - Math.sin(kk * Math.PI) * 1100]); } comet(pts, 28); ball(pts[16][0], pts[16][1], 32, T * 12); }
+    if (u > 9.3) { shock(RIM[0], RIM[1], (u - 9.3) / 0.6, 1100); burst(RIM[0], RIM[1], (u - 9.3) / 0.6, 80, '255,199,44', 1000); }
+    g.restore(); if (slow) speedLines(540, 900, 0.45, 70, '200,180,255');
+    if (u > 1.9 && u < 3.4) slam('BITES!', 540, 340, 150, C.gold, u - 1.9, { glow: C.gold }); if (u > 3.4 && u < 6.3) slam('A SPLIT SECOND LATE', 540, 340, 84, C.red, u - 3.4); if (u > 9.3) slam('SWISH', 540, 500, 240, C.gold, u - 9.3, { glow: C.gold }); }],
+  [51.9, (u) => { g.save(); cam(1.0 + 0.04 * Math.sin(T * 2), 540, 1150); nebula(0, -T * 60); for (let i = 0; i < 70; i++) { const k = (T * 0.7 + i / 70) % 1; g.save(); g.translate(hash(i) * 1080, k * 2100 - 100); g.rotate(T * 4 + i); g.fillStyle = [C.gold, C.blue, '#7fe7ff', C.white][i % 4]; g.fillRect(-10, -16, 20, 32); g.restore(); } kd(540, 1780, 0.95, mixP(P.flex, P.wing, Math.abs(Math.sin(T * 3)) * 0.3), { jump: 50 * Math.abs(Math.sin(T * 5)) }); g.restore(); speedLines(540, 1000, 0.25);
+    g.save(); g.shadowColor = '#7fe7ff'; g.shadowBlur = 30; g.strokeStyle = '#7fe7ff'; g.lineWidth = 6; g.strokeRect(140, 180, 800, 360); g.restore(); slam('KD   2', 540, 320, 140, C.gold, u, { glow: C.gold }); slam('PLANET-EATER   0', 540, 480, 80, '#b8a6ff', u - 0.2); }],
+  [55.1, (u) => { const k = ease((u - 3.6) / 1.6); g.save(); if (u > 3.6) shake(18); cam(lerp(0.55, 0.44, ease(u / 5)), 560, 900); nebula(0, 0);
+    for (let i = 0; i < (u > 3.6 ? 140 : 0); i++) { const kk = ((T * 0.9 + i / 140) % 1); const sx = 560 + Math.cos(i) * 900 * (1 - kk) * (1 - k * 0.5), sy = 2300 - 600 * (1 - kk) * Math.sin(i), ex = 560, ey = 160; g.fillStyle = `rgba(110,230,200,${0.7 * kk})`; g.beginPath(); g.arc(lerp(sx, ex, easeIn(kk)), lerp(sy, ey, easeIn(kk)), 6 + 10 * (1 - kk), 0, 7); g.fill(); }
+    planet(560, lerp(2300, 1600, k), 1000 * (1 - k)); if (k < 0.6) court(560, 1720 - k * 200, 2100 * (1 - k), { crack: u > 2.5 }); giant(560, 1720, 0.85, { hand: u > 3.6 ? 0.95 : 0.15, left: u > 3.6 ? 0.95 : 0, mouth: u > 3.6 ? 1 : 0, eyes: u > 2.3 ? 1.9 : 1 }); g.restore();
+    if (u < 2.3) slam('ONE PROBLEM…', 540, 360, 120, C.red, u, { glow: C.red }); else slam("HE DOESN'T PLAY DEFENSE", 540, 360, 84, C.white, u - 2.3); if (u > 3.6) slam('HE EATS THE PLANET', 540, 1330, 100, C.red, u - 3.6, { glow: C.red }); }],
+  [60.9, (u) => { g.save(); cam(1.0, 540, 1100); nebula(T * 30, 0); g.save(); g.translate(540, 1500); g.rotate(Math.sin(T) * 0.06); court(0, 220, 700, {}); kd(0, 200, 0.95, u > 2.1 ? P.shrug : P.stand, { holdBall: true }); g.restore(); g.restore(); motes(1); slam('COULD KD SCORE?', 540, 400, 110, C.white, u); if (u > 2.2) slam('PROBABLY ONCE.', 540, 600, 140, C.gold, u - 2.2, { glow: C.gold }); }],
+  [64.4, (u) => { nebula(0, 0); slam('WHO SHOULD KD', 540, 470, 120, C.white, u); slam('FACE NEXT?', 540, 640, 170, C.gold, u - 0.2, { glow: C.gold }); for (let i = 0; i < 3; i++) { const x = 220 + i * 320, y = 1180; glow(x, y, 220, ['127,231,255', '255,122,26', '155,125,255'][i], 0.4); g.fillStyle = '#0a0d26'; g.beginPath(); g.arc(x, y, 130, 0, 7); g.fill(); slam('?', x, y + 55, 160, ['#7fe7ff', C.orange, '#b8a6ff'][i], u - 0.5 - i * 0.15); } slam('👇 COMMENT', 540, 1600, 90, C.white, u - 1.2); }],
+];
+const shotAt = (t) => { let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++; return [SH[i][1], t - SH[i][0], i]; };
+window.TOTAL = 67.6;
+const caption = (t) => { const i = WORDS.findIndex((w, k) => t >= w.s - 0.03 && t < (WORDS[k + 1] ? Math.min(WORDS[k + 1].s, w.e + 0.4) : w.e + 0.4)); if (i < 0) return; const w = WORDS[i].w.toUpperCase(); const key = /(KD|DURANT|GALACTUS|HESI|IMPOSSIBLE|TIMING|SLOW|PHYSICS|LATE|SWISH|PROBLEM|PLANET|ONCE|NEXT|38|28|FOUR|WORLDS)/.test(w); const pop = 1 + 0.18 * clamp(1 - (t - WORDS[i].s) / 0.1); g.save(); g.translate(540, 1560); g.scale(pop, pop); txt(w, 0, 0, 104, key ? C.gold : C.white, { stroke: 18 }); g.restore(); };
+const NOCAP = new Set([1, 7, 13, 14]);
+window.renderFrame = (f) => { const t = f / 30; T = t; SHK = 0; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H); const [fn, u, i] = shotAt(t);
+  // first pass to know the shake; draw with shake applied
+  g.save(); fn(u); g.restore(); 
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = g.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H * 0.78); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.55)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  for (let k = 0; k < 900; k++) { g.fillStyle = hash(k + f * 3.1) > 0.5 ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.06)'; g.fillRect(hash(k * 1.3 + f) * W, hash(k * 2.7 + f * 3) * H, 2, 2); }
+  if (i === 0) { slam('HESI PULL-UP', 540, 300, 150, C.white, t + 0.3); slam('OVER GALACTUS?', 540, 470, 150, C.gold, t + 0.15, { glow: C.gold }); }
+  if (!NOCAP.has(i)) caption(t);
+  // impact frames: brief inverted flash on the big hits
+  for (const it of [23.9, 51.0, 58.7]) { const d = t - it; if (d >= 0 && d < 0.12) { g.fillStyle = `rgba(255,255,255,${0.55 * (1 - d / 0.12)})`; g.fillRect(0, 0, W, H); } }
+  if (u < 0.1 && i > 0) { g.fillStyle = `rgba(255,255,255,${0.08 * (1 - u / 0.1)})`; g.fillRect(0, 0, W, H); }
+  return true; };
+window.renderThumb = () => { T = 2.2; g.setTransform(1, 0, 0, 1, 0, 0);
+  g.save(); cam(Z16, FX16, FY16); nebula(0, 0); planet(560, 2700, 1100, 0.9);
+  // storm glow behind the giant
+  const gl = g.createRadialGradient(1900, 300, 50, 1900, 300, 1700); gl.addColorStop(0, 'rgba(190,150,255,0.55)'); gl.addColorStop(1, 'rgba(120,80,220,0)'); g.fillStyle = gl; g.fillRect(-2000, -2000, 8000, 6000);
+  giant(GX16, 1560, 1.05, { hand: HAND16, eyes: 1.9 });
+  // purple lightning
+  g.save(); g.globalCompositeOperation = 'lighter'; g.lineJoin = 'round'; g.lineCap = 'round';
+  for (const [x0, y0, seed] of [[2900, -800, 1], [2600, -500, 2], [3300, -600, 3]]) { let x = x0, y = y0; const pts = [[x, y]]; for (let k = 0; k < 9; k++) { x += (hash(seed * 9 + k) - 0.35) * 170; y += 120 + hash(seed * 5 + k) * 110; pts.push([x, y]); }
+    for (const [w, a, col] of [[44, 0.12, '150,110,255'], [16, 0.35, '190,160,255'], [5, 0.95, '240,230,255']]) { g.strokeStyle = `rgba(${col},${a})`; g.lineWidth = w; g.beginPath(); pts.forEach(([px, py], k) => k ? g.lineTo(px, py) : g.moveTo(px, py)); g.stroke(); } }
+  g.restore();
+  g.fillStyle = '#0a0620'; for (let k = 0; k < 60; k++) { const bx = -1500 + k * 95, bh = 140 + hash(k * 3 + 1) * 420; g.fillRect(bx, 1560 - bh, 80, bh + 400); g.fillStyle = 'rgba(255,190,90,0.55)'; for (let w = 0; w < 5; w++) if (hash(k * 7 + w) > 0.6) g.fillRect(bx + 14 + (w % 2) * 34, 1560 - bh + 40 + Math.floor(w / 2) * 90, 14, 22); g.fillStyle = '#0a0620'; }
+  g.fillStyle = '#160a36'; g.fillRect(-2000, 1530, 8000, 800);
+  kd(KDX16, 1560, KS16, P.shoot, { jump: 260, holdBall: true });
+  g.restore(); speedLines(560, 540, 0.2);
+  const vg = g.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 0.95); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.6)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  txt('COULD KEVIN DURANT', 50, 90, 64, C.white, { align: 'left', maxW: 700 }); txt('HESI PULL-UP', 50, 168, 64, C.white, { align: 'left', maxW: 700 }); txt('OVER GALACTUS?', 50, 258, 88, C.gold, { align: 'left', glow: C.gold, maxW: 700 }); return true; };
+const Z16 = 0.44, FX16 = 900, FY16 = 340, GX16 = 1840, HAND16 = 0.9, KDX16 = 330, KS16 = 1.15;
+fetch('./words.json').then((r) => r.json()).then((w) => { WORDS = w; window.ready = true; });
+</script></body></html>
