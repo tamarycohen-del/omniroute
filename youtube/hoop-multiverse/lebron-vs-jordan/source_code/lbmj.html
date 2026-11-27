@@ -57,7 +57,7 @@ const motes = (a = 1) => { for (let i = 0; i < 60; i++) { const x = (hash(i) * 1
 
 const LOOK = {
   jordan: { skin: '#6a3d24', skinD: '#44261a', jc: '#c8102e', jc2: '#8d0b20', trim: '#ffffff', sole: '#111111', name: 'BULLS', num: '23', numc: '#ffffff', numo: '#111111', hair: false, beard: false, band: null },
-  lebron: { skin: '#7b4a2f', skinD: '#4a2c1c', jc: '#552583', jc2: '#3b1a5c', trim: '#fdb927', sole: '#fdb927', name: 'LAKERS', num: '23', numc: '#fdb927', numo: '#2a0f45', hair: true, beard: true, band: '#fdb927' },
+  lebron: { skin: '#7b4a2f', skinD: '#4a2c1c', jc: '#0d0d12', jc2: '#050507', trim: '#7a1f3d', sole: '#fdbb30', name: '', logo: 'C', num: '23', numc: '#7a1f3d', numo: '#fdbb30', hair: true, beard: true, band: null, sleeve: '#0d0d12', wide: 1.07, side: '#fdbb30' },
 };
 // ---------- player rig (from the QA'd KD rig) ----------
 // pose = angles in radians measured from straight down; positive = towards +x (facing right)
@@ -82,7 +82,7 @@ const limb = (x, y, a1, l1, a2, l2, w) => { const ex = x + Math.sin(a1) * l1, ey
 const bone = (x1, y1, x2, y2, w, col) => { g.strokeStyle = col; g.lineWidth = w; g.lineCap = 'round'; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); };
 const rim = (x1, y1, x2, y2, w) => { const a = Math.atan2(y2 - y1, x2 - x1), nx = Math.sin(a) * w * 0.42, ny = -Math.cos(a) * w * 0.42; g.strokeStyle = 'rgba(185,150,255,0.45)'; g.lineWidth = 4; g.lineCap = 'round'; g.beginPath(); g.moveTo(x1 - nx, y1 - ny); g.lineTo(x2 - nx, y2 - ny); g.stroke(); };
 const bulge = (x1, y1, x2, y2, t, w, col) => { const cx = lerp(x1, x2, t), cy = lerp(y1, y2, t), a = Math.atan2(y2 - y1, x2 - x1); g.fillStyle = col; g.beginPath(); g.ellipse(cx, cy, Math.hypot(x2 - x1, y2 - y1) * 0.28, w, a, 0, 7); g.fill(); };
-const player = (x, y, s, pose, o = {}) => { const LK = o.look || LOOK.jordan; g.save(); g.translate(x, y - (o.jump || 0)); g.scale(s * (o.flip ? -1 : 1), s); const p = pose; const hipY = -440;
+const player = (x, y, s, pose, o = {}) => { const LK = o.look || LOOK.jordan; g.save(); g.translate(x, y - (o.jump || 0)); g.scale(s * (o.flip ? -1 : 1) * (LK.wide || 1), s); const p = pose; const hipY = -440;
   g.fillStyle = 'rgba(0,0,0,0.35)'; g.beginPath(); g.ellipse(0, (o.jump || 0) / s, 120, 18, 0, 0, 7); g.fill();
   g.save(); g.translate(0, hipY);
   const L = (i) => limb(i ? 20 : -20, 0, p.hip[i], 215, p.kn[i], 215, 0);
@@ -97,7 +97,7 @@ const player = (x, y, s, pose, o = {}) => { const LK = o.look || LOOK.jordan; g.
   const torsoTop = [Math.sin(p.lean) * 300, -Math.cos(p.lean) * 300]; // same rotation as the jersey (g.rotate(lean))
   const shp = (sd) => [torsoTop[0] + sd * 56 * Math.cos(p.lean), torsoTop[1] + 18 + sd * 56 * Math.sin(p.lean)];
   const arm = (i, back) => { const sd = i ? 1 : -1; const [sx, sy] = shp(sd); const [ex, ey, hx, hy] = limb(sx, sy, p.sh[i], 205, p.el[i], 195, 0); const sk = back ? LK.skinD : LK.skin;
-    bone(sx, sy, ex, ey, 40, sk); bulge(sx, sy, ex, ey, 0.4, 25, sk); bone(ex, ey, hx, hy, 32, sk); bulge(ex, ey, hx, hy, 0.28, 19, sk); g.fillStyle = sk; g.beginPath(); g.arc(sx, sy, 30, 0, 7); g.fill(); if (!back) { rim(sx, sy, ex, ey, 40); rim(ex, ey, hx, hy, 32); }
+    bone(sx, sy, ex, ey, 40, sk); bulge(sx, sy, ex, ey, 0.4, 25, sk); bone(ex, ey, hx, hy, 32, sk); bulge(ex, ey, hx, hy, 0.28, 19, sk); if (LK.sleeve) bone(ex, ey, lerp(ex, hx, 0.78), lerp(ey, hy, 0.78), 37, LK.sleeve); g.fillStyle = sk; g.beginPath(); g.arc(sx, sy, 30, 0, 7); g.fill(); if (!back) { rim(sx, sy, ex, ey, 40); rim(ex, ey, hx, hy, 32); }
     // wristband at the wrist, then the hand (palm + thumb) along the forearm
     const a = Math.atan2(hy - ey, hx - ex); const wx = lerp(ex, hx, 0.84), wy = lerp(ey, hy, 0.84); g.save(); g.translate(wx, wy); g.rotate(a); g.fillStyle = back ? '#c9ccd3' : '#fff'; g.fillRect(-12, -19, 24, 38); g.restore();
     g.save(); g.translate(hx, hy); g.rotate(a); g.fillStyle = sk; g.beginPath(); g.ellipse(22, 0, 30, 21, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(14, sd * -18 * (o.flip ? -1 : 1), 16, 8, -0.6, 0, 7); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 3; for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(34, -10 + k * 10); g.lineTo(48, -10 + k * 10); g.stroke(); } g.restore();
@@ -114,10 +114,12 @@ const player = (x, y, s, pose, o = {}) => { const LK = o.look || LOOK.jordan; g.
   const jq = g.createLinearGradient(-64, 0, 64, 0); jq.addColorStop(0, 'rgba(255,255,255,0.10)'); jq.addColorStop(0.55, 'rgba(0,0,0,0)'); jq.addColorStop(1, 'rgba(120,90,255,0.32)'); g.fillStyle = jq; g.fill();
   g.lineJoin = 'round'; g.strokeStyle = LK.trim; g.lineWidth = 13; g.beginPath(); g.moveTo(-40, -305); g.quadraticCurveTo(-70, -250, -60, -190); g.moveTo(40, -305); g.quadraticCurveTo(70, -250, 60, -190); g.stroke();
   g.strokeStyle = LK.trim; g.lineWidth = 12; g.beginPath(); g.moveTo(-20, -305); g.lineTo(0, -252); g.lineTo(20, -305); g.stroke(); g.strokeStyle = '#fff'; g.lineWidth = 3; g.beginPath(); g.moveTo(-26, -305); g.lineTo(0, -243); g.lineTo(26, -305); g.stroke();
-  g.strokeStyle = '#e9eef7'; g.lineWidth = 6; g.beginPath(); g.moveTo(-57, -180); g.lineTo(-52, 0); g.moveTo(57, -180); g.lineTo(52, 0); g.stroke();
+  g.strokeStyle = (LK.side || '#e9eef7'); g.lineWidth = 6; g.beginPath(); g.moveTo(-57, -180); g.lineTo(-52, 0); g.moveTo(57, -180); g.lineTo(52, 0); g.stroke();
   { g.save(); if (o.flip) g.scale(-1, 1); g.textAlign = 'center'; g.lineJoin = 'round'; const fit = (t, size, maxW) => { let fs = size; g.font = font(fs, 900, ''); while (g.measureText(t).width > maxW && fs > 8) { fs -= 1; g.font = font(fs, 900, ''); } return fs; };
-    g.fillStyle = LK.numc; g.strokeStyle = LK.numo; g.lineWidth = 4; fit(LK.name, 22, 76); g.strokeText(LK.name, 0, -178); g.fillText(LK.name, 0, -178);
-    g.lineWidth = 7; fit(LK.num, 58, 70); g.strokeText(LK.num, 0, -112); g.fillText(LK.num, 0, -112); g.restore(); }
+    g.fillStyle = LK.numc; g.strokeStyle = LK.numo; g.lineWidth = 4;
+    if (LK.logo) { g.lineWidth = 5; fit(LK.logo, 54, 44); g.strokeText(LK.logo, -2, -158); g.fillText(LK.logo, -2, -158); g.strokeStyle = LK.numo; g.lineWidth = 3; g.beginPath(); g.moveTo(-18, -128); g.quadraticCurveTo(0, -122, 20, -132); g.stroke(); }
+    else { fit(LK.name, 22, 76); g.strokeText(LK.name, 0, -178); g.fillText(LK.name, 0, -178); }
+    g.lineWidth = 7; fit(LK.num, 58, 70); g.strokeText(LK.num, 0, LK.logo ? -86 : -112); g.fillText(LK.num, 0, LK.logo ? -86 : -112); g.restore(); }
   // neck + head (low-cut hair, full beard + moustache, no headband — like the reference photo)
   g.fillStyle = LK.skin; g.fillRect(-19, -345, 38, 55); g.translate(0, -395); g.rotate(p.head);
   g.fillStyle = LK.skin; g.beginPath(); g.ellipse(-36, 4, 11, 17, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(4, 0, 46, 64, 0, 0, 7); g.fill();

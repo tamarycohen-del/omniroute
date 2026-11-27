@@ -25,19 +25,25 @@ txt = '\n'.join(out)
 # crest block -> wordmark + number sized to fit the shirt
 a = txt.index('  // crest'); b = txt.index("g.strokeText('35', 6, 8); g.fillText('35', 6, 8); g.restore();") + len("g.strokeText('35', 6, 8); g.fillText('35', 6, 8); g.restore();")
 chest = '''  { g.save(); if (o.flip) g.scale(-1, 1); g.textAlign = 'center'; g.lineJoin = 'round'; const fit = (t, size, maxW) => { let fs = size; g.font = font(fs, 900, ''); while (g.measureText(t).width > maxW && fs > 8) { fs -= 1; g.font = font(fs, 900, ''); } return fs; };
-    g.fillStyle = LK.numc; g.strokeStyle = LK.numo; g.lineWidth = 4; fit(LK.name, 22, 76); g.strokeText(LK.name, 0, -178); g.fillText(LK.name, 0, -178);
-    g.lineWidth = 7; fit(LK.num, 58, 70); g.strokeText(LK.num, 0, -112); g.fillText(LK.num, 0, -112); g.restore(); }'''
+    g.fillStyle = LK.numc; g.strokeStyle = LK.numo; g.lineWidth = 4;
+    if (LK.logo) { g.lineWidth = 5; fit(LK.logo, 54, 44); g.strokeText(LK.logo, -2, -158); g.fillText(LK.logo, -2, -158); g.strokeStyle = LK.numo; g.lineWidth = 3; g.beginPath(); g.moveTo(-18, -128); g.quadraticCurveTo(0, -122, 20, -132); g.stroke(); }
+    else { fit(LK.name, 22, 76); g.strokeText(LK.name, 0, -178); g.fillText(LK.name, 0, -178); }
+    g.lineWidth = 7; fit(LK.num, 58, 70); g.strokeText(LK.num, 0, LK.logo ? -86 : -112); g.fillText(LK.num, 0, LK.logo ? -86 : -112); g.restore(); }'''
 txt = txt[:a] + chest + txt[b:]
+assert "bone(ex, ey, hx, hy, 32, sk); bulge(ex, ey, hx, hy, 0.28, 19, sk);" in txt
+txt = txt.replace("bone(ex, ey, hx, hy, 32, sk); bulge(ex, ey, hx, hy, 0.28, 19, sk);", "bone(ex, ey, hx, hy, 32, sk); bulge(ex, ey, hx, hy, 0.28, 19, sk); if (LK.sleeve) bone(ex, ey, lerp(ex, hx, 0.78), lerp(ey, hy, 0.78), 37, LK.sleeve);")
+txt = txt.replace("g.scale(s * (o.flip ? -1 : 1), s);", "g.scale(s * (o.flip ? -1 : 1) * (LK.wide || 1), s);", 1)
 # hair / beard / headband gating
 txt = txt.replace("  g.fillStyle = '#0d0805'; g.beginPath(); g.moveTo(-42, -8); g.quadraticCurveTo(-50, -64, 4, -66);", "  if (LK.hair) { g.fillStyle = '#0d0805'; g.beginPath(); g.moveTo(-42, -8); g.quadraticCurveTo(-50, -64, 4, -66);")
 txt = txt.replace("g.quadraticCurveTo(-26, -36, -34, -4); g.closePath(); g.fill();\n", "g.quadraticCurveTo(-26, -36, -34, -4); g.closePath(); g.fill(); }\n  if (LK.band) { g.fillStyle = LK.band; g.beginPath(); g.moveTo(-44, -30); g.quadraticCurveTo(4, -54, 49, -34); g.lineTo(49, -22); g.quadraticCurveTo(4, -42, -44, -17); g.closePath(); g.fill(); }\n  if (!LK.hair) { g.fillStyle = 'rgba(255,255,255,0.10)'; g.beginPath(); g.ellipse(14, -50, 20, 7, -0.2, 0, 7); g.fill(); }\n", 1)
 txt = txt.replace("  g.fillStyle = '#120a06'; g.beginPath(); g.moveTo(-34, 8);", "  if (LK.beard) { g.fillStyle = '#120a06'; g.beginPath(); g.moveTo(-34, 8);")
 txt = txt.replace("g.quadraticCurveTo(-18, 34, -26, 8); g.closePath(); g.fill();\n  g.beginPath(); g.moveTo(4, 26); g.quadraticCurveTo(24, 18, 42, 26); g.lineTo(42, 31); g.quadraticCurveTo(24, 24, 4, 31); g.closePath(); g.fill();", "g.quadraticCurveTo(-18, 34, -26, 8); g.closePath(); g.fill();\n  g.beginPath(); g.moveTo(4, 26); g.quadraticCurveTo(24, 18, 42, 26); g.lineTo(42, 31); g.quadraticCurveTo(24, 24, 4, 31); g.closePath(); g.fill(); }")
+txt = txt.replace("g.strokeStyle = '#e9eef7'", "g.strokeStyle = (LK.side || '#e9eef7')")
 assert 'if (LK.hair)' in txt and 'if (LK.beard)' in txt and 'LK.band' in txt, 'gating failed'
 looks = '''
 const LOOK = {
   jordan: { skin: '#6a3d24', skinD: '#44261a', jc: '#c8102e', jc2: '#8d0b20', trim: '#ffffff', sole: '#111111', name: 'BULLS', num: '23', numc: '#ffffff', numo: '#111111', hair: false, beard: false, band: null },
-  lebron: { skin: '#7b4a2f', skinD: '#4a2c1c', jc: '#552583', jc2: '#3b1a5c', trim: '#fdb927', sole: '#fdb927', name: 'LAKERS', num: '23', numc: '#fdb927', numo: '#2a0f45', hair: true, beard: true, band: '#fdb927' },
+  lebron: { skin: '#7b4a2f', skinD: '#4a2c1c', jc: '#0d0d12', jc2: '#050507', trim: '#7a1f3d', sole: '#fdbb30', name: '', logo: 'C', num: '23', numc: '#7a1f3d', numo: '#fdbb30', hair: true, beard: true, band: null, sleeve: '#0d0d12', wide: 1.07, side: '#fdbb30' },
 };
 '''
 txt = txt.replace('// ---------- KD rig ----------', looks + '// ---------- player rig (from the QA\'d KD rig) ----------')
