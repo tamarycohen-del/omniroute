@@ -32,3 +32,5 @@ Publishing is scheduled (send_later trig_012SGr8vLsHRkzT32X2ycddS, 2026-11-28 21
 Ending v3 (user): LeBron releases at the end of 'shoots', then HANGS in the air in slow zoom (~1.5 s) while the user's clip plays again (right after the narration, mix.py: TEND), then hard cut to black. Total = last narration word + 1.76 s.
 
 Hook v4 (user): the clip (LeBron's name) plays FIRST, then the narrator says "Versus Prime Jordan. Tied game. One shot left." (ElevenLabs line 0 re-generated, 46 credits; insert_clip.py prepends the clip when line 0 has no 'LeBron' word). ElevenLabs total ~661 credits.
+
+Hook v5 (user): "Prime" (first word of the original ElevenLabs take, assets/el/l0_old.mp3) + the clip (LeBron's name) + "versus Prime Jordan. Tied game. One shot left." (new take l0.mp3). Built by insert_clip.py.
