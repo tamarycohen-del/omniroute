@@ -3,7 +3,7 @@ usage: make_voice_el.py  -> assets/voice_el.wav + assets/voice_el.lines.json (s/
 import json, os, subprocess
 import numpy as np, soundfile as sf
 SR = 48000; D = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets')
-TEXT = ["Prime LeBron. Prime Jordan. Tied game. One shot left.", "Who takes it? Let's find out.", "Michael Jordan. Six foot six. Six trips to the Finals. Six championships. He never lost one.",
+TEXT = ["Versus Prime Jordan. Tied game. One shot left.", "Who takes it? Let's find out.", "Michael Jordan. Six foot six. Six trips to the Finals. Six championships. He never lost one.",
         "Ten scoring titles. Thirty point one points a game. The highest average in NBA history.", "LeBron James. Six foot nine. Two hundred fifty pounds. Four championships.",
         "More than forty thousand career points. The all-time scoring king.", "So we tip it off. First to eleven.", "Jordan scores first. LeBron answers with a dunk! Jordan, fadeaway. LeBron, right back at him.",
         "Ten all. Next bucket wins.", "Last shot. Ball in LeBron's hands. He rises up... and shoots."]

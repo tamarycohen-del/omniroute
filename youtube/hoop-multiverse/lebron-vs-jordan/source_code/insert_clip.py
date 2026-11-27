@@ -22,14 +22,17 @@ cuts = []                                      # (cut start, cut end) in seconds
 for li, nxt_re in ((0, None), (4, None)):
     a, b = L[li]['s'] - 0.05, L[li + 1]['s']
     ws = [i for i, w in enumerate(W) if a <= w['s'] < b]
+    if li == 0 and not any(isLB(W[i]) for i in ws):
+        cuts.append((0.0, 0.0, -1, -1)); continue          # hook: the clip goes first, then the narrator says "Versus Prime Jordan"
     first = next(i for i in ws if isLB(W[i]))
     last = first + (1 if re.match(r'^james', re.sub('[^a-z]', '', W[first + 1]['w'].lower())) else 0) if first + 1 < len(W) else first
     cs = valley(W[first]['s'] - 0.03, 0.10, 0.05); ce = valley(W[last + 1]['s'] - 0.05, 0.10, 0.04)
     cuts.append((cs, ce, first, last))
 out = []; pos = 0.0; shifts = []
 for cs, ce, f, l in cuts:
-    seg = V[int(pos * SR):int(cs * SR)].copy(); fo = int(0.012 * SR); seg[-fo:] *= np.linspace(1, 0, fo)[:, None]
-    if pos > 0: seg[:fo] *= np.linspace(0, 1, fo)[:, None]
+    seg = V[int(pos * SR):int(cs * SR)].copy(); fo = int(0.012 * SR)
+    if len(seg) > fo: seg[-fo:] *= np.linspace(1, 0, fo)[:, None]
+    if pos > 0 and len(seg) > fo: seg[:fo] *= np.linspace(0, 1, fo)[:, None]
     out.append(seg); out.append(np.zeros((int(0.02 * SR), 2), np.float32)); out.append(C); pos = ce
 tail = V[int(pos * SR):].copy(); fi = int(0.012 * SR); tail[:fi] *= np.linspace(0, 1, fi)[:, None]; out.append(tail)
 # fade-in of the segment that follows the first clip as well
@@ -45,6 +48,8 @@ def fmap(t):
         elif t > cs: return cs + d + (t - cs) * clen / (ce - cs)
     return t + d
 nw = []; clips = []
+for c in cuts:
+    if c[2] == -1: nw.append({'w': 'LEBRON JAMES!', 's': round(lead + 0.02, 2), 'e': round(clen - 0.1, 2)}); clips.append({'s': 0.02, 'e': round(clen, 2)})
 for i, w in enumerate(W):
     inside = [c for c in cuts if c[2] <= i <= c[3]]
     if inside:
