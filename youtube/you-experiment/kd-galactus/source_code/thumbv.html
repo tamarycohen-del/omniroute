@@ -253,10 +253,10 @@ window.renderFrame = (f) => { const t = f / 30; T = t; SHK = 0; g.setTransform(1
   if (u < 0.1 && i > 0) { g.fillStyle = `rgba(255,255,255,${0.08 * (1 - u / 0.1)})`; g.fillRect(0, 0, W, H); }
   return true; };
 
-const blockHand = (x, y, sc, rot) => { g.save(); g.translate(x, y); g.rotate(rot); g.scale(sc, sc);
+const blockHand = (x, y, sc, rot, fl = 900) => { g.save(); g.translate(x, y); g.rotate(rot); g.scale(sc, sc);
   const body = g.createLinearGradient(-100, -200, 120, 160); body.addColorStop(0, '#2a1f45'); body.addColorStop(0.6, '#150f2b'); body.addColorStop(1, '#0a0716');
   // forearm
-  g.fillStyle = body; g.beginPath(); g.moveTo(-70, 120); g.lineTo(-95, 900); g.lineTo(115, 900); g.lineTo(80, 120); g.closePath(); g.fill();
+  g.fillStyle = body; g.beginPath(); g.moveTo(-70, 120); g.lineTo(-95, fl); g.lineTo(115, fl); g.lineTo(80, 120); g.closePath(); g.fill();
   // palm
   g.beginPath(); g.moveTo(-92, 130); g.quadraticCurveTo(-110, 20, -86, -20); g.lineTo(86, -20); g.quadraticCurveTo(112, 40, 82, 130); g.closePath(); g.fill();
   const fing = [[-66, -190, 38], [-22, -225, 40], [24, -205, 38], [64, -150, 34]];
@@ -266,21 +266,44 @@ const blockHand = (x, y, sc, rot) => { g.save(); g.translate(x, y); g.rotate(rot
   g.save(); g.clip && 0; g.globalCompositeOperation = 'lighter';
   for (let k = 0; k < 90; k++) { g.fillStyle = `rgba(200,170,255,${0.2 + hash(k) * 0.5})`; g.fillRect(-90 + hash(k * 3 + 1) * 180, -200 + hash(k * 5 + 2) * 760, 3, 3); }
   g.strokeStyle = 'rgba(190,150,255,0.85)'; g.lineWidth = 5; for (const [fx, ty] of fing) { g.beginPath(); g.moveTo(fx + 18, -4); g.lineTo(fx + (fx > 0 ? 6 : -6) + 18, ty); g.stroke(); }
-  g.beginPath(); g.moveTo(84, 130); g.lineTo(112, 900); g.stroke(); g.restore();
+  g.beginPath(); g.moveTo(84, 130); g.lineTo(112, fl); g.stroke(); g.restore();
   const pg2 = g.createRadialGradient(0, -120, 20, 0, -120, 330); pg2.addColorStop(0, 'rgba(170,120,255,0.35)'); pg2.addColorStop(1, 'rgba(170,120,255,0)'); g.globalCompositeOperation = 'lighter'; g.fillStyle = pg2; g.fillRect(-400, -400, 800, 800);
   g.restore(); };
-window.renderThumb = () => { T = 2.2; g.setTransform(1, 0, 0, 1, 0, 0); g.save(); cam(TZ, TFX, TFY); nebula(0, 0); planet(560, 2500, 1100);
-  const gl = g.createRadialGradient(900, 700, 50, 900, 700, 1500); gl.addColorStop(0, 'rgba(190,150,255,0.5)'); gl.addColorStop(1, 'rgba(120,80,220,0)'); g.fillStyle = gl; g.fillRect(-2000, -2000, 8000, 6000);
-  giant(TGX, 1560, 1.05, { left: TL, hand: 0.1, eyes: 1.9 });
-  court(560, 1560, 1300); hoop(1180, 1560, 0.62);
-  kd(TKX, 1560, TKS, P.shoot, { jump: 230, holdBall: true });
-  g.save(); g.globalCompositeOperation = 'lighter'; g.lineCap = 'round'; for (const [w, a, col] of [[40, 0.12, '150,110,255'], [16, 0.4, '190,150,255'], [5, 0.95, '245,235,255']]) { g.strokeStyle = `rgba(${col},${a})`; g.lineWidth = w; g.beginPath(); g.moveTo(TKX - 330, 1300); g.quadraticCurveTo(TKX - 150, 760, TKX + 40, TBY); g.stroke(); } g.restore();
-  g.restore(); speedLines(380, 1100, 0.2);
-  blockHand(HX, HY, HS, HR);
-  const vg = g.createRadialGradient(W / 2, 1000, H * 0.3, W / 2, 1000, H * 0.8); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.55)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+const armorTorso = () => { g.save();
+  const body = g.createLinearGradient(600, 950, 1080, 1900); body.addColorStop(0, '#2c2150'); body.addColorStop(0.5, '#1a1233'); body.addColorStop(1, '#0c0818');
+  g.fillStyle = body; g.beginPath(); g.moveTo(560, 1080); g.quadraticCurveTo(620, 960, 780, 930); g.lineTo(1080, 900); g.lineTo(1080, 1920); g.lineTo(640, 1920); g.quadraticCurveTo(600, 1500, 560, 1080); g.closePath(); g.fill();
+  g.save(); g.clip(); g.globalCompositeOperation = 'lighter'; for (let k = 0; k < 260; k++) { g.fillStyle = `rgba(200,170,255,${0.15 + hash(k) * 0.6})`; const r = 1 + hash(k + 9) * 2.5; g.fillRect(560 + hash(k * 3 + 1) * 520, 920 + hash(k * 5 + 2) * 1000, r, r); }
+  g.strokeStyle = 'rgba(160,120,255,0.55)'; g.lineWidth = 5; g.beginPath(); g.moveTo(700, 1180); g.quadraticCurveTo(880, 1130, 1080, 1180); g.stroke(); g.beginPath(); g.moveTo(690, 1400); g.quadraticCurveTo(880, 1460, 1080, 1400); g.stroke(); g.restore();
+  // chest core
+  for (const [r, a] of [[170, 0.18], [100, 0.45], [58, 0.9]]) { const q = g.createRadialGradient(870, 1620, 2, 870, 1620, r); q.addColorStop(0, `rgba(235,215,255,${a})`); q.addColorStop(1, 'rgba(150,100,255,0)'); g.globalCompositeOperation = 'lighter'; g.fillStyle = q; g.fillRect(870 - r, 1620 - r, 2 * r, 2 * r); }
+  g.globalCompositeOperation = 'source-over'; g.strokeStyle = 'rgba(190,150,255,0.8)'; g.lineWidth = 6; g.beginPath(); g.arc(870, 1620, 92, 0, 7); g.stroke(); g.beginPath(); g.arc(870, 1620, 130, 0, 7); g.stroke();
+  // rim light on the shoulder line
+  g.strokeStyle = 'rgba(200,170,255,0.8)'; g.lineWidth = 6; g.beginPath(); g.moveTo(565, 1085); g.quadraticCurveTo(620, 965, 780, 935); g.stroke();
+  g.restore(); };
+const armLimb = (sx, sy, wx, wy, w0, w1) => { g.save(); const dx = wx - sx, dy = wy - sy, L = Math.hypot(dx, dy), nx = -dy / L, ny = dx / L;
+  const body = g.createLinearGradient(sx, sy, wx, wy); body.addColorStop(0, '#241a40'); body.addColorStop(1, '#150f2b'); g.fillStyle = body;
+  g.beginPath(); g.moveTo(sx + nx * w0 / 2, sy + ny * w0 / 2); g.lineTo(wx + nx * w1 / 2, wy + ny * w1 / 2); g.lineTo(wx - nx * w1 / 2, wy - ny * w1 / 2); g.lineTo(sx - nx * w0 / 2, sy - ny * w0 / 2); g.closePath(); g.fill();
+  g.save(); g.clip(); g.globalCompositeOperation = 'lighter'; for (let k = 0; k < 150; k++) { g.fillStyle = `rgba(200,170,255,${0.15 + hash(k + 40) * 0.6})`; const t = hash(k * 3), o = (hash(k * 5 + 1) - 0.5) * w0; g.fillRect(sx + dx * t + nx * o, sy + dy * t + ny * o, 2.5, 2.5); }
+  g.strokeStyle = 'rgba(190,150,255,0.85)'; g.lineWidth = 6; g.beginPath(); g.moveTo(sx + nx * w0 / 2, sy + ny * w0 / 2); g.lineTo(wx + nx * w1 / 2, wy + ny * w1 / 2); g.stroke();
+  for (const t of [0.3, 0.55, 0.8]) { g.strokeStyle = 'rgba(150,110,240,0.45)'; g.lineWidth = 4; const cx = sx + dx * t, cy = sy + dy * t, w = lerp(w0, w1, t) / 2; g.beginPath(); g.moveTo(cx + nx * w, cy + ny * w); g.lineTo(cx - nx * w, cy - ny * w); g.stroke(); } g.restore();
+  g.restore(); };
+window.renderThumb = () => { T = 2.2; g.setTransform(1, 0, 0, 1, 0, 0); g.save(); cam(TZ, TFX, TFY); nebula(0, 0);
+  for (let k = 0; k < 70; k++) { const cx = -1200 + hash(k * 3 + 1) * 3200, cy = -800 + hash(k * 5 + 2) * 1600, r = 260 + hash(k * 7 + 3) * 520, dk = 0.35 + hash(k * 11 + 4) * 0.5; const q = g.createRadialGradient(cx, cy, 10, cx, cy, r); q.addColorStop(0, `rgba(${40 + 50 * (1 - dk) | 0},${34 + 40 * (1 - dk) | 0},${60 + 50 * (1 - dk) | 0},${0.55 * dk})`); q.addColorStop(1, 'rgba(10,8,25,0)'); g.fillStyle = q; g.fillRect(cx - r, cy - r, 2 * r, 2 * r); }
+  const gl = g.createRadialGradient(1500, 500, 50, 1500, 500, 1500); gl.addColorStop(0, 'rgba(190,150,255,0.5)'); gl.addColorStop(1, 'rgba(120,80,220,0)'); g.fillStyle = gl; g.fillRect(-2000, -2000, 8000, 6000);
+  giant(TGX, 1560, 1.05, { left: 0.2, hand: 0.1, eyes: 1.9 });
+  g.restore();
+  armorTorso();
+  armLimb(930, 1400, 660, 1190, 250, 175);
+  blockHand(615, 1060, 1.15, -0.35, 150);
+  // city + fire
+  g.fillStyle = '#0a0620'; for (let k = 0; k < 13; k++) { const bx = k * 90 - 20, bh = 140 + hash(k * 3 + 1) * 330; g.fillRect(bx, 1920 - bh, 80, bh + 10); } g.fillRect(250, 1560, 64, 400); g.fillRect(266, 1480, 32, 90); g.fillRect(278, 1300, 8, 190);
+  for (const [fx, fy] of [[160, 1900], [520, 1910], [900, 1890]]) { const q = g.createRadialGradient(fx, fy, 5, fx, fy, 230); q.addColorStop(0, 'rgba(255,150,40,0.65)'); q.addColorStop(1, 'rgba(255,90,20,0)'); g.fillStyle = q; g.fillRect(fx - 230, fy - 230, 460, 460); }
+  kd(TKXs, 1700, 0.6, P.shoot, { holdBall: true });
+  g.save(); g.globalCompositeOperation = 'lighter'; g.lineCap = 'round'; for (const [w, a, col] of [[34, 0.12, '150,110,255'], [14, 0.4, '190,150,255'], [5, 0.95, '245,235,255']]) { g.strokeStyle = `rgba(${col},${a})`; g.lineWidth = w; g.beginPath(); g.moveTo(TKXs - 270, 1680); g.quadraticCurveTo(TKXs - 120, 1220, TKXs + 40, 1010); g.stroke(); } g.restore();
+  speedLines(380, 1200, 0.15);
+  const vg = g.createRadialGradient(W / 2, 1000, H * 0.3, W / 2, 1000, H * 0.8); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.5)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
   g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(0, 60, W, 520);
   txt('COULD KEVIN DURANT', 540, 175, 92, C.white); txt('HESI PULL-UP', 540, 330, 128, C.white); txt('OVER GALACTUS?', 540, 480, 118, C.gold, { glow: C.gold }); return true; };
-const HX = 880, HY = 1130, HS = 1.45, HR = -1.0;
-const TZ = 0.42, TFX = 700, TFY = 520, TGX = 1100, TL = 0.2, TKX = 380, TKS = 0.82, TBY = 700;
+const TZ = 0.42, TFX = 700, TFY = 520, TGX = 1100, TKXs = 390;
 fetch('./words.json').then((r) => r.json()).then((w) => { WORDS = w; window.ready = true; });
 </script></body></html>
