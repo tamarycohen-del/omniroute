@@ -28,3 +28,5 @@ FINAL (ElevenLabs, 2026-11-27): narration = 10 per-line takes, voice Clancy (FLp
 Rebuild: `python source_code/make_voice_el.py` (writes assets/voice_el.wav + lines), whisper words -> `make_words.py` -> assets/orig_el_words.json / orig_el_lines.json, then `N=el source_code/run.sh`.
 The user's clip replaces the narrator's spoken 'LeBron' (hook) and 'LeBron James' (intro); joins are cut at the quietest point with 12 ms fades (no clicks).
 Publishing is scheduled (send_later trig_012SGr8vLsHRkzT32X2ycddS, 2026-11-28 21:45 Israel): YouTube Multiverse Hoops + Instagram Reels, public, with the thumbnail.
+
+Ending v3 (user): LeBron releases at the end of 'shoots', then HANGS in the air in slow zoom (~1.5 s) while the user's clip plays again (right after the narration, mix.py: TEND), then hard cut to black. Total = last narration word + 1.76 s.

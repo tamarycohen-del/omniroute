@@ -63,6 +63,6 @@ window.renderThumb = () => { T = 2.4; g.setTransform(1, 0, 0, 1, 0, 0); g.save()
   g.save(); g.translate(540, 1000); g.fillStyle = '#0a0620'; g.beginPath(); g.arc(0, 0, 100, 0, 7); g.fill(); g.strokeStyle = '#7fe7ff'; g.lineWidth = 9; g.shadowColor = '#7fe7ff'; g.shadowBlur = 34; g.stroke(); g.shadowBlur = 0; txt('VS', 0, 34, 96, C.white, { stroke: 8 }); g.restore(); return true; };
 '''
 html += thumb
-html += "Promise.all([fetch('./words.json').then((r) => r.json()), fetch('./lines.json').then((r) => r.json()), fetch('./clips.json').then((r) => r.json())]).then(([w, ln, cl]) => { WORDS = w; LINES = ln; CLIPS = cl; window.TOTAL = ln[ln.length - 1].e + 0.5; buildShots(); window.ready = true; });\n</script></body></html>\n"
+html += "Promise.all([fetch('./words.json').then((r) => r.json()), fetch('./lines.json').then((r) => r.json()), fetch('./clips.json').then((r) => r.json())]).then(([w, ln, cl]) => { WORDS = w; LINES = ln; CLIPS = cl; window.TOTAL = ln[ln.length - 1].e + 0.04 + 1.44 + 0.28; buildShots(); window.ready = true; });\n</script></body></html>\n"
 open(os.path.join(HERE, 'lbmj.html'), 'w').write(html)
 print('built', len(html))

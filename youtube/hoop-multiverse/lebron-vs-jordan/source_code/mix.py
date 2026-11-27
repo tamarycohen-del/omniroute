@@ -13,7 +13,8 @@ voice_p, lines_p, words_p, out_p = sys.argv[1:5]
 LINES = json.load(open(lines_p)); WORDS = json.load(open(words_p))
 raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', voice_p, '-ac', '2', '-ar', str(SR), '-f', 'f32le', '-'], capture_output=True, check=True).stdout
 V = np.frombuffer(raw, np.float32).reshape(-1, 2)
-TOTAL = LINES[-1]['e'] + 0.5
+TEND = LINES[-1]['e'] + 0.04                       # the user's clip starts right after the narration ends (LeBron hangs in the air)
+CLIPLEN = 1.44; TOTAL = TEND + CLIPLEN + 0.28
 N = int(TOTAL * SR); t = np.arange(N) / SR
 rng = np.random.default_rng(11)
 S0 = [0.0] + [l['s'] for l in LINES[1:]]           # shot starts
@@ -57,8 +58,8 @@ for q in range(int(TOTAL / beat) + 1):
         hi = i0 + int(h * beat / 2 * SR); nn = int(0.05 * SR)
         if hi + nn < N: hat = rng.standard_normal(nn) * np.exp(-np.arange(nn) / nn * 7); M[hi:hi + nn] += (0.07 if h == 0 else 0.12) * np.diff(np.concatenate([[0], hat]))
 # energy map: calm for the résumés, up for the 1-on-1, drop for the cliffhanger
-tcut = S0[9] + wt(9, r"^shoots", 0, 3.0) + 0.34
-energy = np.interp(t, [0, S0[2] - 0.5, S0[6], S0[7], S0[9], tcut - 0.05, tcut + 0.2, TOTAL], [0.9, 0.75, 1.0, 1.15, 1.1, 1.0, 0.0, 0.0])
+tcut = TEND + CLIPLEN + 0.05; tRel = LINES[-1]['e'] - 0.1      # release = end of "shoots"; slow-mo hang until the cut
+energy = np.interp(t, [0, S0[2] - 0.5, S0[6], S0[7], S0[9], tRel - 0.05, tRel + 0.1, tcut - 0.02, tcut + 0.02, TOTAL], [0.9, 0.75, 1.0, 1.15, 1.1, 1.0, 0.22, 0.22, 0.0, 0.0])
 M *= energy; M /= np.max(np.abs(M)) + 1e-9
 L = M * 0.16; R = M * 0.16
 
@@ -113,7 +114,7 @@ for b in range(4):                                                         # the
     if b == 3: crowd(sc + 0.05, 1.8, 0.5)
 kit.place(L, R, 'riser-2s-strong', S0[8] + 0.2, 0.30)
 for q in range(8): bounce(S0[8] + 0.4 + q * 0.38, 0.30)
-tR = S0[9] + wt(9, r"^shoots", 0, 3.0)                       # last shot: dribbles, rise, release, then CUT to black (no swish, no result)
+tR = tRel                                                  # last shot: dribbles, rise, release, then CUT to black (no swish, no result)
 for q in range(5): bounce(S0[9] + 0.15 + q * 0.4, 0.28)
 kit.place(L, R, 'riser-1s-soft', tR - 0.8, 0.35); kit.place(L, R, 'impact-light-soft', tR, 0.4)
 
@@ -122,6 +123,11 @@ for c in CLIPS: kit.place(L, R, 'impact-light-firm', c['s'] + 0.45, 0.20)
 VL = np.zeros(N); VR = np.zeros(N); n = min(N, len(V)); VL[:n] = V[:n, 0]; VR[:n] = V[:n, 1]
 env = np.convolve(np.abs(VL), np.ones(int(0.25 * SR)) / int(0.25 * SR), mode='same'); duck = 1 - 0.45 * np.clip(env / (env.max() * 0.3), 0, 1)
 L = L * duck + VL; R = R * duck + VR
+# the user's clip again, at the end: LeBron has released the ball and hangs in the air (slow motion) while it plays; then cut to black
+cl = np.frombuffer(subprocess.run(['ffmpeg', '-v', 'error', '-i', os.path.join(os.path.dirname(__file__), '..', 'assets', 'well_bye_guys.mp3'), '-ac', '2', '-ar', str(SR), '-f', 'f32le', '-'], capture_output=True, check=True).stdout, np.float32).reshape(-1, 2)
+cl = cl[int(0.30 * SR):int((0.30 + CLIPLEN) * SR)].copy(); cl[:int(0.01 * SR)] *= np.linspace(0, 1, int(0.01 * SR))[:, None]; cl[-int(0.04 * SR):] *= np.linspace(1, 0, int(0.04 * SR))[:, None]
+act = lambda a: np.sqrt(np.mean(a[np.abs(a) > 0.01] ** 2)); cl *= 1.1 * act(V) / act(cl); c0 = int(TEND * SR); c1 = min(N, c0 + len(cl))
+L[c0:c1] += cl[:c1 - c0, 0]; R[c0:c1] += cl[:c1 - c0, 1]
 fo = int(0.12 * SR); L[-fo:] *= np.linspace(1, 0, fo); R[-fo:] *= np.linspace(1, 0, fo)
 X = np.stack([L, R], 1).astype(np.float32)
 subprocess.run(['ffmpeg', '-y', '-v', 'error', '-f', 'f32le', '-ar', str(SR), '-ac', '2', '-i', '-', '-af',

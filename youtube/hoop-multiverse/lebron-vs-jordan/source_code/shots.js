@@ -68,13 +68,16 @@ const buildShots = () => {
   // 8 ten all
   S.push((u, d) => { const k = ease(u / d); g.save(); cam(lerp(1.0, 1.1, k), 540, 1150); arena(u, 2000); jord(300, mixP(POSE.crouch, P.dribB, Math.abs(Math.sin(T * 6))), { bspeed: 6 }); lebr(700, POSE.guard); g.restore(); const n10 = wt(8, /^10/, 0, 0.1), nx = wt(8, /^next/, 0, 0.9), ups = u < n10 ? [4, 4] : [10, 10];
     board(ups[0], ups[1], 1, u < n10 ? 0 : clamp(1 - (u - n10) / 0.3), u < n10 ? 0 : clamp(1 - (u - n10) / 0.3)); if (u > nx) slam('NEXT BUCKET WINS', 540, 400, 100, C.white, u - nx, { maxW: 980, glow: '#7fe7ff' }); });
-  // 9 the last shot: LeBron rises up at the LEFT hoop and shoots; we cut away before we see it land
-  S.push((u, d) => { const rim = rimPosL(); const tR = wt(9, /^shoots/, 0, 3.0), tJ = tR - 0.45, lx = 610, jp = Math.sin(clamp((u - tJ) / 0.62) * Math.PI), tCut = tR + 0.34;
-    g.save(); cam(lerp(1.0, 1.03, ease(u / (tR + 0.5))), 540, 1100); arena(u, 2100); hoop(HX, GY, HKS, 9); hoopL(9);
-    jord(lx - 380 + 50 * clamp((u - tJ) / 0.4), u < tJ - 0.2 ? POSE.guard : P.flex, { jump: 55 * jp });
+  // 9 the last shot: LeBron rises, releases at the end of "shoots", then HANGS in the air in slow motion while the user's sound plays (~1.5 s); cut to black, we never see it land
+  S.push((u, d) => { const rim = rimPosL(); const tE = LINES[9].e - ss(9), tR = tE - 0.1, tJ = tR - 0.45, tCut = tE + 0.04 + 1.44 + 0.05, lx = 610; const air = clamp((u - tR) / 1.5), jp = u < tR ? Math.sin(clamp((u - tJ) / 0.62) * Math.PI * 0.5 * (0.62 / 0.45)) : 1 - 0.04 * air;
+    const zoom = u < tR ? lerp(1.0, 1.04, ease(u / tR)) : lerp(1.04, 1.32, ease(air)), fx = u < tR ? 540 : lerp(540, lx - 60, ease(air)), fy = u < tR ? 1100 : lerp(1100, 960, ease(air));
+    g.save(); cam(zoom, fx, fy); arena(u, 2100); hoop(HX, GY, HKS, 9); hoopL(9);
+    if (u > tR) glow(lx, 900, 460, '253,185,39', 0.35 * (1 - air * 0.4));
+    jord(lx - 380 + 50 * clamp((u - tJ) / 0.4), u < tJ - 0.2 ? POSE.guard : P.flex, { jump: 55 * (u < tR ? Math.sin(clamp((u - tJ) / 0.62) * Math.PI * 0.5) : 1) });
     lebr(lx, u < tJ ? mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 5))) : u < tJ + 0.2 ? mixP(P.load, P.shoot, ease((u - tJ) / 0.2)) : P.shoot, { jump: 175 * jp, holdBall: u >= tJ && u < tR, noBall: u >= tR, bspeed: 6 });
-    if (u >= tR) { const k = clamp((u - tR) / 0.9); const sx = lx - 62, sy = GY - 175 * jp - 790 * SL / 0.8 * 0.98; const pts = []; for (let i = 0; i <= 12; i++) pts.push(flightPt(sx, sy, rim[0], rim[1], k * i / 12, 430)); comet(pts, 22); ball(pts[12][0], pts[12][1], 36, T * 10); }
-    g.restore(); board(10, 10, 1, 0, 0); if (u > tCut) { g.fillStyle = `rgba(3,2,12,${clamp((u - tCut) / 0.18)})`; g.fillRect(0, 0, W, H); } });
+    if (u >= tR) { const k = clamp((u - tR) / 3.4); const sx = lx - 62, sy = GY - 175 * jp - 790 * SL / 0.8 * 0.98; const pts = []; for (let i = 0; i <= 12; i++) pts.push(flightPt(sx, sy, rim[0], rim[1], k * i / 12, 430)); comet(pts, 22); ball(pts[12][0], pts[12][1], 36, T * 4); }
+    g.restore(); if (u > tR) speedLines(lx, 900, 0.18 * (1 - air * 0.3), 36, '253,185,39'); board(10, 10, 1, 0, 0); if (u > tR && u < tR + 0.08) { g.fillStyle = `rgba(255,255,255,${0.35 * (1 - (u - tR) / 0.08)})`; g.fillRect(0, 0, W, H); }
+    if (u > tCut) { g.fillStyle = 'rgb(3,2,12)'; g.fillRect(0, 0, W, H); } });
   // 10 did it go in? (dark: we never see it)
   S.push((u, d) => { g.fillStyle = '#03020c'; g.fillRect(0, 0, W, H); const pul = 1 + 0.04 * Math.sin(T * 5); glow(540, 900, 700 * pul, '150,110,255', 0.16 + 0.05 * Math.sin(T * 5)); g.save(); g.translate(540, 900); g.scale(pul, pul); g.globalAlpha = 0.95; txt('?', 0, 190, 620, '#2a1d52', { stroke: 0, glow: '#9b6bff' }); g.restore();
     const tD = wt(10, /^did/, 0, 0.1), tY = wt(10, /^you/, 0, 1.4); bigNum('DID IT GO IN?', 540, 420, 112, C.white, u - tD, { maxW: 980, glow: '#9b6bff' }); if (u > tY) bigNum('YOU DECIDE.', 540, 1400, 120, GOLDL, u - tY, { maxW: 980 }); });
