@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#000"><canvas id="c" width="1024" height="1024"></canvas><script>
+// HOOP MULTIVERSE profile picture: the basketball as a planet with an orbit ring, in a violet multiverse. Reads at 98px.
+const c = document.getElementById('c'), g = c.getContext('2d'), W = 1024, hsh = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+const bg = g.createRadialGradient(512, 470, 60, 512, 512, 720); bg.addColorStop(0, '#3a1f7a'); bg.addColorStop(0.55, '#160b3a'); bg.addColorStop(1, '#05040f'); g.fillStyle = bg; g.fillRect(0, 0, W, W);
+for (let i = 0; i < 260; i++) { const r = hsh(i + 9) * 2.6 + 0.6; g.fillStyle = `rgba(255,255,255,${0.35 + hsh(i + 3) * 0.6})`; g.beginPath(); g.arc(hsh(i) * W, hsh(i + 1) * W, r, 0, 7); g.fill(); }
+const glow = (x, y, r, col, a) => { const q = g.createRadialGradient(x, y, 1, x, y, r); q.addColorStop(0, `rgba(${col},${a})`); q.addColorStop(1, `rgba(${col},0)`); g.fillStyle = q; g.fillRect(x - r, y - r, 2 * r, 2 * r); };
+g.globalCompositeOperation = 'lighter'; glow(512, 512, 520, '255,150,60', 0.35); glow(700, 330, 300, '150,110,255', 0.35); g.globalCompositeOperation = 'source-over';
+const ring = (front) => { g.save(); g.translate(512, 512); g.rotate(-0.38); g.lineCap = 'round'; for (const [w, col] of [[54, 'rgba(255,199,44,0.25)'], [22, '#ffc72c'], [7, '#fff3c4']]) { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); g.ellipse(0, 0, 450, 130, 0, front ? 0 : Math.PI, front ? Math.PI : 2 * Math.PI); g.stroke(); } g.restore(); };
+ring(false);
+// ball
+const R = 300; const bq = g.createRadialGradient(410, 400, 30, 512, 512, R); bq.addColorStop(0, '#ffb56a'); bq.addColorStop(0.55, '#f07a1c'); bq.addColorStop(1, '#8a3507'); g.fillStyle = bq; g.beginPath(); g.arc(512, 512, R, 0, 7); g.fill();
+g.save(); g.beginPath(); g.arc(512, 512, R, 0, 7); g.clip(); g.strokeStyle = '#2a1205'; g.lineWidth = 16; g.lineCap = 'round';
+g.beginPath(); g.moveTo(212, 512); g.lineTo(812, 512); g.stroke(); g.beginPath(); g.moveTo(512, 212); g.lineTo(512, 812); g.stroke();
+g.beginPath(); g.arc(512 - 395, 512, 330, -0.95, 0.95); g.stroke(); g.beginPath(); g.arc(512 + 395, 512, 330, Math.PI - 0.95, Math.PI + 0.95); g.stroke();
+g.fillStyle = 'rgba(0,0,0,0.28)'; g.beginPath(); g.arc(600, 600, R, 0, 7); g.arc(512, 512, R, 0, 7, true); g.fill('evenodd'); g.restore();
+g.strokeStyle = 'rgba(200,170,255,0.7)'; g.lineWidth = 8; g.beginPath(); g.arc(512, 512, R, -1.2, 0.2); g.stroke();
+ring(true);
+// tiny second "universe" planets
+for (const [x, y, r, col] of [[180, 230, 46, '#7fe7ff'], [860, 820, 36, '#b8a6ff'], [845, 215, 22, '#ffc72c']]) { const q = g.createRadialGradient(x - r * 0.4, y - r * 0.4, 2, x, y, r); q.addColorStop(0, '#ffffff'); q.addColorStop(1, col); g.fillStyle = q; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+window.ready = true;
+</script></body></html>
