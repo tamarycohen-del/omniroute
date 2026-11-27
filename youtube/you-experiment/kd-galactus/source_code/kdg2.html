@@ -218,7 +218,7 @@ const SH = [
     const hand = u < 1.9 ? 0.3 : u < 3.4 ? lerp(0.3, 0.02, ease((u - 1.9) / 0.5)) : u < 6.6 ? lerp(0.02, 0.55, ease((u - 3.4) / 3.2)) : lerp(0.55, 0.95, ease((u - 6.6) / 2.2));
     const lunge = u > 1.9 && u < 3.4 ? ease((u - 1.9) / 0.4) : u >= 3.4 ? 1 - ease((u - 3.4) / 1.5) : 0;
     const hp = giant(760 - lunge * 140, 1720, 1.33, { hand, left: lunge * 0.3, eyes: 1 + lunge * 0.8 }); court(700, 1720, 2600); const RIM = hoop(1560, 1720, 0.78, u - 9.3);
-    if (u > 3.4 && u < 7.8) { g.strokeStyle = 'rgba(190,160,255,0.35)'; g.lineWidth = 60; g.lineCap = 'round'; g.beginPath(); g.moveTo(hp[0], hp[1]); g.lineTo(hp[0] + 120, hp[1] + 260); g.stroke(); }
+    
     const jump = u > 6.3 ? 330 * Math.sin(clamp((u - 6.3) / 3.0) * Math.PI) : 0;
     const pose = u < 1.0 ? mixP(P.dribA, P.dribB, Math.abs(Math.sin(T * 6))) : u < 1.9 ? P.hesi : u < 6.3 ? P.drive : u < 6.8 ? mixP(P.load, P.shoot, ease((u - 6.3) / 0.5)) : P.follow;
     const draw = (i) => kd(kx - i * 60, 1720, 0.78, pose, { jump, noBall: u > 6.6 || i > 0, bspeed: 9, focus: true });
@@ -250,7 +250,7 @@ window.renderFrame = (f) => { const t = f / 30; T = t; SHK = 0; g.setTransform(1
   if (!NOCAP.has(i)) caption(t);
   // impact frames: brief inverted flash on the big hits
   for (const it of [23.9, 51.0, 58.7]) { const d = t - it; if (d >= 0 && d < 0.12) { g.fillStyle = `rgba(255,255,255,${0.55 * (1 - d / 0.12)})`; g.fillRect(0, 0, W, H); } }
-  if (u < 0.1 && i > 0) { g.fillStyle = `rgba(255,255,255,${0.18 * (1 - u / 0.1)})`; g.fillRect(0, 0, W, H); }
+  if (u < 0.1 && i > 0) { g.fillStyle = `rgba(255,255,255,${0.08 * (1 - u / 0.1)})`; g.fillRect(0, 0, W, H); }
   return true; };
 window.renderThumb = () => { T = 2.2; g.setTransform(1, 0, 0, 1, 0, 0); g.save(); cam(0.44, 640, 60); nebula(0, 0); planet(560, 2500, 1100); giant(760, 1560, 1.05, { hand: 0.33, eyes: 1.9 }); court(560, 1560, 1300); hoop(1060, 1560, 0.62); kd(380, 1560, 0.62, P.shoot, { jump: 140, holdBall: true }); g.restore(); speedLines(380, 1100, 0.25);
   const vg = g.createRadialGradient(W / 2, 900, H * 0.25, W / 2, 900, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.55)'); g.fillStyle = vg; g.fillRect(0, 0, W, H); txt('HESI OVER', 540, 250, 175, C.white); txt('GALACTUS?', 540, 440, 185, C.gold, { glow: C.gold }); return true; };
