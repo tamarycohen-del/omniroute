@@ -253,6 +253,6 @@ window.renderFrame = (f) => { const t = f / 30; T = t; SHK = 0; g.setTransform(1
   if (u < 0.1 && i > 0) { g.fillStyle = `rgba(255,255,255,${0.08 * (1 - u / 0.1)})`; g.fillRect(0, 0, W, H); }
   return true; };
 window.renderThumb = () => { T = 2.2; g.setTransform(1, 0, 0, 1, 0, 0); g.save(); cam(0.44, 640, 60); nebula(0, 0); planet(560, 2500, 1100); giant(760, 1560, 1.05, { hand: 0.33, eyes: 1.9 }); court(560, 1560, 1300); hoop(1060, 1560, 0.62); kd(380, 1560, 0.62, P.shoot, { jump: 140, holdBall: true }); g.restore(); speedLines(380, 1100, 0.25);
-  const vg = g.createRadialGradient(W / 2, 900, H * 0.25, W / 2, 900, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.55)'); g.fillStyle = vg; g.fillRect(0, 0, W, H); txt('HESI OVER', 540, 250, 175, C.white); txt('GALACTUS?', 540, 440, 185, C.gold, { glow: C.gold }); return true; };
+  const vg = g.createRadialGradient(W / 2, 900, H * 0.25, W / 2, 900, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.55)'); g.fillStyle = vg; g.fillRect(0, 0, W, H); txt('COULD KEVIN DURANT', 540, 175, 92, C.white); txt('HESI PULL-UP', 540, 330, 128, C.white); txt('OVER GALACTUS?', 540, 480, 118, C.gold, { glow: C.gold }); return true; };
 fetch('./words.json').then((r) => r.json()).then((w) => { WORDS = w; window.ready = true; });
 </script></body></html>
