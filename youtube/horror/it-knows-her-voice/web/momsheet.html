@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+import { momThing, hand } from './mom.js'; import { whiteStick } from './stick.js';
+const g = document.getElementById('c').getContext('2d');
+const gr = g.createLinearGradient(0, 0, 0, 1920); gr.addColorStop(0, '#120c26'); gr.addColorStop(1, '#241a46'); g.fillStyle = gr; g.fillRect(0, 0, 1080, 1920);
+const lab = (s, x, y) => { g.fillStyle = '#d8d0e8'; g.font = '600 32px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText(s, x, y); };
+g.fillStyle = '#fff'; g.font = '900 60px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('"MOM"', 540, 90);
+// 1) from far: looks normal (tall 1)
+g.save(); g.translate(180 - 300 * 0.5, 900 - 975 * 0.5); g.scale(0.5, 0.5); momThing(g, { tall: 1, face: 'smile' }); g.restore(); lab('from far: normal', 180, 950);
+// 2) too tall, next to him
+g.save(); g.translate(560 - 300 * 0.5, 900 - 975 * 0.5); g.scale(0.5, 0.5); momThing(g, { tall: 1.6, face: 'blank' }); g.restore();
+g.save(); g.translate(760 - 300 * 0.36, 900 - 975 * 0.36); g.scale(0.36, 0.36); whiteStick({ g }, { beanie: '#2a2a36', expr: 'scared', look: -1 }); g.restore(); lab('too tall', 620, 950);
+// 3) arms stretching in the woods (dark face)
+g.save(); g.translate(540 - 300 * 0.42, 1640 - 975 * 0.42); g.scale(0.42, 0.42); momThing(g, { tall: 1.6, reach: 0.8, face: 'dark', t: 0.6 }); g.restore(); lab('arms stretching', 540, 1690);
+// 4) the hand with her ring
+g.save(); g.translate(800, 1180); g.scale(2.2, 2.2); hand(g, 0, 0, 1, 0.7); g.restore(); lab("her hand (Mom's ring)", 860, 1300);
+window.ready = true;
+</script></body></html>

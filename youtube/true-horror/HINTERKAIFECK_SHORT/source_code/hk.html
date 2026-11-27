@@ -1,0 +1,144 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// HINTERKAIFECK - dark illustrated horror-comic documentary. Every frame drawn in code (canvas 2D), deterministic.
+// Artistic reconstruction only: no victims, no injuries, no crime shown.
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); }, lerp = (a, b, u) => a + (b - a) * u;
+const hash = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+let T = 0, LINES = [], WORDS = [];
+const INK = '#07090c', LW = 7;
+// palette: deep navy, muted green, black, cold snow, warm lamp
+const C = { sky1: '#0b1426', sky2: '#1b2c44', snow: '#9fb0bf', snowS: '#6c7f92', wood: '#3d2f22', woodD: '#2a2017', roof: '#26201c', wall: '#7d7466', wallS: '#5d564c', pine: '#14251f', pineL: '#1e3a2e', lamp: '#ffc76a', skin: '#d0a07c', coat: '#2c3440', coat2: '#3a3226', paper: '#c9b88e' };
+const lin = (x0, y0, x1, y1, st) => { const q = g.createLinearGradient(x0, y0, x1, y1); st.forEach(([o, c]) => q.addColorStop(o, c)); return q; };
+const path = (pts, close = true) => { g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); if (close) g.closePath(); };
+const inked = (pts, fill, lw = LW) => { path(pts); g.fillStyle = fill; g.fill(); g.lineJoin = 'round'; g.strokeStyle = INK; g.lineWidth = lw; g.stroke(); };
+const hatch = (x, y, w, h, a = 0.25, step = 14, ang = 1) => { g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip(); g.strokeStyle = `rgba(5,8,12,${a})`; g.lineWidth = 2.2; for (let k = -h; k < w + h; k += step) { g.beginPath(); g.moveTo(x + k, y); g.lineTo(x + k - h * ang, y + h); g.stroke(); } g.restore(); };
+const cam = (z, fx, fy) => { g.translate(W / 2, H / 2); g.scale(z, z); g.translate(-fx, -fy); };
+const glow = (x, y, r, col, a) => { g.save(); g.globalCompositeOperation = 'lighter'; const rg = g.createRadialGradient(x, y, 2, x, y, r); rg.addColorStop(0, `rgba(${col},${a})`); rg.addColorStop(1, `rgba(${col},0)`); g.fillStyle = rg; g.fillRect(x - r, y - r, 2 * r, 2 * r); g.restore(); };
+
+// ---------- landscape pieces ----------
+const sky = (storm = 0) => { g.fillStyle = lin(0, -600, 0, 1300, [[0, C.sky1], [1, C.sky2]]); g.fillRect(-1500, -1500, 4200, 3200);
+  g.fillStyle = 'rgba(200,215,235,0.8)'; for (let i = 0; i < 60; i++) if (!storm) g.fillRect(hash(i) * 2600 - 800, hash(i + 3) * 900 - 400, 3, 3);
+  for (let k = 0; k < 5; k++) { const x = ((T * 10 + k * 520) % 2800) - 900, y = -150 + k * 110; g.fillStyle = storm ? 'rgba(20,28,40,0.9)' : 'rgba(40,55,80,0.55)'; g.beginPath(); g.ellipse(x, y, 420, 70, 0, 0, 7); g.ellipse(x + 200, y - 40, 260, 60, 0, 0, 7); g.fill(); }
+  g.fillStyle = 'rgba(230,236,245,0.85)'; if (!storm) { g.beginPath(); g.arc(860, -120, 70, 0, 7); g.fill(); g.strokeStyle = INK; g.lineWidth = 5; g.stroke(); glow(860, -120, 260, '200,215,240', 0.25); } };
+const pine = (x, y, h, c = C.pine, seed = 0) => { const w = h * 0.38; g.fillStyle = c; g.strokeStyle = INK; g.lineWidth = 5; g.beginPath(); g.moveTo(x, y - h);
+  for (let i = 1; i <= 5; i++) { const yy = y - h + (h * i) / 5.2, ww = (w * i) / 5; g.lineTo(x + ww + (hash(seed + i) - 0.5) * 12, yy); g.lineTo(x + ww * 0.45, yy - 8); } g.lineTo(x + 12, y); g.lineTo(x - 12, y);
+  for (let i = 5; i >= 1; i--) { const yy = y - h + (h * i) / 5.2, ww = (w * i) / 5; g.lineTo(x - ww * 0.45, yy - 8); g.lineTo(x - ww - (hash(seed + i + 9) - 0.5) * 12, yy); } g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = 'rgba(200,215,230,0.55)'; for (let i = 2; i <= 5; i++) { const yy = y - h + (h * i) / 5.2, ww = (w * i) / 5; g.beginPath(); g.ellipse(x - ww * 0.3, yy - 14, ww * 0.35, 6, 0, 0, 7); g.fill(); } };
+const forest = (y, n = 26, sc = 1, seed = 0, dark = 0) => { for (let i = 0; i < n; i++) { const x = -700 + (i / n) * 2500 + (hash(i + seed) - 0.5) * 60; pine(x, y + hash(i + seed + 1) * 30, (300 + hash(i + seed + 2) * 240) * sc, dark ? '#0c1714' : (i % 3 ? C.pine : C.pineL), i + seed); } };
+const snowField = (y) => { g.fillStyle = lin(0, y, 0, y + 900, [[0, C.snow], [1, C.snowS]]); g.fillRect(-1500, y, 4200, 2200); g.strokeStyle = 'rgba(40,55,75,0.35)'; g.lineWidth = 3; for (let i = 0; i < 18; i++) { const yy = y + 30 + i * i * 4; g.beginPath(); g.moveTo(-1500, yy); for (let x = -1500; x < 2700; x += 120) g.lineTo(x, yy + Math.sin(x * 0.01 + i) * 6); g.stroke(); } g.strokeStyle = INK; g.lineWidth = 6; g.beginPath(); g.moveTo(-1500, y); g.lineTo(2700, y); g.stroke(); };
+// THE farmhouse (same design in every shot): two-storey stone/plaster house + attached barn, steep roof, chimney, attic window
+const farm = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s); const lit = o.lit || {}, smoke = o.smoke || 0;
+  // barn (left)
+  inked([[-620, 0], [-620, -260], [-360, -430], [-100, -260], [-100, 0]], C.woodD); for (let i = -600; i < -110; i += 40) { g.strokeStyle = 'rgba(0,0,0,0.45)'; g.lineWidth = 3; g.beginPath(); g.moveTo(i, -10); g.lineTo(i, -250 + Math.abs(i + 360) * -0.2 + 100); g.stroke(); }
+  inked([[-660, -250], [-360, -470], [-60, -250], [-110, -235], [-360, -420], [-610, -235]], C.roof); inked([[-430, 0], [-430, -170], [-290, -170], [-290, 0]], '#18120d');
+  // house
+  inked([[-120, 0], [-120, -380], [360, -380], [360, 0]], C.wall); hatch(-120, -380, 480, 380, 0.12, 18);
+  inked([[-170, -370], [120, -640], [410, -370]], C.roof); for (let k = 0; k < 6; k++) { g.strokeStyle = 'rgba(0,0,0,0.5)'; g.lineWidth = 3; g.beginPath(); g.moveTo(-150 + k * 50, -380 - k * 46); g.lineTo(390 - k * 50, -380 - k * 46); g.stroke(); }
+  inked([[200, -560], [200, -690], [250, -690], [250, -515]], '#4a4038'); // chimney
+  const win = (wx, wy, ww, wh, on) => { inked([[wx, wy], [wx + ww, wy], [wx + ww, wy + wh], [wx, wy + wh]], on ? C.lamp : '#0d1218', 5); g.strokeStyle = INK; g.lineWidth = 4; g.beginPath(); g.moveTo(wx + ww / 2, wy); g.lineTo(wx + ww / 2, wy + wh); g.moveTo(wx, wy + wh / 2); g.lineTo(wx + ww, wy + wh / 2); g.stroke(); if (on) glow(wx + ww / 2, wy + wh / 2, 220, '255,190,100', 0.35 * on); };
+  win(-60, -320, 90, 110, lit.a); win(90, -320, 90, 110, lit.b); win(240, -320, 90, 110, lit.c); win(-60, -170, 90, 110, lit.d); win(240, -170, 90, 110, lit.e);
+  win(85, -500, 70, 80, lit.attic); // attic window
+  inked([[110, 0], [110, -170], [210, -170], [210, 0]], C.wood); g.fillStyle = INK; g.beginPath(); g.arc(195, -85, 6, 0, 7); g.fill();
+  // snow on roofs
+  g.fillStyle = '#c8d4de'; path([[-170, -370], [120, -640], [410, -370], [380, -362], [120, -610], [-140, -362]]); g.fill(); path([[-660, -250], [-360, -470], [-60, -250], [-100, -244], [-360, -446], [-620, -244]]); g.fill();
+  if (smoke) for (let i = 0; i < 10; i++) { const k = ((T * 0.25 + i / 10) % 1); g.fillStyle = `rgba(160,170,180,${0.35 * (1 - k) * smoke})`; g.beginPath(); g.arc(225 + Math.sin(k * 6 + i) * 30 + k * 120, -700 - k * 500, 30 + k * 70, 0, 7); g.fill(); }
+  g.restore(); };
+const fog = (y, a = 0.25) => { for (let k = 0; k < 6; k++) { const x = ((T * (20 + k * 6) + k * 600) % 3200) - 1200; g.fillStyle = `rgba(150,170,190,${a * 0.35})`; g.beginPath(); g.ellipse(x, y + k * 30, 700, 90, 0, 0, 7); g.fill(); } };
+const snowFall = (a = 1) => { g.fillStyle = `rgba(225,235,245,${0.7 * a})`; for (let i = 0; i < 160; i++) { const x = (hash(i) * 1300 + Math.sin(T * 0.7 + i) * 30) % 1300 - 110, y = (hash(i + 5) * 2000 + T * (60 + hash(i + 2) * 80)) % 2000 - 40; g.beginPath(); g.arc(x, y, 2 + hash(i + 7) * 3, 0, 7); g.fill(); } };
+const prints = (x0, y0, x1, y1, n, k = 1, s = 1) => { for (let i = 0; i < n; i++) { const u = i / (n - 1); if (u > k) break; const x = lerp(x0, x1, u) + (i % 2 ? 16 : -16) * s, y = lerp(y0, y1, u); g.save(); g.translate(x, y); g.rotate(Math.atan2(y1 - y0, x1 - x0) + Math.PI / 2); g.fillStyle = 'rgba(40,55,72,0.75)'; g.beginPath(); g.ellipse(0, 0, 11 * s, 24 * s, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(0, 26 * s, 8 * s, 10 * s, 0, 0, 7); g.fill(); g.restore(); } };
+
+// ---------- people (1920s Bavarian, restrained) ----------
+const person = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s * (o.flip ? -1 : 1), s); const coat = o.coat || C.coat;
+  inked([[-60, 0], [-50, -300], [-80, -560], [80, -560], [50, -300], [60, 0]], coat); hatch(-80, -560, 160, 560, 0.18, 16);
+  inked([[-26, 0], [-30, 40], [-4, 40], [-6, 0]], INK, 3); inked([[6, 0], [4, 40], [30, 40], [26, 0]], INK, 3);
+  const arm = o.arm || 0; inked([[60, -540], [90 + 40 * arm, -400 - 120 * arm], [70 + 60 * arm, -280 - 180 * arm], [44, -300]], coat);
+  inked([[-60, -540], [-90, -400], [-70, -280], [-44, -300]], coat);
+  g.save(); g.translate(0, -640); inked([[-48, -40], [48, -40], [52, 30], [30, 80], [-30, 80], [-52, 30]], C.skin, 6);
+  if (o.beard) inked([[-48, 20], [48, 20], [30, 110], [-30, 110]], '#8a8478', 5);
+  g.fillStyle = INK; for (const ex of [-18, 18]) { g.beginPath(); g.ellipse(ex, 4, 6, o.worried ? 8 : 5, 0, 0, 7); g.fill(); } g.lineWidth = 4; g.strokeStyle = INK; g.beginPath(); g.moveTo(-28, -14 + (o.worried ? 6 : 0)); g.lineTo(-8, -18); g.moveTo(28, -14 + (o.worried ? 6 : 0)); g.lineTo(8, -18); g.stroke();
+  inked([[-70, -40], [70, -40], [56, -50], [40, -110], [-40, -110], [-56, -50]], o.hat || '#1d1f22', 6); g.restore();
+  if (o.lantern) { const lx = 70 + 60 * arm, ly = -280 - 180 * arm + 60; g.strokeStyle = INK; g.lineWidth = 4; g.beginPath(); g.moveTo(lx, ly - 60); g.lineTo(lx, ly - 20); g.stroke(); inked([[lx - 22, ly - 20], [lx + 22, ly - 20], [lx + 26, ly + 40], [lx - 26, ly + 40]], C.lamp, 4); glow(lx, ly + 10, 520, '255,190,100', 0.5); }
+  g.restore(); };
+const silhouette = (x, y, s, a = 1) => { g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(s, s); g.fillStyle = '#020304'; path([[-55, 0], [-45, -300], [-70, -540], [-40, -580], [-46, -650], [-60, -660], [-56, -700], [-30, -760], [30, -760], [56, -700], [60, -660], [46, -650], [40, -580], [70, -540], [45, -300], [55, 0]]); g.fill(); g.restore(); };
+
+// ---------- interiors / objects ----------
+const attic = (o = {}) => { g.fillStyle = '#0a0d10'; g.fillRect(-500, -500, 2100, 2900);
+  inked([[-300, 1700], [540, 760], [1380, 1700]], '#2a2118', 0); g.fillStyle = lin(0, 760, 0, 1700, [[0, '#14110d'], [1, '#3a2c1f']]); path([[-300, 1700], [540, 760], [1380, 1700]]); g.fill();
+  for (let i = 0; i < 12; i++) { g.strokeStyle = 'rgba(0,0,0,0.6)'; g.lineWidth = 4; g.beginPath(); g.moveTo(540 + (i - 6) * 8, 760); g.lineTo(540 + (i - 6) * 160, 1700); g.stroke(); }
+  for (let k = 0; k < 7; k++) { const t2 = k / 7, y = lerp(760, 1700, t2 * t2); g.strokeStyle = INK; g.lineWidth = 5 + 8 * t2; g.beginPath(); g.moveTo(540 - (y - 760) * 0.95, y); g.lineTo(540, y - (y - 760) * 0.9 - 40); g.lineTo(540 + (y - 760) * 0.95, y); g.stroke(); }
+  g.fillStyle = 'rgba(200,190,160,0.18)'; for (let i = 0; i < 80; i++) { const x = 300 + hash(i) * 480, y = 900 + ((hash(i + 4) * 700 + T * 15) % 700); g.fillRect(x, y, 3, 3); }
+  if (o.shadow) { g.save(); g.globalAlpha = o.shadow; silhouette(560, 1060, 0.32, 0.9); g.restore(); } };
+const calendar = (day, mon) => { inked([[260, 560], [820, 560], [820, 1300], [260, 1300]], '#d8ccb0', 10); inked([[260, 560], [820, 560], [820, 720], [260, 720]], '#8a1f1a', 10);
+  g.fillStyle = '#f0e6d0'; g.font = '900 86px "DejaVu Serif", serif'; g.textAlign = 'center'; g.fillText(mon, 540, 675); g.fillStyle = INK; g.font = '900 360px "DejaVu Serif", serif'; g.fillText(String(day), 540, 1130); g.font = '700 54px "DejaVu Serif", serif'; g.fillText('1922', 540, 1240);
+  for (const rx of [340, 740]) { g.fillStyle = '#3a3a3a'; g.beginPath(); g.arc(rx, 560, 22, 0, 7); g.fill(); } };
+const desk = (o = {}) => { g.fillStyle = '#0d1014'; g.fillRect(-500, -500, 2100, 2900); glow(820, 600, 900, '255,200,120', 0.45); if (o.detective) person(800, 1250, 0.95, { coat: '#2b2c30', hat: '#18191c', worried: true, arm: 0.3 }); g.fillStyle = '#3a2a1c'; g.fillRect(-500, 900, 2100, 1600); hatch(-500, 900, 2100, 1600, 0.2, 18);
+  const doc = (x, y, r, w, h, title) => { g.save(); g.translate(x, y); g.rotate(r); inked([[0, 0], [w, 0], [w, h], [0, h]], C.paper, 5); g.fillStyle = 'rgba(30,25,15,0.7)'; g.font = '700 30px "DejaVu Serif", serif'; g.fillText(title, 24, 50); g.fillStyle = 'rgba(30,25,15,0.4)'; for (let i = 0; i < 9; i++) g.fillRect(24, 80 + i * 34, w - 48 - (i % 3) * 40, 6); g.restore(); };
+  doc(80, 1000, -0.12, 420, 520, 'POLIZEI · BERICHT'); doc(520, 1080, 0.08, 400, 480, 'VERNEHMUNG'); doc(300, 1350, -0.03, 520, 420, 'HINTERKAIFECK');
+  g.save(); g.translate(560, 980); g.rotate(-0.05); inked([[0, 0], [380, 0], [380, 280], [0, 280]], '#a9a080', 5); g.strokeStyle = 'rgba(40,60,40,0.7)'; g.lineWidth = 3; for (let i = 0; i < 8; i++) { g.beginPath(); g.moveTo(10, 30 + i * 32); g.bezierCurveTo(120, 10 + i * 30, 240, 60 + i * 30, 370, 20 + i * 34); g.stroke(); } g.fillStyle = '#8a1f1a'; g.beginPath(); g.arc(210, 150, 12, 0, 7); g.fill(); g.restore();
+  if (o.stamp) { g.save(); g.translate(560, 1450); g.rotate(-0.15); g.globalAlpha = o.stamp; g.strokeStyle = '#b01c16'; g.lineWidth = 10; g.strokeRect(-260, -70, 520, 140); g.fillStyle = '#b01c16'; g.font = '900 92px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('UNSOLVED', 0, 34); g.restore(); } };
+const hallway = () => { g.fillStyle = '#0b0e12'; g.fillRect(-500, -500, 2100, 2900);
+  inked([[140, 300], [940, 300], [940, 1700], [140, 1700]], '#2f2a22'); inked([[340, 600], [740, 600], [740, 1400], [340, 1400]], '#14110d');
+  for (const [a, b] of [[[140, 300], [340, 600]], [[940, 300], [740, 600]], [[140, 1700], [340, 1400]], [[940, 1700], [740, 1400]]]) { g.strokeStyle = INK; g.lineWidth = 6; g.beginPath(); g.moveTo(...a); g.lineTo(...b); g.stroke(); }
+  inked([[580, 800], [700, 800], [700, 1380], [580, 1380]], '#3d2f22'); inked([[200, 1100], [300, 1100], [300, 1500], [200, 1500]], '#3a2c1f'); inked([[190, 1080], [310, 1080], [310, 1110], [190, 1110]], '#2a2017');
+  g.fillStyle = '#5a4a3a'; g.beginPath(); g.ellipse(250, 1070, 30, 14, 0, 0, 7); g.fill(); inked([[780, 900], [880, 900], [880, 1040], [780, 1040]], '#4a4238', 5); hatch(140, 300, 800, 1400, 0.15, 20); glow(540, 700, 600, '160,180,200', 0.12); };
+const barn = (o = {}) => { g.fillStyle = '#0d1116'; g.fillRect(-500, -500, 2100, 2900); g.fillStyle = '#2a2017'; g.fillRect(-500, -500, 2100, 2900); for (let i = -500; i < 1600; i += 70) { g.strokeStyle = 'rgba(0,0,0,0.55)'; g.lineWidth = 4; g.beginPath(); g.moveTo(i, -500); g.lineTo(i, 2400); g.stroke(); }
+  g.fillStyle = '#4a3a22'; g.fillRect(-500, 1300, 2100, 1100); hatch(-500, 1300, 2100, 1100, 0.2, 16);
+  inked([[120, 1180], [960, 1180], [920, 1320], [160, 1320]], '#5a4630'); g.fillStyle = '#b89a4a'; for (let i = 0; i < 40; i++) g.fillRect(170 + hash(i) * 740, 1190 + hash(i + 2) * 30, 30, 5);
+  const cow = (x, y, s, f) => { g.save(); g.translate(x, y); g.scale(s * f, s); inked([[-220, -40], [180, -60], [200, 120], [-200, 130]], '#d8d2c4'); g.fillStyle = INK; g.beginPath(); g.ellipse(-60, 20, 60, 40, 0.3, 0, 7); g.fill(); g.beginPath(); g.ellipse(100, -10, 40, 30, 0, 0, 7); g.fill();
+    for (const lx of [-170, -110, 110, 160]) inked([[lx, 110], [lx + 26, 110], [lx + 26, 280], [lx, 280]], '#d8d2c4', 5); inked([[180, -80], [300, -40], [320, 60], [210, 60]], '#d8d2c4'); g.fillStyle = INK; g.beginPath(); g.arc(270, -10, 8, 0, 7); g.fill(); g.restore(); };
+  cow(300, 1000 + Math.sin(T * 1.2) * 4, 1.0, 1); cow(780, 1060 + Math.sin(T * 1.4 + 1) * 4, 0.9, -1); glow(540, 400, 700, '200,190,150', 0.1); };
+
+// ---------- shots ----------
+const SC = {
+  s1(u) { const z = 1 + 0.18 * sm(u / 5); g.save(); cam(z, 540, 1050); sky(); forest(1180, 26, 1, 0); snowField(1200); farm(560, 1330, 0.85, { lit: { a: 0.9, attic: 0 } }); fog(1240, 0.5); g.restore(); snowFall(0.7); },
+  s2(u) { g.save(); cam(1 + 0.08 * u, 540, 960); g.fillStyle = C.snow; g.fillRect(-500, -500, 2100, 2900); forest(560, 18, 0.9, 30, 1); snowField(600); prints(300, 640, 760, 1900, 9, sm(u / 1.5) + 0.2, 1.6); g.restore(); snowFall(0.8); },
+  s3(u) { const k = sm(u / 3); g.save(); cam(lerp(1.2, 0.85, k), lerp(500, 540, k), lerp(900, 1050, k)); sky(); forest(1000, 20, 0.8, 50, 1); snowField(1020); prints(300, 1040, 640, 1340, 12, 1, 0.8); farm(700, 1380, 0.55, { lit: { a: 0.8 } }); g.restore(); if (u > 1.6) { g.save(); g.globalAlpha = sm((u - 1.6) / 0.4); g.fillStyle = '#ff4d4d'; g.font = '900 60px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#000'; g.strokeText('NO TRACKS BACK', 540, 600); g.fillText('NO TRACKS BACK', 540, 600); g.restore(); } snowFall(0.6); },
+  s4(u) { g.save(); cam(1 + 0.1 * u / 3, 540, 1100); attic({}); g.restore(); },
+  s5(u) { g.save(); cam(1.05, 540, 1150); attic({}); person(380 + 30 * u, 1640, 1.15, { coat: C.coat2, hat: '#2a2620', beard: true, lantern: true, arm: 0.8, worried: true }); g.restore(); },
+  s6(u) { const fl = (u > 0.4 && u < 0.55) || (u > 1.9 && u < 2.0) ? 1 : 0; g.save(); cam(1.15, 560, 1100); sky(1); forest(1180, 26, 1, 0, 1); snowField(1200); farm(560, 1330, 0.85, { lit: { d: 1 } }); g.restore(); if (fl) { g.fillStyle = 'rgba(200,215,240,0.45)'; g.fillRect(0, 0, W, H); } },
+  s7(u) { g.save(); cam(1.15 + 0.12 * sm(u / 4), 560, 1100); sky(1); forest(1180, 26, 1, 0, 1); snowField(1200); farm(560, 1330, 0.85, { lit: { d: clamp(1 - u / 0.8) } }); fog(1250, 0.6); g.restore(); },
+  s8(u) { g.fillStyle = '#0d1014'; g.fillRect(0, 0, W, H); glow(540, 900, 900, '255,200,120', 0.25); const k = clamp(u / 2.6); const days = [[31, 'MARCH'], [1, 'APRIL'], [2, 'APRIL'], [3, 'APRIL'], [4, 'APRIL']]; const i = Math.min(4, Math.floor(k * 5)); g.save(); g.translate(0, Math.sin(T * 40) * (k < 1 ? 3 : 0)); calendar(...days[i]); g.restore(); },
+  s9(u) { g.save(); cam(1.05, 540, 1150); sky(); forest(1180, 26, 1, 0); snowField(1200); farm(700, 1300, 0.6, { lit: {} }); [0, 1, 2].forEach((i) => person(180 + i * 170 + u * 50, 1780 + i * 20, 0.95, { coat: ['#2e3430', '#33302a', '#2a2f38'][i], hat: '#1b1c1e', worried: true, flip: true })); g.restore(); snowFall(0.4); },
+  s10(u) { g.save(); cam(1 + 0.12 * sm(u / 4), 540, 960); hallway(); g.restore(); },
+  s11(u) { g.save(); cam(1.05 + 0.05 * u / 4, 540, 1050); barn({}); g.restore(); },
+  s12(u) { g.save(); cam(1.1, 560, 1000); sky(); forest(1180, 26, 1, 0); snowField(1200); farm(560, 1330, 0.85, { lit: {}, smoke: sm(u / 1.2) }); g.restore(); },
+  s13(u) { g.save(); cam(1.4 + 0.2 * sm(u / 3), 620, 980); sky(1); forest(1180, 26, 1, 0, 1); snowField(1200); farm(560, 1330, 0.85, { lit: { attic: 0.35 + 0.15 * Math.sin(T * 3) } }); g.restore(); },
+  s14(u) { g.save(); cam(1.0, 540, 1050); sky(1); forest(1180, 26, 1, 0, 1); snowField(1200); glow(860, 1080, 380, '170,190,210', 0.45); silhouette(860, 1210, 0.32, sm(u / 1.2) * 0.95); fog(1200, 0.7); farm(300, 1450, 0.6, {}); g.restore(); },
+  s15(u) { g.save(); cam(1.0 + 0.06 * u, 540, 1100); desk({ detective: true }); g.restore(); },
+  s16(u) { g.save(); cam(1.08, 540, 1150); desk({ stamp: sm((u - 0.5) / 0.3) }); g.restore(); },
+  s17(u) { const k = sm(u / 3); g.save(); cam(1.0, 540, 1100); sky(); forest(1180, 26, 1, 0); snowField(1200); g.save(); g.translate(0, 120 * k); g.beginPath(); g.rect(-500, -500, 2100, 1830 - 120 * k); g.clip(); farm(560, 1330 - 120 * k, 0.85, {}); g.restore();
+    for (let i = 0; i < 20; i++) { g.fillStyle = 'rgba(140,120,100,0.5)'; g.beginPath(); g.arc(300 + hash(i) * 520, 1300 - hash(i + 3) * 300 * k, 20 + hash(i + 1) * 40, 0, 7); g.fill(); } person(160, 1720, 0.8, { coat: '#3a3226', hat: '#202020' }); person(930, 1700, 0.8, { coat: '#2e3430', hat: '#202020', flip: true, arm: 0.7 }); g.restore();
+    g.save(); g.fillStyle = '#e8dcc0'; g.font = '900 64px "DejaVu Serif", serif'; g.textAlign = 'center'; g.lineWidth = 12; g.strokeStyle = '#000'; g.strokeText('1923', 540, 420); g.fillText('1923', 540, 420); g.restore(); },
+  s18(u) { g.save(); cam(1.0 + 0.05 * u, 540, 1100); sky(1); forest(1180, 26, 1, 0, 1); snowField(1200); fog(1200, 1); fog(1300, 0.8); g.restore(); snowFall(0.5); },
+  s19(u) { g.save(); cam(1.12, 540, 1100); sky(1); forest(1180, 26, 1, 0, 1); snowField(1200); fog(1200, 1); fog(1300, 1); g.restore(); },
+};
+// scene per narration line (lines.json from vstts.py); some lines split in two
+const PLAN = [['s1'], ['s2'], ['s3'], ['s4'], ['s5'], ['s6'], ['s7'], ['s8'], ['s9', 's10'], ['s10'], ['s11'], ['s11'], ['s12'], ['s13'], ['s14'], ['s15'], ['s16'], ['s17'], ['s18'], ['s19']];
+let SHOTS = [];
+const buildShots = () => { SHOTS = []; LINES.forEach((l, i) => { const p = PLAN[i] || ['s19']; if (p.length === 1) SHOTS.push([l.s - 0.1, p[0]]); else { SHOTS.push([l.s - 0.1, p[0]]); SHOTS.push([(l.s + l.e) / 2, p[1]]); } }); SHOTS[0][0] = 0; window.TOTAL = LINES[LINES.length - 1].e + 2.6; };
+const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0]]; };
+const KEY = /^(1922|terrifying|footprints|no|back|attic|nobody|31st|six|killed|four|gone|unsettling|active|fed|smoke|chimney|stayed|who|100|nobody|killer|demolished|unsolved|century|inside|hinterkaifeck)/i;
+const caption = (t) => { const i = WORDS.findIndex((w, k) => t >= w.s - 0.03 && t < (WORDS[k + 1] ? Math.min(WORDS[k + 1].s, w.e + 0.4) : w.e + 0.4)); if (i < 0) return; const w = WORDS[i].w.replace(/[^\w'’,.?!-]/g, '').toUpperCase();
+  g.save(); g.textAlign = 'center'; g.font = 'italic 900 112px "DejaVu Sans", sans-serif'; let fs = 112; while (g.measureText(w).width > 900) { fs -= 6; g.font = `italic 900 ${fs}px "DejaVu Sans", sans-serif`; } const pop = 1 + 0.12 * clamp(1 - (t - WORDS[i].s) / 0.12); g.translate(540, 1500); g.scale(pop, pop);
+  g.lineJoin = 'round'; g.lineWidth = 18; g.strokeStyle = '#000'; g.strokeText(w, 0, 0); g.fillStyle = KEY.test(w) ? (/(KILLED|SIX|WHO|UNSOLVED|KILLER|HINTERKAIFECK)/.test(w) ? '#ff3b30' : '#ffd23f') : '#ffffff'; g.fillText(w, 0, 0); g.restore(); };
+const titleCard = (txt, a, y = 380, col = '#e8dcc0', fs = 84) => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.textAlign = 'center'; g.font = `900 ${fs}px "DejaVu Serif", serif`; while (g.measureText(txt).width > 940) { fs -= 4; g.font = `900 ${fs}px "DejaVu Serif", serif`; } g.lineWidth = 12; g.strokeStyle = '#000'; g.strokeText(txt, 540, y); g.fillStyle = col; g.fillText(txt, 540, y); g.restore(); };
+window.renderFrame = (f) => { const t = f / 30; T = t; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H); const [shot, u] = shotAt(t);
+  g.save(); g.translate(Math.sin(T * 0.8) * 3, Math.sin(T * 1.1) * 2); SC[shot](u); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
+  // grade: cold tint, vignette, paper grain
+  g.fillStyle = 'rgba(10,30,40,0.12)'; g.fillRect(0, 0, W, H); const vg = g.createRadialGradient(W / 2, H / 2, H * 0.28, W / 2, H / 2, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.65)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  for (let i = 0; i < 2200; i++) { const v = hash(i + f * 7.13); g.fillStyle = v > 0.5 ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.08)'; g.fillRect(hash(i * 1.31 + f) * W, hash(i * 2.7 + f * 3) * H, 2, 2); }
+  if (shot === 's1') titleCard('1922. BAVARIA, GERMANY.', sm(t / 0.3) * sm((LINES[1] ? LINES[1].s - t : 1) / 0.3), 380);
+  if (shot === 's6') titleCard('MARCH 31, 1922.', sm(u / 0.3), 380);
+  if (shot === 's15' || shot === 's16') titleCard('100+ INVESTIGATIONS', sm(u / 0.3), 330, '#ffd23f', 96);
+  if (shot === 's19' && t > LINES[LINES.length - 1].e + 0.2) { const a = sm((t - LINES[LINES.length - 1].e - 0.2) / 0.5); g.fillStyle = `rgba(0,0,0,${0.55 * a})`; g.fillRect(0, 0, W, H); titleCard('HINTERKAIFECK', a, 820, '#e8dcc0', 110); titleCard('— 1922 —', a, 930, '#e8dcc0', 70); titleCard('UNSOLVED.', a, 1090, '#ff3b30', 130); }
+  else if (shot === 's18' || shot === 's19') { titleCard('THE CASE REMAINS UNSOLVED.', sm((t - SHOTS.find((x) => x[1] === 's18')[0]) / 0.4), 380, '#e8dcc0', 76); caption(t); }
+  else if (shot !== 's8') caption(t);
+  return true; };
+window.renderThumb = () => { T = 3; g.setTransform(1, 0, 0, 1, 0, 0); g.save(); cam(1.25, 560, 1050); sky(); forest(1180, 26, 1, 0, 1); snowField(1200); prints(120, 1700, 520, 1340, 10, 1, 0.9); farm(560, 1330, 0.85, { lit: { attic: 1.6 } }); fog(1250, 0.5); g.restore(); g.fillStyle = 'rgba(4,8,18,0.42)'; g.fillRect(0, 0, W, H); { const ax = 960 / 2 + (560 + 120 * 0.85 - 560) * 1.25 + 60, ay = 960 + (1330 - 460 * 0.85 - 1050) * 1.25; glow(ax, ay, 420, '255,190,100', 0.55); }
+  const vg = g.createRadialGradient(W / 2, 900, H * 0.2, W / 2, 900, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H); snowFall(0.6);
+  g.textAlign = 'center'; g.lineJoin = 'round'; for (let [txt, y, col, fs] of [['WHO WAS', 1460, '#ffffff', 190], ['INSIDE?', 1660, '#ffd23f', 210]]) { g.font = `italic 900 ${fs}px "DejaVu Sans", sans-serif`; while (g.measureText(txt).width > 960) { fs -= 6; g.font = `italic 900 ${fs}px "DejaVu Sans", sans-serif`; } g.lineWidth = 26; g.strokeStyle = '#000'; g.strokeText(txt, 540, y); g.fillStyle = col; g.fillText(txt, 540, y); }
+  g.font = '900 64px "DejaVu Serif", serif'; g.lineWidth = 12; g.strokeText('HINTERKAIFECK, 1922', 540, 260); g.fillStyle = '#e8dcc0'; g.fillText('HINTERKAIFECK, 1922', 540, 260); return true; };
+Promise.all([fetch('./lines.json').then((r) => r.json()), fetch('./words.json').then((r) => r.json())]).then(([l, w]) => { LINES = l; WORDS = w; buildShots(); window.ready = true; });
+</script></body></html>

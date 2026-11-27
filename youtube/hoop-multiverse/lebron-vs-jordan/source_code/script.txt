@@ -1,0 +1,11 @@
+# emotion | text | speed | pause_ms     (one line = one shot; 11 lines)
+urgent | Prime LeBron. Prime Jordan. Tied game. One shot left. | 1.1 | 300
+curious | Who takes it? Let's find out. | 1.1 | 300
+calm | Michael Jordan. Six foot six. Six trips to the Finals. Six championships. He never lost one. | 1.1 | 350
+urgent | Ten scoring titles. Thirty point one points a game. The highest average in NBA history. | 1.12 | 350
+calm | LeBron James. Six foot nine. Two hundred fifty pounds. Four championships. | 1.1 | 350
+urgent | More than forty thousand career points. The all time scoring king. | 1.12 | 350
+tense | So we tip it off. First to eleven. | 1.0 | 450
+urgent | Jordan scores first. LeBron answers with a dunk! Jordan, fadeaway. LeBron, right back at him. | 1.1 | 450
+tense | Ten all. Next bucket wins. | 1.0 | 450
+tense | Last shot. Ball in LeBron's hands. He rises up... and shoots. | 0.95 | 350

@@ -1,0 +1,360 @@
+{
+ "duration": 62.066939,
+ "frames30": 1862,
+ "source": "tts-word-boundaries",
+ "segments": [
+  [
+   0.094,
+   1.203
+  ],
+  [
+   1.545,
+   2.842
+  ],
+  [
+   3.292,
+   3.858
+  ],
+  [
+   4.308,
+   6.832
+  ],
+  [
+   7.282,
+   8.697
+  ],
+  [
+   9.147,
+   9.666
+  ],
+  [
+   10.116,
+   10.835
+  ],
+  [
+   11.285,
+   12.099
+  ],
+  [
+   12.549,
+   12.985
+  ],
+  [
+   13.435,
+   14.202
+  ],
+  [
+   14.652,
+   15.866
+  ],
+  [
+   16.316,
+   16.988
+  ],
+  [
+   17.438,
+   18.264
+  ],
+  [
+   18.714,
+   19.351
+  ],
+  [
+   19.801,
+   20.591
+  ],
+  [
+   21.041,
+   22.291
+  ],
+  [
+   22.741,
+   23.024
+  ],
+  [
+   23.474,
+   24.759
+  ],
+  [
+   24.948,
+   27.165
+  ],
+  [
+   27.615,
+   28.912
+  ],
+  [
+   29.148,
+   29.95
+  ],
+  [
+   30.4,
+   31.579
+  ],
+  [
+   32.029,
+   33.68
+  ],
+  [
+   34.13,
+   35.592
+  ],
+  [
+   35.875,
+   37.243
+  ],
+  [
+   37.693,
+   38.377
+  ],
+  [
+   38.625,
+   40.17
+  ],
+  [
+   40.62,
+   41.917
+  ],
+  [
+   42.283,
+   43.462
+  ],
+  [
+   43.912,
+   45.02
+  ],
+  [
+   45.47,
+   46.508
+  ],
+  [
+   46.791,
+   48.301
+  ],
+  [
+   48.751,
+   50.567
+  ],
+  [
+   51.017,
+   53.175
+  ],
+  [
+   53.625,
+   54.462
+  ],
+  [
+   54.912,
+   55.301
+  ],
+  [
+   55.751,
+   56.518
+  ],
+  [
+   56.968,
+   59.857
+  ],
+  [
+   60.307,
+   61.51
+  ]
+ ],
+ "phrases": [
+  {
+   "text": "In 1932,",
+   "s": 0.094,
+   "e": 1.203
+  },
+  {
+   "text": "Australia declared war.",
+   "s": 1.545,
+   "e": 2.842
+  },
+  {
+   "text": "On birds.",
+   "s": 3.292,
+   "e": 3.858
+  },
+  {
+   "text": "Twenty thousand emus were eating the farmers' wheat.",
+   "s": 4.308,
+   "e": 6.832
+  },
+  {
+   "text": "So the army sent its finest.",
+   "s": 7.282,
+   "e": 8.697
+  },
+  {
+   "text": "One major.",
+   "s": 9.147,
+   "e": 9.666
+  },
+  {
+   "text": "Two soldiers.",
+   "s": 10.116,
+   "e": 10.835
+  },
+  {
+   "text": "Two machine guns.",
+   "s": 11.285,
+   "e": 12.099
+  },
+  {
+   "text": "Their enemy?",
+   "s": 12.549,
+   "e": 12.985
+  },
+  {
+   "text": "Two metres tall.",
+   "s": 13.435,
+   "e": 14.202
+  },
+  {
+   "text": "Fifty kilometres an hour.",
+   "s": 14.652,
+   "e": 15.866
+  },
+  {
+   "text": "Zero fear.",
+   "s": 16.316,
+   "e": 16.988
+  },
+  {
+   "text": "The plan was simple.",
+   "s": 17.438,
+   "e": 18.264
+  },
+  {
+   "text": "Find emus.",
+   "s": 18.714,
+   "e": 19.351
+  },
+  {
+   "text": "Shoot emus.",
+   "s": 19.801,
+   "e": 20.591
+  },
+  {
+   "text": "The emus had a different plan.",
+   "s": 21.041,
+   "e": 22.291
+  },
+  {
+   "text": "Run.",
+   "s": 22.741,
+   "e": 23.024
+  },
+  {
+   "text": "At the first big ambush,",
+   "s": 23.474,
+   "e": 24.759
+  },
+  {
+   "text": "a thousand emus walked right up to the guns.",
+   "s": 24.948,
+   "e": 27.165
+  },
+  {
+   "text": "The soldiers opened fire,",
+   "s": 27.615,
+   "e": 28.912
+  },
+  {
+   "text": "and the gun jammed.",
+   "s": 29.148,
+   "e": 29.95
+  },
+  {
+   "text": "So they put the gun on a truck.",
+   "s": 30.4,
+   "e": 31.579
+  },
+  {
+   "text": "The emus were faster than the truck.",
+   "s": 32.029,
+   "e": 33.68
+  },
+  {
+   "text": "And the road was so bumpy,",
+   "s": 34.13,
+   "e": 35.592
+  },
+  {
+   "text": "the gunner couldn't aim at anything.",
+   "s": 35.875,
+   "e": 37.243
+  },
+  {
+   "text": "After a week,",
+   "s": 37.693,
+   "e": 38.377
+  },
+  {
+   "text": "the army gave up and went home.",
+   "s": 38.625,
+   "e": 40.17
+  },
+  {
+   "text": "Then the farmers begged for help,",
+   "s": 40.62,
+   "e": 41.917
+  },
+  {
+   "text": "so the army came back.",
+   "s": 42.283,
+   "e": 43.462
+  },
+  {
+   "text": "And the emus were waiting.",
+   "s": 43.912,
+   "e": 45.02
+  },
+  {
+   "text": "After weeks of fighting,",
+   "s": 45.47,
+   "e": 46.508
+  },
+  {
+   "text": "the major counted the results.",
+   "s": 46.791,
+   "e": 48.301
+  },
+  {
+   "text": "Almost ten bullets for every bird.",
+   "s": 48.751,
+   "e": 50.567
+  },
+  {
+   "text": "He said the emus could take bullets like tanks.",
+   "s": 51.017,
+   "e": 53.175
+  },
+  {
+   "text": "The army went home.",
+   "s": 53.625,
+   "e": 54.462
+  },
+  {
+   "text": "Again.",
+   "s": 54.912,
+   "e": 55.301
+  },
+  {
+   "text": "The emus stayed.",
+   "s": 55.751,
+   "e": 56.518
+  },
+  {
+   "text": "Australia had lost a war to a chicken with long legs.",
+   "s": 56.968,
+   "e": 59.857
+  },
+  {
+   "text": "Follow for more history oops.",
+   "s": 60.307,
+   "e": 61.51
+  }
+ ]
+}

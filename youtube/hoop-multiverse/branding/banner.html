@@ -1,0 +1,34 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#000"><canvas id="c" width="2560" height="1440"></canvas><script>
+// MULTIVERSE HOOPS banner, same look as the v1 profile picture (violet multiverse, basketball planet + gold ring, small planets).
+const c = document.getElementById('c'), g = c.getContext('2d'), W = 2560, H = 1440, hsh = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+const bg = g.createRadialGradient(1280, 680, 100, 1280, 720, 1500); bg.addColorStop(0, '#3a1f7a'); bg.addColorStop(0.5, '#160b3a'); bg.addColorStop(1, '#05040f'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
+for (let i = 0; i < 700; i++) { const r = hsh(i + 9) * 2.6 + 0.6; g.fillStyle = `rgba(255,255,255,${0.35 + hsh(i + 3) * 0.6})`; g.beginPath(); g.arc(hsh(i) * W, hsh(i + 1) * H, r, 0, 7); g.fill(); }
+const glow = (x, y, r, col, a) => { const q = g.createRadialGradient(x, y, 1, x, y, r); q.addColorStop(0, `rgba(${col},${a})`); q.addColorStop(1, `rgba(${col},0)`); g.fillStyle = q; g.fillRect(x - r, y - r, 2 * r, 2 * r); };
+g.globalCompositeOperation = 'lighter'; glow(1500, 720, 700, '150,110,255', 0.22); g.globalCompositeOperation = 'source-over';
+// the profile planet, scaled into the left of the safe area
+g.save(); g.translate(770, 720); g.scale(0.56, 0.56); g.translate(-512, -512);
+g.globalCompositeOperation = 'lighter'; glow(512, 512, 520, '255,150,60', 0.35); glow(700, 330, 300, '150,110,255', 0.35); g.globalCompositeOperation = 'source-over';
+const ring = (front) => { g.save(); g.translate(512, 512); g.rotate(-0.38); g.lineCap = 'round'; for (const [w, col] of [[54, 'rgba(255,199,44,0.25)'], [22, '#ffc72c'], [7, '#fff3c4']]) { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); g.ellipse(0, 0, 450, 130, 0, front ? 0 : Math.PI, front ? Math.PI : 2 * Math.PI); g.stroke(); } g.restore(); };
+ring(false);
+// ball
+const R = 300; const bq = g.createRadialGradient(410, 400, 30, 512, 512, R); bq.addColorStop(0, '#ffb56a'); bq.addColorStop(0.55, '#f07a1c'); bq.addColorStop(1, '#8a3507'); g.fillStyle = bq; g.beginPath(); g.arc(512, 512, R, 0, 7); g.fill();
+g.save(); g.beginPath(); g.arc(512, 512, R, 0, 7); g.clip(); g.strokeStyle = '#2a1205'; g.lineWidth = 16; g.lineCap = 'round';
+g.beginPath(); g.moveTo(212, 512); g.lineTo(812, 512); g.stroke(); g.beginPath(); g.moveTo(512, 212); g.lineTo(512, 812); g.stroke();
+g.beginPath(); g.arc(512 - 395, 512, 330, -0.95, 0.95); g.stroke(); g.beginPath(); g.arc(512 + 395, 512, 330, Math.PI - 0.95, Math.PI + 0.95); g.stroke();
+g.fillStyle = 'rgba(0,0,0,0.28)'; g.beginPath(); g.arc(600, 600, R, 0, 7); g.arc(512, 512, R, 0, 7, true); g.fill('evenodd'); g.restore();
+g.strokeStyle = 'rgba(200,170,255,0.7)'; g.lineWidth = 8; g.beginPath(); g.arc(512, 512, R, -1.2, 0.2); g.stroke();
+ring(true);
+// tiny second "universe" planets
+for (const [x, y, r, col] of [[180, 230, 46, '#7fe7ff'], [860, 820, 36, '#b8a6ff'], [845, 215, 22, '#ffc72c']]) { const q = g.createRadialGradient(x - r * 0.4, y - r * 0.4, 2, x, y, r); q.addColorStop(0, '#ffffff'); q.addColorStop(1, col); g.fillStyle = q; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+g.restore();
+// extra small worlds around the edges (same flat style)
+for (const [x, y, r, col] of [[300, 300, 60, '#7fe7ff'], [2250, 1120, 70, '#b8a6ff'], [2330, 260, 34, '#ffc72c'], [1900, 330, 22, '#7fe7ff'], [420, 1150, 28, '#ffc72c']]) { const q = g.createRadialGradient(x - r * 0.4, y - r * 0.4, 2, x, y, r); q.addColorStop(0, '#ffffff'); q.addColorStop(1, col); g.fillStyle = q; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+const title = (s, x, y, size, top, bot, glowCol) => { g.font = `italic 900 ${size}px "DejaVu Sans", sans-serif`; g.textAlign = 'center'; g.lineJoin = 'round';
+  for (let d = 18; d > 0; d--) { g.fillStyle = `rgb(${20 + d},${10 + d},${45 + d * 2})`; g.fillText(s, x + d * 0.9, y + d * 1.1); }
+  g.shadowColor = glowCol; g.shadowBlur = 60; g.lineWidth = 14; g.strokeStyle = '#0a0618'; g.strokeText(s, x, y); g.shadowBlur = 0;
+  const q = g.createLinearGradient(0, y - size * 0.85, 0, y + size * 0.1); q.addColorStop(0, top); q.addColorStop(0.55, bot); q.addColorStop(0.56, '#f2a41c'); q.addColorStop(1, '#c4730c'); g.fillStyle = q; g.fillText(s, x, y);
+  g.save(); g.globalCompositeOperation = 'lighter'; g.lineWidth = 3; g.strokeStyle = 'rgba(255,255,255,0.55)'; g.strokeText(s, x - 2, y - 3); g.restore(); };
+title('MULTIVERSE', 1500, 705, 138, '#ffffff', '#d9d2ff', 'rgba(150,110,255,0.95)');
+title('HOOPS', 1500, 870, 180, '#fff1b8', '#ffc42e', 'rgba(255,170,40,0.95)');
+window.ready = true;
+</script></body></html>

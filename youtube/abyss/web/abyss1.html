@@ -1,0 +1,56 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// ABYSS #1 "Don't look down" - one continuous dive, no narration. Facts: sunlight zone ends ~200 m, sperm whales hunt ~2,000 m,
+// total darkness from ~1,000 m, abyssal plain ~4,000-6,000 m, Challenger Deep ~10,935 m.
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
+const lerp = (a, b, u) => a + (b - a) * u, hash = (n) => { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); };
+window.TOTAL = 28.0;
+// depth keyframes [t, metres]
+const KD = [[0, 0], [2.6, 200], [7.0, 1000], [11.5, 2000], [15.5, 4000], [19.5, 6000], [23.0, 10935], [24.6, 11500], [28, 11520]];
+const depth = (t) => { for (let i = 0; i < KD.length - 1; i++) { const [t0, d0] = KD[i], [t1, d1] = KD[i + 1]; if (t <= t1) return lerp(d0, d1, sm((t - t0) / (t1 - t0)) * 0.6 + 0.4 * clamp((t - t0) / (t1 - t0))); } return KD[KD.length - 1][1]; };
+const speed = (t) => Math.abs(depth(t + 0.05) - depth(t - 0.05)) * 10;
+const col = (d) => { const stops = [[0, [70, 190, 220]], [200, [20, 90, 140]], [1000, [5, 22, 48]], [4000, [2, 8, 20]], [11000, [0, 2, 6]]]; for (let i = 0; i < stops.length - 1; i++) { const [a, ca] = stops[i], [b, cb] = stops[i + 1]; if (d <= b) { const u = (d - a) / (b - a); return ca.map((v, k) => Math.round(lerp(v, cb[k], u))); } } return stops[stops.length - 1][1]; };
+const LABELS = [[2.0, 4.6, 'SUNLIGHT ENDS HERE'], [6.4, 9.0, 'TOTAL DARKNESS'], [10.6, 13.6, 'SPERM WHALES HUNT HERE'], [15.0, 17.6, 'THE ABYSS'], [21.6, 23.6, 'THE DEEPEST POINT ON EARTH'], [24.4, 26.4, 'THIS IS NOT ON ANY MAP']];
+let T = 0;
+const text = (s, x, y, fs, c, a = 1, stroke = 14) => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.textAlign = 'center'; g.font = `900 ${fs}px "DejaVu Sans", sans-serif`; let f = fs; while (g.measureText(s).width > 880) { f -= 3; g.font = `900 ${f}px "DejaVu Sans", sans-serif`; } g.lineJoin = 'round'; g.lineWidth = stroke; g.strokeStyle = 'rgba(0,0,0,0.9)'; g.strokeText(s, x, y); g.fillStyle = c; g.fillText(s, x, y); g.restore(); };
+const fishSchool = (y0, a) => { g.save(); g.globalAlpha = a; g.fillStyle = 'rgba(10,40,60,0.8)'; for (let i = 0; i < 40; i++) { const x = (hash(i) * 1300 + T * (60 + 30 * hash(i + 1))) % 1300 - 110, y = y0 + hash(i + 2) * 500 + Math.sin(T * 3 + i) * 10; g.beginPath(); g.ellipse(x, y, 22, 8, 0, 0, 7); g.fill(); g.beginPath(); g.moveTo(x - 20, y); g.lineTo(x - 36, y - 9); g.lineTo(x - 36, y + 9); g.fill(); } g.restore(); };
+const jelly = (x, y, s, a) => { g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(s, s); g.globalCompositeOperation = 'lighter'; const rg = g.createRadialGradient(0, 0, 4, 0, 0, 150); rg.addColorStop(0, 'rgba(140,220,255,0.6)'); rg.addColorStop(1, 'rgba(140,220,255,0)'); g.fillStyle = rg; g.fillRect(-160, -160, 320, 320);
+  g.fillStyle = 'rgba(170,230,255,0.35)'; g.beginPath(); g.ellipse(0, 0, 70, 50 + 6 * Math.sin(T * 3), 0, Math.PI, 0); g.fill(); g.strokeStyle = 'rgba(170,230,255,0.35)'; g.lineWidth = 4; for (let k = -3; k <= 3; k++) { g.beginPath(); g.moveTo(k * 18, 0); for (let j = 1; j < 8; j++) g.lineTo(k * 18 + Math.sin(T * 2 + j + k) * 10, j * 26); g.stroke(); } g.restore(); };
+const whale = (x, y, s, a) => { g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(s, s); g.save(); g.shadowColor = 'rgba(120,190,255,0.55)'; g.shadowBlur = 40; g.fillStyle = '#1c3a52'; g.beginPath(); g.moveTo(-520, -60); g.quadraticCurveTo(-520, -170, -300, -170); g.lineTo(260, -120); g.quadraticCurveTo(420, -90, 480, -20); g.lineTo(640, -110); g.lineTo(600, 0); g.lineTo(640, 110); g.lineTo(480, 30); g.quadraticCurveTo(300, 120, -300, 110); g.quadraticCurveTo(-520, 100, -520, -60); g.fill(); g.restore(); g.fillStyle = 'rgba(160,210,240,0.18)'; g.beginPath(); g.ellipse(-60, 60, 380, 40, 0, 0, 7); g.fill();
+  g.fillStyle = 'rgba(120,170,200,0.15)'; g.beginPath(); g.ellipse(-430, -60, 10, 6, 0, 0, 7); g.fill(); g.restore(); };
+const angler = (x, y, s, a) => { g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(s, s); g.globalCompositeOperation = 'lighter'; const lx = 150 + Math.sin(T * 2) * 8, ly = -170; const rg = g.createRadialGradient(lx, ly, 2, lx, ly, 260); rg.addColorStop(0, 'rgba(200,255,220,0.9)'); rg.addColorStop(0.1, 'rgba(120,255,190,0.35)'); rg.addColorStop(1, 'rgba(120,255,190,0)'); g.fillStyle = rg; g.fillRect(lx - 300, ly - 300, 600, 600); g.globalCompositeOperation = 'source-over';
+  g.fillStyle = '#0a1a16'; g.beginPath(); g.ellipse(0, 0, 170, 130, 0, 0, 7); g.fill(); g.strokeStyle = '#0a1a16'; g.lineWidth = 8; g.beginPath(); g.moveTo(40, -110); g.quadraticCurveTo(120, -230, lx, ly); g.stroke(); g.fillStyle = 'rgba(200,255,220,0.5)'; for (let i = 0; i < 9; i++) { g.beginPath(); g.moveTo(80 + i * 10, 20); g.lineTo(86 + i * 10, 50); g.lineTo(92 + i * 10, 20); g.fill(); } g.restore(); };
+const eye = (k, blink) => { // giant eye opening in the dark
+  const cx = 540, cy = 1060, rx = 560, ry = 300 * k * blink; g.save(); g.globalCompositeOperation = 'lighter'; const rg = g.createRadialGradient(cx, cy, 20, cx, cy, 700); rg.addColorStop(0, `rgba(255,160,60,${0.25 * k})`); rg.addColorStop(1, 'rgba(255,160,60,0)'); g.fillStyle = rg; g.fillRect(0, 0, W, H); g.restore();
+  if (ry < 2) return; g.save(); g.beginPath(); g.ellipse(cx, cy, rx, ry, 0, 0, 7); g.clip(); g.fillStyle = '#d8c070'; g.fillRect(0, 0, W, H); const ir = g.createRadialGradient(cx, cy, 30, cx, cy, 300); ir.addColorStop(0, '#ffcc40'); ir.addColorStop(0.6, '#c86010'); ir.addColorStop(1, '#401000'); g.fillStyle = ir; g.beginPath(); g.arc(cx + Math.sin(T * 0.7) * 20, cy, 290, 0, 7); g.fill();
+  g.fillStyle = '#000'; g.beginPath(); g.ellipse(cx + Math.sin(T * 0.7) * 20, cy, 34 + 20 * (1 - k), 250, 0, 0, 7); g.fill(); g.fillStyle = 'rgba(255,255,255,0.7)'; g.beginPath(); g.ellipse(cx - 120, cy - 120, 40, 26, -0.5, 0, 7); g.fill(); g.restore();
+  g.strokeStyle = 'rgba(0,0,0,0.9)'; g.lineWidth = 30; g.beginPath(); g.ellipse(cx, cy, rx, ry, 0, 0, 7); g.stroke(); };
+window.renderFrame = (f) => { const t = f / 30; T = t; const d = depth(t), v = speed(t); g.setTransform(1, 0, 0, 1, 0, 0);
+  const [r, gg, b] = col(d); g.fillStyle = `rgb(${r},${gg},${b})`; g.fillRect(0, 0, W, H);
+  const shk = (t > 23.4 && t < 24.4) ? (24.4 - t) * 18 : (t > 25.2 && t < 26.6 ? 10 : 0); g.translate(Math.sin(t * 61) * shk, Math.sin(t * 47) * shk);
+  // light rays near the surface
+  const ray = clamp(1 - d / 220); if (ray > 0) { g.save(); g.globalCompositeOperation = 'lighter'; for (let i = 0; i < 7; i++) { const x = 60 + i * 160 + Math.sin(t * 0.8 + i) * 40; g.fillStyle = `rgba(220,250,255,${0.08 * ray})`; g.beginPath(); g.moveTo(x, 0); g.lineTo(x + 70, 0); g.lineTo(x + 260, H); g.lineTo(x + 150, H); g.fill(); } g.restore(); }
+  // surface + boat in the first second
+  if (t < 1.6) { const sy = 380 - t * 900; g.fillStyle = 'rgba(200,240,255,0.9)'; g.beginPath(); g.moveTo(0, sy); for (let x = 0; x <= W; x += 20) g.lineTo(x, sy + Math.sin(x * 0.02 + t * 6) * 14); g.lineTo(W, sy - 400); g.lineTo(0, sy - 400); g.fill(); g.fillStyle = '#b8482a'; g.beginPath(); g.ellipse(540, sy + 10, 240, 60, 0, 0, Math.PI); g.fill(); }
+  // splash bubbles at entry
+  g.strokeStyle = 'rgba(230,250,255,0.6)'; g.lineWidth = 4; for (let i = 0; i < 70; i++) { const life = (t * (0.6 + hash(i)) + hash(i + 7)) % 1; const y = H - ((hash(i + 3) * H + t * (300 + v * 0.6) * (0.5 + hash(i))) % (H + 200)); const x = hash(i + 5) * W + Math.sin(t * 2 + i) * 20; const a = t < 2 ? 1 : clamp(1 - d / 600) * 0.6; if (a > 0) { g.globalAlpha = a; g.beginPath(); g.arc(x, y, 4 + hash(i + 9) * 10, 0, 7); g.stroke(); } } g.globalAlpha = 1;
+  // marine snow (streaks up with speed)
+  g.fillStyle = 'rgba(220,235,255,0.55)'; for (let i = 0; i < 160; i++) { const x = hash(i * 3.1) * W, y = H - ((hash(i * 1.7) * H * 3 + d * 6 * (0.6 + hash(i))) % (H + 40)); const len = clamp(v / 400, 0.1, 6) * 6; g.fillRect(x, y, 3, 3 + len); }
+  if (t < 4.5) fishSchool(lerp(1500, -600, t / 4.5), sm(t / 0.6) * clamp((4.5 - t) / 1));
+  if (t > 5 && t < 10) for (let i = 0; i < 3; i++) jelly(200 + i * 340, lerp(2100, -300, (t - 5 - i * 0.5) / 4.5), 0.9 + 0.3 * i, 0.9);
+  if (t > 9.5 && t < 14.5) { const u = (t - 9.5) / 5; whale(lerp(1700, -700, u), lerp(1400, 700, u), 1.5, 1); }
+  if (t > 14.5 && t < 19.5) { const u = (t - 14.5) / 5; angler(lerp(-200, 700, u), lerp(1700, 500, u), 1.2, 1); }
+  if (t > 18.5 && t < 24.5) { const k = sm((t - 18.5) / 3); g.fillStyle = '#000'; for (const s of [-1, 1]) { g.beginPath(); g.moveTo(s < 0 ? 0 : W, 0); for (let y = 0; y <= H; y += 60) g.lineTo(s < 0 ? 140 * k + 70 * hash(y + d * 0.01) : W - 140 * k - 70 * hash(y + 9 + d * 0.01), y); g.lineTo(s < 0 ? 0 : W, H); g.fill(); } }
+  if (t > 23.2) { const k = sm((t - 23.2) / 0.9); const bl = (t > 25.9 && t < 26.15) ? 0.05 : 1; eye(k, bl); }
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  // depth counter + labels
+  const dShow = Math.round(d).toLocaleString('en-US') + ' m'; const glitch = t > 24.3 && t < 27.5 && Math.sin(t * 40) > 0.4;
+  text(glitch ? '?????? m' : dShow, 540, 640, 120, t > 24.3 ? '#ff4d5e' : '#e8f6ff', t < 27.5 ? 1 : 0, 16);
+  for (const [a, b2, s] of LABELS) { const al = sm((t - a) / 0.3) * sm((b2 - t) / 0.3); text(s, 540, 760, 58, '#9fe6ff', al, 10); }
+  if (t < 2.6) text("DON'T LOOK DOWN", 540, 1000, 104, '#ffffff', 1, 16);
+  if (t > 27.4) { g.fillStyle = '#000'; g.fillRect(0, 0, W, H); }
+  return true; };
+window.ready = true;
+</script></body></html>

@@ -1,0 +1,20 @@
+tense   | In 1959, nine hikers in the Soviet Ural Mountains cut their way out of their own tent... | 1.05 | 250
+dread   | and walked into the freezing dark. | 1.0 | 400
+calm    | They were experienced. Most were students from the Ural Polytechnic Institute. | 1.08 | 200
+calm    | Their leader was twenty-three-year-old Igor Dyatlov. | 1.0 | 250
+tense   | On the night of February first, they camped on a bare, open slope. | 1.05 | 250
+dread   | The local Mansi people called the mountain Kholat Syakhl. Dead Mountain. | 1.0 | 450
+whisper | They never came back. | 1.0 | 450
+curious | Weeks later, searchers found the tent, half buried in snow. | 1.05 | 250
+tense   | It had been cut open... from the inside. | 1.0 | 450
+curious | Their boots were still inside. | 1.0 | 300
+dread   | Footprints in socks and bare feet led down the slope, toward the forest. | 1.02 | 300
+calm    | The first of them were found by a cedar tree, beside the remains of a small fire. | 1.05 | 250
+tense   | The last four weren't found until May, deep in a ravine. | 1.05 | 250
+dread   | Some had injuries investigators struggled to explain. | 1.0 | 250
+whisper | Some of their clothing reportedly showed traces of radiation. | 1.0 | 400
+calm    | The Soviet investigation blamed a compelling natural force, and closed the case. | 1.05 | 300
+curious | In 2020, Russian prosecutors concluded it was an avalanche. | 1.05 | 250
+tense   | But many people still don't believe it. | 1.0 | 400
+dread   | Why would nine experienced hikers run into the night without their boots? | 1.0 | 400
+whisper | What do you think happened on Dead Mountain? | 1.0 | 300

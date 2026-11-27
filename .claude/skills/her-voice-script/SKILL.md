@@ -1,0 +1,146 @@
+---
+name: her-voice-script
+description: Write the next part of the HER VOICE horror series ("Would You Open the Door?", History Oops). Uses the series brief, the real comment vote, and the channel's retention/growth rules. Use when asked for a HER VOICE script or the next part.
+---
+
+# Write a HER VOICE part
+
+Read first: `youtube/horror/it-knows-her-voice/SERIES_BRIEF.md` (characters, full plot, open mysteries, rules) and the previous part's script/words (`partN/script.txt`, `web/wordsN.json`).
+
+## TOP PRIORITY: swipe rate (YouTube Shorts "Viewed vs swiped away" >= 80% viewed)
+The viewer decides in the first ~1 s, before any story. Everything in frame 0-30 serves this:
+- Frame 1 is the strongest, most readable image of the episode, already moving (no fade-in, no black, no slow tilt, no logo, no title card).
+- Sound from frame 0: a hit/impact plus the first spoken word starting at 0.0-0.2 s. No silent first second.
+- A big on-screen question or threat in the first frame, 3-6 words, top third, readable at thumbnail size (e.g. "THE WATER IS AT 31"), different from the captions.
+- A face or Biscuit visible in frame 1 with a clear emotion (shock, fear), large (at least 1/3 of frame height).
+- Something changes within the first 1.5 s (a cut, a splash, a light, a scream) to prove "this moves".
+- The corner card and title must not cover the key image in the first 2 s.
+- No context setup before the hook; the world rule comes as line 1 over the action, not before it.
+- HER VOICE Part 8 (70.1%) is our best so far but still 10 points under the 80% target: use it as a data point, not a template (user's instruction). Each episode tests a stronger opener and logs the result in youtube/SWIPE_LOG.md.
+- From the installed short-form skills (youtube-shorts, short-form-video, hook-writer): about 85% watch MUTED, so frame 1 must work with no sound: ONE hook line as on-screen text, nothing else competing. Our frames 0-1.5 s had 4 text layers (corner card, title tag, top text, captions): hide the corner card, title tag and captions until ~1.5 s.
+- 9:16 safe zone: key subject + hook text inside the center 900x1400; keep bottom ~320 px and right ~120 px free of anything important (YouTube UI covers them).
+- First frame bright and high-contrast (not grey/dark), strongest image already in motion; a visual change every 2-4 s at uneven intervals.
+- Seed audience: the channel has posted horror daily for over a week (user, 2026-11-24), so a history-audience mismatch is NOT the main cause of the ~57-62% viewed. Treat the first second itself (clutter, contrast, muted readability, motion) as the cause and test it episode by episode.
+- Check before upload: export frames 0, 15, 30, 45 and judge them as a stranger scrolling: would I stop?
+- After upload: ask the user for Studio's "Viewed vs swiped away" for the short (not available in the public API) and log it in the series folder with what the first second showed, to learn which openings win.
+
+## Inputs to collect
+1. The vote: pull comments + likes on the last part (YouTube `YOUTUBE_LIST_COMMENT_THREADS2`, Instagram `INSTAGRAM_GET_IG_MEDIA_COMMENTS`). Winner = most total likes; ignore the channel's own pinned comment.
+2. Stats of the last parts (views, avg watch time, saves, shares) to decide what to fix.
+
+## Fixed structure (keep the length: 80-90 s, ~200-230 words; viewers asked for long parts)
+1. Cold open on a NEW scary image + hook line ("Imagine…") that works for someone who never saw earlier parts.
+2. A PROMISE in the first 8 s that pays off later ("And tonight… she finally speaks").
+3. "In the comments, you said: <choice>." + 4 REAL viewer comments on screen + a 2-word reaction ("Bold call.").
+4. 8-12 short beats, a new scary image every 2-3 s.
+5. RE-HOOK at ~25-30 s (where viewers leave): sudden change + "But that wasn't the scary part" style line.
+6. A PAUSE CLUE (something visible for ~1 s that is explained later) → saves/rewatches.
+7. A "that's my mom" moment (something every kid knows) → shares.
+8. A twist near the end that reuses an old clue (Mom never says "honey"; Mom always texts "love you"; Biscuit growls at fakes).
+9. "So… do you <A>? Or <B>?" + "Comment your choice. Part N follows you." Two RED cards, short caps; Biscuit in the scene; both options risky; one option includes Biscuit.
+
+## Growth checklist (problem → cause → fix)
+no views → bad hook → promise something · no saves → no value → give a clue worth rewatching · no comments → no excitement → a bold, hard choice · no likes → not relevant → say it differently · no shares → not relatable → make them feel seen · no followers → not unique → lean on Biscuit and "your comments decide".
+
+## Rules
+Simple English, short present-tense sentences, no gore. Never solve all mysteries. The narrator never says "the voice". Character lines (Mom, Mrs. Hale) are recorded in separate takes, never in the same take as "X said:". Keep continuity (3:3x-3:4x AM clock, Mom's stretching arms, Mrs. Hale's too-wide smile, Biscuit). Ask the user before any plot decision that changes the series rules; list those decisions at the end of the script.
+
+## Output
+`partN/script.txt`: header (vote result, stats lessons, time card, word count) + table `# | narration | on screen` + recording notes + pinned comment + "plot decisions to confirm".
+
+## Storytelling principles (from Kallaway's "Short-Form Storytelling Principles", applied to HER VOICE)
+Check every script against these before recording:
+1. **Curiosity through contrast**: open a question, answer it, open the next one, all the way down. Every 3-4 s a beat must raise a new question. The biggest curiosity = breaking an expectation ("The scariest thing tonight isn't the monster. It's the one who looks like Mom.").
+2. **Speed to value**: something scary/interesting on screen in frame 1 and a reason to stay within 5 s (Part 6 cold open: eyes in the open car door from the first frame).
+3. **Value density**: cut anything the viewer doesn't need. Keep the comments beat under ~1 s of dead time and keep the story moving behind it.
+4. **Clarity**: 6th-grade words, active voice, short sentences. Say the key reveal twice: once short, once dead simple (so viewers who join mid-video get it).
+5. **Anticipation**: tease what's coming (the promise), then pay it off with a reveal that isn't the obvious one.
+6. **Emotion**: fear and shock drive the most shares; pick trigger words and visuals for one target emotion per beat.
+7. **Rhythm**: mostly staccato, mixed with a few medium/long lines; never the same sentence length three times in a row.
+8. **Energy**: narrator takes in ElevenLabs need tension/urgency; re-record flat lines.
+
+## Sound mix (apply the `audio-design` skill, adapted to our videos)
+- Loudness: our Shorts are streaming video, so keep loudnorm I=-14 LUFS, true peak <= -1 dBTP (the skill's -24/-18 LUFS targets are for games). Meter with `ffmpeg -i mix.wav -af ebur128=peak=true -f null -`.
+- Buses: voice, music, SFX, ambience (water/crickets/drone) as separate arrays; duck music AND ambience under the voice (release ~300-500 ms, no pumping).
+- Adaptive music: build intensity in layers (pad -> pulse -> drums) instead of one flat loop; switch sections on bar lines; use stingers for reveals.
+- SFX variation: never repeat the exact same sample in a row (footsteps, ticks, clicks): small random pitch (+/-1 semitone) and volume (+/-2 dB) offsets.
+- Leave headroom before the limiter; check that the re-hook silence is really silent.
+
+## Upload checklist
+Instagram reels: ALWAYS pass cover_url (the part thumbnail, as a public r2 URL) to INSTAGRAM_POST_IG_USER_MEDIA. The cover cannot be changed via the API after publishing.
+
+## Production craft (also for LAST LIGHT and every new series)
+Adapted from the directing and technique guides of [Lemo-Opuscar](https://github.com/lemomo-ai/lemo-opuscar) by Lemomo (LemoLab), licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/); summarized in our own words and changed to fit our vertical choice-shorts. Lines marked (ours) come from our own mistakes.
+
+**Before writing**
+- World logic first (ours): every rule of the world (who can go where, when, why) is set up on screen BEFORE the moment that depends on it. Ask "why doesn't the monster just attack now?" for every beat. (Part 1 of LAST LIGHT shipped a draft where the creatures came out in daylight; fixed with "They can't touch sunlight... but the shadows were getting longer.")
+- Choices must come out of the story's own rules (ours): both options use what the episode established (sound, light, the radio), both risky, easy to argue about. Never two random actions.
+- Pick 1-2 reference works for this episode: write what to learn (pacing, camera grammar, color logic, sound) and what not to take (characters, designs, shots, music).
+- One subject, one goal, one turn. Hook in the first 3 s. The ending echoes the opening.
+- Write a short treatment before drawing: beat sheet by the second, shot list (framing, camera move, duration, WHY), and a sound table per section (ambience, foley, music state).
+
+**Sound**
+- Every visible action has a sound that matches its material (metal radio, cloth backpack, claws on asphalt, glass).
+- Three layers: ambience, foley, music/drone. Duck ambience and music under the voice.
+- At least two real silences (or near-silences) before the turn or the peak; the first sound after the silence is one of the most important in the film.
+- Use sound as a transition at least twice: bring the next scene's sound in early, or let the last scene's sound run over the cut.
+- Voice: compress it first, then balance by RMS, about 10 dB above the music. Keep 20-120 Hz about 3 dB under the rest so drones don't eat phone speakers.
+
+**Rhythm and reading**
+- Vary the pace: fast and slow, one clear acceleration, one held breath. One even speed = failure. Don't cut on every beat.
+- A caption stays at least 1.8 s and at least spoken length + 0.6 s. On-screen text holds about (letters / 15 + 1.5) s after it finishes appearing. Title or choice cards at least 4 s.
+- In TTS text spell numbers out; in captions write digits.
+
+**Camera and staging**
+- At least four different camera moves (push, pull, pan, parallax, tracking) and real framing changes. One signature shot people remember.
+- At key moments the subject fills at least a third of the frame height (our full-body walking shots are too small: go closer for every emotional beat).
+- Transitions made from the world itself (a shadow sweeping, a door closing, static) rather than default fades.
+
+**Performance**
+- Anticipation, action, follow-through on every meaningful move. Characters change emotion, they don't just slide.
+- Blend poses with easing; never switch a pose inside an `if` at a time threshold (Biscuit's stand -> crouch snap). Exception: a deliberate one-frame comic pop.
+- Check every expression at final size (worried vs angry is one eyebrow flip).
+
+**Most common failures (check every render)**
+Subject too small or against the frame edge · too dark to read or color on the same color · captions covering the subject · a gag or scare too fast to understand · blank frames in transitions · an effect that doesn't follow the subject after the camera moves (use one world -> screen function).
+
+**Rendering**
+- Deterministic frames: no `Math.random()` without a seed, no state carried between frames, so any chunk can render alone.
+- Add film grain in ffmpeg, not on the canvas (grain drawn in the page makes frames slow and incompressible).
+
+**Review before delivery (one fix round)**
+1. Contact sheet of a frame every 1-2 s; at least two passes.
+2. 0.2 s strips of every key action (falls, grabs, jumps, reveals).
+3. On the final mp4: `youtube/tools/review.sh <file.mp4>` (loudness about -14 LUFS, black frames, whisper of the final mix), then the `watch` skill with `--scene-threshold 0.12` (shots, cuts/min, mean shot length, 0-10 s hook frames). Target for our shorts: mean shot length 2-3 s. (LAST LIGHT Part 1 measured 14 shots, 12 cuts/min, mean 5.0 s: too slow.)
+4. Watch it once at full speed with sound.
+Fix everything found in one round, check once more, then deliver. Later notes from the user are new rounds: change only what they ask.
+
+## Research without YouTube API quota
+Agent Reach (MIT, github.com/Panniantong/Agent-Reach) is installed with uv in the cloud session (needs youtube.com and reddit.com allowed in the environment; both are). Read-only:
+- `agent-reach youtube search "<query>"` → titles, channels, view counts, durations (yt-dlp, no API quota).
+- `agent-reach youtube subtitle <url>` → a competitor's script as text. Blocked from the cloud container (YouTube's "confirm you're not a bot" check on datacenter IPs, tested 2026-11-23); works on the user's own computer.
+- `agent-reach reddit search "<query>"` → story ideas and what people say about a genre.
+Never connect it to the channel's Instagram/X accounts (account automation risk). Composio stays for uploads and comments. In a fresh container reinstall: `uv tool install https://github.com/Panniantong/Agent-Reach/releases/latest/download/agent-reach.zip && agent-reach setup`.
+
+## Ending rules (from FLOOR 40 Part 1 Instagram retention, 2026-11-23)
+Retention held flat at ~45% from 0:20 to 1:01, then fell to ~5% during the 14 s choice screen (static cards, quiet drone). The ending lost the viewers the whole story had kept.
+- The choice screen is at most 5-6 s. Cards appear while the last line is still being spoken, not after it.
+- The ending never goes static: keep motion under the cards (water rising, a shadow moving, the counter ticking) and a rising sound (heartbeat, riser, hit on each card), never a flat drone.
+- End on a cliffhanger beat AFTER the cards appear (a knock, the light blinking again, the counter dropping), cut hard to black on the peak. No slow fade, no long hold.
+- Design the last frame to loop into the first (same image or sound), so replays count.
+- Also: the first 3 s lost ~45% (100% -> 55% by 0:10). The first frame must already show the strongest image of the episode in motion, not a slow tilt.
+- User note on Part 1 (corrected): the opening was boring even if it held some viewers. Keep only the elements that worked (the one-line world rule as the first line, the drowned-city image, the mystery "Nobody knows why") and make the opening more interesting: start in motion on the strongest image (e.g. water bursting through a window, a floor going under), load the first 5 s with sound (a hit on frame 1, water rush, creak, rain) and at least two visual events in the first 5 s. Less whispering: whisper only 1-2 key lines per episode; the rest in a normal, tense storyteller voice.
+
+## Animation quality bar (same style, better craft; user note 2026-11-23)
+Keep the look (white stick kid with beanie, Biscuit, flat 2D shapes, dark palette). Quality means craft, not pixels. Weak spots seen in FLOOR 40 Part 1: characters standing still, rooms static, flat light, one layer per shot, hard cuts. Every shot must have:
+- **Acting**: the kid and Biscuit move with intent (turn head, step, flinch, point, crouch, breathe harder when scared), with anticipation -> action -> settle, eased between poses. Expressions change inside a shot. Biscuit reacts first (ears, tail, sniff, growl).
+- **Secondary motion**: something always moves besides the subject (water lapping, rain, dust, flicker, swaying cables, floating debris, steam of breath).
+- **Light**: a key light with direction (window light, flashlight cone, lightning flash), cast shadows on floor/walls, rim light on characters at night, light that changes inside the shot.
+- **Depth**: at least 3 layers (foreground silhouette, subject, background) with parallax when the camera moves; atmospheric haze on far layers.
+- **Camera with purpose**: push-in on emotion, whip/shake on impacts, slow drift otherwise; never a locked static frame for more than 2 s.
+- **Detail props** that tell the story (tally marks, labels, wet stains, cracks) drawn with texture, not plain rectangles.
+- **Transitions made in the world**: water wipe, light flash, lightning, a wave covering the lens, match cuts.
+- Check: render a contact sheet and ask "is anything in this frame not moving?" for each shot.
+
+## Real sound effects (SFX Kit, CC0)
+96 CC0 sounds from github.com/wyzowl/sfx-kit live in `youtube/sfx/sfx-kit` (cinematic hits, thunder, door slams, booms, sub drops, risers, reverse whooshes, impacts/knocks on wood, whooshes, foley, mechanical, clocks, water gurgle/bubbles). Use them instead of synthesized hits: `youtube/tools/sfxkit.py` -> `Kit().place(L, R, id, at=t)` puts the sound's SYNC point exactly on the frame; `under_voice=True` applies its under-voiceover level. Ambience beds and foley come from `youtube/sfx/earshot` (earshot, MIT/public-domain sources: waves, rain, wind, underwater, trickle, drips, splashes, door creak/knock/slam, floor creak, steps, thunder, heartbeat, panting, dog bark, chains, paper): `Kit().bed(...)` / `Kit().shot(...)`. Need a sound that isn't there: `earshot make "<words>" -o file.ogg` (pip install from github.com/Leonxlnx/earshot). Synthesize only what neither library has. Frame-0 impact: `cinematic-drum-big` or `cinematic-thunder-big`; knocks: `impact-medium-firm`; scares: `cinematic-slam-big`, `boom-drop-strong`; build-ups: a riser ending on the cut.

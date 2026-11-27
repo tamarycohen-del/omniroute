@@ -1,0 +1,3 @@
+tense   | Five Navy bombers vanished in the Bermuda Triangle. | 1.08 | 250
+dread   | Then the plane sent to find them... vanished too. | 1.0 | 400
+calm    | It was December fifth, 1945. A routine training flight from Fort Lauderdale, Florida. | 1.08 | 200

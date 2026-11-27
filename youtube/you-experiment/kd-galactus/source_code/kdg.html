@@ -1,0 +1,99 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// "Could KD hesi pull-up over Galactus?" — flat 2D motion graphics, every frame drawn in code (canvas 2D).
+// The cosmic giant is an original silhouette design (no copied costume); the name is used for the comparison only.
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); }, lerp = (a, b, u) => a + (b - a) * u;
+const hash = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+let T = 0, WORDS = [];
+const C = { bg1: '#070a1c', bg2: '#1a1240', teal: '#1fb6a6', orange: '#ff7a1a', gold: '#ffd23f', red: '#ff3b30', white: '#f4f1ea', skin: '#6b3f26', violet: '#4b2a8c', violet2: '#2b1758', glow: '#b8a6ff', ink: '#05060c' };
+const font = (s, w = 900) => `${w} ${s}px "DejaVu Sans", sans-serif`;
+const txt = (s, x, y, size, col = C.white, align = 'center', stroke = 14) => { g.save(); g.font = font(size); g.textAlign = align; g.lineJoin = 'round'; let fs = size; while (g.measureText(s).width > 980) { fs -= 4; g.font = font(fs); } g.lineWidth = stroke; g.strokeStyle = '#000'; g.strokeText(s, x, y); g.fillStyle = col; g.fillText(s, x, y); g.restore(); };
+const glow = (x, y, r, col, a) => { g.save(); g.globalCompositeOperation = 'lighter'; const rg = g.createRadialGradient(x, y, 1, x, y, r); rg.addColorStop(0, `rgba(${col},${a})`); rg.addColorStop(1, `rgba(${col},0)`); g.fillStyle = rg; g.fillRect(x - r, y - r, 2 * r, 2 * r); g.restore(); };
+const cam = (z, fx, fy) => { g.translate(W / 2, H / 2); g.scale(z, z); g.translate(-fx, -fy); };
+
+// ---------- world ----------
+const space = () => { const q = g.createLinearGradient(0, -800, 0, 2600); q.addColorStop(0, C.bg1); q.addColorStop(1, C.bg2); g.fillStyle = q; g.fillRect(-2000, -2000, 5000, 6000);
+  for (let i = 0; i < 220; i++) { const x = hash(i) * 3000 - 1000, y = hash(i + 5) * 4000 - 1100, r = 1 + hash(i + 9) * 2.5; g.fillStyle = `rgba(255,255,255,${0.3 + 0.6 * Math.abs(Math.sin(T * 1.5 + i))})`; g.fillRect(x, y, r, r); }
+  glow(900, 300, 700, '140,90,255', 0.22); glow(100, 1400, 600, '30,180,170', 0.12); };
+const planet = (x, y, r, k = 1) => { if (r <= 2) return; g.save(); const q = g.createRadialGradient(x - r * 0.3, y - r * 0.4, r * 0.1, x, y, r); q.addColorStop(0, '#3e8c7c'); q.addColorStop(1, '#12302c'); g.fillStyle = q; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.strokeStyle = 'rgba(160,255,230,0.35)'; g.lineWidth = 6; g.stroke(); glow(x, y, r * 1.25, '90,220,200', 0.18 * k); g.restore(); };
+const court = (x, y, w, o = {}) => { g.save(); g.translate(x, y); const h = w * 0.16; g.fillStyle = '#c8874a'; g.beginPath(); g.moveTo(-w / 2, 0); g.lineTo(w / 2, 0); g.lineTo(w / 2 - w * 0.08, -h); g.lineTo(-w / 2 + w * 0.08, -h); g.closePath(); g.fill();
+  g.strokeStyle = 'rgba(255,255,255,0.8)'; g.lineWidth = 4; g.stroke(); g.beginPath(); g.moveTo(0, 0); g.lineTo(0, -h); g.stroke(); g.beginPath(); g.ellipse(0, -h / 2, w * 0.06, h * 0.22, 0, 0, 7); g.stroke(); g.fillStyle = '#5b3a1f'; g.fillRect(-w / 2, 0, w, 22); if (o.crack) { g.strokeStyle = '#000'; g.lineWidth = 6; g.beginPath(); g.moveTo(-w * 0.2, -h); g.lineTo(-w * 0.05, -h * 0.4); g.lineTo(-w * 0.15, 0); g.stroke(); } g.restore(); };
+const hoop = (x, y, s, net = 0) => { g.save(); g.translate(x, y); g.scale(s, s); g.fillStyle = '#e8e8e8'; g.fillRect(-10, -150, 20, 300); g.fillStyle = 'rgba(255,255,255,0.9)'; g.fillRect(10, -150, 110, 80); g.strokeStyle = C.ink; g.lineWidth = 5; g.strokeRect(10, -150, 110, 80); g.strokeStyle = C.orange; g.lineWidth = 8; g.beginPath(); g.moveTo(40, -90); g.lineTo(160, -90); g.stroke();
+  g.strokeStyle = 'rgba(255,255,255,0.85)'; g.lineWidth = 3; const sw = Math.sin(net * 20) * 10 * Math.exp(-net * 3); for (let i = 0; i <= 5; i++) { g.beginPath(); g.moveTo(40 + i * 24, -90); g.lineTo(60 + i * 16 + sw, -30); g.stroke(); } g.restore(); };
+// KD (flat style): long limbs, teal #35 jersey
+const kd = (x, y, s, o = {}) => { const p = o.pose || 'stand', b = Math.sin(T * 9); g.save(); g.translate(x, y - (o.jump || 0) * s); g.scale(s * (o.flip ? -1 : 1), s); g.lineCap = 'round'; g.lineJoin = 'round';
+  const leg = (dx, k) => { g.strokeStyle = C.skin; g.lineWidth = 22; g.beginPath(); g.moveTo(dx, -330); g.lineTo(dx + k * 20, -170); g.lineTo(dx + k * 8, 0); g.stroke(); g.fillStyle = '#f4f4f4'; g.fillRect(dx + k * 8 - 26, -14, 52, 18); };
+  const lean = p === 'hesi' ? 0.12 : 0; g.rotate(lean);
+  leg(-24, p === 'hesi' ? -1.6 : -0.5); leg(24, p === 'hesi' ? 1.6 : 0.5);
+  g.fillStyle = C.teal; g.beginPath(); g.moveTo(-60, -620); g.lineTo(60, -620); g.lineTo(52, -330); g.lineTo(-52, -330); g.closePath(); g.fill(); g.fillStyle = '#e8e8e8'; g.font = font(70); g.textAlign = 'center'; g.fillText('35', 0, -460);
+  g.fillStyle = C.teal; g.fillRect(-58, -360, 116, 60);
+  const arm = (side, ax, ay) => { g.strokeStyle = C.skin; g.lineWidth = 20; g.beginPath(); g.moveTo(side * 58, -600); g.lineTo(lerp(side * 58, ax, 0.5) + side * 10, lerp(-600, ay, 0.5)); g.lineTo(ax, ay); g.stroke(); };
+  let ball = null;
+  if (p === 'shoot') { arm(-1, -30, -900); arm(1, 30, -910); ball = [0, -960]; }
+  else if (p === 'dribble' || p === 'hesi') { const by = -120 - 150 * Math.abs(b) * (p === 'hesi' ? 0.4 : 1); arm(1, 150, -330 + (by + 120) * 0.2); arm(-1, -90, -420); ball = [160, by]; }
+  else if (p === 'wing') { arm(-1, -340, -600); arm(1, 340, -600); }
+  else { arm(-1, -80, -330); arm(1, 80, -330); }
+  g.fillStyle = C.skin; g.beginPath(); g.arc(0, -690, 62, 0, 7); g.fill(); g.fillStyle = '#e8e8e8'; g.fillRect(-62, -720, 124, 16); g.fillStyle = '#000'; g.beginPath(); g.arc(-20, -688, 7, 0, 7); g.arc(20, -688, 7, 0, 7); g.fill();
+  g.restore(); if (ball && !o.noBall) { const bx = x + ball[0] * s * (o.flip ? -1 : 1), byy = y - (o.jump || 0) * s + ball[1] * s; drawBall(bx, byy, 34 * s); } };
+const drawBall = (x, y, r) => { g.fillStyle = C.orange; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.strokeStyle = '#2a1205'; g.lineWidth = Math.max(2, r * 0.12); g.stroke(); g.beginPath(); g.moveTo(x - r, y); g.lineTo(x + r, y); g.moveTo(x, y - r); g.lineTo(x, y + r); g.stroke(); };
+// original cosmic giant: smooth dome helm, plated shoulders, glowing eyes
+const giant = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s); const hand = o.hand || 0; glow(0, -1400, 1500, '150,110,255', 0.25);
+  g.fillStyle = C.violet2; g.beginPath(); g.moveTo(-260, 0); g.lineTo(-200, -900); g.lineTo(200, -900); g.lineTo(260, 0); g.closePath(); g.fill();
+  g.fillStyle = C.violet; g.beginPath(); g.moveTo(-430, -1700); g.lineTo(430, -1700); g.lineTo(300, -880); g.lineTo(-300, -880); g.closePath(); g.fill();
+  g.strokeStyle = 'rgba(200,180,255,0.35)'; g.lineWidth = 10; for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(-300 + i * 20, -1500 + i * 150); g.lineTo(300 - i * 20, -1500 + i * 150); g.stroke(); }
+  for (const sd of [-1, 1]) { g.fillStyle = C.violet; g.beginPath(); g.ellipse(sd * 470, -1650, 170, 120, 0, 0, 7); g.fill(); }
+  // arms: right arm angle from hand (0 = down at side, 1 = raised up high)
+  const armTo = (sd, a) => { const ang = lerp(0.15, -2.6, a) * sd; const ex = sd * 470 + Math.sin(ang) * 900 * sd * sd, ey = -1650 + Math.cos(ang) * 900; g.strokeStyle = C.violet; g.lineWidth = 170; g.lineCap = 'round'; g.beginPath(); g.moveTo(sd * 470, -1650); g.lineTo(ex, ey); g.stroke(); g.fillStyle = C.violet2; g.beginPath(); g.arc(ex, ey, 130, 0, 7); g.fill(); return [ex, ey]; };
+  armTo(-1, o.left || 0); const hp = armTo(1, hand);
+  g.fillStyle = C.violet2; g.beginPath(); g.arc(0, -1930, 230, Math.PI, 0); g.lineTo(230, -1780); g.quadraticCurveTo(0, -1700, -230, -1780); g.closePath(); g.fill();
+  g.fillStyle = '#20113f'; g.beginPath(); g.ellipse(0, -1850, 150, 110, 0, 0, 7); g.fill();
+  const blink = o.mouth ? 0 : 0; g.fillStyle = '#f2eaff'; for (const ex of [-60, 60]) { g.beginPath(); g.ellipse(ex, -1870, 34, 18 - blink, 0, 0, 7); g.fill(); glow(ex, -1870, 120, '220,200,255', 0.6); }
+  if (o.mouth) { g.fillStyle = '#000'; g.beginPath(); g.ellipse(0, -1790, 90 * o.mouth, 60 * o.mouth, 0, 0, 7); g.fill(); }
+  g.restore(); return [x + hp[0] * s, y + hp[1] * s]; };
+const human = (x, y, s, col = '#8a8f99', freeze = 0) => { g.save(); g.translate(x, y); g.scale(s, s); g.lineCap = 'round'; g.strokeStyle = col; g.lineWidth = 22; g.beginPath(); g.moveTo(-30, 0); g.lineTo(-20, -300); g.moveTo(30, 0); g.lineTo(20, -300); g.stroke(); g.fillStyle = col; g.fillRect(-55, -580, 110, 290); g.lineWidth = 18; g.beginPath(); g.moveTo(-55, -560); g.lineTo(-200, -420); g.moveTo(55, -560); g.lineTo(200, -420); g.stroke(); g.beginPath(); g.arc(0, -650, 58, 0, 7); g.fill();
+  if (freeze) { g.strokeStyle = `rgba(150,220,255,${freeze})`; g.lineWidth = 8; g.strokeRect(-240, -740, 480, 760); } g.restore(); };
+const bar = (x, y0, y1, label, col, k = 1, side = 1) => { const yy = lerp(y0, y1, ease(k)); g.strokeStyle = col; g.lineWidth = 8; g.beginPath(); g.moveTo(x, y0); g.lineTo(x, yy); g.moveTo(x - 30, y0); g.lineTo(x + 30, y0); g.moveTo(x - 30, yy); g.lineTo(x + 30, yy); g.stroke(); if (k > 0.6) txt(label, x + side * 40, (y0 + yy) / 2, 70, col, side > 0 ? 'left' : 'right', 12); };
+const shake = (amt) => g.translate((hash(Math.floor(T * 60)) - 0.5) * amt, (hash(Math.floor(T * 60) + 3) - 0.5) * amt);
+
+// ---------- shots: [start second, fn] (anchored to the voice's word times) ----------
+const SH = [
+  [0, (u) => { g.save(); cam(1.45 - 0.35 * ease(u / 0.8), 540, 1250); space(); planet(540, 2250, 900); court(540, 1520, 900); hoop(820, 1380, 0.8); kd(420, 1500, 0.55, { pose: 'dribble' }); giant(640, 1500, 0.55, { hand: 0.35 + 0.1 * Math.sin(T * 2) }); g.restore(); }],
+  [5.3, (u) => { space(); txt("LET'S DO", 540, 860, 170, C.white); txt('THE MATH', 540, 1060, 190, C.gold); for (let i = 0; i < 4; i++) txt(['6\'11"', '÷', '28\'9"', '= ?'][i], [190, 400, 620, 880][i], 1350 + Math.sin(T * 4 + i) * 20, 80, C.teal); }],
+  [6.8, (u) => { space(); court(540, 1720, 1200); kd(540, 1700, 1.25, { pose: 'wing' }); bar(160, 1700, 1700 - 830 * 1.25 * 0.84, '6\'11"', C.gold, u / 0.7, 1); if (u > 1.5) { const k = ease((u - 1.5) / 0.6); g.strokeStyle = C.teal; g.lineWidth = 8; g.beginPath(); g.moveTo(540 - 425 * k, 900); g.lineTo(540 + 425 * k, 900); g.stroke(); txt('7\'5" WINGSPAN', 540, 860, 70, C.teal); } }],
+  [10.3, (u) => { const z = lerp(1.0, 0.36, ease(u / 1.4)); g.save(); cam(z, 540, lerp(1350, 700, ease(u / 1.4))); space(); court(540, 1720, 2600); kd(300, 1700, 1.0, {}); giant(900, 1700, 1.0, { hand: 0 }); bar(1500, 1700, 1700 - 2050, '28\'9"', C.gold, (u - 0.8) / 0.8, 1); g.restore(); txt('MARVEL: 28\'9" (VARIABLE)', 540, 300, 64, C.white); }],
+  [13.4, (u) => { g.save(); cam(0.42, 540, 650); space(); court(540, 1720, 2600); giant(1000, 1700, 1.0, {}); for (let i = 0; i < 4; i++) { const k = ease((u - i * 0.45) / 0.35); if (k > 0) kd(200, 1700 - i * 500 * k, 0.6, {}); } g.restore(); const n = Math.min(4.15, (u / 1.9) * 4.15); txt(`${n.toFixed(2)}× KD`, 540, 330, 130, C.gold); }],
+  [16.8, (u) => { g.save(); cam(0.4, 540, 400); space(); court(540, 1720, 2600); const hp = giant(800, 1700, 1.0, { hand: ease(u / 0.8) }); for (let i = 0; i < 4; i++) if (u > 2.3 + i * 0.35) hoop(-200, 1700 - 300 - i * 640, 1.3); g.restore(); txt('REACH ≈ 38 FT', 540, 300, 120, C.gold); if (u > 2.3) txt('≈ 4 RIMS STACKED', 540, 440, 80, C.white); }],
+  [22.0, (u) => { g.save(); cam(0.55, 540, 900); space(); court(540, 1720, 2000); kd(250, 1700, 0.8, { pose: 'shoot', noBall: u > 0.2 }); const hp = giant(800, 1700, 0.75, { hand: 0.92 }); g.restore();
+    const k = clamp((u - 0.2) / 1.2); const bx = lerp(250, 800, k), by = lerp(950, 250, Math.sin(k * Math.PI / 2)); if (u > 0.2) { g.save(); cam(0.55, 540, 900); drawBall(bx + (u > 1.4 ? -60 : 0), u > 1.4 ? 250 : by, 34); g.restore(); }
+    if (u > 1.5) { txt('IMPOSSIBLE', 540, 400, 170, C.red); } if (u > 3.0) txt('CAUGHT.', 540, 1320, 110, C.white); }],
+  [27.6, (u) => { space(); txt('A HESI ISN\'T', 540, 760, 120, C.white); txt('ABOUT HEIGHT', 540, 900, 120, C.white); if (u > 1.4) { g.save(); g.translate(540, 1300); g.scale(1 + 0.08 * Math.sin(T * 10), 1 + 0.08 * Math.sin(T * 10)); txt("IT'S TIMING", 0, 0, 170, C.gold); g.restore(); } g.strokeStyle = C.teal; g.lineWidth = 12; g.beginPath(); g.arc(540, 1650, 120, 0, 7); g.stroke(); g.beginPath(); g.moveTo(540, 1650); g.lineTo(540 + Math.sin(T * 4) * 100, 1650 - Math.cos(T * 4) * 100); g.stroke(); }],
+  [31.0, (u) => { space(); court(540, 1700, 1300); const hesi = u > 1.2; kd(lerp(220, 330, ease(u / 1.2)) + (u > 2.6 ? (u - 2.6) * 700 : 0), 1680, 0.9, { pose: hesi && u < 2.6 ? 'hesi' : 'dribble' }); const fz = u > 2.3 ? clamp((u - 2.3) / 0.3) : 0; human(800, 1680, 0.9, '#8a8f99', fz); if (fz) txt('FROZEN', 800, 900, 110, '#9ee7ff'); txt('SLOW… SELL… GO', 540, 380, 90, C.gold); }],
+  [35.9, (u) => { space(); txt('4× LONGER ARM', 540, 360, 100, C.white); txt('≈ 2× SLOWER SWING', 540, 490, 100, C.gold);
+    const sw = (px, len, period, col) => { const a = Math.sin(T * 2 * Math.PI / period) * 0.8; const ex = px + Math.sin(a) * len, ey = 700 + Math.cos(a) * len; g.strokeStyle = col; g.lineWidth = 16; g.lineCap = 'round'; g.beginPath(); g.moveTo(px, 700); g.lineTo(ex, ey); g.stroke(); g.fillStyle = col; g.beginPath(); g.arc(ex, ey, 34, 0, 7); g.fill(); };
+    sw(250, 220, 0.55, C.teal); sw(700, 880, 1.1, C.glow); txt('KD', 250, 1100, 70, C.teal); txt('GIANT', 700, 1700, 70, C.glow); if (u > 4.4) txt('PHYSICS.', 540, 1850, 80, C.white); }],
+  [41.7, (u) => { const z = lerp(0.62, 0.8, ease(u / 10)); g.save(); cam(z, 540, 1050); if (u > 6.3 && u < 9.4) shake(6); space(); court(540, 1720, 1900); hoop(1060, 1520, 0.9, u - 9.3);
+    const kx = u < 1.9 ? lerp(160, 300, ease(u / 1.9)) : 300 + (u > 3.4 ? Math.min(180, (u - 3.4) * 260) : 0); const pose = u < 1.0 ? 'dribble' : u < 1.9 ? 'hesi' : u < 6.3 ? 'dribble' : 'shoot'; const jump = u > 6.3 ? 260 * Math.sin(clamp((u - 6.3) / 2.2) * Math.PI) : 0;
+    const hand = u < 1.9 ? 0.35 : u < 3.4 ? lerp(0.35, 0.05, ease((u - 1.9) / 0.6)) : u < 6.0 ? lerp(0.05, 0.6, ease((u - 3.4) / 2.6)) : lerp(0.6, 0.9, ease((u - 6.0) / 2.0)); giant(760, 1700, 0.7, { hand });
+    kd(kx, 1700, 0.75, { pose, jump, noBall: u > 7.4 }); if (u > 7.4) { const k = clamp((u - 7.4) / 1.9); const sx = kx, sy = 1700 - jump * 0.75 - 720, ex = 1150, ey = 1430; drawBall(lerp(sx, ex, k), lerp(sy, ey, k) - Math.sin(k * Math.PI) * 900, 30); }
+    g.restore(); if (u > 1.9 && u < 3.4) txt('BITES ON THE DRIVE', 540, 360, 80, C.gold); if (u > 3.4 && u < 6.3) txt('A SPLIT SECOND LATE', 540, 360, 80, C.red); if (u > 9.3) { g.save(); g.translate(540, 520); g.scale(1 + 0.3 * Math.exp(-(u - 9.3) * 5), 1 + 0.3 * Math.exp(-(u - 9.3) * 5)); txt('SWISH', 0, 0, 220, C.gold); g.restore(); } }],
+  [51.9, (u) => { space(); for (let i = 0; i < 40; i++) { const k = (T * 0.8 + i / 40) % 1; g.fillStyle = [C.gold, C.teal, C.orange, C.white][i % 4]; g.fillRect(hash(i) * 1080, k * 1920, 18, 30); } kd(540, 1600, 1.1, { pose: 'wing', jump: 60 * Math.abs(Math.sin(T * 6)) }); txt('KD  2', 540, 520, 150, C.teal); txt('DEVOURER  0', 540, 700, 110, C.glow); }],
+  [55.1, (u) => { const k = ease((u - 3.4) / 2.0); g.save(); cam(lerp(0.5, 0.42, k), 540, 900); if (u > 3.4) shake(10); space(); planet(540, 2300, 900 * (1 - k)); court(540, 1720, 2000 * (1 - k * 0.9), { crack: u > 2.6 }); giant(540, 1700, 0.8, { hand: u > 3.4 ? 0.9 : 0.2, left: u > 3.4 ? 0.9 : 0, mouth: u > 3.4 ? 1 : 0 }); g.restore();
+    if (u < 2.2) txt('ONE PROBLEM…', 540, 380, 120, C.red); else txt("HE DOESN'T DEFEND", 540, 380, 90, C.white); if (u > 3.4) txt('HE EATS THE PLANET', 540, 1330, 100, C.red); }],
+  [60.9, (u) => { space(); kd(540, 1500, 0.9, { pose: 'stand' }); g.fillStyle = 'rgba(0,0,0,0.0)'; txt('COULD KD SCORE?', 540, 420, 110, C.white); if (u > 2.2) { g.save(); g.translate(540, 640); g.scale(1 + 0.2 * Math.exp(-(u - 2.2) * 6), 1 + 0.2 * Math.exp(-(u - 2.2) * 6)); txt('PROBABLY ONCE.', 0, 0, 130, C.gold); g.restore(); } }],
+  [64.4, (u) => { space(); txt('WHO SHOULD KD', 540, 520, 120, C.white); txt('FACE NEXT?', 540, 670, 150, C.gold); for (let i = 0; i < 3; i++) { g.fillStyle = '#121633'; g.beginPath(); g.arc(240 + i * 300, 1250, 120, 0, 7); g.fill(); txt('?', 240 + i * 300, 1300, 150, [C.teal, C.orange, C.glow][i]); } txt('👇 COMMENT', 540, 1650, 90, C.white); }],
+];
+const shotAt = (t) => { let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][0]) i++; return [SH[i][1], t - SH[i][0], i]; };
+window.TOTAL = 67.6;
+const caption = (t) => { const i = WORDS.findIndex((w, k) => t >= w.s - 0.03 && t < (WORDS[k + 1] ? Math.min(WORDS[k + 1].s, w.e + 0.4) : w.e + 0.4)); if (i < 0) return; const w = WORDS[i].w.toUpperCase(); const key = /(KD|DURANT|GALACTUS|HESI|IMPOSSIBLE|TIMING|SLOW|PHYSICS|LATE|SWISH|PROBLEM|PLANET|ONCE|NEXT|38|28|FOUR|WORLDS)/.test(w); const pop = 1 + 0.15 * clamp(1 - (t - WORDS[i].s) / 0.1); g.save(); g.translate(540, 1560); g.scale(pop, pop); txt(w, 0, 0, 104, key ? C.gold : C.white, 'center', 18); g.restore(); };
+window.renderFrame = (f) => { const t = f / 30; T = t; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H); const [fn, u, i] = shotAt(t); g.save(); fn(u); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = g.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H * 0.78); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.5)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  if (i === 0) { txt('HESI PULL-UP', 540, 300, 150, C.white); txt('OVER GALACTUS?', 540, 460, 150, C.gold); }
+  if (i !== 1 && i !== 7 && i !== 13 && i !== 14) caption(t);
+  if (u < 0.12 && i > 0) { g.fillStyle = `rgba(255,255,255,${0.35 * (1 - u / 0.12)})`; g.fillRect(0, 0, W, H); }
+  return true; };
+window.renderThumb = () => { T = 2; g.setTransform(1, 0, 0, 1, 0, 0); g.save(); cam(1.1, 540, 1250); space(); planet(540, 2250, 900); court(540, 1520, 900); hoop(820, 1380, 0.8); kd(420, 1500, 0.55, { pose: 'shoot' }); giant(640, 1500, 0.55, { hand: 0.9 }); g.restore(); txt('HESI OVER', 540, 1430, 170, C.white); txt('GALACTUS?', 540, 1620, 180, C.gold); return true; };
+fetch('./words.json').then((r) => r.json()).then((w) => { WORDS = w; window.ready = true; });
+</script></body></html>

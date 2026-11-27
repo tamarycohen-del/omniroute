@@ -1,0 +1,122 @@
+[
+{
+"emotion": "tense",
+"text": "In 1922, a family living on an isolated German farm began noticing something terrifying...",
+"s": 0.0,
+"e": 5.418
+},
+{
+"emotion": "curious",
+"text": "Footprints appeared in the snow, leading from the nearby forest straight toward their farmhouse.",
+"s": 5.691,
+"e": 10.391
+},
+{
+"emotion": "tense",
+"text": "But there were no footprints leading back.",
+"s": 10.618,
+"e": 13.055
+},
+{
+"emotion": "curious",
+"text": "The family also reported hearing footsteps in the attic.",
+"s": 13.464,
+"e": 16.3
+},
+{
+"emotion": "whisper",
+"text": "When they searched, nobody was there.",
+"s": 16.527,
+"e": 18.591
+},
+{
+"emotion": "tense",
+"text": "Then, on March 31st, something terrible happened.",
+"s": 19.0,
+"e": 22.164
+},
+{
+"emotion": "calm",
+"text": "Six people at the farm were killed.",
+"s": 22.436,
+"e": 24.627
+},
+{
+"emotion": "calm",
+"text": "Four days passed before their disappearance was discovered.",
+"s": 25.082,
+"e": 28.573
+},
+{
+"emotion": "curious",
+"text": "When neighbors finally entered the property, the entire household was gone.",
+"s": 28.8,
+"e": 32.173
+},
+{
+"emotion": "tense",
+"text": "But investigators noticed something deeply unsettling.",
+"s": 32.445,
+"e": 35.718
+},
+{
+"emotion": "dread",
+"text": "The farm appeared to have remained active after the murders.",
+"s": 35.945,
+"e": 39.8
+},
+{
+"emotion": "calm",
+"text": "The animals had been fed.",
+"s": 40.027,
+"e": 41.845
+},
+{
+"emotion": "calm",
+"text": "Smoke had reportedly been seen coming from the chimney.",
+"s": 42.027,
+"e": 45.191
+},
+{
+"emotion": "whisper",
+"text": "Someone may have stayed there.",
+"s": 45.464,
+"e": 47.355
+},
+{
+"emotion": "tense",
+"text": "But who?",
+"s": 47.673,
+"e": 48.945
+},
+{
+"emotion": "curious",
+"text": "Police questioned more than 100 suspects over the following years.",
+"s": 49.4,
+"e": 53.036
+},
+{
+"emotion": "tense",
+"text": "Nobody was ever identified as the killer.",
+"s": 53.218,
+"e": 55.536
+},
+{
+"emotion": "calm",
+"text": "The farmhouse was eventually demolished.",
+"s": 55.855,
+"e": 58.227
+},
+{
+"emotion": "dread",
+"text": "And the mystery of Hinterkaifeck remains unsolved.",
+"s": 58.455,
+"e": 61.764
+},
+{
+"emotion": "whisper",
+"text": "More than a century later... nobody knows who was inside that farmhouse.",
+"s": 62.309,
+"e": 66.127
+}
+]

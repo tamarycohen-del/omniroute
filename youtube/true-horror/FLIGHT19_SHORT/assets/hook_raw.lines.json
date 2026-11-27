@@ -1,0 +1,20 @@
+[
+ {
+  "emotion": "tense",
+  "text": "Five Navy bombers vanished in the Bermuda Triangle.",
+  "s": 0.0,
+  "e": 2.99
+ },
+ {
+  "emotion": "dread",
+  "text": "Then the plane sent to find them... vanished too.",
+  "s": 3.24,
+  "e": 6.56
+ },
+ {
+  "emotion": "calm",
+  "text": "It was December fifth, 1945. A routine training flight from Fort Lauderdale, Florida.",
+  "s": 6.96,
+  "e": 12.69
+ }
+]

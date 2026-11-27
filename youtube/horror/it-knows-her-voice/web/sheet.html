@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+import { biscuit } from './biscuit.js'; import { whiteStick } from './stick.js';
+const g = document.getElementById('c').getContext('2d');
+const gr = g.createLinearGradient(0, 0, 0, 1920); gr.addColorStop(0, '#1a1236'); gr.addColorStop(1, '#2a1e4e'); g.fillStyle = gr; g.fillRect(0, 0, 1080, 1920);
+const lab = (s, x, y) => { g.fillStyle = '#d8d0e8'; g.font = '600 34px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText(s, x, y); };
+g.fillStyle = '#fff'; g.font = '900 64px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('BISCUIT', 540, 110);
+const P = [['stand', 300, 470, {}], ['walk', 780, 470, { pose: 'walk', t: 0.15 }], ['stare (back door)', 300, 900, { pose: 'stare', look: 1 }], ['shaking', 780, 900, { pose: 'crouch', shake: 1, t: 0.3, worried: true }]];
+for (const [n, x, y, o] of P) { g.save(); g.translate(x, y); g.scale(0.95, 0.95); biscuit(g, o); g.restore(); lab(n, x, y + 70); }
+// under the bed: dark slot with eyes only
+g.fillStyle = '#3c2a6a'; g.fillRect(140, 1060, 800, 90); g.fillStyle = '#05040a'; g.fillRect(140, 1150, 800, 130);
+g.save(); g.translate(520, 1290); biscuit(g, { eyesOnly: true, pose: 'crouch' }); g.restore(); lab('under the bed (eyes only)', 540, 1340);
+// scale next to the character
+g.save(); g.translate(250, 1390); g.scale(0.42, 0.42); whiteStick({ g }, { beanie: '#2a2a36', expr: 'worried', look: 1 }); g.restore();
+g.save(); g.translate(560, 1800); g.scale(0.55, 0.55); biscuit(g, { pose: 'stare', look: -1, flip: true }); g.restore();
+lab('size next to him', 540, 1880);
+window.ready = true;
+</script></body></html>

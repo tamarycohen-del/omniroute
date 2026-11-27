@@ -1,0 +1,38 @@
+HER VOICE - PART 5  (draft v2, written with the her-voice-script skill)
+Vote result: STAY IN THE CAR (YouTube 5 comments / 10 likes, Instagram 4 / 20; Escape 4 / 5 total).
+Stats lessons (Parts 1-4): views flat ~2k IG / ~1.3k YT, avg watch 25-30 s of ~80 s, shares 10 -> 0, saves best on Part 3 (12).
+Fixes used: promise in the first 8 s, re-hook at ~28 s, pause clue (mirror), "that's my mom" moment (the "love you" text), bold hard choice with Biscuit.
+Time card: 3:46 / CHAPTER FIVE.   ~214 words, ~86 s.
+
+#   | narration                                                                                      | on screen
+1   | Imagine your dead neighbor is driving you away from your mom...                               | Cold open: the car racing down the dark road, Mom's long fingers clamped on the trunk lid, red tail light glow
+1b  | But the scariest thing in this car... isn't behind us.                                         | Close on Mrs. Hale's eyes in the rear-view mirror (PROMISE, paid off at line 11: she has no reflection)
+2   | In the comments, you said: stay in the car.                                                    | 4 real comments pop: "Stay in car for puh" / "Stay bro" / "i think stay in the car she too fast" / "Stay what else can you do"
+3   | Bold call.                                                                                     | Comments slide away, hard cut back to the car
+4   | So I stayed. I held Biscuit and closed my eyes.                                                | Back seat: he hugs Biscuit, eyes shut, the car shaking
+5   | Mrs. Hale hit the gas. Mom's fingers slipped... one by one.                                    | Rear window: the long fingers slide off the trunk, one, two, three
+6   | She stood in the road, smiling, until the dark swallowed her.                                  | Rear window: Mom on the road in the red light, too tall, shrinking into the black
+7   | Then the radio turned on. By itself.                                                           | RE-HOOK (~28 s): dashboard radio lights up, static
+8   | (MOM, own take, through static) "Honey... why did you get in her car?"                        | The radio display flickers 3:46; Biscuit growls at the radio, not at Mrs. Hale
+9   | Mrs. Hale switched it off. And for the first time... she spoke.                               | Her thin hand turns the knob. PAUSE CLUE: in the rear-view mirror her seat looks EMPTY for ~1 s (no reflection)
+10  | (MRS. HALE, own take) "Don't answer her. She learns your voice."                              | She talks without turning around; her lips barely move
+11  | I looked in the mirror... and Mrs. Hale wasn't in it.                                         | Mirror close-up: only the empty driver's seat
+12  | The car stopped at the old bridge.                                                             | Through the windshield: a narrow wooden bridge over black water, fog
+13  | (MRS. HALE) "This is as far as I can go. Cross before sunrise. She can't follow you over water." | She points at the bridge; the sky is starting to turn grey
+14  | Across the field, I could see our house. Mom's car was in the driveway.                       | From the bridge: our house far across a dark field; Mom's car parked outside, kitchen window lit
+15  | Then the porch light blinked. Once. Twice. Three times.                                       | The porch light flicks off and on, three times
+16  | That's what Mom always does... when it's time to come home.                                   | Close on his face, eyes filling up ("that's my mom" moment: every kid knows the porch-light signal)
+17  | Biscuit looked at the bridge... then back toward home.                                         | Biscuit's head turns: bridge, road behind, bridge; ears flat
+18  | And far behind us... something tall was walking down the road. Toward our house.             | Far back on the road in the fog: a too-tall shape, slowly walking toward the house
+19  | So... do you cross the bridge with Biscuit? Or go home to Mom?                                | Choice cards (both red): CROSS THE BRIDGE WITH BISCUIT / GO HOME TO MOM; Biscuit in the scene
+20  | Comment your choice. Part 6 follows you.                                                       | Comment arrow, "PART 5"
+
+Recording: narration in one take; Mom's radio line (8) and Mrs. Hale's lines (10, 13) as separate takes, never in the same take as a "said:" line.
+Pinned comment: "🌉 CROSS THE BRIDGE WITH BISCUIT or 🏠 GO HOME TO MOM? Like the answer you agree with. The most-liked one decides Part 6. And did you see the mirror at 0:40? 👀"
+
+Growth checklist: hook works for new viewers (dead neighbor + mom) ✓ · promise pays off at 9-10 ✓ · re-hook at the radio ✓ · pause clue in the mirror ✓ · the porch-light "come home" signal = every kid's mom ✓ · hard choice, both risky, one with Biscuit ✓.
+
+Plot decisions (all approved by the user):
+ a) Mrs. Hale finally talks and gives a rule: "She learns your voice" and "she can't follow you over water".
+ b) Mrs. Hale has no reflection in the mirror.
+ c) No phone. He knows Mom is home because her car is in the driveway and the porch light blinks three times (their family "come home" signal). Viewers still can't be sure it's really her.

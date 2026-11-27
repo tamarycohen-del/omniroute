@@ -1,0 +1,62 @@
+[
+ {
+  "emotion": "urgent",
+  "text": "Prime LeBron. Prime Jordan. Tied game. One shot left.",
+  "s": 0.0,
+  "e": 3.82
+ },
+ {
+  "emotion": "curious",
+  "text": "Who takes it? Let's find out.",
+  "s": 4.12,
+  "e": 5.96
+ },
+ {
+  "emotion": "calm",
+  "text": "Michael Jordan. Six foot six. Six trips to the Finals. Six championships. He never lost one.",
+  "s": 6.26,
+  "e": 11.52
+ },
+ {
+  "emotion": "urgent",
+  "text": "Ten scoring titles. Thirty point one points a game. The highest average in NBA history.",
+  "s": 11.87,
+  "e": 16.99
+ },
+ {
+  "emotion": "calm",
+  "text": "LeBron James. Six foot nine. Two hundred fifty pounds. Four championships.",
+  "s": 17.34,
+  "e": 22.32
+ },
+ {
+  "emotion": "urgent",
+  "text": "More than forty thousand career points. The all time scoring king.",
+  "s": 22.67,
+  "e": 26.63
+ },
+ {
+  "emotion": "tense",
+  "text": "So we tip it off. First to eleven.",
+  "s": 26.98,
+  "e": 29.06
+ },
+ {
+  "emotion": "urgent",
+  "text": "Jordan scores first. LeBron answers with a dunk! Jordan, fadeaway. LeBron, right back at him.",
+  "s": 29.51,
+  "e": 35.03
+ },
+ {
+  "emotion": "tense",
+  "text": "Ten all. Next bucket wins.",
+  "s": 35.48,
+  "e": 37.48
+ },
+ {
+  "emotion": "tense",
+  "text": "Last shot. Ball in LeBron's hands. He rises up... and shoots.",
+  "s": 37.93,
+  "e": 41.73
+ }
+]

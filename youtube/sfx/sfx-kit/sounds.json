@@ -1,0 +1,6831 @@
+{
+ "source": "https://github.com/wyzowl/sfx-kit (CC0)",
+ "sounds": [
+  {
+   "id": "whoosh-fast-hard",
+   "name": "Whoosh, fast and hard",
+   "category": "whooshes",
+   "file": "sounds/whooshes/whoosh-fast-hard.wav",
+   "variant": {
+    "speed": "fast",
+    "intensity": "hard"
+   },
+   "description": "A fast, crisp whip of air with a bright edge and a little push behind it.",
+   "use_for": [
+    "Whip pans",
+    "Fast cuts between scenes",
+    "Quick zooms",
+    "Energetic social edits"
+   ],
+   "avoid_for": [
+    "Calm or corporate pieces",
+    "Small UI details",
+    "On top of speech: use a softer one"
+   ],
+   "tags": [
+    "whoosh",
+    "swish",
+    "transition",
+    "movement",
+    "air",
+    "natural",
+    "quick",
+    "strong"
+   ],
+   "duration": 0.252,
+   "channels": 2,
+   "sync": {
+    "at": 0.092,
+    "meets": "move-peak",
+    "how": "Ease-in-out: put the sync point at the middle of the move. Ease-out (fast start, slowing to a stop): about a quarter of the way in. Ease-in (slow start, fast exit): about three quarters of the way in."
+   },
+   "timing": {
+    "audible_start": 0.008,
+    "onset": 0.055,
+    "peak": 0.092,
+    "body_end": 0.15,
+    "audible_end": 0.236
+   },
+   "fits_seconds": [
+    0.12,
+    0.44
+   ],
+   "level": {
+    "lufs": -17,
+    "true_peak_dbtp": -3.7,
+    "tier": "hard"
+   },
+   "under_voiceover_db": -4,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "To fit a move up to about 15% shorter or 20% longer, play it faster or slower (its pitch moves with it); beyond that, use the next speed. Adjust level with gain, but for a clearly softer or harder sound use the other intensity rather than a big gain change."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "Something landing: the whoosh on the move (its sync point at the move's fastest point) and the impact on the frame it lands. A whoosh that suits the move's length dies away just before the landing; use one a step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something arriving and appearing: the whoosh during the move, the pop as it lands, at a lower gain than the whoosh."
+    },
+    {
+     "category": "shimmers",
+     "how": "A reveal: the whoosh into the reveal, the shimmer starting at the whoosh's sync point."
+    }
+   ],
+   "character": "balanced, airy",
+   "sha256": "c215bf14e1a09401f07869ed20f38f272681fbfbf176f1eaeba5a039d25006cd"
+  },
+  {
+   "id": "whoosh-fast-medium",
+   "name": "Whoosh, fast and medium",
+   "category": "whooshes",
+   "file": "sounds/whooshes/whoosh-fast-medium.wav",
+   "variant": {
+    "speed": "fast",
+    "intensity": "medium"
+   },
+   "description": "A quick, clean swish of air with a defined middle.",
+   "use_for": [
+    "Cards flicking in or out",
+    "Carousel and tab swipes",
+    "Menus and drawers opening",
+    "Quick text slides"
+   ],
+   "avoid_for": [
+    "Very subtle micro-interactions (use soft)",
+    "Slow, calm moves"
+   ],
+   "tags": [
+    "whoosh",
+    "swish",
+    "transition",
+    "movement",
+    "air",
+    "natural",
+    "quick",
+    "balanced"
+   ],
+   "duration": 0.252,
+   "channels": 2,
+   "sync": {
+    "at": 0.096,
+    "meets": "move-peak",
+    "how": "Ease-in-out: put the sync point at the middle of the move. Ease-out (fast start, slowing to a stop): about a quarter of the way in. Ease-in (slow start, fast exit): about three quarters of the way in."
+   },
+   "timing": {
+    "audible_start": 0.012,
+    "onset": 0.053,
+    "peak": 0.096,
+    "body_end": 0.163,
+    "audible_end": 0.23
+   },
+   "fits_seconds": [
+    0.12,
+    0.44
+   ],
+   "level": {
+    "lufs": -20.5,
+    "true_peak_dbtp": -8.1,
+    "tier": "medium"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "To fit a move up to about 15% shorter or 20% longer, play it faster or slower (its pitch moves with it); beyond that, use the next speed. Adjust level with gain, but for a clearly softer or harder sound use the other intensity rather than a big gain change."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "Something landing: the whoosh on the move (its sync point at the move's fastest point) and the impact on the frame it lands. A whoosh that suits the move's length dies away just before the landing; use one a step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something arriving and appearing: the whoosh during the move, the pop as it lands, at a lower gain than the whoosh."
+    },
+    {
+     "category": "shimmers",
+     "how": "A reveal: the whoosh into the reveal, the shimmer starting at the whoosh's sync point."
+    }
+   ],
+   "character": "balanced, airy",
+   "sha256": "b3cf3c589e738a62c1cc9bd3f620b69c831b64616427fdce57ba073d2a357a0d"
+  },
+  {
+   "id": "whoosh-fast-soft",
+   "name": "Whoosh, fast and soft",
+   "category": "whooshes",
+   "file": "sounds/whooshes/whoosh-fast-soft.wav",
+   "variant": {
+    "speed": "fast",
+    "intensity": "soft"
+   },
+   "description": "A quick, gentle puff of air with a soft edge and no weight.",
+   "use_for": [
+    "Small icons or text sliding in",
+    "A line of text changing",
+    "Tooltips, chips and small UI panels moving",
+    "List items arriving one after another (at a lower gain)"
+   ],
+   "avoid_for": [
+    "Heavy objects",
+    "Big scene changes"
+   ],
+   "tags": [
+    "whoosh",
+    "swish",
+    "transition",
+    "movement",
+    "air",
+    "natural",
+    "quick",
+    "subtle"
+   ],
+   "duration": 0.25,
+   "channels": 2,
+   "sync": {
+    "at": 0.099,
+    "meets": "move-peak",
+    "how": "Ease-in-out: put the sync point at the middle of the move. Ease-out (fast start, slowing to a stop): about a quarter of the way in. Ease-in (slow start, fast exit): about three quarters of the way in."
+   },
+   "timing": {
+    "audible_start": 0.011,
+    "onset": 0.048,
+    "peak": 0.099,
+    "body_end": 0.178,
+    "audible_end": 0.238
+   },
+   "fits_seconds": [
+    0.12,
+    0.44
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -13.5,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "To fit a move up to about 15% shorter or 20% longer, play it faster or slower (its pitch moves with it); beyond that, use the next speed. Adjust level with gain, but for a clearly softer or harder sound use the other intensity rather than a big gain change."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "Something landing: the whoosh on the move (its sync point at the move's fastest point) and the impact on the frame it lands. A whoosh that suits the move's length dies away just before the landing; use one a step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something arriving and appearing: the whoosh during the move, the pop as it lands, at a lower gain than the whoosh."
+    },
+    {
+     "category": "shimmers",
+     "how": "A reveal: the whoosh into the reveal, the shimmer starting at the whoosh's sync point."
+    }
+   ],
+   "character": "warm, airy",
+   "sha256": "ecc83a9cab2342eba9fa71dc321776156ffefbdcda2c672298fda385a4e0a103"
+  },
+  {
+   "id": "whoosh-medium-hard",
+   "name": "Whoosh, medium and hard",
+   "category": "whooshes",
+   "file": "sounds/whooshes/whoosh-medium-hard.wav",
+   "variant": {
+    "speed": "medium",
+    "intensity": "hard"
+   },
+   "description": "A strong rush of air with a bright crack at its peak and weight behind it.",
+   "use_for": [
+    "Big transitions between sections",
+    "Objects flying across the frame",
+    "Bold title moves",
+    "A product spinning into view"
+   ],
+   "avoid_for": [
+    "Calm or understated films",
+    "Small elements",
+    "On top of speech: use a softer one"
+   ],
+   "tags": [
+    "whoosh",
+    "swish",
+    "transition",
+    "movement",
+    "air",
+    "natural",
+    "standard",
+    "strong"
+   ],
+   "duration": 0.55,
+   "channels": 2,
+   "sync": {
+    "at": 0.201,
+    "meets": "move-peak",
+    "how": "Ease-in-out: put the sync point at the middle of the move. Ease-out (fast start, slowing to a stop): about a quarter of the way in. Ease-in (slow start, fast exit): about three quarters of the way in."
+   },
+   "timing": {
+    "audible_start": 0.013,
+    "onset": 0.114,
+    "peak": 0.201,
+    "body_end": 0.323,
+    "audible_end": 0.501
+   },
+   "fits_seconds": [
+    0.28,
+    0.81
+   ],
+   "level": {
+    "lufs": -17,
+    "true_peak_dbtp": -7.4,
+    "tier": "hard"
+   },
+   "under_voiceover_db": -4,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "To fit a move up to about 15% shorter or 20% longer, play it faster or slower (its pitch moves with it); beyond that, use the next speed. Adjust level with gain, but for a clearly softer or harder sound use the other intensity rather than a big gain change."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "Something landing: the whoosh on the move (its sync point at the move's fastest point) and the impact on the frame it lands. A whoosh that suits the move's length dies away just before the landing; use one a step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something arriving and appearing: the whoosh during the move, the pop as it lands, at a lower gain than the whoosh."
+    },
+    {
+     "category": "shimmers",
+     "how": "A reveal: the whoosh into the reveal, the shimmer starting at the whoosh's sync point."
+    }
+   ],
+   "character": "balanced, airy",
+   "sha256": "0f59bd63013b353514af902aefc78b5c973a8e92833934e726b68cd2e84e6b34"
+  },
+  {
+   "id": "whoosh-medium-medium",
+   "name": "Whoosh, medium and medium",
+   "category": "whooshes",
+   "file": "sounds/whooshes/whoosh-medium-medium.wav",
+   "variant": {
+    "speed": "medium",
+    "intensity": "medium"
+   },
+   "description": "A balanced swish of air: a clear rise, a defined peak and a smooth fade.",
+   "use_for": [
+    "Standard scene transitions",
+    "Cards and screens sliding across",
+    "A device moving into frame",
+    "Titles moving into place"
+   ],
+   "avoid_for": [
+    "Tiny UI details",
+    "Very slow moves"
+   ],
+   "tags": [
+    "whoosh",
+    "swish",
+    "transition",
+    "movement",
+    "air",
+    "natural",
+    "standard",
+    "balanced"
+   ],
+   "duration": 0.517,
+   "channels": 2,
+   "sync": {
+    "at": 0.209,
+    "meets": "move-peak",
+    "how": "Ease-in-out: put the sync point at the middle of the move. Ease-out (fast start, slowing to a stop): about a quarter of the way in. Ease-in (slow start, fast exit): about three quarters of the way in."
+   },
+   "timing": {
+    "audible_start": 0.027,
+    "onset": 0.118,
+    "peak": 0.209,
+    "body_end": 0.348,
+    "audible_end": 0.499
+   },
+   "fits_seconds": [
+    0.28,
+    0.81
+   ],
+   "level": {
+    "lufs": -20.5,
+    "true_peak_dbtp": -10.5,
+    "tier": "medium"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "To fit a move up to about 15% shorter or 20% longer, play it faster or slower (its pitch moves with it); beyond that, use the next speed. Adjust level with gain, but for a clearly softer or harder sound use the other intensity rather than a big gain change."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "Something landing: the whoosh on the move (its sync point at the move's fastest point) and the impact on the frame it lands. A whoosh that suits the move's length dies away just before the landing; use one a step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something arriving and appearing: the whoosh during the move, the pop as it lands, at a lower gain than the whoosh."
+    },
+    {
+     "category": "shimmers",
+     "how": "A reveal: the whoosh into the reveal, the shimmer starting at the whoosh's sync point."
+    }
+   ],
+   "character": "warm, airy",
+   "sha256": "f044a68bb41007a7c926b4d09c8755700c4770ac737a62a88f87af896c69a534"
+  },
+  {
+   "id": "whoosh-medium-soft",
+   "name": "Whoosh, medium and soft",
+   "category": "whooshes",
+   "file": "sounds/whooshes/whoosh-medium-soft.wav",
+   "variant": {
+    "speed": "medium",
+    "intensity": "soft"
+   },
+   "description": "A smooth, gentle sweep of air that rises and fades without an edge.",
+   "use_for": [
+    "Panels sliding in",
+    "Gentle card reveals",
+    "Backgrounds shifting",
+    "Calm transitions between explainer scenes"
+   ],
+   "avoid_for": [
+    "Snappy, quick moves",
+    "Energetic edits"
+   ],
+   "tags": [
+    "whoosh",
+    "swish",
+    "transition",
+    "movement",
+    "air",
+    "natural",
+    "standard",
+    "subtle"
+   ],
+   "duration": 0.543,
+   "channels": 2,
+   "sync": {
+    "at": 0.229,
+    "meets": "move-peak",
+    "how": "Ease-in-out: put the sync point at the middle of the move. Ease-out (fast start, slowing to a stop): about a quarter of the way in. Ease-in (slow start, fast exit): about three quarters of the way in."
+   },
+   "timing": {
+    "audible_start": 0.02,
+    "onset": 0.1,
+    "peak": 0.229,
+    "body_end": 0.375,
+    "audible_end": 0.506
+   },
+   "fits_seconds": [
+    0.28,
+    0.81
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -15.2,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "To fit a move up to about 15% shorter or 20% longer, play it faster or slower (its pitch moves with it); beyond that, use the next speed. Adjust level with gain, but for a clearly softer or harder sound use the other intensity rather than a big gain change."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "Something landing: the whoosh on the move (its sync point at the move's fastest point) and the impact on the frame it lands. A whoosh that suits the move's length dies away just before the landing; use one a step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something arriving and appearing: the whoosh during the move, the pop as it lands, at a lower gain than the whoosh."
+    },
+    {
+     "category": "shimmers",
+     "how": "A reveal: the whoosh into the reveal, the shimmer starting at the whoosh's sync point."
+    }
+   ],
+   "character": "dark, airy",
+   "sha256": "a114611a09e02ab26cfbd8d796279eac358b6df4c3923db3f269ac34c340eeac"
+  },
+  {
+   "id": "whoosh-slow-hard",
+   "name": "Whoosh, slow and hard",
+   "category": "whooshes",
+   "file": "sounds/whooshes/whoosh-slow-hard.wav",
+   "variant": {
+    "speed": "slow",
+    "intensity": "hard"
+   },
+   "description": "A big, slow rush of air: a deep swell, a bright peak and a long tail.",
+   "use_for": [
+    "Large, dramatic moves",
+    "A big object passing slowly",
+    "Section openers",
+    "The move before a logo reveal"
+   ],
+   "avoid_for": [
+    "Small elements",
+    "Calm films"
+   ],
+   "tags": [
+    "whoosh",
+    "swish",
+    "transition",
+    "movement",
+    "air",
+    "natural",
+    "slow",
+    "strong"
+   ],
+   "duration": 1.016,
+   "channels": 2,
+   "sync": {
+    "at": 0.403,
+    "meets": "move-peak",
+    "how": "Ease-in-out: put the sync point at the middle of the move. Ease-out (fast start, slowing to a stop): about a quarter of the way in. Ease-in (slow start, fast exit): about three quarters of the way in."
+   },
+   "timing": {
+    "audible_start": 0.024,
+    "onset": 0.263,
+    "peak": 0.403,
+    "body_end": 0.626,
+    "audible_end": 0.973
+   },
+   "fits_seconds": [
+    0.52,
+    1.5
+   ],
+   "level": {
+    "lufs": -17,
+    "true_peak_dbtp": -9,
+    "tier": "hard"
+   },
+   "under_voiceover_db": -4,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "To fit a move up to about 15% shorter or 20% longer, play it faster or slower (its pitch moves with it); beyond that, use the next speed. Adjust level with gain, but for a clearly softer or harder sound use the other intensity rather than a big gain change."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "Something landing: the whoosh on the move (its sync point at the move's fastest point) and the impact on the frame it lands. A whoosh that suits the move's length dies away just before the landing; use one a step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something arriving and appearing: the whoosh during the move, the pop as it lands, at a lower gain than the whoosh."
+    },
+    {
+     "category": "shimmers",
+     "how": "A reveal: the whoosh into the reveal, the shimmer starting at the whoosh's sync point."
+    }
+   ],
+   "character": "warm, airy",
+   "sha256": "0d3cebb7be782173af0f48f5a7222e6aadcab25cfd22133edd043febbb4bb4eb"
+  },
+  {
+   "id": "whoosh-slow-medium",
+   "name": "Whoosh, slow and medium",
+   "category": "whooshes",
+   "file": "sounds/whooshes/whoosh-slow-medium.wav",
+   "variant": {
+    "speed": "slow",
+    "intensity": "medium"
+   },
+   "description": "A slow, full sweep of air with a gentle swell and a long, settled tail.",
+   "use_for": [
+    "Large panels or maps sliding",
+    "Slow pans across a scene",
+    "Deliberate reveals"
+   ],
+   "avoid_for": [
+    "Fast cuts",
+    "Small UI elements"
+   ],
+   "tags": [
+    "whoosh",
+    "swish",
+    "transition",
+    "movement",
+    "air",
+    "natural",
+    "slow",
+    "balanced"
+   ],
+   "duration": 1.002,
+   "channels": 2,
+   "sync": {
+    "at": 0.438,
+    "meets": "move-peak",
+    "how": "Ease-in-out: put the sync point at the middle of the move. Ease-out (fast start, slowing to a stop): about a quarter of the way in. Ease-in (slow start, fast exit): about three quarters of the way in."
+   },
+   "timing": {
+    "audible_start": 0.047,
+    "onset": 0.24,
+    "peak": 0.438,
+    "body_end": 0.688,
+    "audible_end": 0.943
+   },
+   "fits_seconds": [
+    0.52,
+    1.5
+   ],
+   "level": {
+    "lufs": -20.5,
+    "true_peak_dbtp": -10.8,
+    "tier": "medium"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "To fit a move up to about 15% shorter or 20% longer, play it faster or slower (its pitch moves with it); beyond that, use the next speed. Adjust level with gain, but for a clearly softer or harder sound use the other intensity rather than a big gain change."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "Something landing: the whoosh on the move (its sync point at the move's fastest point) and the impact on the frame it lands. A whoosh that suits the move's length dies away just before the landing; use one a step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something arriving and appearing: the whoosh during the move, the pop as it lands, at a lower gain than the whoosh."
+    },
+    {
+     "category": "shimmers",
+     "how": "A reveal: the whoosh into the reveal, the shimmer starting at the whoosh's sync point."
+    }
+   ],
+   "character": "warm, airy",
+   "sha256": "abf3f8250bee145041d0d6786f34a5cbbfe14d4e9526e3395fc5a162a39808a9"
+  },
+  {
+   "id": "whoosh-slow-soft",
+   "name": "Whoosh, slow and soft",
+   "category": "whooshes",
+   "file": "sounds/whooshes/whoosh-slow-soft.wav",
+   "variant": {
+    "speed": "slow",
+    "intensity": "soft"
+   },
+   "description": "A long, soft breath of air drifting past.",
+   "use_for": [
+    "Slow camera drifts",
+    "Large shapes moving gently",
+    "Soft moves between calm scenes"
+   ],
+   "avoid_for": [
+    "Quick moves",
+    "Anything that needs energy"
+   ],
+   "tags": [
+    "whoosh",
+    "swish",
+    "transition",
+    "movement",
+    "air",
+    "natural",
+    "slow",
+    "subtle"
+   ],
+   "duration": 1.049,
+   "channels": 2,
+   "sync": {
+    "at": 0.452,
+    "meets": "move-peak",
+    "how": "Ease-in-out: put the sync point at the middle of the move. Ease-out (fast start, slowing to a stop): about a quarter of the way in. Ease-in (slow start, fast exit): about three quarters of the way in."
+   },
+   "timing": {
+    "audible_start": 0.048,
+    "onset": 0.205,
+    "peak": 0.452,
+    "body_end": 0.753,
+    "audible_end": 0.994
+   },
+   "fits_seconds": [
+    0.52,
+    1.5
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -15.7,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "To fit a move up to about 15% shorter or 20% longer, play it faster or slower (its pitch moves with it); beyond that, use the next speed. Adjust level with gain, but for a clearly softer or harder sound use the other intensity rather than a big gain change."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "Something landing: the whoosh on the move (its sync point at the move's fastest point) and the impact on the frame it lands. A whoosh that suits the move's length dies away just before the landing; use one a step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something arriving and appearing: the whoosh during the move, the pop as it lands, at a lower gain than the whoosh."
+    },
+    {
+     "category": "shimmers",
+     "how": "A reveal: the whoosh into the reveal, the shimmer starting at the whoosh's sync point."
+    }
+   ],
+   "character": "dark, airy",
+   "sha256": "9eadf61f7476f2ca0a6d6acd95a7be26a2ac57ed6c0ea7e76473051a926a2baa"
+  },
+  {
+   "id": "reverse-whoosh-long-soft",
+   "name": "Reverse whoosh, long and soft",
+   "category": "reverse-whooshes",
+   "file": "sounds/reverse-whooshes/reverse-whoosh-long-soft.wav",
+   "variant": {
+    "length": "long",
+    "intensity": "soft"
+   },
+   "description": "A long soft reverse whoosh: air drawn in, building to a sudden stop.",
+   "use_for": [
+    "Something collapsing or shrinking into a point",
+    "The build into a hard cut, a hit or a reveal",
+    "An element pulled back into a button or icon",
+    "A slow pull before a big moment"
+   ],
+   "avoid_for": [
+    "Moments that should land softly (it stops dead)",
+    "Big, energetic moments (use strong)"
+   ],
+   "tags": [
+    "reverse",
+    "whoosh",
+    "suck",
+    "build",
+    "collapse",
+    "air",
+    "long",
+    "soft",
+    "natural"
+   ],
+   "duration": 1.353,
+   "channels": 2,
+   "sync": {
+    "at": 1.192,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the moment of collapse, the cut or the hit: start = that moment \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.148,
+    "onset": 0.607,
+    "peak": 1.192,
+    "body_end": 1.209,
+    "audible_end": 1.332
+   },
+   "span_seconds": 1.044,
+   "fits_seconds": [
+    0.91,
+    1.23
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -17.7,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "For other lengths, pick the nearest one and trim its quiet start rather than changing the rate."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A pull into a hit: the reverse whoosh, its end on the impact's sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big moment: the reverse whoosh into a boom starting on its sync point."
+    },
+    {
+     "category": "pops",
+     "how": "Something sucked into a point and gone: the reverse whoosh with a small pop out at its end, at \u22126 dB."
+    }
+   ],
+   "character": "soft, airy pull to a stop",
+   "sha256": "f619338ddc12bf552a14a443e47bff0b9a374bfef35c631df405c4665b5bc088"
+  },
+  {
+   "id": "reverse-whoosh-long-strong",
+   "name": "Reverse whoosh, long and strong",
+   "category": "reverse-whooshes",
+   "file": "sounds/reverse-whooshes/reverse-whoosh-long-strong.wav",
+   "variant": {
+    "length": "long",
+    "intensity": "strong"
+   },
+   "description": "A long strong, bright reverse whoosh: air drawn in, building to a sudden stop.",
+   "use_for": [
+    "Something collapsing or shrinking into a point",
+    "The build into a hard cut, a hit or a reveal",
+    "An element pulled back into a button or icon",
+    "A slow pull before a big moment"
+   ],
+   "avoid_for": [
+    "Moments that should land softly (it stops dead)",
+    "Calm, understated films"
+   ],
+   "tags": [
+    "reverse",
+    "whoosh",
+    "suck",
+    "build",
+    "collapse",
+    "air",
+    "long",
+    "strong",
+    "natural"
+   ],
+   "duration": 1.358,
+   "channels": 2,
+   "sync": {
+    "at": 1.165,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the moment of collapse, the cut or the hit: start = that moment \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.14,
+    "onset": 0.601,
+    "peak": 1.165,
+    "body_end": 1.209,
+    "audible_end": 1.332
+   },
+   "span_seconds": 1.025,
+   "fits_seconds": [
+    0.89,
+    1.21
+   ],
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -12.8,
+    "tier": "strong"
+   },
+   "under_voiceover_db": -5,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "For other lengths, pick the nearest one and trim its quiet start rather than changing the rate."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A pull into a hit: the reverse whoosh, its end on the impact's sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big moment: the reverse whoosh into a boom starting on its sync point."
+    },
+    {
+     "category": "pops",
+     "how": "Something sucked into a point and gone: the reverse whoosh with a small pop out at its end, at \u22126 dB."
+    }
+   ],
+   "character": "bright, full pull to a stop",
+   "sha256": "72b515a9753c1d13e7d4ebb2f8d841c2bc4c2f5b16152f8d6e469351b5d7b332"
+  },
+  {
+   "id": "reverse-whoosh-medium-soft",
+   "name": "Reverse whoosh, medium and soft",
+   "category": "reverse-whooshes",
+   "file": "sounds/reverse-whooshes/reverse-whoosh-medium-soft.wav",
+   "variant": {
+    "length": "medium",
+    "intensity": "soft"
+   },
+   "description": "A soft reverse whoosh: air drawn in, building to a sudden stop.",
+   "use_for": [
+    "Something collapsing or shrinking into a point",
+    "The build into a hard cut, a hit or a reveal",
+    "An element pulled back into a button or icon",
+    "A quick suck-in transition"
+   ],
+   "avoid_for": [
+    "Moments that should land softly (it stops dead)",
+    "Big, energetic moments (use strong)"
+   ],
+   "tags": [
+    "reverse",
+    "whoosh",
+    "suck",
+    "build",
+    "collapse",
+    "air",
+    "medium",
+    "soft",
+    "natural"
+   ],
+   "duration": 0.861,
+   "channels": 2,
+   "sync": {
+    "at": 0.679,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the moment of collapse, the cut or the hit: start = that moment \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.076,
+    "onset": 0.367,
+    "peak": 0.679,
+    "body_end": 0.706,
+    "audible_end": 0.839
+   },
+   "span_seconds": 0.603,
+   "fits_seconds": [
+    0.52,
+    0.71
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -15.9,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "For other lengths, pick the nearest one and trim its quiet start rather than changing the rate."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A pull into a hit: the reverse whoosh, its end on the impact's sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big moment: the reverse whoosh into a boom starting on its sync point."
+    },
+    {
+     "category": "pops",
+     "how": "Something sucked into a point and gone: the reverse whoosh with a small pop out at its end, at \u22126 dB."
+    }
+   ],
+   "character": "soft, airy pull to a stop",
+   "sha256": "200b74d413d51459fa3274b82616f70dc8ba6dc93430912a18d611e03dd5ae6d"
+  },
+  {
+   "id": "reverse-whoosh-medium-strong",
+   "name": "Reverse whoosh, medium and strong",
+   "category": "reverse-whooshes",
+   "file": "sounds/reverse-whooshes/reverse-whoosh-medium-strong.wav",
+   "variant": {
+    "length": "medium",
+    "intensity": "strong"
+   },
+   "description": "A strong, bright reverse whoosh: air drawn in, building to a sudden stop.",
+   "use_for": [
+    "Something collapsing or shrinking into a point",
+    "The build into a hard cut, a hit or a reveal",
+    "An element pulled back into a button or icon",
+    "A quick suck-in transition"
+   ],
+   "avoid_for": [
+    "Moments that should land softly (it stops dead)",
+    "Calm, understated films"
+   ],
+   "tags": [
+    "reverse",
+    "whoosh",
+    "suck",
+    "build",
+    "collapse",
+    "air",
+    "medium",
+    "strong",
+    "natural"
+   ],
+   "duration": 0.836,
+   "channels": 2,
+   "sync": {
+    "at": 0.682,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the moment of collapse, the cut or the hit: start = that moment \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.089,
+    "onset": 0.369,
+    "peak": 0.682,
+    "body_end": 0.702,
+    "audible_end": 0.813
+   },
+   "span_seconds": 0.593,
+   "fits_seconds": [
+    0.52,
+    0.7
+   ],
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -13.1,
+    "tier": "strong"
+   },
+   "under_voiceover_db": -5,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "For other lengths, pick the nearest one and trim its quiet start rather than changing the rate."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A pull into a hit: the reverse whoosh, its end on the impact's sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big moment: the reverse whoosh into a boom starting on its sync point."
+    },
+    {
+     "category": "pops",
+     "how": "Something sucked into a point and gone: the reverse whoosh with a small pop out at its end, at \u22126 dB."
+    }
+   ],
+   "character": "bright, full pull to a stop",
+   "sha256": "334a35c64b5943029ab7bca0047e9f3a87d54a2fae961512ff24ccea86203d6e"
+  },
+  {
+   "id": "reverse-whoosh-short-soft",
+   "name": "Reverse whoosh, short and soft",
+   "category": "reverse-whooshes",
+   "file": "sounds/reverse-whooshes/reverse-whoosh-short-soft.wav",
+   "variant": {
+    "length": "short",
+    "intensity": "soft"
+   },
+   "description": "A short soft reverse whoosh: air drawn in, building to a sudden stop.",
+   "use_for": [
+    "Something collapsing or shrinking into a point",
+    "The build into a hard cut, a hit or a reveal",
+    "An element pulled back into a button or icon",
+    "A quick suck-in transition"
+   ],
+   "avoid_for": [
+    "Moments that should land softly (it stops dead)",
+    "Big, energetic moments (use strong)"
+   ],
+   "tags": [
+    "reverse",
+    "whoosh",
+    "suck",
+    "build",
+    "collapse",
+    "air",
+    "short",
+    "soft",
+    "natural"
+   ],
+   "duration": 0.509,
+   "channels": 2,
+   "sync": {
+    "at": 0.336,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the moment of collapse, the cut or the hit: start = that moment \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.048,
+    "onset": 0.183,
+    "peak": 0.336,
+    "body_end": 0.355,
+    "audible_end": 0.486
+   },
+   "span_seconds": 0.288,
+   "fits_seconds": [
+    0.25,
+    0.34
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -14,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "For other lengths, pick the nearest one and trim its quiet start rather than changing the rate."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A pull into a hit: the reverse whoosh, its end on the impact's sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big moment: the reverse whoosh into a boom starting on its sync point."
+    },
+    {
+     "category": "pops",
+     "how": "Something sucked into a point and gone: the reverse whoosh with a small pop out at its end, at \u22126 dB."
+    }
+   ],
+   "character": "soft, airy pull to a stop",
+   "sha256": "2fc7f9064b174d7d3be16797536f4bda51e4b3f497fe4558db190da2c555cb1d"
+  },
+  {
+   "id": "reverse-whoosh-short-strong",
+   "name": "Reverse whoosh, short and strong",
+   "category": "reverse-whooshes",
+   "file": "sounds/reverse-whooshes/reverse-whoosh-short-strong.wav",
+   "variant": {
+    "length": "short",
+    "intensity": "strong"
+   },
+   "description": "A short strong, bright reverse whoosh: air drawn in, building to a sudden stop.",
+   "use_for": [
+    "Something collapsing or shrinking into a point",
+    "The build into a hard cut, a hit or a reveal",
+    "An element pulled back into a button or icon",
+    "A quick suck-in transition"
+   ],
+   "avoid_for": [
+    "Moments that should land softly (it stops dead)",
+    "Calm, understated films"
+   ],
+   "tags": [
+    "reverse",
+    "whoosh",
+    "suck",
+    "build",
+    "collapse",
+    "air",
+    "short",
+    "strong",
+    "natural"
+   ],
+   "duration": 0.499,
+   "channels": 2,
+   "sync": {
+    "at": 0.34,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the moment of collapse, the cut or the hit: start = that moment \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.036,
+    "onset": 0.175,
+    "peak": 0.34,
+    "body_end": 0.355,
+    "audible_end": 0.473
+   },
+   "span_seconds": 0.304,
+   "fits_seconds": [
+    0.26,
+    0.36
+   ],
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -10.8,
+    "tier": "strong"
+   },
+   "under_voiceover_db": -5,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "For other lengths, pick the nearest one and trim its quiet start rather than changing the rate."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A pull into a hit: the reverse whoosh, its end on the impact's sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big moment: the reverse whoosh into a boom starting on its sync point."
+    },
+    {
+     "category": "pops",
+     "how": "Something sucked into a point and gone: the reverse whoosh with a small pop out at its end, at \u22126 dB."
+    }
+   ],
+   "character": "bright, full pull to a stop",
+   "sha256": "975b6bd10bfa463165804760eb25e635096d7d46ef8ab1869afd33d5286974ad"
+  },
+  {
+   "id": "faller-1s-soft",
+   "name": "Faller, 1 s, soft",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/faller-1s-soft.wav",
+   "variant": {
+    "direction": "fall",
+    "length": "1s",
+    "intensity": "soft"
+   },
+   "description": "A 1-second soft, airy fall from its peak, descending and settling.",
+   "use_for": [
+    "Something leaving, dropping or powering down",
+    "The release after a reveal",
+    "Transitions out of a section"
+   ],
+   "avoid_for": [
+    "Arrivals (use a rise or an impact)",
+    "Big, energetic moments (use strong)"
+   ],
+   "tags": [
+    "faller",
+    "drop",
+    "swell",
+    "1s",
+    "soft",
+    "air",
+    "natural"
+   ],
+   "duration": 0.862,
+   "channels": 2,
+   "sync": {
+    "at": 0.01,
+    "meets": "release",
+    "how": "Put the sync point (at its very start) on the moment of release."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.386,
+    "audible_end": 0.819
+   },
+   "span_seconds": 0.809,
+   "fits_seconds": [
+    0.74,
+    0.9
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -15.1,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something flying off and away: a whoosh with the fall starting at the whoosh's sync point."
+    }
+   ],
+   "character": "soft, airy fall",
+   "sha256": "137045628ec4b9c5f06ab48c074328555edd09a7a4711e278d83fddfad1b17b8"
+  },
+  {
+   "id": "faller-1s-strong",
+   "name": "Faller, 1 s, strong",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/faller-1s-strong.wav",
+   "variant": {
+    "direction": "fall",
+    "length": "1s",
+    "intensity": "strong"
+   },
+   "description": "A 1-second strong, bright fall from its peak, descending and settling.",
+   "use_for": [
+    "Something leaving, dropping or powering down",
+    "The release after a reveal",
+    "Transitions out of a section"
+   ],
+   "avoid_for": [
+    "Arrivals (use a rise or an impact)",
+    "Calm, understated films"
+   ],
+   "tags": [
+    "faller",
+    "drop",
+    "swell",
+    "1s",
+    "strong",
+    "air",
+    "natural"
+   ],
+   "duration": 0.88,
+   "channels": 2,
+   "sync": {
+    "at": 0.015,
+    "meets": "release",
+    "how": "Put the sync point (at its very start) on the moment of release."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.015,
+    "body_end": 0.393,
+    "audible_end": 0.828
+   },
+   "span_seconds": 0.813,
+   "fits_seconds": [
+    0.74,
+    0.9
+   ],
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -12.4,
+    "tier": "strong"
+   },
+   "under_voiceover_db": -5,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something flying off and away: a whoosh with the fall starting at the whoosh's sync point."
+    }
+   ],
+   "character": "bright, full fall",
+   "sha256": "6c65505178a0c63805907004bbcea8411433a72f3e5d2a79ad2b0250a3ad9825"
+  },
+  {
+   "id": "faller-2s-soft",
+   "name": "Faller, 2 s, soft",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/faller-2s-soft.wav",
+   "variant": {
+    "direction": "fall",
+    "length": "2s",
+    "intensity": "soft"
+   },
+   "description": "A 2-second soft, airy fall from its peak, descending and settling.",
+   "use_for": [
+    "Something leaving, dropping or powering down",
+    "The release after a reveal",
+    "Transitions out of a section"
+   ],
+   "avoid_for": [
+    "Arrivals (use a rise or an impact)",
+    "Big, energetic moments (use strong)"
+   ],
+   "tags": [
+    "faller",
+    "drop",
+    "swell",
+    "2s",
+    "soft",
+    "air",
+    "natural"
+   ],
+   "duration": 1.831,
+   "channels": 2,
+   "sync": {
+    "at": 0.011,
+    "meets": "release",
+    "how": "Put the sync point (at its very start) on the moment of release."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.011,
+    "body_end": 0.684,
+    "audible_end": 1.765
+   },
+   "span_seconds": 1.754,
+   "fits_seconds": [
+    1.59,
+    1.95
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -17.1,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something flying off and away: a whoosh with the fall starting at the whoosh's sync point."
+    }
+   ],
+   "character": "soft, airy fall",
+   "sha256": "8481bca1d437647b2e48998195e23e4fdeb98e5d8de76096420d1b2a9882ecb3"
+  },
+  {
+   "id": "faller-2s-strong",
+   "name": "Faller, 2 s, strong",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/faller-2s-strong.wav",
+   "variant": {
+    "direction": "fall",
+    "length": "2s",
+    "intensity": "strong"
+   },
+   "description": "A 2-second strong, bright fall from its peak, descending and settling.",
+   "use_for": [
+    "Something leaving, dropping or powering down",
+    "The release after a reveal",
+    "Transitions out of a section"
+   ],
+   "avoid_for": [
+    "Arrivals (use a rise or an impact)",
+    "Calm, understated films"
+   ],
+   "tags": [
+    "faller",
+    "drop",
+    "swell",
+    "2s",
+    "strong",
+    "air",
+    "natural"
+   ],
+   "duration": 1.882,
+   "channels": 2,
+   "sync": {
+    "at": 0.034,
+    "meets": "release",
+    "how": "Put the sync point (at its very start) on the moment of release."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.034,
+    "body_end": 0.85,
+    "audible_end": 1.788
+   },
+   "span_seconds": 1.754,
+   "fits_seconds": [
+    1.59,
+    1.95
+   ],
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -11.7,
+    "tier": "strong"
+   },
+   "under_voiceover_db": -5,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something flying off and away: a whoosh with the fall starting at the whoosh's sync point."
+    }
+   ],
+   "character": "bright, full fall",
+   "sha256": "c9287f9d15e56da733311ad6ade01905b2eb49bd4cd611ed018db11a51ba88ff"
+  },
+  {
+   "id": "faller-4s-soft",
+   "name": "Faller, 4 s, soft",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/faller-4s-soft.wav",
+   "variant": {
+    "direction": "fall",
+    "length": "4s",
+    "intensity": "soft"
+   },
+   "description": "A 4-second soft, airy fall from its peak, descending and settling.",
+   "use_for": [
+    "Something leaving, dropping or powering down",
+    "The release after a reveal",
+    "Transitions out of a section"
+   ],
+   "avoid_for": [
+    "Arrivals (use a rise or an impact)",
+    "Big, energetic moments (use strong)"
+   ],
+   "tags": [
+    "faller",
+    "drop",
+    "swell",
+    "4s",
+    "soft",
+    "air",
+    "natural"
+   ],
+   "duration": 3.859,
+   "channels": 2,
+   "sync": {
+    "at": 0.07,
+    "meets": "release",
+    "how": "Put the sync point (at its very start) on the moment of release."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.07,
+    "body_end": 1.588,
+    "audible_end": 3.565
+   },
+   "span_seconds": 3.495,
+   "fits_seconds": [
+    3.18,
+    3.88
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -17.8,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something flying off and away: a whoosh with the fall starting at the whoosh's sync point."
+    }
+   ],
+   "character": "soft, airy fall",
+   "sha256": "de25b8511170cb9b34bcbfb1a9ab6855954b2281e419c00e1f0b4c3604fc977d"
+  },
+  {
+   "id": "faller-4s-strong",
+   "name": "Faller, 4 s, strong",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/faller-4s-strong.wav",
+   "variant": {
+    "direction": "fall",
+    "length": "4s",
+    "intensity": "strong"
+   },
+   "description": "A 4-second strong, bright fall from its peak, descending and settling.",
+   "use_for": [
+    "Something leaving, dropping or powering down",
+    "The release after a reveal",
+    "Transitions out of a section"
+   ],
+   "avoid_for": [
+    "Arrivals (use a rise or an impact)",
+    "Calm, understated films"
+   ],
+   "tags": [
+    "faller",
+    "drop",
+    "swell",
+    "4s",
+    "strong",
+    "air",
+    "natural"
+   ],
+   "duration": 3.87,
+   "channels": 2,
+   "sync": {
+    "at": 0.01,
+    "meets": "release",
+    "how": "Put the sync point (at its very start) on the moment of release."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 1.487,
+    "audible_end": 3.655
+   },
+   "span_seconds": 3.645,
+   "fits_seconds": [
+    3.31,
+    4.05
+   ],
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -13.7,
+    "tier": "strong"
+   },
+   "under_voiceover_db": -5,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something flying off and away: a whoosh with the fall starting at the whoosh's sync point."
+    }
+   ],
+   "character": "bright, full fall",
+   "sha256": "a6692671598ffd5f4fed0f2a53e7a7407f7d10bc51f26639b91a0f31087a5556"
+  },
+  {
+   "id": "riser-1s-soft",
+   "name": "Riser, 1 s, soft",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/riser-1s-soft.wav",
+   "variant": {
+    "direction": "rise",
+    "length": "1s",
+    "intensity": "soft"
+   },
+   "description": "A 1-second soft, airy rise that builds to its peak at the end.",
+   "use_for": [
+    "Building up to a reveal: a logo, a product, a big number",
+    "Leading into a new section",
+    "A short lift before something appears"
+   ],
+   "avoid_for": [
+    "Reveals that land before the rise ends: the peak is at its end",
+    "Big, energetic moments (use strong)"
+   ],
+   "tags": [
+    "riser",
+    "build",
+    "swell",
+    "1s",
+    "soft",
+    "air",
+    "natural"
+   ],
+   "duration": 1.19,
+   "channels": 2,
+   "sync": {
+    "at": 0.982,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the reveal: start = reveal \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.08,
+    "onset": 0.485,
+    "peak": 0.982,
+    "body_end": 1.083,
+    "audible_end": 1.167
+   },
+   "span_seconds": 0.902,
+   "fits_seconds": [
+    0.82,
+    1
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -18.1,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A reveal with weight: the rise into an impact on the reveal frame."
+    },
+    {
+     "category": "shimmers",
+     "how": "A bright reveal: the rise into a shimmer starting at its sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big reveal: the rise into a boom on the reveal frame."
+    }
+   ],
+   "character": "soft, airy rise",
+   "sha256": "fca1d503b69d4ac32cd7f307cf497fa36c2db8589b878b075c8d372ac3f4fe61"
+  },
+  {
+   "id": "riser-1s-strong",
+   "name": "Riser, 1 s, strong",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/riser-1s-strong.wav",
+   "variant": {
+    "direction": "rise",
+    "length": "1s",
+    "intensity": "strong"
+   },
+   "description": "A 1-second strong, bright rise that builds to its peak at the end.",
+   "use_for": [
+    "Building up to a reveal: a logo, a product, a big number",
+    "Leading into a new section",
+    "A short lift before something appears"
+   ],
+   "avoid_for": [
+    "Reveals that land before the rise ends: the peak is at its end",
+    "Calm, understated films"
+   ],
+   "tags": [
+    "riser",
+    "build",
+    "swell",
+    "1s",
+    "strong",
+    "air",
+    "natural"
+   ],
+   "duration": 1.216,
+   "channels": 2,
+   "sync": {
+    "at": 0.984,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the reveal: start = reveal \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.096,
+    "onset": 0.462,
+    "peak": 0.984,
+    "body_end": 1.084,
+    "audible_end": 1.183
+   },
+   "span_seconds": 0.888,
+   "fits_seconds": [
+    0.81,
+    0.99
+   ],
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -13,
+    "tier": "strong"
+   },
+   "under_voiceover_db": -5,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A reveal with weight: the rise into an impact on the reveal frame."
+    },
+    {
+     "category": "shimmers",
+     "how": "A bright reveal: the rise into a shimmer starting at its sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big reveal: the rise into a boom on the reveal frame."
+    }
+   ],
+   "character": "bright, full rise",
+   "sha256": "fc8bcec731b4f0bc0bfa7f7d82c96efdaf3d1f807dbd02bb2b87ef27a8adebc3"
+  },
+  {
+   "id": "riser-2s-soft",
+   "name": "Riser, 2 s, soft",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/riser-2s-soft.wav",
+   "variant": {
+    "direction": "rise",
+    "length": "2s",
+    "intensity": "soft"
+   },
+   "description": "A 2-second soft, airy rise that builds to its peak at the end.",
+   "use_for": [
+    "Building up to a reveal: a logo, a product, a big number",
+    "Leading into a new section",
+    "A short lift before something appears"
+   ],
+   "avoid_for": [
+    "Reveals that land before the rise ends: the peak is at its end",
+    "Big, energetic moments (use strong)"
+   ],
+   "tags": [
+    "riser",
+    "build",
+    "swell",
+    "2s",
+    "soft",
+    "air",
+    "natural"
+   ],
+   "duration": 2.189,
+   "channels": 2,
+   "sync": {
+    "at": 1.994,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the reveal: start = reveal \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.144,
+    "onset": 0.922,
+    "peak": 1.994,
+    "body_end": 2.082,
+    "audible_end": 2.165
+   },
+   "span_seconds": 1.85,
+   "fits_seconds": [
+    1.68,
+    2.06
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -17.4,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A reveal with weight: the rise into an impact on the reveal frame."
+    },
+    {
+     "category": "shimmers",
+     "how": "A bright reveal: the rise into a shimmer starting at its sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big reveal: the rise into a boom on the reveal frame."
+    }
+   ],
+   "character": "soft, airy rise",
+   "sha256": "ffe1d0975ce052a9eb3247e2b0bb492413d6e04cbb81f749cf3b074e2a5f4467"
+  },
+  {
+   "id": "riser-2s-strong",
+   "name": "Riser, 2 s, strong",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/riser-2s-strong.wav",
+   "variant": {
+    "direction": "rise",
+    "length": "2s",
+    "intensity": "strong"
+   },
+   "description": "A 2-second strong, bright rise that builds to its peak at the end.",
+   "use_for": [
+    "Building up to a reveal: a logo, a product, a big number",
+    "Leading into a new section",
+    "A short lift before something appears"
+   ],
+   "avoid_for": [
+    "Reveals that land before the rise ends: the peak is at its end",
+    "Calm, understated films"
+   ],
+   "tags": [
+    "riser",
+    "build",
+    "swell",
+    "2s",
+    "strong",
+    "air",
+    "natural"
+   ],
+   "duration": 2.195,
+   "channels": 2,
+   "sync": {
+    "at": 1.978,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the reveal: start = reveal \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.166,
+    "onset": 0.895,
+    "peak": 1.978,
+    "body_end": 2.085,
+    "audible_end": 2.169
+   },
+   "span_seconds": 1.812,
+   "fits_seconds": [
+    1.65,
+    2.01
+   ],
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -13.4,
+    "tier": "strong"
+   },
+   "under_voiceover_db": -5,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A reveal with weight: the rise into an impact on the reveal frame."
+    },
+    {
+     "category": "shimmers",
+     "how": "A bright reveal: the rise into a shimmer starting at its sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big reveal: the rise into a boom on the reveal frame."
+    }
+   ],
+   "character": "bright, full rise",
+   "sha256": "26263a64a7b141a14f8bc6ab96db9c22926265b429a799d5f77db33c1a85d43f"
+  },
+  {
+   "id": "riser-4s-soft",
+   "name": "Riser, 4 s, soft",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/riser-4s-soft.wav",
+   "variant": {
+    "direction": "rise",
+    "length": "4s",
+    "intensity": "soft"
+   },
+   "description": "A 4-second soft, airy rise that builds to its peak at the end.",
+   "use_for": [
+    "Building up to a reveal: a logo, a product, a big number",
+    "Leading into a new section",
+    "A long build under a title sequence"
+   ],
+   "avoid_for": [
+    "Reveals that land before the rise ends: the peak is at its end",
+    "Big, energetic moments (use strong)"
+   ],
+   "tags": [
+    "riser",
+    "build",
+    "swell",
+    "4s",
+    "soft",
+    "air",
+    "natural"
+   ],
+   "duration": 4.184,
+   "channels": 2,
+   "sync": {
+    "at": 3.945,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the reveal: start = reveal \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.312,
+    "onset": 1.874,
+    "peak": 3.945,
+    "body_end": 4.077,
+    "audible_end": 4.158
+   },
+   "span_seconds": 3.633,
+   "fits_seconds": [
+    3.3,
+    4.04
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -18.3,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A reveal with weight: the rise into an impact on the reveal frame."
+    },
+    {
+     "category": "shimmers",
+     "how": "A bright reveal: the rise into a shimmer starting at its sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big reveal: the rise into a boom on the reveal frame."
+    }
+   ],
+   "character": "soft, airy rise",
+   "sha256": "05222fe093f2c9dcaf6c58dd456d2c6d48949a2c204e69a480fc24aa1886193f"
+  },
+  {
+   "id": "riser-4s-strong",
+   "name": "Riser, 4 s, strong",
+   "category": "risers-and-fallers",
+   "file": "sounds/risers-and-fallers/riser-4s-strong.wav",
+   "variant": {
+    "direction": "rise",
+    "length": "4s",
+    "intensity": "strong"
+   },
+   "description": "A 4-second strong, bright rise that builds to its peak at the end.",
+   "use_for": [
+    "Building up to a reveal: a logo, a product, a big number",
+    "Leading into a new section",
+    "A long build under a title sequence"
+   ],
+   "avoid_for": [
+    "Reveals that land before the rise ends: the peak is at its end",
+    "Calm, understated films"
+   ],
+   "tags": [
+    "riser",
+    "build",
+    "swell",
+    "4s",
+    "strong",
+    "air",
+    "natural"
+   ],
+   "duration": 4.191,
+   "channels": 2,
+   "sync": {
+    "at": 3.977,
+    "meets": "arrival",
+    "how": "Place it so its end (the sync point) lands on the reveal: start = reveal \u2212 sync.at."
+   },
+   "timing": {
+    "audible_start": 0.376,
+    "onset": 1.824,
+    "peak": 3.977,
+    "body_end": 4.073,
+    "audible_end": 4.166
+   },
+   "span_seconds": 3.601,
+   "fits_seconds": [
+    3.27,
+    4
+   ],
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -13.3,
+    "tier": "strong"
+   },
+   "under_voiceover_db": -5,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "For other lengths, change the rate a little (its pitch moves with it), or take the next longer one and trim its quiet start (risers) or its quiet end (fallers)."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A reveal with weight: the rise into an impact on the reveal frame."
+    },
+    {
+     "category": "shimmers",
+     "how": "A bright reveal: the rise into a shimmer starting at its sync point."
+    },
+    {
+     "category": "booms-and-bass",
+     "how": "A big reveal: the rise into a boom on the reveal frame."
+    }
+   ],
+   "character": "bright, full rise",
+   "sha256": "1b67475467df1818b0c175d1581db90e74951cf615c514269cdf29a527a5a63d"
+  },
+  {
+   "id": "impact-deep-firm",
+   "name": "Impact, deep, on a firm surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-deep-firm.wav",
+   "variant": {
+    "weight": "deep",
+    "surface": "firm"
+   },
+   "description": "A deep, booming knock: a big object landing on a wooden stage.",
+   "use_for": [
+    "Big, weighty landings with real bass",
+    "A title or object slamming down",
+    "Moments that need to be felt",
+    "Natural, everyday landings"
+   ],
+   "avoid_for": [
+    "On top of speech: the bass masks it",
+    "Small elements"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "knock",
+    "deep",
+    "bass",
+    "sub",
+    "cinematic",
+    "natural"
+   ],
+   "duration": 1.145,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.346,
+    "audible_end": 0.894
+   },
+   "level": {
+    "lufs": -19,
+    "true_peak_dbtp": -7.8,
+    "tier": "deep"
+   },
+   "under_voiceover_db": -7,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "deep, woody",
+   "sha256": "43ebc44857bab1899524e37eb3b5ed7cf2c564a4a1343c1114ca58185a64446e"
+  },
+  {
+   "id": "impact-deep-hard",
+   "name": "Impact, deep, on a hard surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-deep-hard.wav",
+   "variant": {
+    "weight": "deep",
+    "surface": "hard"
+   },
+   "description": "A deep, hard hit: a crisp crack over a heavy, rumbling low end.",
+   "use_for": [
+    "Big, weighty landings with real bass",
+    "A title or object slamming down",
+    "Moments that need to be felt",
+    "Crisp, confident landings"
+   ],
+   "avoid_for": [
+    "On top of speech: the bass masks it",
+    "Small elements",
+    "Calm, softly spoken films"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "crisp",
+    "deep",
+    "bass",
+    "sub",
+    "cinematic",
+    "natural"
+   ],
+   "duration": 1.205,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.299,
+    "audible_end": 0.846
+   },
+   "level": {
+    "lufs": -19,
+    "true_peak_dbtp": -3.3,
+    "tier": "deep"
+   },
+   "under_voiceover_db": -7,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "deep, solid",
+   "sha256": "dea74b82239476a68de92aea35c5609cbb23eaf40434fff315c294daf99036af"
+  },
+  {
+   "id": "impact-deep-soft",
+   "name": "Impact, deep, on a soft surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-deep-soft.wav",
+   "variant": {
+    "weight": "deep",
+    "surface": "soft"
+   },
+   "description": "A deep, bass-heavy thud: something big landing on something soft.",
+   "use_for": [
+    "Big, weighty landings with real bass",
+    "A title or object slamming down",
+    "Moments that need to be felt",
+    "Gentle, friendly landings"
+   ],
+   "avoid_for": [
+    "On top of speech: the bass masks it",
+    "Small elements",
+    "Moments that need a crisp edge"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "thud",
+    "deep",
+    "bass",
+    "sub",
+    "cinematic",
+    "natural"
+   ],
+   "duration": 1.276,
+   "channels": 1,
+   "sync": {
+    "at": 0.045,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.045,
+    "body_end": 0.418,
+    "audible_end": 0.976
+   },
+   "level": {
+    "lufs": -19,
+    "true_peak_dbtp": -10.3,
+    "tier": "deep"
+   },
+   "under_voiceover_db": -7,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "deep, muffled",
+   "sha256": "5cde20390327d485f3b6c7ce42c295cffa61880d72e3f1238449fb5c32d330e7"
+  },
+  {
+   "id": "impact-heavy-firm",
+   "name": "Impact, heavy, on a firm surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-heavy-firm.wav",
+   "variant": {
+    "weight": "heavy",
+    "surface": "firm"
+   },
+   "description": "A deep, weighty knock: a heavy object landing on a wooden floor.",
+   "use_for": [
+    "Big elements landing",
+    "A product or device set down with weight",
+    "Section openers and emphatic beats",
+    "Natural, everyday landings"
+   ],
+   "avoid_for": [
+    "Small elements"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "knock",
+    "heavy",
+    "natural"
+   ],
+   "duration": 0.3,
+   "channels": 1,
+   "sync": {
+    "at": 0.011,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.011,
+    "body_end": 0.109,
+    "audible_end": 0.239
+   },
+   "level": {
+    "lufs": -19,
+    "true_peak_dbtp": -7,
+    "tier": "heavy"
+   },
+   "under_voiceover_db": -4,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "deep, woody",
+   "sha256": "c819342771d35a29d67e525daaee4029f78c4fc39271f3fa6018db6b4547e563"
+  },
+  {
+   "id": "impact-heavy-hard",
+   "name": "Impact, heavy, on a hard surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-heavy-hard.wav",
+   "variant": {
+    "weight": "heavy",
+    "surface": "hard"
+   },
+   "description": "A big, solid hit: crisp on top and deep underneath.",
+   "use_for": [
+    "Big elements landing",
+    "A product or device set down with weight",
+    "Section openers and emphatic beats",
+    "Crisp, confident landings"
+   ],
+   "avoid_for": [
+    "Small elements",
+    "Calm, softly spoken films"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "crisp",
+    "heavy",
+    "natural"
+   ],
+   "duration": 0.3,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.096,
+    "audible_end": 0.23
+   },
+   "level": {
+    "lufs": -19,
+    "true_peak_dbtp": -4,
+    "tier": "heavy"
+   },
+   "under_voiceover_db": -4,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "deep, solid",
+   "sha256": "94fd8e05f4f2dc85ce474925800474a1882bd7eeef29ffa09805a0d13ebdc61d"
+  },
+  {
+   "id": "impact-heavy-soft",
+   "name": "Impact, heavy, on a soft surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-heavy-soft.wav",
+   "variant": {
+    "weight": "heavy",
+    "surface": "soft"
+   },
+   "description": "A heavy, muffled thump: weight landing on something soft.",
+   "use_for": [
+    "Big elements landing",
+    "A product or device set down with weight",
+    "Section openers and emphatic beats",
+    "Gentle, friendly landings"
+   ],
+   "avoid_for": [
+    "Small elements",
+    "Moments that need a crisp edge"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "thud",
+    "heavy",
+    "natural"
+   ],
+   "duration": 0.32,
+   "channels": 1,
+   "sync": {
+    "at": 0.018,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.018,
+    "body_end": 0.117,
+    "audible_end": 0.252
+   },
+   "level": {
+    "lufs": -19,
+    "true_peak_dbtp": -8.1,
+    "tier": "heavy"
+   },
+   "under_voiceover_db": -4,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "deep, muffled",
+   "sha256": "7e2d91a2ebccc3be2d82f5293ec442c8490548e0823c22f73eddaa43f74b8076"
+  },
+  {
+   "id": "impact-light-firm",
+   "name": "Impact, light, on a firm surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-light-firm.wav",
+   "variant": {
+    "weight": "light",
+    "surface": "firm"
+   },
+   "description": "A light wooden tap: a small object set down on a table.",
+   "use_for": [
+    "Small elements landing or snapping into place",
+    "Icons dropping into a grid",
+    "Labels and tags settling",
+    "Natural, everyday landings"
+   ],
+   "avoid_for": [
+    "Big, heavy moves"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "knock",
+    "light",
+    "natural"
+   ],
+   "duration": 0.099,
+   "channels": 1,
+   "sync": {
+    "at": 0.011,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.011,
+    "body_end": 0.052,
+    "audible_end": 0.077
+   },
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -11,
+    "tier": "light"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "deep, woody",
+   "sha256": "751a1ec3b67f4f11a90e410d0ada78c0f0e64859fb06352994181abe737725c5"
+  },
+  {
+   "id": "impact-light-hard",
+   "name": "Impact, light, on a hard surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-light-hard.wav",
+   "variant": {
+    "weight": "light",
+    "surface": "hard"
+   },
+   "description": "A light, crisp tick: a small, hard object landing on stone.",
+   "use_for": [
+    "Small elements landing or snapping into place",
+    "Icons dropping into a grid",
+    "Labels and tags settling",
+    "Crisp, confident landings"
+   ],
+   "avoid_for": [
+    "Big, heavy moves",
+    "Calm, softly spoken films"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "crisp",
+    "light",
+    "natural"
+   ],
+   "duration": 0.087,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.026,
+    "audible_end": 0.066
+   },
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -7.2,
+    "tier": "light"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "warm, solid",
+   "sha256": "0ba62ffedc7c411e3e1ddca74c2fb732861af545516c5c694fcaee465d1bbd34"
+  },
+  {
+   "id": "impact-light-soft",
+   "name": "Impact, light, on a soft surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-light-soft.wav",
+   "variant": {
+    "weight": "light",
+    "surface": "soft"
+   },
+   "description": "A light, muffled landing: something small dropping onto a cushion.",
+   "use_for": [
+    "Small elements landing or snapping into place",
+    "Icons dropping into a grid",
+    "Labels and tags settling",
+    "Gentle, friendly landings"
+   ],
+   "avoid_for": [
+    "Big, heavy moves",
+    "Moments that need a crisp edge"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "thud",
+    "light",
+    "natural"
+   ],
+   "duration": 0.166,
+   "channels": 1,
+   "sync": {
+    "at": 0.012,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.012,
+    "body_end": 0.08,
+    "audible_end": 0.144
+   },
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -11.3,
+    "tier": "light"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "deep, muffled",
+   "sha256": "45d0e503454aec241115f05482115d412d15d6d74d6c658a0193a78611382a94"
+  },
+  {
+   "id": "impact-medium-firm",
+   "name": "Impact, medium, on a firm surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-medium-firm.wav",
+   "variant": {
+    "weight": "medium",
+    "surface": "firm"
+   },
+   "description": "A solid knock: a medium-sized object landing on wood.",
+   "use_for": [
+    "Cards and panels landing",
+    "Objects dropping into frame",
+    "A title setting into place",
+    "Natural, everyday landings"
+   ],
+   "avoid_for": [
+    "Tiny details"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "knock",
+    "medium",
+    "natural"
+   ],
+   "duration": 0.175,
+   "channels": 1,
+   "sync": {
+    "at": 0.012,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.012,
+    "body_end": 0.082,
+    "audible_end": 0.141
+   },
+   "level": {
+    "lufs": -22,
+    "true_peak_dbtp": -8.7,
+    "tier": "medium"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "deep, woody",
+   "sha256": "23666447a7ece5c661abe9fa2fdcd70d08a937612d88e7916cafddc5800ebeee"
+  },
+  {
+   "id": "impact-medium-hard",
+   "name": "Impact, medium, on a hard surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-medium-hard.wav",
+   "variant": {
+    "weight": "medium",
+    "surface": "hard"
+   },
+   "description": "A crisp, solid hit with a short, bright edge.",
+   "use_for": [
+    "Cards and panels landing",
+    "Objects dropping into frame",
+    "A title setting into place",
+    "Crisp, confident landings"
+   ],
+   "avoid_for": [
+    "Tiny details",
+    "Calm, softly spoken films"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "crisp",
+    "medium",
+    "natural"
+   ],
+   "duration": 0.162,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.066,
+    "audible_end": 0.126
+   },
+   "level": {
+    "lufs": -22,
+    "true_peak_dbtp": -4.2,
+    "tier": "medium"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "warm, solid",
+   "sha256": "2d4d40bae6b436f563b182d55f8bf1b15729e581731d841269b9436ab013a4a4"
+  },
+  {
+   "id": "impact-medium-soft",
+   "name": "Impact, medium, on a soft surface",
+   "category": "impacts",
+   "file": "sounds/impacts/impact-medium-soft.wav",
+   "variant": {
+    "weight": "medium",
+    "surface": "soft"
+   },
+   "description": "A soft, padded thud: something landing on fabric.",
+   "use_for": [
+    "Cards and panels landing",
+    "Objects dropping into frame",
+    "A title setting into place",
+    "Gentle, friendly landings"
+   ],
+   "avoid_for": [
+    "Tiny details",
+    "Moments that need a crisp edge"
+   ],
+   "tags": [
+    "impact",
+    "hit",
+    "land",
+    "drop",
+    "thud",
+    "medium",
+    "natural"
+   ],
+   "duration": 0.21,
+   "channels": 1,
+   "sync": {
+    "at": 0.013,
+    "meets": "instant",
+    "how": "Put the sync point (the moment of contact) exactly where the thing lands: usually the last frame of its move, or the first frame it's at rest."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.013,
+    "body_end": 0.091,
+    "audible_end": 0.171
+   },
+   "level": {
+    "lufs": -22,
+    "true_peak_dbtp": -8.2,
+    "tier": "medium"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.92,
+     1.1
+    ],
+    "notes": "Small rate changes only: faster sounds lighter and slower heavier, so for a different weight use the next weight instead."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "A move into a landing: the whoosh on the move (its sync point at the move's fastest point), the impact on the frame it lands. Use a whoosh one step softer than the impact."
+    },
+    {
+     "category": "pops",
+     "how": "Something landing and appearing: the impact for the weight, a small pop on top at about \u22126 dB."
+    }
+   ],
+   "character": "deep, muffled",
+   "sha256": "88fa4920ffef8f6295df929e9f0d671fafdfb6f9d5a7f82840b755adf9fb7d7f"
+  },
+  {
+   "id": "cinematic-drum-big",
+   "name": "Cinematic drum hit, big",
+   "category": "cinematic-hits",
+   "file": "sounds/cinematic-hits/cinematic-drum-big.wav",
+   "variant": {
+    "kind": "drum",
+    "intensity": "big"
+   },
+   "description": "A giant drum struck hard: the crack of the stick and a big, deep boom.",
+   "use_for": [
+    "Title slams and trailer beats",
+    "A logo or product landing with force",
+    "Dramatic reveals",
+    "Big moments: a title, a reveal, a turning point"
+   ],
+   "avoid_for": [
+    "On top of speech: the bass masks it",
+    "Calm, understated or friendly films",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "cinematic",
+    "impact",
+    "hit",
+    "trailer",
+    "bass",
+    "sub",
+    "drum",
+    "big",
+    "natural"
+   ],
+   "duration": 2.178,
+   "channels": 2,
+   "sync": {
+    "at": 0.011,
+    "meets": "instant",
+    "how": "Sync point on the frame of the hit: the title landing, the cut, the reveal. Let the hall ring out."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.011,
+    "body_end": 1.274,
+    "audible_end": 1.914
+   },
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -9.2,
+    "tier": "big"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "Slower sounds bigger and deeper; faster tighter. To shorten one, fade its tail over 500 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into the hit: the reverse whoosh's stop on the hit's sync point."
+    },
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up hit: a strong riser whose end meets the hit."
+    }
+   ],
+   "character": "big, drum and boom",
+   "sha256": "1f6f457da20a1ec5362d8823926a4faa8f70b3e5a61d18894642022442fafbd1"
+  },
+  {
+   "id": "cinematic-drum-massive",
+   "name": "Cinematic drum hit, massive",
+   "category": "cinematic-hits",
+   "file": "sounds/cinematic-hits/cinematic-drum-massive.wav",
+   "variant": {
+    "kind": "drum",
+    "intensity": "massive"
+   },
+   "description": "A colossal drum hit: a crack, then a huge boom sinking into a vast hall.",
+   "use_for": [
+    "Title slams and trailer beats",
+    "A logo or product landing with force",
+    "Dramatic reveals",
+    "The biggest moments: a climax or a final reveal"
+   ],
+   "avoid_for": [
+    "On top of speech: the bass masks it",
+    "Calm, understated or friendly films",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "cinematic",
+    "impact",
+    "hit",
+    "trailer",
+    "bass",
+    "sub",
+    "drum",
+    "massive",
+    "natural"
+   ],
+   "duration": 3.335,
+   "channels": 2,
+   "sync": {
+    "at": 0.034,
+    "meets": "instant",
+    "how": "Sync point on the frame of the hit: the title landing, the cut, the reveal. Let the hall ring out."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.034,
+    "body_end": 1.873,
+    "audible_end": 2.901
+   },
+   "level": {
+    "lufs": -17.5,
+    "true_peak_dbtp": -9.8,
+    "tier": "massive"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "Slower sounds bigger and deeper; faster tighter. To shorten one, fade its tail over 500 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into the hit: the reverse whoosh's stop on the hit's sync point."
+    },
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up hit: a strong riser whose end meets the hit."
+    }
+   ],
+   "character": "massive, drum and boom",
+   "sha256": "1898a2ae71e05345375fbbccea2a206369ce3d83f9921cc17f1e4e7623707ec6"
+  },
+  {
+   "id": "cinematic-metal-big",
+   "name": "Cinematic metal hit, big",
+   "category": "cinematic-hits",
+   "file": "sounds/cinematic-hits/cinematic-metal-big.wav",
+   "variant": {
+    "kind": "metal",
+    "intensity": "big"
+   },
+   "description": "A big metal hit: a deep clang of steel ringing on.",
+   "use_for": [
+    "Industrial, engineering and tech reveals",
+    "A heavy, hard statement",
+    "Strength, machines and steel",
+    "Big moments: a title, a reveal, a turning point"
+   ],
+   "avoid_for": [
+    "On top of speech: the bass masks it",
+    "Calm, understated or friendly films",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "cinematic",
+    "impact",
+    "hit",
+    "trailer",
+    "bass",
+    "sub",
+    "metal",
+    "big",
+    "natural"
+   ],
+   "duration": 2.115,
+   "channels": 2,
+   "sync": {
+    "at": 0.03,
+    "meets": "instant",
+    "how": "Sync point on the frame of the hit: the title landing, the cut, the reveal. Let the hall ring out."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.03,
+    "body_end": 1.317,
+    "audible_end": 1.795
+   },
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -10.4,
+    "tier": "big"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "Slower sounds bigger and deeper; faster tighter. To shorten one, fade its tail over 500 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into the hit: the reverse whoosh's stop on the hit's sync point."
+    },
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up hit: a strong riser whose end meets the hit."
+    }
+   ],
+   "character": "big, steel clang",
+   "sha256": "0a5b84ab395f7fb6b0f18e6ca4e1c097620868f8fa84f44a465388038b264a34"
+  },
+  {
+   "id": "cinematic-metal-massive",
+   "name": "Cinematic metal hit, massive",
+   "category": "cinematic-hits",
+   "file": "sounds/cinematic-hits/cinematic-metal-massive.wav",
+   "variant": {
+    "kind": "metal",
+    "intensity": "massive"
+   },
+   "description": "A massive metal hit: a great steel beam struck, its clang ringing into a vast hall.",
+   "use_for": [
+    "Industrial, engineering and tech reveals",
+    "A heavy, hard statement",
+    "Strength, machines and steel",
+    "The biggest moments: a climax or a final reveal"
+   ],
+   "avoid_for": [
+    "On top of speech: the bass masks it",
+    "Calm, understated or friendly films",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "cinematic",
+    "impact",
+    "hit",
+    "trailer",
+    "bass",
+    "sub",
+    "metal",
+    "massive",
+    "natural"
+   ],
+   "duration": 3.22,
+   "channels": 2,
+   "sync": {
+    "at": 0.015,
+    "meets": "instant",
+    "how": "Sync point on the frame of the hit: the title landing, the cut, the reveal. Let the hall ring out."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.015,
+    "body_end": 1.794,
+    "audible_end": 2.591
+   },
+   "level": {
+    "lufs": -17.5,
+    "true_peak_dbtp": -9.8,
+    "tier": "massive"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "Slower sounds bigger and deeper; faster tighter. To shorten one, fade its tail over 500 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into the hit: the reverse whoosh's stop on the hit's sync point."
+    },
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up hit: a strong riser whose end meets the hit."
+    }
+   ],
+   "character": "massive, steel clang",
+   "sha256": "4d07eb41ec98037dbfd4d05407bef7642c5cfdee6e44feeef55433809de437c1"
+  },
+  {
+   "id": "cinematic-slam-big",
+   "name": "Cinematic slam, big",
+   "category": "cinematic-hits",
+   "file": "sounds/cinematic-hits/cinematic-slam-big.wav",
+   "variant": {
+    "kind": "slam",
+    "intensity": "big"
+   },
+   "description": "A big slam: a heavy wooden door crashing shut in a hall.",
+   "use_for": [
+    "A door closing on a scene, or an ending",
+    "Something final: done, locked, decided",
+    "A hard cut to black",
+    "Big moments: a title, a reveal, a turning point"
+   ],
+   "avoid_for": [
+    "On top of speech: the bass masks it",
+    "Calm, understated or friendly films",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "cinematic",
+    "impact",
+    "hit",
+    "trailer",
+    "bass",
+    "sub",
+    "slam",
+    "big",
+    "natural"
+   ],
+   "duration": 2.225,
+   "channels": 2,
+   "sync": {
+    "at": 0.011,
+    "meets": "instant",
+    "how": "Sync point on the frame of the hit: the title landing, the cut, the reveal. Let the hall ring out."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.011,
+    "body_end": 1.203,
+    "audible_end": 1.728
+   },
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -10.1,
+    "tier": "big"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "Slower sounds bigger and deeper; faster tighter. To shorten one, fade its tail over 500 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into the hit: the reverse whoosh's stop on the hit's sync point."
+    },
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up hit: a strong riser whose end meets the hit."
+    }
+   ],
+   "character": "big, wooden slam",
+   "sha256": "c408030e25e636a865678c25d0e6eceeee5d74e06f04e65f9353443cec46f8ca"
+  },
+  {
+   "id": "cinematic-slam-massive",
+   "name": "Cinematic slam, massive",
+   "category": "cinematic-hits",
+   "file": "sounds/cinematic-hits/cinematic-slam-massive.wav",
+   "variant": {
+    "kind": "slam",
+    "intensity": "massive"
+   },
+   "description": "A massive slam: a huge door crashing shut, its frame rattling, the hall booming.",
+   "use_for": [
+    "A door closing on a scene, or an ending",
+    "Something final: done, locked, decided",
+    "A hard cut to black",
+    "The biggest moments: a climax or a final reveal"
+   ],
+   "avoid_for": [
+    "On top of speech: the bass masks it",
+    "Calm, understated or friendly films",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "cinematic",
+    "impact",
+    "hit",
+    "trailer",
+    "bass",
+    "sub",
+    "slam",
+    "massive",
+    "natural"
+   ],
+   "duration": 3.143,
+   "channels": 2,
+   "sync": {
+    "at": 0.084,
+    "meets": "instant",
+    "how": "Sync point on the frame of the hit: the title landing, the cut, the reveal. Let the hall ring out."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.084,
+    "body_end": 1.82,
+    "audible_end": 2.711
+   },
+   "level": {
+    "lufs": -17.5,
+    "true_peak_dbtp": -10.1,
+    "tier": "massive"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "Slower sounds bigger and deeper; faster tighter. To shorten one, fade its tail over 500 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into the hit: the reverse whoosh's stop on the hit's sync point."
+    },
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up hit: a strong riser whose end meets the hit."
+    }
+   ],
+   "character": "massive, wooden slam",
+   "sha256": "afd3d146a271c437e3c37f79458fc9608b5e0c6cc3e6bf66059a7482f75f6b19"
+  },
+  {
+   "id": "cinematic-thunder-big",
+   "name": "Cinematic thunderclap, big",
+   "category": "cinematic-hits",
+   "file": "sounds/cinematic-hits/cinematic-thunder-big.wav",
+   "variant": {
+    "kind": "thunder",
+    "intensity": "big"
+   },
+   "description": "A thunderclap: a sharp crack and a rolling rumble.",
+   "use_for": [
+    "A shock or a big turn in the story",
+    "A dramatic warning or reveal",
+    "Power, scale and storms",
+    "Big moments: a title, a reveal, a turning point"
+   ],
+   "avoid_for": [
+    "On top of speech: the bass masks it",
+    "Calm, understated or friendly films",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "cinematic",
+    "impact",
+    "hit",
+    "trailer",
+    "bass",
+    "sub",
+    "thunder",
+    "big",
+    "natural"
+   ],
+   "duration": 3.813,
+   "channels": 2,
+   "sync": {
+    "at": 0.011,
+    "meets": "instant",
+    "how": "Sync point on the frame of the hit: the title landing, the cut, the reveal. Let the hall ring out."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.011,
+    "body_end": 1.456,
+    "audible_end": 3.371
+   },
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -8.5,
+    "tier": "big"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "Slower sounds bigger and deeper; faster tighter. To shorten one, fade its tail over 500 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into the hit: the reverse whoosh's stop on the hit's sync point."
+    },
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up hit: a strong riser whose end meets the hit."
+    }
+   ],
+   "character": "big, crack and roll",
+   "sha256": "b53571436e213d2b612d2be9067f7a95920402a707c218ac29ce3b1e755ee725"
+  },
+  {
+   "id": "cinematic-thunder-massive",
+   "name": "Cinematic thunderclap, massive",
+   "category": "cinematic-hits",
+   "file": "sounds/cinematic-hits/cinematic-thunder-massive.wav",
+   "variant": {
+    "kind": "thunder",
+    "intensity": "massive"
+   },
+   "description": "A massive thunderclap overhead: a crack tearing into a long, deep roll.",
+   "use_for": [
+    "A shock or a big turn in the story",
+    "A dramatic warning or reveal",
+    "Power, scale and storms",
+    "The biggest moments: a climax or a final reveal"
+   ],
+   "avoid_for": [
+    "On top of speech: the bass masks it",
+    "Calm, understated or friendly films",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "cinematic",
+    "impact",
+    "hit",
+    "trailer",
+    "bass",
+    "sub",
+    "thunder",
+    "massive",
+    "natural"
+   ],
+   "duration": 4.939,
+   "channels": 2,
+   "sync": {
+    "at": 0.012,
+    "meets": "instant",
+    "how": "Sync point on the frame of the hit: the title landing, the cut, the reveal. Let the hall ring out."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.012,
+    "body_end": 2.214,
+    "audible_end": 4.827
+   },
+   "level": {
+    "lufs": -17.5,
+    "true_peak_dbtp": -7,
+    "tier": "massive"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.15
+    ],
+    "notes": "Slower sounds bigger and deeper; faster tighter. To shorten one, fade its tail over 500 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into the hit: the reverse whoosh's stop on the hit's sync point."
+    },
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up hit: a strong riser whose end meets the hit."
+    }
+   ],
+   "character": "massive, crack and roll",
+   "sha256": "c6aae58d3b0701826411a4ecd8987fc02bc03de8daa689d41d95f613edb95627"
+  },
+  {
+   "id": "bass-808-long",
+   "name": "808-style bass, long",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/bass-808-long.wav",
+   "variant": {
+    "bass": "808",
+    "length": "long"
+   },
+   "description": "A long 808-style bass that slides down to F at the end.",
+   "use_for": [
+    "A punchy accent on a beat or a cut",
+    "Modern, energetic edits and social videos",
+    "A title or a number hitting with bass"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "bass",
+    "sub",
+    "low",
+    "808",
+    "drop",
+    "long",
+    "cinematic"
+   ],
+   "duration": 2.554,
+   "channels": 1,
+   "sync": {
+    "at": 0.011,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal, the beat or the hit (it's at the very start)."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.011,
+    "body_end": 2.345,
+    "audible_end": 2.518
+   },
+   "level": {
+    "lufs": -19,
+    "true_peak_dbtp": -14.6,
+    "tier": "808"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     1,
+     1
+    ],
+    "notes": "Don't change the rate: it detunes the note. For a shorter one, fade its tail."
+   },
+   "tuning": "C",
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the sync point."
+    },
+    {
+     "category": "impacts",
+     "how": "A hit with bass: a heavy or deep impact on the same frame, the bass at \u22123 dB."
+    }
+   ],
+   "character": "808-style tuned bass kick on C",
+   "sha256": "cc6dc1686b8351f97c9165365c46db89cdaeffba4f25cb9ec2f38ec0a4939921"
+  },
+  {
+   "id": "bass-808-medium",
+   "name": "808-style bass, medium",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/bass-808-medium.wav",
+   "variant": {
+    "bass": "808",
+    "length": "medium"
+   },
+   "description": "An 808-style bass that rings on: a tuned bass kick on C.",
+   "use_for": [
+    "A punchy accent on a beat or a cut",
+    "Modern, energetic edits and social videos",
+    "A title or a number hitting with bass"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "bass",
+    "sub",
+    "low",
+    "808",
+    "drop",
+    "medium",
+    "cinematic"
+   ],
+   "duration": 1.469,
+   "channels": 1,
+   "sync": {
+    "at": 0.011,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal, the beat or the hit (it's at the very start)."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.011,
+    "body_end": 1.333,
+    "audible_end": 1.44
+   },
+   "level": {
+    "lufs": -19,
+    "true_peak_dbtp": -14.6,
+    "tier": "808"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     1,
+     1
+    ],
+    "notes": "Don't change the rate: it detunes the note. For a shorter one, fade its tail."
+   },
+   "tuning": "C",
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the sync point."
+    },
+    {
+     "category": "impacts",
+     "how": "A hit with bass: a heavy or deep impact on the same frame, the bass at \u22123 dB."
+    }
+   ],
+   "character": "808-style tuned bass kick on C",
+   "sha256": "76924267e4ad6b1cbade9fb9670615bcfb361044e238f44d276f1e65d8733a95"
+  },
+  {
+   "id": "bass-808-short",
+   "name": "808-style bass, short",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/bass-808-short.wav",
+   "variant": {
+    "bass": "808",
+    "length": "short"
+   },
+   "description": "A short, punchy 808-style bass: a tuned bass kick on C.",
+   "use_for": [
+    "A punchy accent on a beat or a cut",
+    "Modern, energetic edits and social videos",
+    "A title or a number hitting with bass"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "bass",
+    "sub",
+    "low",
+    "808",
+    "drop",
+    "short",
+    "cinematic"
+   ],
+   "duration": 0.683,
+   "channels": 1,
+   "sync": {
+    "at": 0.011,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal, the beat or the hit (it's at the very start)."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.011,
+    "body_end": 0.614,
+    "audible_end": 0.662
+   },
+   "level": {
+    "lufs": -19,
+    "true_peak_dbtp": -14.4,
+    "tier": "808"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     1,
+     1
+    ],
+    "notes": "Don't change the rate: it detunes the note. For a shorter one, fade its tail."
+   },
+   "tuning": "C",
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the sync point."
+    },
+    {
+     "category": "impacts",
+     "how": "A hit with bass: a heavy or deep impact on the same frame, the bass at \u22123 dB."
+    }
+   ],
+   "character": "808-style tuned bass kick on C",
+   "sha256": "3acddbbf3f48fc3153d0b3787189dd47d348f048b6250caf7d512a7166cbd885"
+  },
+  {
+   "id": "bass-rumble-long",
+   "name": "Rumble, long",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/bass-rumble-long.wav",
+   "variant": {
+    "bass": "rumble",
+    "length": "long"
+   },
+   "description": "A long, deep rumble: a quake building and settling.",
+   "use_for": [
+    "Tension building under a scene",
+    "Something huge approaching, or the ground shaking",
+    "Under a dramatic reveal"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "bass",
+    "sub",
+    "low",
+    "rumble",
+    "tension",
+    "long",
+    "cinematic"
+   ],
+   "duration": 4.679,
+   "channels": 2,
+   "sync": {
+    "at": 0.052,
+    "meets": "action-start",
+    "how": "Start it as the tension begins: it swells in and rolls away."
+   },
+   "timing": {
+    "audible_start": 0.052,
+    "onset": 0.279,
+    "peak": 1.656,
+    "body_end": 3.965,
+    "audible_end": 4.58
+   },
+   "span_seconds": 3.913,
+   "fits_seconds": [
+    3.26,
+    4.6
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -12.8,
+    "tier": "rumble"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "For other lengths, pick the nearest and fade its tail out over 300 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "booms-and-bass",
+     "how": "Tension, then release: the rumble building, a boom on the moment it ends."
+    }
+   ],
+   "character": "dark, rolling rumble",
+   "sha256": "62517ce03b158edc42054b8db8263ed5ecc5738ca84a1d9927a37d13a7076cbd"
+  },
+  {
+   "id": "bass-rumble-medium",
+   "name": "Rumble, medium",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/bass-rumble-medium.wav",
+   "variant": {
+    "bass": "rumble",
+    "length": "medium"
+   },
+   "description": "A low rumble of about three seconds: distant thunder, the ground shaking.",
+   "use_for": [
+    "Tension building under a scene",
+    "Something huge approaching, or the ground shaking",
+    "Under a dramatic reveal"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "bass",
+    "sub",
+    "low",
+    "rumble",
+    "tension",
+    "medium",
+    "cinematic"
+   ],
+   "duration": 2.805,
+   "channels": 2,
+   "sync": {
+    "at": 0.017,
+    "meets": "action-start",
+    "how": "Start it as the tension begins: it swells in and rolls away."
+   },
+   "timing": {
+    "audible_start": 0.017,
+    "onset": 0.098,
+    "peak": 0.596,
+    "body_end": 2.18,
+    "audible_end": 2.767
+   },
+   "span_seconds": 2.163,
+   "fits_seconds": [
+    1.8,
+    2.54
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -14.5,
+    "tier": "rumble"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "For other lengths, pick the nearest and fade its tail out over 300 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "booms-and-bass",
+     "how": "Tension, then release: the rumble building, a boom on the moment it ends."
+    }
+   ],
+   "character": "dark, rolling rumble",
+   "sha256": "38ddc6474d57dc706c1a67cd83d4d449fb91b87baf69f0fbfcd24476e509a6b0"
+  },
+  {
+   "id": "bass-rumble-short",
+   "name": "Rumble, short",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/bass-rumble-short.wav",
+   "variant": {
+    "bass": "rumble",
+    "length": "short"
+   },
+   "description": "A quick low rumble, rolling in and away.",
+   "use_for": [
+    "Tension building under a scene",
+    "Something huge approaching, or the ground shaking",
+    "Under a dramatic reveal"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "bass",
+    "sub",
+    "low",
+    "rumble",
+    "tension",
+    "short",
+    "cinematic"
+   ],
+   "duration": 1.528,
+   "channels": 2,
+   "sync": {
+    "at": 0.003,
+    "meets": "action-start",
+    "how": "Start it as the tension begins: it swells in and rolls away."
+   },
+   "timing": {
+    "audible_start": 0.003,
+    "onset": 0.019,
+    "peak": 0.226,
+    "body_end": 1.162,
+    "audible_end": 1.496
+   },
+   "span_seconds": 1.159,
+   "fits_seconds": [
+    0.97,
+    1.36
+   ],
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -13,
+    "tier": "rumble"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "For other lengths, pick the nearest and fade its tail out over 300 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "booms-and-bass",
+     "how": "Tension, then release: the rumble building, a boom on the moment it ends."
+    }
+   ],
+   "character": "dark, rolling rumble",
+   "sha256": "53920f72a9a30088543be3993fbc601f6a02c0704514590dcaa362e872c0adf2"
+  },
+  {
+   "id": "bass-sub-drop-long",
+   "name": "Sub drop, long",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/bass-sub-drop-long.wav",
+   "variant": {
+    "bass": "sub-drop",
+    "length": "long"
+   },
+   "description": "A long sub drop of about four seconds, sinking slowly away.",
+   "use_for": [
+    "The moment after a build: a reveal, a logo or a big statement",
+    "Scene changes and title cards with weight",
+    "The bottom dropping out"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "bass",
+    "sub",
+    "low",
+    "sub drop",
+    "drop",
+    "long",
+    "cinematic"
+   ],
+   "duration": 3.909,
+   "channels": 1,
+   "sync": {
+    "at": 0.021,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal, the beat or the hit (it's at the very start)."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.021,
+    "body_end": 3.421,
+    "audible_end": 3.825
+   },
+   "level": {
+    "lufs": -21,
+    "true_peak_dbtp": -18.3,
+    "tier": "sub-drop"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "For other lengths, pick the nearest and fade its tail out over 300 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the sync point."
+    },
+    {
+     "category": "impacts",
+     "how": "A hit with bass: a heavy or deep impact on the same frame, the bass at \u22123 dB."
+    }
+   ],
+   "character": "deep, falling tone",
+   "sha256": "3b9c4c947aaa53758fc6fd14193c39c8113e4f9bc37ccd0eb833f10037686da1"
+  },
+  {
+   "id": "bass-sub-drop-medium",
+   "name": "Sub drop, medium",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/bass-sub-drop-medium.wav",
+   "variant": {
+    "bass": "sub-drop",
+    "length": "medium"
+   },
+   "description": "A sub drop of about two seconds: deep and falling, felt more than heard.",
+   "use_for": [
+    "The moment after a build: a reveal, a logo or a big statement",
+    "Scene changes and title cards with weight",
+    "The bottom dropping out"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "bass",
+    "sub",
+    "low",
+    "sub drop",
+    "drop",
+    "medium",
+    "cinematic"
+   ],
+   "duration": 2.154,
+   "channels": 1,
+   "sync": {
+    "at": 0.021,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal, the beat or the hit (it's at the very start)."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.021,
+    "body_end": 1.882,
+    "audible_end": 2.108
+   },
+   "level": {
+    "lufs": -21,
+    "true_peak_dbtp": -18.1,
+    "tier": "sub-drop"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "For other lengths, pick the nearest and fade its tail out over 300 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the sync point."
+    },
+    {
+     "category": "impacts",
+     "how": "A hit with bass: a heavy or deep impact on the same frame, the bass at \u22123 dB."
+    }
+   ],
+   "character": "deep, falling tone",
+   "sha256": "90585643b1cb658a1edb16f083af184ed0545f2a913ee8408d9480bc9227f6d2"
+  },
+  {
+   "id": "bass-sub-drop-short",
+   "name": "Sub drop, short",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/bass-sub-drop-short.wav",
+   "variant": {
+    "bass": "sub-drop",
+    "length": "short"
+   },
+   "description": "A short sub drop: a deep tone dropping away, about a second.",
+   "use_for": [
+    "The moment after a build: a reveal, a logo or a big statement",
+    "Scene changes and title cards with weight",
+    "The bottom dropping out"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "bass",
+    "sub",
+    "low",
+    "sub drop",
+    "drop",
+    "short",
+    "cinematic"
+   ],
+   "duration": 1.175,
+   "channels": 1,
+   "sync": {
+    "at": 0.021,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal, the beat or the hit (it's at the very start)."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.021,
+    "body_end": 1.036,
+    "audible_end": 1.144
+   },
+   "level": {
+    "lufs": -21,
+    "true_peak_dbtp": -17.8,
+    "tier": "sub-drop"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.2
+    ],
+    "notes": "For other lengths, pick the nearest and fade its tail out over 300 ms or more."
+   },
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the sync point."
+    },
+    {
+     "category": "impacts",
+     "how": "A hit with bass: a heavy or deep impact on the same frame, the bass at \u22123 dB."
+    }
+   ],
+   "character": "deep, falling tone",
+   "sha256": "85b87d3a9f772626ff6914bfbd153b07cb3681871b97e147a1a8a15154a29f09"
+  },
+  {
+   "id": "boom-drop-medium",
+   "name": "Boom drop, medium",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/boom-drop-medium.wav",
+   "variant": {
+    "kind": "drop",
+    "intensity": "medium"
+   },
+   "description": "A deep drop: a boom sinking, with a low roll under it.",
+   "use_for": [
+    "The reveal after a build (a riser or reverse whoosh into it)",
+    "A bold opening or a section opener",
+    "A dramatic pause: the bottom dropping out"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "boom",
+    "drop",
+    "sub",
+    "deep",
+    "low",
+    "reveal",
+    "medium",
+    "natural"
+   ],
+   "duration": 3.441,
+   "channels": 2,
+   "sync": {
+    "at": 0.052,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal or the landing (it's at the very start). Leave the tail to ring out: the hall is part of it."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.052,
+    "body_end": 1.576,
+    "audible_end": 3.225
+   },
+   "level": {
+    "lufs": -24.5,
+    "true_peak_dbtp": -16.9,
+    "tier": "medium"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "Slower sounds deeper and longer; faster lighter. For a shorter boom, fade the tail out over 300 ms or more rather than cutting it."
+   },
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the boom's sync point."
+    },
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into a big moment: the reverse whoosh's stop on the boom's sync point."
+    },
+    {
+     "category": "shimmers",
+     "how": "A big, bright reveal: the boom with a shimmer starting with it at \u22124 dB."
+    }
+   ],
+   "character": "deep, sinking boom",
+   "sha256": "8e69c322d29b5dc59416e8438878f6a1e5fba2d2657a25c1e16d1463a644c95e"
+  },
+  {
+   "id": "boom-drop-soft",
+   "name": "Boom drop, soft",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/boom-drop-soft.wav",
+   "variant": {
+    "kind": "drop",
+    "intensity": "soft"
+   },
+   "description": "A soft boom that sinks away.",
+   "use_for": [
+    "The reveal after a build (a riser or reverse whoosh into it)",
+    "A bold opening or a section opener",
+    "A dramatic pause: the bottom dropping out"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "boom",
+    "drop",
+    "sub",
+    "deep",
+    "low",
+    "reveal",
+    "soft",
+    "natural"
+   ],
+   "duration": 2.905,
+   "channels": 2,
+   "sync": {
+    "at": 0.019,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal or the landing (it's at the very start). Leave the tail to ring out: the hall is part of it."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.019,
+    "body_end": 1.262,
+    "audible_end": 2.81
+   },
+   "level": {
+    "lufs": -27,
+    "true_peak_dbtp": -20.1,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "Slower sounds deeper and longer; faster lighter. For a shorter boom, fade the tail out over 300 ms or more rather than cutting it."
+   },
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the boom's sync point."
+    },
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into a big moment: the reverse whoosh's stop on the boom's sync point."
+    },
+    {
+     "category": "shimmers",
+     "how": "A big, bright reveal: the boom with a shimmer starting with it at \u22124 dB."
+    }
+   ],
+   "character": "soft, sinking boom",
+   "sha256": "5b4d86ae8253938caa399ebcd17a14cad43d3c88a45bc3dff1da5719985dce9a"
+  },
+  {
+   "id": "boom-drop-strong",
+   "name": "Boom drop, strong",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/boom-drop-strong.wav",
+   "variant": {
+    "kind": "drop",
+    "intensity": "strong"
+   },
+   "description": "A huge, sinking drop with a rolling rumble: the biggest moment.",
+   "use_for": [
+    "The reveal after a build (a riser or reverse whoosh into it)",
+    "A bold opening or a section opener",
+    "A dramatic pause: the bottom dropping out"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI",
+    "Calm or understated films"
+   ],
+   "tags": [
+    "boom",
+    "drop",
+    "sub",
+    "deep",
+    "low",
+    "reveal",
+    "strong",
+    "natural"
+   ],
+   "duration": 4.293,
+   "channels": 2,
+   "sync": {
+    "at": 0.095,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal or the landing (it's at the very start). Leave the tail to ring out: the hall is part of it."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.095,
+    "body_end": 1.705,
+    "audible_end": 4.102
+   },
+   "level": {
+    "lufs": -22,
+    "true_peak_dbtp": -15.4,
+    "tier": "strong"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "Slower sounds deeper and longer; faster lighter. For a shorter boom, fade the tail out over 300 ms or more rather than cutting it."
+   },
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the boom's sync point."
+    },
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into a big moment: the reverse whoosh's stop on the boom's sync point."
+    },
+    {
+     "category": "shimmers",
+     "how": "A big, bright reveal: the boom with a shimmer starting with it at \u22124 dB."
+    }
+   ],
+   "character": "huge, sinking boom",
+   "sha256": "7abccde8c5688ce083679d1fcb23a531674507ea3da806b95c07c2a718f7b010"
+  },
+  {
+   "id": "boom-hit-medium",
+   "name": "Boom hit, medium",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/boom-hit-medium.wav",
+   "variant": {
+    "kind": "hit",
+    "intensity": "medium"
+   },
+   "description": "A deep, rounded boom with a warm hall.",
+   "use_for": [
+    "A title card or logo landing with weight",
+    "A big statement or a key number",
+    "A scene change with impact"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "boom",
+    "hit",
+    "sub",
+    "deep",
+    "low",
+    "reveal",
+    "medium",
+    "natural"
+   ],
+   "duration": 1.301,
+   "channels": 2,
+   "sync": {
+    "at": 0.038,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal or the landing (it's at the very start). Leave the tail to ring out: the hall is part of it."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.038,
+    "body_end": 0.622,
+    "audible_end": 1.233
+   },
+   "level": {
+    "lufs": -24.5,
+    "true_peak_dbtp": -15.1,
+    "tier": "medium"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "Slower sounds deeper and longer; faster lighter. For a shorter boom, fade the tail out over 300 ms or more rather than cutting it."
+   },
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the boom's sync point."
+    },
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into a big moment: the reverse whoosh's stop on the boom's sync point."
+    },
+    {
+     "category": "shimmers",
+     "how": "A big, bright reveal: the boom with a shimmer starting with it at \u22124 dB."
+    }
+   ],
+   "character": "deep, rounded boom",
+   "sha256": "8b5774f14c230aad4b7e826e60bfaca0af04d2ff285f3954418661a040781a4f"
+  },
+  {
+   "id": "boom-hit-soft",
+   "name": "Boom hit, soft",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/boom-hit-soft.wav",
+   "variant": {
+    "kind": "hit",
+    "intensity": "soft"
+   },
+   "description": "A soft, deep boom: a big drum struck gently in a hall.",
+   "use_for": [
+    "A title card or logo landing with weight",
+    "A big statement or a key number",
+    "A scene change with impact"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI"
+   ],
+   "tags": [
+    "boom",
+    "hit",
+    "sub",
+    "deep",
+    "low",
+    "reveal",
+    "soft",
+    "natural"
+   ],
+   "duration": 1.02,
+   "channels": 2,
+   "sync": {
+    "at": 0.031,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal or the landing (it's at the very start). Leave the tail to ring out: the hall is part of it."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.031,
+    "body_end": 0.445,
+    "audible_end": 0.946
+   },
+   "level": {
+    "lufs": -27,
+    "true_peak_dbtp": -20.5,
+    "tier": "soft"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "Slower sounds deeper and longer; faster lighter. For a shorter boom, fade the tail out over 300 ms or more rather than cutting it."
+   },
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the boom's sync point."
+    },
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into a big moment: the reverse whoosh's stop on the boom's sync point."
+    },
+    {
+     "category": "shimmers",
+     "how": "A big, bright reveal: the boom with a shimmer starting with it at \u22124 dB."
+    }
+   ],
+   "character": "soft, rounded boom",
+   "sha256": "742dea42e8b84076158a626600eb87ee43a12280bf18afd9aec8d204aa1c3f11"
+  },
+  {
+   "id": "boom-hit-strong",
+   "name": "Boom hit, strong",
+   "category": "booms-and-bass",
+   "file": "sounds/booms-and-bass/boom-hit-strong.wav",
+   "variant": {
+    "kind": "hit",
+    "intensity": "strong"
+   },
+   "description": "A big, deep boom that fills the room.",
+   "use_for": [
+    "A title card or logo landing with weight",
+    "A big statement or a key number",
+    "A scene change with impact"
+   ],
+   "avoid_for": [
+    "On top of speech: its low end masks it",
+    "Small elements and UI",
+    "Calm or understated films"
+   ],
+   "tags": [
+    "boom",
+    "hit",
+    "sub",
+    "deep",
+    "low",
+    "reveal",
+    "strong",
+    "natural"
+   ],
+   "duration": 1.693,
+   "channels": 2,
+   "sync": {
+    "at": 0.047,
+    "meets": "instant",
+    "how": "Sync point on the frame of the reveal or the landing (it's at the very start). Leave the tail to ring out: the hall is part of it."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.047,
+    "body_end": 0.744,
+    "audible_end": 1.552
+   },
+   "level": {
+    "lufs": -22,
+    "true_peak_dbtp": -12.3,
+    "tier": "strong"
+   },
+   "under_voiceover_db": -8,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "Slower sounds deeper and longer; faster lighter. For a shorter boom, fade the tail out over 300 ms or more rather than cutting it."
+   },
+   "pairs_with": [
+    {
+     "category": "risers-and-fallers",
+     "how": "A built-up reveal: the riser's end on the boom's sync point."
+    },
+    {
+     "category": "reverse-whooshes",
+     "how": "A pull into a big moment: the reverse whoosh's stop on the boom's sync point."
+    },
+    {
+     "category": "shimmers",
+     "how": "A big, bright reveal: the boom with a shimmer starting with it at \u22124 dB."
+    }
+   ],
+   "character": "huge, rounded boom",
+   "sha256": "481f40b8a436d1098869c55e3b8c293d150ffab91c55c4df9d205d2f19b209b6"
+  },
+  {
+   "id": "pop-large-bubble",
+   "name": "Bubble pop, large",
+   "category": "pops",
+   "file": "sounds/pops/pop-large-bubble.wav",
+   "variant": {
+    "size": "large",
+    "kind": "bubble"
+   },
+   "description": "A deep, round bubble bloop.",
+   "use_for": [
+    "Playful appear moments",
+    "Chat bubbles and messages appearing",
+    "Light, friendly reveals",
+    "Big shapes and panels"
+   ],
+   "avoid_for": [
+    "Serious or corporate moments",
+    "Tiny details"
+   ],
+   "tags": [
+    "pop",
+    "bubble",
+    "large",
+    "natural"
+   ],
+   "duration": 0.208,
+   "channels": 1,
+   "sync": {
+    "at": 0.011,
+    "meets": "instant",
+    "how": "Put the sync point where the element reaches full size (pop in, bubble) or where it vanishes (pop out). For a scale-up with overshoot, the sync point at the peak of the overshoot."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.011,
+    "body_end": 0.123,
+    "audible_end": 0.196
+   },
+   "level": {
+    "lufs": -20,
+    "true_peak_dbtp": -10.7,
+    "tier": "large"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.25
+    ],
+    "notes": "Rate changes shift the pitch: a little faster for a smaller element, a little slower for a bigger one."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something flying in and appearing: the whoosh during the move, the pop at its end, about 3 dB under the whoosh."
+    },
+    {
+     "category": "notifications",
+     "how": "A message or badge appearing: the pop as it appears, the notification tone right after (40\u201380 ms)."
+    }
+   ],
+   "character": "low, watery",
+   "sha256": "56f506f676c31359741540589958aab20151f947f5be1e76fe054e28d5bff38e"
+  },
+  {
+   "id": "pop-small-bubble",
+   "name": "Bubble pop, small",
+   "category": "pops",
+   "file": "sounds/pops/pop-small-bubble.wav",
+   "variant": {
+    "size": "small",
+    "kind": "bubble"
+   },
+   "description": "A tiny water-bubble blip, light and quick.",
+   "use_for": [
+    "Playful appear moments",
+    "Chat bubbles and messages appearing",
+    "Light, friendly reveals",
+    "Small elements: dots, icons, badges"
+   ],
+   "avoid_for": [
+    "Serious or corporate moments",
+    "Big shapes"
+   ],
+   "tags": [
+    "pop",
+    "bubble",
+    "small",
+    "natural"
+   ],
+   "duration": 0.081,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "instant",
+    "how": "Put the sync point where the element reaches full size (pop in, bubble) or where it vanishes (pop out). For a scale-up with overshoot, the sync point at the peak of the overshoot."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.051,
+    "audible_end": 0.077
+   },
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -12.9,
+    "tier": "small"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.85,
+     1.25
+    ],
+    "notes": "Rate changes shift the pitch: a little faster for a smaller element, a little slower for a bigger one."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something flying in and appearing: the whoosh during the move, the pop at its end, about 3 dB under the whoosh."
+    },
+    {
+     "category": "notifications",
+     "how": "A message or badge appearing: the pop as it appears, the notification tone right after (40\u201380 ms)."
+    }
+   ],
+   "character": "round, watery",
+   "sha256": "73691f1ecec5b2f8d1dc231244281558479a42e347f738c16aa6551be21e6124"
+  },
+  {
+   "id": "transform-empty",
+   "name": "Empty",
+   "category": "shape-changes",
+   "file": "sounds/shape-changes/transform-empty.wav",
+   "variant": {
+    "item": "empty"
+   },
+   "description": "Water draining away with a gurgle.",
+   "use_for": [
+    "Something running out or draining",
+    "Losing resources or time",
+    "Emptying a container"
+   ],
+   "avoid_for": [
+    "Hard, mechanical movements (use whooshes or impacts)"
+   ],
+   "tags": [
+    "shape",
+    "transform",
+    "morph",
+    "empty",
+    "motion graphics",
+    "natural"
+   ],
+   "duration": 0.952,
+   "channels": 1,
+   "sync": {
+    "at": 0.003,
+    "meets": "action-start",
+    "how": "Start it with the change and match its length; it follows the change's progress from start to end."
+   },
+   "timing": {
+    "audible_start": 0.003,
+    "onset": 0.021,
+    "peak": 0.121,
+    "body_end": 0.913,
+    "audible_end": 0.941
+   },
+   "span_seconds": 0.91,
+   "fits_seconds": [
+    0.73,
+    1.14
+   ],
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -15.5,
+    "tier": "empty"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.8,
+     1.25
+    ],
+    "notes": "Change the rate to fit the change's length; beyond that, trim the end with a short fade."
+   },
+   "pairs_with": [
+    {
+     "category": "pops",
+     "how": "A shape that grows and lands: grow, then a small pop where it settles."
+    }
+   ],
+   "character": "gurgling drain",
+   "sha256": "c9cf270ccc865968a0ec8846619342a94909a387f405f6305534b258d1ab969a"
+  },
+  {
+   "id": "transform-fill",
+   "name": "Fill",
+   "category": "shape-changes",
+   "file": "sounds/shape-changes/transform-fill.wav",
+   "variant": {
+    "item": "fill"
+   },
+   "description": "Water filling a glass, its note rising as it fills.",
+   "use_for": [
+    "A container or bar filling up",
+    "Progress, capacity, a goal filling",
+    "Pouring a drink"
+   ],
+   "avoid_for": [
+    "Hard, mechanical movements (use whooshes or impacts)"
+   ],
+   "tags": [
+    "shape",
+    "transform",
+    "morph",
+    "fill",
+    "motion graphics",
+    "natural"
+   ],
+   "duration": 1.218,
+   "channels": 1,
+   "sync": {
+    "at": 0.003,
+    "meets": "action-start",
+    "how": "Start it with the change and match its length; it follows the change's progress from start to end."
+   },
+   "timing": {
+    "audible_start": 0.003,
+    "onset": 0.025,
+    "peak": 0.65,
+    "body_end": 1.182,
+    "audible_end": 1.208
+   },
+   "span_seconds": 1.179,
+   "fits_seconds": [
+    0.94,
+    1.47
+   ],
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -15.9,
+    "tier": "fill"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.8,
+     1.25
+    ],
+    "notes": "Change the rate to fit the change's length; beyond that, trim the end with a short fade."
+   },
+   "pairs_with": [
+    {
+     "category": "pops",
+     "how": "A shape that grows and lands: grow, then a small pop where it settles."
+    }
+   ],
+   "character": "rising pour",
+   "sha256": "52aa4a7ce36a67812de0b22422a8aaad97204a175f7a332fa159165f386f4d3d"
+  },
+  {
+   "id": "mechanical-latch-heavy",
+   "name": "Latch, heavy",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-latch-heavy.wav",
+   "variant": {
+    "mechanism": "latch",
+    "weight": "heavy"
+   },
+   "description": "A door latch catching: a slide and a solid click home.",
+   "use_for": [
+    "A door, lid or panel closing",
+    "Something clicking securely into place",
+    "Locking a card or module in"
+   ],
+   "avoid_for": [
+    "Small, delicate UI (use light)"
+   ],
+   "tags": [
+    "mechanical",
+    "latch",
+    "heavy",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.191,
+   "channels": 1,
+   "sync": {
+    "at": 0.078,
+    "meets": "instant",
+    "how": "Sync point on the frame it closes."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0.012,
+    "peak": 0.078,
+    "body_end": 0.12,
+    "audible_end": 0.168
+   },
+   "level": {
+    "lufs": -22.5,
+    "true_peak_dbtp": -9.3,
+    "tier": "heavy"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "heavy, click home",
+   "sha256": "11e11c062b5cb8be8079000faeac50934eb56547868c5c9c89130ec63b5ecd53"
+  },
+  {
+   "id": "mechanical-latch-light",
+   "name": "Latch, light",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-latch-light.wav",
+   "variant": {
+    "mechanism": "latch",
+    "weight": "light"
+   },
+   "description": "A small latch clicking shut, like a cabinet door.",
+   "use_for": [
+    "A door, lid or panel closing",
+    "Something clicking securely into place",
+    "Locking a card or module in"
+   ],
+   "avoid_for": [
+    "Big, heavy objects (use heavy)"
+   ],
+   "tags": [
+    "mechanical",
+    "latch",
+    "light",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.112,
+   "channels": 1,
+   "sync": {
+    "at": 0.052,
+    "meets": "instant",
+    "how": "Sync point on the frame it closes."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0.005,
+    "peak": 0.052,
+    "body_end": 0.08,
+    "audible_end": 0.105
+   },
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -12,
+    "tier": "light"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "light, click home",
+   "sha256": "6e52e1c07a6d175cc6d5beb6e522621f8296af0274db66a48f5c7f2f49f9d3b2"
+  },
+  {
+   "id": "mechanical-lock-heavy",
+   "name": "Lock, heavy",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-lock-heavy.wav",
+   "variant": {
+    "mechanism": "lock",
+    "weight": "heavy"
+   },
+   "description": "A deadbolt locking: pins turning, then a heavy clunk.",
+   "use_for": [
+    "Security and privacy moments: data locked, account secured",
+    "Unlocking a feature",
+    "A padlock icon closing"
+   ],
+   "avoid_for": [
+    "Small, delicate UI (use light)"
+   ],
+   "tags": [
+    "mechanical",
+    "lock",
+    "heavy",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.464,
+   "channels": 1,
+   "sync": {
+    "at": 0.331,
+    "meets": "instant",
+    "how": "Sync point (the bolt's clunk) on the frame the lock closes; the pins lead into it."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.331,
+    "body_end": 0.392,
+    "audible_end": 0.445
+   },
+   "level": {
+    "lufs": -22.5,
+    "true_peak_dbtp": -10.5,
+    "tier": "heavy"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "heavy, pins and bolt",
+   "sha256": "4293822c820c270ad4ad0d8e291c195a294881f4533e32ce10d99c742ef11ccb"
+  },
+  {
+   "id": "mechanical-lock-light",
+   "name": "Lock, light",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-lock-light.wav",
+   "variant": {
+    "mechanism": "lock",
+    "weight": "light"
+   },
+   "description": "A small lock turning: pin clicks and a light bolt.",
+   "use_for": [
+    "Security and privacy moments: data locked, account secured",
+    "Unlocking a feature",
+    "A padlock icon closing"
+   ],
+   "avoid_for": [
+    "Big, heavy objects (use heavy)"
+   ],
+   "tags": [
+    "mechanical",
+    "lock",
+    "light",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.293,
+   "channels": 1,
+   "sync": {
+    "at": 0.21,
+    "meets": "instant",
+    "how": "Sync point (the bolt's clunk) on the frame the lock closes; the pins lead into it."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.21,
+    "body_end": 0.248,
+    "audible_end": 0.283
+   },
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -12.5,
+    "tier": "light"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "light, pins and bolt",
+   "sha256": "6d66a3f19aa65ae1d3edff5bd936935ebb111fb2d4bfd5a119e8e9b4fbdc3fbe"
+  },
+  {
+   "id": "mechanical-ratchet-heavy",
+   "name": "Ratchet, heavy",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-ratchet-heavy.wav",
+   "variant": {
+    "mechanism": "ratchet",
+    "weight": "heavy"
+   },
+   "description": "A heavier ratchet, slower and deeper clicks.",
+   "use_for": [
+    "A dial or knob being turned",
+    "Values stepping up or down",
+    "Tightening or adjusting something"
+   ],
+   "avoid_for": [
+    "Small, delicate UI (use light)"
+   ],
+   "tags": [
+    "mechanical",
+    "ratchet",
+    "heavy",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.532,
+   "channels": 1,
+   "sync": {
+    "at": 0,
+    "meets": "action-start",
+    "how": "Start it with the turn; trim or fade it to the turn's length."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.419,
+    "body_end": 0.515,
+    "audible_end": 0.525
+   },
+   "span_seconds": 0.515,
+   "fits_seconds": [
+    0.46,
+    0.57
+   ],
+   "level": {
+    "lufs": -22.5,
+    "true_peak_dbtp": -7.7,
+    "tier": "heavy"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "heavy, clicks",
+   "sha256": "7a1fcec1d77e924f6f817a58023118216f72bc4433f26bcf9ac58908a7b76506"
+  },
+  {
+   "id": "mechanical-ratchet-light",
+   "name": "Ratchet, light",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-ratchet-light.wav",
+   "variant": {
+    "mechanism": "ratchet",
+    "weight": "light"
+   },
+   "description": "A small dial or ratchet turning, quick clicks.",
+   "use_for": [
+    "A dial or knob being turned",
+    "Values stepping up or down",
+    "Tightening or adjusting something"
+   ],
+   "avoid_for": [
+    "Big, heavy objects (use heavy)"
+   ],
+   "tags": [
+    "mechanical",
+    "ratchet",
+    "light",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.398,
+   "channels": 1,
+   "sync": {
+    "at": 0,
+    "meets": "action-start",
+    "how": "Start it with the turn; trim or fade it to the turn's length."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.148,
+    "body_end": 0.389,
+    "audible_end": 0.396
+   },
+   "span_seconds": 0.389,
+   "fits_seconds": [
+    0.35,
+    0.43
+   ],
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -13.1,
+    "tier": "light"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "light, clicks",
+   "sha256": "f29795c9e691320214b33fb0be1952a840569548dab3e43b6d7ebd41d7b599b3"
+  },
+  {
+   "id": "mechanical-shutter-heavy",
+   "name": "Shutter, heavy",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-shutter-heavy.wav",
+   "variant": {
+    "mechanism": "shutter",
+    "weight": "heavy"
+   },
+   "description": "A camera's mirror and shutter: a fuller, slower ka-chunk.",
+   "use_for": [
+    "A screenshot or photo being taken",
+    "Capturing a moment, snapshot transitions",
+    "Camera icons"
+   ],
+   "avoid_for": [
+    "Small, delicate UI (use light)"
+   ],
+   "tags": [
+    "mechanical",
+    "shutter",
+    "heavy",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.184,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "instant",
+    "how": "Sync point on the flash or the frame freezing."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.147,
+    "audible_end": 0.17
+   },
+   "level": {
+    "lufs": -22.5,
+    "true_peak_dbtp": -8.6,
+    "tier": "heavy"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "heavy, ka-chik",
+   "sha256": "e3a881f2e86471f577b474ad37ab9601c6a47cb9c9847d52db36b1690a5f88b2"
+  },
+  {
+   "id": "mechanical-shutter-light",
+   "name": "Shutter, light",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-shutter-light.wav",
+   "variant": {
+    "mechanism": "shutter",
+    "weight": "light"
+   },
+   "description": "A compact camera shutter: a quick ka-chik.",
+   "use_for": [
+    "A screenshot or photo being taken",
+    "Capturing a moment, snapshot transitions",
+    "Camera icons"
+   ],
+   "avoid_for": [
+    "Big, heavy objects (use heavy)"
+   ],
+   "tags": [
+    "mechanical",
+    "shutter",
+    "light",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.11,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "instant",
+    "how": "Sync point on the flash or the frame freezing."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.085,
+    "audible_end": 0.104
+   },
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -11.6,
+    "tier": "light"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "light, ka-chik",
+   "sha256": "e2f95d0345aeb91871f74ba26d9618031d6f50e8bc7359acf9a8d28e6b3be000"
+  },
+  {
+   "id": "mechanical-slider-heavy",
+   "name": "Slider, heavy",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-slider-heavy.wav",
+   "variant": {
+    "mechanism": "slider",
+    "weight": "heavy"
+   },
+   "description": "A wooden drawer sliding shut.",
+   "use_for": [
+    "A drawer or panel sliding shut",
+    "A slider control moving to its end",
+    "Sliding a tray or card into place"
+   ],
+   "avoid_for": [
+    "Small, delicate UI (use light)"
+   ],
+   "tags": [
+    "mechanical",
+    "slider",
+    "heavy",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.734,
+   "channels": 1,
+   "sync": {
+    "at": 0.615,
+    "meets": "arrival",
+    "how": "Line up the stop at the end with the frame it arrives."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0.026,
+    "peak": 0.615,
+    "body_end": 0.669,
+    "audible_end": 0.716
+   },
+   "span_seconds": 0.615,
+   "fits_seconds": [
+    0.55,
+    0.68
+   ],
+   "level": {
+    "lufs": -22.5,
+    "true_peak_dbtp": -14.6,
+    "tier": "heavy"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "heavy, slide and stop",
+   "sha256": "1022f2a38c05ab9fdae741c3b0e5483111cbda5f40ee9f66a44e4d458b6b4dc6"
+  },
+  {
+   "id": "mechanical-slider-light",
+   "name": "Slider, light",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-slider-light.wav",
+   "variant": {
+    "mechanism": "slider",
+    "weight": "light"
+   },
+   "description": "A small slider gliding to its stop.",
+   "use_for": [
+    "A drawer or panel sliding shut",
+    "A slider control moving to its end",
+    "Sliding a tray or card into place"
+   ],
+   "avoid_for": [
+    "Big, heavy objects (use heavy)"
+   ],
+   "tags": [
+    "mechanical",
+    "slider",
+    "light",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.439,
+   "channels": 1,
+   "sync": {
+    "at": 0.424,
+    "meets": "arrival",
+    "how": "Line up the stop at the end with the frame it arrives."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0.023,
+    "peak": 0.424,
+    "body_end": 0.434,
+    "audible_end": 0.438
+   },
+   "span_seconds": 0.424,
+   "fits_seconds": [
+    0.38,
+    0.47
+   ],
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -8.8,
+    "tier": "light"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "light, slide and stop",
+   "sha256": "6bacb52b25304c70fd5f52792fe7a2db3f6d250a807eeaa8a29da0629800f535"
+  },
+  {
+   "id": "mechanical-switch-heavy",
+   "name": "Switch, heavy",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-switch-heavy.wav",
+   "variant": {
+    "mechanism": "switch",
+    "weight": "heavy"
+   },
+   "description": "A heavy switch thrown: a deep, solid clack.",
+   "use_for": [
+    "A setting switched on",
+    "Lights or power coming on",
+    "A physical-feeling toggle"
+   ],
+   "avoid_for": [
+    "Small, delicate UI (use light)"
+   ],
+   "tags": [
+    "mechanical",
+    "switch",
+    "heavy",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.099,
+   "channels": 1,
+   "sync": {
+    "at": 0.021,
+    "meets": "instant",
+    "how": "Sync point on the frame it switches."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.021,
+    "body_end": 0.046,
+    "audible_end": 0.084
+   },
+   "level": {
+    "lufs": -22.5,
+    "true_peak_dbtp": -6.1,
+    "tier": "heavy"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "heavy, snap",
+   "sha256": "8efa3f5ffb984eb05f381f39c21d6588c841f13941673657f0648e6511e81e17"
+  },
+  {
+   "id": "mechanical-switch-light",
+   "name": "Switch, light",
+   "category": "mechanical",
+   "file": "sounds/mechanical/mechanical-switch-light.wav",
+   "variant": {
+    "mechanism": "switch",
+    "weight": "light"
+   },
+   "description": "A light switch flicked: a crisp snap.",
+   "use_for": [
+    "A setting switched on",
+    "Lights or power coming on",
+    "A physical-feeling toggle"
+   ],
+   "avoid_for": [
+    "Big, heavy objects (use heavy)"
+   ],
+   "tags": [
+    "mechanical",
+    "switch",
+    "light",
+    "physical",
+    "natural"
+   ],
+   "duration": 0.032,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "instant",
+    "how": "Sync point on the frame it switches."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.024,
+    "audible_end": 0.03
+   },
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -7.1,
+    "tier": "light"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Faster sounds smaller and lighter, slower bigger: keep changes small."
+   },
+   "pairs_with": [
+    {
+     "category": "impacts",
+     "how": "A heavy door or lid closing: the latch at its sync point with a light or medium impact at \u22126 dB."
+    },
+    {
+     "category": "interface",
+     "how": "A UI control with a physical feel: the click with the mechanism at \u22126 dB."
+    }
+   ],
+   "character": "light, snap",
+   "sha256": "84efeec4a0cf157aa78169a55fc272b9a1d473932358c0db68d676ac03f6b5f9"
+  },
+  {
+   "id": "foley-card-slide",
+   "name": "Card slide",
+   "category": "foley",
+   "file": "sounds/foley/foley-card-slide.wav",
+   "variant": {
+    "material": "card",
+    "action": "slide"
+   },
+   "description": "A card slid across a table: a smooth little zip.",
+   "use_for": [
+    "Cards dealt or placed",
+    "Business or credit cards",
+    "Tickets and labels",
+    "Something sliding into or across the frame"
+   ],
+   "avoid_for": [
+    "Single taps (use touch)"
+   ],
+   "tags": [
+    "foley",
+    "card",
+    "slide",
+    "material",
+    "natural"
+   ],
+   "duration": 0.362,
+   "channels": 1,
+   "sync": {
+    "at": 0,
+    "meets": "action-start",
+    "how": "Start it with the move; its level follows a natural speed curve (fastest in the middle), so it suits an ease-in-out move of about the same length."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0.021,
+    "peak": 0.157,
+    "body_end": 0.338,
+    "audible_end": 0.355
+   },
+   "span_seconds": 0.338,
+   "fits_seconds": [
+    0.3,
+    0.38
+   ],
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -19.4,
+    "tier": "slide"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "To fit a longer or shorter move, change the rate a little; beyond that, fade the end."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "card, slide",
+   "sha256": "6d73b22aea80a5372da1449a8c213f6c528b24a3f6c923dbc173251d5e28a246"
+  },
+  {
+   "id": "foley-card-touch",
+   "name": "Card touch",
+   "category": "foley",
+   "file": "sounds/foley/foley-card-touch.wav",
+   "variant": {
+    "material": "card",
+    "action": "touch"
+   },
+   "description": "A stiff card set down: a short, crisp tack.",
+   "use_for": [
+    "Cards dealt or placed",
+    "Business or credit cards",
+    "Tickets and labels",
+    "Something being touched, tapped or set down"
+   ],
+   "avoid_for": [
+    "Long movements (use slide)"
+   ],
+   "tags": [
+    "foley",
+    "card",
+    "touch",
+    "material",
+    "natural"
+   ],
+   "duration": 0.05,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "instant",
+    "how": "Sync point on the frame of contact."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.025,
+    "audible_end": 0.043
+   },
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -4.8,
+    "tier": "touch"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Small rate changes only: the material's pitch moves with them."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "card, touch",
+   "sha256": "cf5e73c852c459bec22bcf6e2ba3c950957b36d2db6663679e47cd36e43bed01"
+  },
+  {
+   "id": "foley-fabric-slide",
+   "name": "Fabric slide",
+   "category": "foley",
+   "file": "sounds/foley/foley-fabric-slide.wav",
+   "variant": {
+    "material": "fabric",
+    "action": "slide"
+   },
+   "description": "A cloth swish, soft and airy.",
+   "use_for": [
+    "Clothing, bags and soft products",
+    "Gentle, human touches",
+    "Covers lifting",
+    "Something sliding into or across the frame"
+   ],
+   "avoid_for": [
+    "Single taps (use touch)"
+   ],
+   "tags": [
+    "foley",
+    "fabric",
+    "slide",
+    "material",
+    "natural"
+   ],
+   "duration": 0.44,
+   "channels": 1,
+   "sync": {
+    "at": 0.006,
+    "meets": "action-start",
+    "how": "Start it with the move; its level follows a natural speed curve (fastest in the middle), so it suits an ease-in-out move of about the same length."
+   },
+   "timing": {
+    "audible_start": 0.006,
+    "onset": 0.054,
+    "peak": 0.197,
+    "body_end": 0.403,
+    "audible_end": 0.432
+   },
+   "span_seconds": 0.397,
+   "fits_seconds": [
+    0.35,
+    0.44
+   ],
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -15.6,
+    "tier": "slide"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "To fit a longer or shorter move, change the rate a little; beyond that, fade the end."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "fabric, slide",
+   "sha256": "f84ce9c6e0855d9f8a92cbacd7e8c0a2fb1c4d57fd1a53c66866ffdef4bf4456"
+  },
+  {
+   "id": "foley-fabric-touch",
+   "name": "Fabric touch",
+   "category": "foley",
+   "file": "sounds/foley/foley-fabric-touch.wav",
+   "variant": {
+    "material": "fabric",
+    "action": "touch"
+   },
+   "description": "A soft pat and rustle of fabric.",
+   "use_for": [
+    "Clothing, bags and soft products",
+    "Gentle, human touches",
+    "Covers lifting",
+    "Something being touched, tapped or set down"
+   ],
+   "avoid_for": [
+    "Long movements (use slide)"
+   ],
+   "tags": [
+    "foley",
+    "fabric",
+    "touch",
+    "material",
+    "natural"
+   ],
+   "duration": 0.265,
+   "channels": 1,
+   "sync": {
+    "at": 0.022,
+    "meets": "instant",
+    "how": "Sync point on the frame of contact."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0.002,
+    "peak": 0.022,
+    "body_end": 0.146,
+    "audible_end": 0.205
+   },
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -10.4,
+    "tier": "touch"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Small rate changes only: the material's pitch moves with them."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "fabric, touch",
+   "sha256": "b624d47da4c0a331f3f73e04ce81f649ff3c71613f75681b7d00cc2845f3b7e4"
+  },
+  {
+   "id": "foley-glass-slide",
+   "name": "Glass slide",
+   "category": "foley",
+   "file": "sounds/foley/foley-glass-slide.wav",
+   "variant": {
+    "material": "glass",
+    "action": "slide"
+   },
+   "description": "Glass gliding on a surface, faintly singing.",
+   "use_for": [
+    "Glasses and bottles",
+    "Glass screens and panels",
+    "A toast or a clink of success",
+    "Something sliding into or across the frame"
+   ],
+   "avoid_for": [
+    "Single taps (use touch)"
+   ],
+   "tags": [
+    "foley",
+    "glass",
+    "slide",
+    "material",
+    "natural"
+   ],
+   "duration": 0.645,
+   "channels": 1,
+   "sync": {
+    "at": 0.002,
+    "meets": "action-start",
+    "how": "Start it with the move; its level follows a natural speed curve (fastest in the middle), so it suits an ease-in-out move of about the same length."
+   },
+   "timing": {
+    "audible_start": 0.002,
+    "onset": 0.028,
+    "peak": 0.262,
+    "body_end": 0.528,
+    "audible_end": 0.632
+   },
+   "span_seconds": 0.526,
+   "fits_seconds": [
+    0.47,
+    0.58
+   ],
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -19.5,
+    "tier": "slide"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "To fit a longer or shorter move, change the rate a little; beyond that, fade the end."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "glass, slide",
+   "sha256": "95527e1401864053520bf41b849be089810de16bb86ed3415d553219baebddd0"
+  },
+  {
+   "id": "foley-glass-touch",
+   "name": "Glass touch",
+   "category": "foley",
+   "file": "sounds/foley/foley-glass-touch.wav",
+   "variant": {
+    "material": "glass",
+    "action": "touch"
+   },
+   "description": "A glass clink that rings out.",
+   "use_for": [
+    "Glasses and bottles",
+    "Glass screens and panels",
+    "A toast or a clink of success",
+    "Something being touched, tapped or set down"
+   ],
+   "avoid_for": [
+    "Long movements (use slide)",
+    "Rapid repeats: it rings"
+   ],
+   "tags": [
+    "foley",
+    "glass",
+    "touch",
+    "material",
+    "natural"
+   ],
+   "duration": 0.47,
+   "channels": 1,
+   "sync": {
+    "at": 0.011,
+    "meets": "instant",
+    "how": "Sync point on the frame of contact."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.011,
+    "body_end": 0.215,
+    "audible_end": 0.425
+   },
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -17.8,
+    "tier": "touch"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Small rate changes only: the material's pitch moves with them."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "glass, touch",
+   "sha256": "cf673adf193ee40cceefed956b500212b312397b43cfb18257584d42c8694953"
+  },
+  {
+   "id": "foley-paper-slide",
+   "name": "Paper slide",
+   "category": "foley",
+   "file": "sounds/foley/foley-paper-slide.wav",
+   "variant": {
+    "material": "paper",
+    "action": "slide"
+   },
+   "description": "Paper sliding across a desk: a soft, dry hiss.",
+   "use_for": [
+    "Documents, letters and invoices appearing",
+    "Pages turning or notes being handled",
+    "Paperwork and forms",
+    "Something sliding into or across the frame"
+   ],
+   "avoid_for": [
+    "Single taps (use touch)"
+   ],
+   "tags": [
+    "foley",
+    "paper",
+    "slide",
+    "material",
+    "natural"
+   ],
+   "duration": 0.492,
+   "channels": 1,
+   "sync": {
+    "at": 0.006,
+    "meets": "action-start",
+    "how": "Start it with the move; its level follows a natural speed curve (fastest in the middle), so it suits an ease-in-out move of about the same length."
+   },
+   "timing": {
+    "audible_start": 0.006,
+    "onset": 0.038,
+    "peak": 0.254,
+    "body_end": 0.458,
+    "audible_end": 0.481
+   },
+   "span_seconds": 0.452,
+   "fits_seconds": [
+    0.4,
+    0.5
+   ],
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -17.6,
+    "tier": "slide"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "To fit a longer or shorter move, change the rate a little; beyond that, fade the end."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "paper, slide",
+   "sha256": "5c46a7e86caeb6f71249fa294b5e654866f283c0470d39ab756b671f7c4c2e17"
+  },
+  {
+   "id": "foley-paper-touch",
+   "name": "Paper touch",
+   "category": "foley",
+   "file": "sounds/foley/foley-paper-touch.wav",
+   "variant": {
+    "material": "paper",
+    "action": "touch"
+   },
+   "description": "A sheet of paper handled: a quick crinkle and rustle.",
+   "use_for": [
+    "Documents, letters and invoices appearing",
+    "Pages turning or notes being handled",
+    "Paperwork and forms",
+    "Something being touched, tapped or set down"
+   ],
+   "avoid_for": [
+    "Long movements (use slide)"
+   ],
+   "tags": [
+    "foley",
+    "paper",
+    "touch",
+    "material",
+    "natural"
+   ],
+   "duration": 0.31,
+   "channels": 1,
+   "sync": {
+    "at": 0.022,
+    "meets": "instant",
+    "how": "Sync point on the frame of contact."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.022,
+    "body_end": 0.166,
+    "audible_end": 0.272
+   },
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -9.9,
+    "tier": "touch"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Small rate changes only: the material's pitch moves with them."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "paper, touch",
+   "sha256": "37c6dd31840b0910df0f61b5714a8aba916c704a33eee6293a92603cea9e1360"
+  },
+  {
+   "id": "foley-plastic-slide",
+   "name": "Plastic slide",
+   "category": "foley",
+   "file": "sounds/foley/foley-plastic-slide.wav",
+   "variant": {
+    "material": "plastic",
+    "action": "slide"
+   },
+   "description": "Plastic sliding: a bright, light scrape.",
+   "use_for": [
+    "Plastic products and packaging",
+    "Devices and cases",
+    "Containers opening or being set down",
+    "Something sliding into or across the frame"
+   ],
+   "avoid_for": [
+    "Single taps (use touch)"
+   ],
+   "tags": [
+    "foley",
+    "plastic",
+    "slide",
+    "material",
+    "natural"
+   ],
+   "duration": 0.407,
+   "channels": 1,
+   "sync": {
+    "at": 0.006,
+    "meets": "action-start",
+    "how": "Start it with the move; its level follows a natural speed curve (fastest in the middle), so it suits an ease-in-out move of about the same length."
+   },
+   "timing": {
+    "audible_start": 0.006,
+    "onset": 0.045,
+    "peak": 0.196,
+    "body_end": 0.36,
+    "audible_end": 0.395
+   },
+   "span_seconds": 0.354,
+   "fits_seconds": [
+    0.32,
+    0.39
+   ],
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -17.9,
+    "tier": "slide"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "To fit a longer or shorter move, change the rate a little; beyond that, fade the end."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "plastic, slide",
+   "sha256": "e5e4f6991ed4a266ec05f59d99c809e90e8649f6443308fffd788162a79bc686"
+  },
+  {
+   "id": "foley-plastic-touch",
+   "name": "Plastic touch",
+   "category": "foley",
+   "file": "sounds/foley/foley-plastic-touch.wav",
+   "variant": {
+    "material": "plastic",
+    "action": "touch"
+   },
+   "description": "A hollow tap on plastic.",
+   "use_for": [
+    "Plastic products and packaging",
+    "Devices and cases",
+    "Containers opening or being set down",
+    "Something being touched, tapped or set down"
+   ],
+   "avoid_for": [
+    "Long movements (use slide)"
+   ],
+   "tags": [
+    "foley",
+    "plastic",
+    "touch",
+    "material",
+    "natural"
+   ],
+   "duration": 0.079,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "instant",
+    "how": "Sync point on the frame of contact."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 0.043,
+    "audible_end": 0.069
+   },
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -10.2,
+    "tier": "touch"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Small rate changes only: the material's pitch moves with them."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "plastic, touch",
+   "sha256": "c61e0be4b1f150b55f4efc7088991b137d73562b0f75302061348291091482f4"
+  },
+  {
+   "id": "foley-wood-slide",
+   "name": "Wood slide",
+   "category": "foley",
+   "file": "sounds/foley/foley-wood-slide.wav",
+   "variant": {
+    "material": "wood",
+    "action": "slide"
+   },
+   "description": "Wood sliding on wood: a grainy rub.",
+   "use_for": [
+    "Wooden objects and furniture",
+    "Knocking on a surface",
+    "Natural, crafted products",
+    "Something sliding into or across the frame"
+   ],
+   "avoid_for": [
+    "Single taps (use touch)"
+   ],
+   "tags": [
+    "foley",
+    "wood",
+    "slide",
+    "material",
+    "natural"
+   ],
+   "duration": 0.585,
+   "channels": 1,
+   "sync": {
+    "at": 0.01,
+    "meets": "action-start",
+    "how": "Start it with the move; its level follows a natural speed curve (fastest in the middle), so it suits an ease-in-out move of about the same length."
+   },
+   "timing": {
+    "audible_start": 0.01,
+    "onset": 0.051,
+    "peak": 0.297,
+    "body_end": 0.541,
+    "audible_end": 0.571
+   },
+   "span_seconds": 0.531,
+   "fits_seconds": [
+    0.47,
+    0.59
+   ],
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -18.9,
+    "tier": "slide"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "To fit a longer or shorter move, change the rate a little; beyond that, fade the end."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "wood, slide",
+   "sha256": "a2d329063e4c0aae68be9fb1b4a9ee4a24d0ad749ed5d9bc7de6618b0602a047"
+  },
+  {
+   "id": "foley-wood-touch",
+   "name": "Wood touch",
+   "category": "foley",
+   "file": "sounds/foley/foley-wood-touch.wav",
+   "variant": {
+    "material": "wood",
+    "action": "touch"
+   },
+   "description": "A knuckle knock on wood.",
+   "use_for": [
+    "Wooden objects and furniture",
+    "Knocking on a surface",
+    "Natural, crafted products",
+    "Something being touched, tapped or set down"
+   ],
+   "avoid_for": [
+    "Long movements (use slide)"
+   ],
+   "tags": [
+    "foley",
+    "wood",
+    "touch",
+    "material",
+    "natural"
+   ],
+   "duration": 0.128,
+   "channels": 1,
+   "sync": {
+    "at": 0.012,
+    "meets": "instant",
+    "how": "Sync point on the frame of contact."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.012,
+    "body_end": 0.065,
+    "audible_end": 0.114
+   },
+   "level": {
+    "lufs": -24,
+    "true_peak_dbtp": -11.7,
+    "tier": "touch"
+   },
+   "under_voiceover_db": -2,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.12
+    ],
+    "notes": "Small rate changes only: the material's pitch moves with them."
+   },
+   "pairs_with": [
+    {
+     "category": "whooshes",
+     "how": "Something physical moving quickly: a soft whoosh with the slide at \u22126 dB, or the touch on the landing."
+    },
+    {
+     "category": "impacts",
+     "how": "Something heavier set down: a light impact with the touch for the material's texture."
+    }
+   ],
+   "character": "wood, touch",
+   "sha256": "bcd88241dcd12a07ce335806e3d58f6deb85cb6971aa997dfa984edc1bc81db7"
+  },
+  {
+   "id": "time-alarm",
+   "name": "Alarm clock",
+   "category": "time",
+   "file": "sounds/time/time-alarm.wav",
+   "variant": {
+    "item": "alarm"
+   },
+   "description": "An alarm clock ringing: a hammer rattling between two bells.",
+   "use_for": [
+    "Wake-up calls, reminders",
+    "A problem demanding attention",
+    "Starting the day"
+   ],
+   "avoid_for": [
+    "Calm scenes",
+    "On top of speech: it's loud and long"
+   ],
+   "tags": [
+    "time",
+    "clock",
+    "alarm",
+    "natural"
+   ],
+   "duration": 2.314,
+   "channels": 1,
+   "sync": {
+    "at": 0,
+    "meets": "action-start",
+    "how": "Sync point on the frame it happens."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 1.01,
+    "body_end": 2.078,
+    "audible_end": 2.273
+   },
+   "span_seconds": 2.078,
+   "fits_seconds": [
+    1.89,
+    2.31
+   ],
+   "level": {
+    "lufs": -21,
+    "true_peak_dbtp": -15.7,
+    "tier": "alarm"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "Small rate changes only; loop the ticking for longer scenes."
+   },
+   "pairs_with": [
+    {
+     "category": "notifications",
+     "how": "Time's up with a result: the timer, then a success or failure 200 ms after."
+    }
+   ],
+   "character": "rattling bells",
+   "sha256": "aae78ca98fed919ccf4753e34b1f9422494d9618adc4f19b75806caa01870b3b"
+  },
+  {
+   "id": "time-clock",
+   "name": "Clock ticking",
+   "category": "time",
+   "file": "sounds/time/time-clock.wav",
+   "variant": {
+    "item": "clock"
+   },
+   "description": "A clock ticking: tick, tock, once a second.",
+   "use_for": [
+    "Time passing, waiting",
+    "Saving time, deadlines, schedules",
+    "Loop it under a scene"
+   ],
+   "avoid_for": [
+    "Moments that need no sense of time"
+   ],
+   "tags": [
+    "time",
+    "clock",
+    "natural"
+   ],
+   "duration": 3.037,
+   "channels": 1,
+   "sync": {
+    "at": 0,
+    "meets": "action-start",
+    "how": "Start it with the scene: it ticks once a second from its very start. Loop it for longer."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 3.02,
+    "audible_end": 3.029
+   },
+   "span_seconds": 3.02,
+   "fits_seconds": [
+    2.75,
+    3.36
+   ],
+   "level": {
+    "lufs": -27,
+    "true_peak_dbtp": -9.7,
+    "tier": "clock"
+   },
+   "under_voiceover_db": -1,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "Small rate changes only; loop the ticking for longer scenes."
+   },
+   "pairs_with": [
+    {
+     "category": "notifications",
+     "how": "Time's up with a result: the timer, then a success or failure 200 ms after."
+    }
+   ],
+   "character": "tick-tock",
+   "sha256": "164a3bf0324a6914ddebf1593e1d718081ab91feb7ae38a09fe91200a2e0a54e"
+  },
+  {
+   "id": "time-clock-fast",
+   "name": "Fast ticking",
+   "category": "time",
+   "file": "sounds/time/time-clock-fast.wav",
+   "variant": {
+    "item": "clock-fast"
+   },
+   "description": "Fast, urgent ticking: twice a second.",
+   "use_for": [
+    "Time running out, urgency",
+    "A deadline approaching",
+    "Tension before a reveal"
+   ],
+   "avoid_for": [
+    "Moments that need no sense of time"
+   ],
+   "tags": [
+    "time",
+    "clock",
+    "clock fast",
+    "natural"
+   ],
+   "duration": 2.534,
+   "channels": 1,
+   "sync": {
+    "at": 0,
+    "meets": "action-start",
+    "how": "Start it with the scene: it ticks twice a second from its very start. Loop it for longer."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 1.01,
+    "body_end": 2.519,
+    "audible_end": 2.527
+   },
+   "span_seconds": 2.519,
+   "fits_seconds": [
+    2.29,
+    2.8
+   ],
+   "level": {
+    "lufs": -25,
+    "true_peak_dbtp": -7.8,
+    "tier": "clock-fast"
+   },
+   "under_voiceover_db": -1,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "Small rate changes only; loop the ticking for longer scenes."
+   },
+   "pairs_with": [
+    {
+     "category": "notifications",
+     "how": "Time's up with a result: the timer, then a success or failure 200 ms after."
+    }
+   ],
+   "character": "urgent ticking",
+   "sha256": "a42d4067dd991cc1e841e346657db0b2577440e690d4ae3ed7839e787dd322fa"
+  },
+  {
+   "id": "time-countdown",
+   "name": "3-2-1 countdown",
+   "category": "time",
+   "file": "sounds/time/time-countdown.wav",
+   "variant": {
+    "item": "countdown"
+   },
+   "description": "A countdown: three beeps a second apart, then a higher beep on go.",
+   "use_for": [
+    "3, 2, 1, go: launches and starts",
+    "Counting down to a reveal",
+    "Races and challenges"
+   ],
+   "avoid_for": [
+    "Moments that need no sense of time"
+   ],
+   "tags": [
+    "time",
+    "clock",
+    "countdown",
+    "beep",
+    "321",
+    "digital"
+   ],
+   "duration": 3.604,
+   "channels": 1,
+   "sync": {
+    "at": 0,
+    "meets": "instant",
+    "how": "The beeps are at 0, 1 and 2 s and go at 3 s: line the first up with the 3 on screen."
+   },
+   "parts": [
+    {
+     "what": "3",
+     "at": 0.003
+    },
+    {
+     "what": "2",
+     "at": 1.003
+    },
+    {
+     "what": "1",
+     "at": 2.003
+    },
+    {
+     "what": "go",
+     "at": 3.003
+    }
+   ],
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 3.014,
+    "body_end": 3.593,
+    "audible_end": 3.602
+   },
+   "level": {
+    "lufs": -22,
+    "true_peak_dbtp": -22.2,
+    "tier": "countdown"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     1,
+     1
+    ],
+    "notes": "Don't change the rate: the beeps are a second apart. For a quicker count, use single beeps from it."
+   },
+   "pairs_with": [
+    {
+     "category": "notifications",
+     "how": "Time's up with a result: the timer, then a success or failure 200 ms after."
+    }
+   ],
+   "character": "beeps",
+   "sha256": "fe68c7e906a9f81b26d0b4d4cf744a149660b79f368e2165d639960a7f286cc7"
+  },
+  {
+   "id": "time-stopwatch",
+   "name": "Stopwatch",
+   "category": "time",
+   "file": "sounds/time/time-stopwatch.wav",
+   "variant": {
+    "item": "stopwatch"
+   },
+   "description": "A stopwatch: a click to start, fine ticking, a click to stop.",
+   "use_for": [
+    "Timing something: speed, records, races",
+    "How long something takes",
+    "Quick results"
+   ],
+   "avoid_for": [
+    "Moments that need no sense of time"
+   ],
+   "tags": [
+    "time",
+    "clock",
+    "stopwatch",
+    "natural"
+   ],
+   "duration": 1.628,
+   "channels": 1,
+   "sync": {
+    "at": 0,
+    "meets": "instant",
+    "how": "Sync point on the frame it happens."
+   },
+   "parts": [
+    {
+     "what": "start click",
+     "at": 0.003
+    },
+    {
+     "what": "stop click",
+     "at": 1.603
+    }
+   ],
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.01,
+    "body_end": 1.617,
+    "audible_end": 1.624
+   },
+   "level": {
+    "lufs": -26,
+    "true_peak_dbtp": -9.1,
+    "tier": "stopwatch"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "Small rate changes only; loop the ticking for longer scenes."
+   },
+   "pairs_with": [
+    {
+     "category": "notifications",
+     "how": "Time's up with a result: the timer, then a success or failure 200 ms after."
+    }
+   ],
+   "character": "click, tick, click",
+   "sha256": "142995088eacac5244df7a33ceda77bbd088607a0b6013c8fbb640baeb1a6dec"
+  },
+  {
+   "id": "time-timer",
+   "name": "Timer done",
+   "category": "time",
+   "file": "sounds/time/time-timer.wav",
+   "variant": {
+    "item": "timer"
+   },
+   "description": "A timer finishing: a click and a bright ting-ting.",
+   "use_for": [
+    "Time's up, done, ready",
+    "Cooking and processes finishing",
+    "A task complete"
+   ],
+   "avoid_for": [
+    "Moments that need no sense of time"
+   ],
+   "tags": [
+    "time",
+    "clock",
+    "timer",
+    "natural"
+   ],
+   "duration": 1.102,
+   "channels": 1,
+   "sync": {
+    "at": 0.139,
+    "meets": "instant",
+    "how": "Sync point on the frame it happens."
+   },
+   "timing": {
+    "audible_start": 0,
+    "onset": 0,
+    "peak": 0.139,
+    "body_end": 0.558,
+    "audible_end": 1.082
+   },
+   "level": {
+    "lufs": -22,
+    "true_peak_dbtp": -14.5,
+    "tier": "timer"
+   },
+   "under_voiceover_db": -3,
+   "adapt": {
+    "rate": [
+     0.9,
+     1.1
+    ],
+    "notes": "Small rate changes only; loop the ticking for longer scenes."
+   },
+   "pairs_with": [
+    {
+     "category": "notifications",
+     "how": "Time's up with a result: the timer, then a success or failure 200 ms after."
+    }
+   ],
+   "character": "ting-ting",
+   "sha256": "d7e2f137b81f3142f1c1600200c000c758cdc528c6b0eeeafbc00622651948dd"
+  }
+ ]
+}

@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0"><canvas id="c" width="2560" height="1440"></canvas>
+<script type="module">
+import * as T from './toon.js'; import { tagCard } from './props_see.js';
+const c=document.getElementById('c'), g=c.getContext('2d'), W=2560, H=1440;
+const bg=g.createLinearGradient(0,0,W,H); bg.addColorStop(0,'#ffc23a'); bg.addColorStop(0.5,'#ff9a3a'); bg.addColorStop(1,'#f0642a');
+g.fillStyle=bg; g.fillRect(0,0,W,H);
+g.save(); g.translate(W/2,H/2); g.globalAlpha=0.1; g.fillStyle='#fff';
+for(let k=0;k<24;k++){ g.rotate(Math.PI/12); g.beginPath(); g.moveTo(0,0); g.lineTo(2000,-120); g.lineTo(2000,120); g.closePath(); g.fill(); } g.restore();
+// faint symbols all over
+g.globalAlpha=0.28; g.fillStyle='#fff'; g.font='900 110px "Arial Black", sans-serif'; g.textAlign='center'; g.textBaseline='middle';
+const sy=['%','×','=','+','?','÷','π','∞']; let k=0;
+for(let y=120;y<H;y+=230) for(let x=(y/230%2)*150+90;x<W;x+=300){ if(x>600&&x<1960&&y>460&&y<980) continue; g.fillText(sy[k++%sy.length],x,y); }
+g.globalAlpha=1;
+// safe area: 1546 x 423 centred (507..2053, 508..931)
+const cx=W/2, cy=H/2;
+// host on the left of the safe area
+const cv=document.createElement('canvas'); cv.width=600; cv.height=1000;
+T.romanFront(new T.Pen(cv.getContext('2d')),'host',{seed:4,expr:'grin',R:'point',facing:1,look:0.5});
+g.drawImage(cv, 520, 445, 280, 466);
+// floating number tags
+const tag=(t,col,x,y,s)=>{ const tc=document.createElement('canvas'); tc.width=600; tc.height=1000; tagCard(new T.Pen(tc.getContext('2d')),{t,col}); g.drawImage(tc,x-300*s,y-675*s,600*s,1000*s); };
+tag('288','#ff8a5a',1985,600,0.38); tag('0','#ffd23a',1830,890,0.3); tag('5','#5ac0ff',1990,870,0.3);
+// logo
+g.textAlign='center'; g.textBaseline='middle'; g.lineJoin='round';
+g.font='900 210px "Arial Black", Impact, sans-serif';
+g.strokeStyle='#241726'; g.lineWidth=34; g.strokeText('FACTOPIA', cx+40, cy-40);
+g.fillStyle='#ffffff'; g.fillText('FACTOPIA', cx+40, cy-40);
+g.font='800 68px "Arial Black", sans-serif'; g.lineWidth=16; g.strokeText('Real facts. Wild what-ifs.', cx+40, cy+120); g.fillStyle='#ffe27a'; g.fillText('Real facts. Wild what-ifs.', cx+40, cy+120);
+window.done=true;
+</script></body></html>

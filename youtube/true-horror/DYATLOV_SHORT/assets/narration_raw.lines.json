@@ -1,0 +1,122 @@
+[
+ {
+  "emotion": "tense",
+  "text": "In 1959, nine hikers in the Soviet Ural Mountains cut their way out of their own tent...",
+  "s": 0.0,
+  "e": 5.67
+ },
+ {
+  "emotion": "dread",
+  "text": "and walked into the freezing dark.",
+  "s": 5.92,
+  "e": 8.4
+ },
+ {
+  "emotion": "calm",
+  "text": "They were experienced. Most were students from the Ural Polytechnic Institute.",
+  "s": 8.8,
+  "e": 13.6
+ },
+ {
+  "emotion": "calm",
+  "text": "Their leader was twenty-three-year-old Igor Dyatlov.",
+  "s": 13.8,
+  "e": 17.31
+ },
+ {
+  "emotion": "tense",
+  "text": "On the night of February first, they camped on a bare, open slope.",
+  "s": 17.56,
+  "e": 21.36
+ },
+ {
+  "emotion": "dread",
+  "text": "The local Mansi people called the mountain Kholat Syakhl. Dead Mountain.",
+  "s": 21.61,
+  "e": 26.65
+ },
+ {
+  "emotion": "whisper",
+  "text": "They never came back.",
+  "s": 27.1,
+  "e": 28.98
+ },
+ {
+  "emotion": "curious",
+  "text": "Weeks later, searchers found the tent, half buried in snow.",
+  "s": 29.43,
+  "e": 32.63
+ },
+ {
+  "emotion": "tense",
+  "text": "It had been cut open... from the inside.",
+  "s": 32.88,
+  "e": 35.32
+ },
+ {
+  "emotion": "curious",
+  "text": "Their boots were still inside.",
+  "s": 35.77,
+  "e": 37.8
+ },
+ {
+  "emotion": "dread",
+  "text": "Footprints in socks and bare feet led down the slope, toward the forest.",
+  "s": 38.1,
+  "e": 42.94
+ },
+ {
+  "emotion": "calm",
+  "text": "The first of them were found by a cedar tree, beside the remains of a small fire.",
+  "s": 43.24,
+  "e": 47.97
+ },
+ {
+  "emotion": "tense",
+  "text": "The last four weren't found until May, deep in a ravine.",
+  "s": 48.22,
+  "e": 51.46
+ },
+ {
+  "emotion": "dread",
+  "text": "Some had injuries investigators struggled to explain.",
+  "s": 51.71,
+  "e": 55.58
+ },
+ {
+  "emotion": "whisper",
+  "text": "Some of their clothing reportedly showed traces of radiation.",
+  "s": 55.83,
+  "e": 59.59
+ },
+ {
+  "emotion": "calm",
+  "text": "The Soviet investigation blamed a compelling natural force, and closed the case.",
+  "s": 59.99,
+  "e": 65.03
+ },
+ {
+  "emotion": "curious",
+  "text": "In 2020, Russian prosecutors concluded it was an avalanche.",
+  "s": 65.33,
+  "e": 69.16
+ },
+ {
+  "emotion": "tense",
+  "text": "But many people still don't believe it.",
+  "s": 69.41,
+  "e": 71.89
+ },
+ {
+  "emotion": "dread",
+  "text": "Why would nine experienced hikers run into the night without their boots?",
+  "s": 72.29,
+  "e": 77.41
+ },
+ {
+  "emotion": "whisper",
+  "text": "What do you think happened on Dead Mountain?",
+  "s": 77.81,
+  "e": 80.49
+ }
+]

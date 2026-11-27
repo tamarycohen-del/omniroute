@@ -1,0 +1,213 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+// TROJAN HORSE - how it actually worked. Realistic cinematic 3D, every frame computed in code (three.js), deterministic.
+import * as THREE from 'three';
+import { Sky } from 'three/addons/objects/Sky.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const W = 1080, H = 1920, out = document.getElementById('c'), ctx = out.getContext('2d');
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); }, lerp = (a, b, u) => a + (b - a) * u;
+const hash = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(W, H, false); renderer.setPixelRatio(1); renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.55;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(40, W / H, 0.3, 6000);
+
+// ---------- procedural textures ----------
+const canvasTex = (w, h, draw, rep = [1, 1]) => { const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d'); draw(g, w, h); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep[0], rep[1]); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t; };
+const noiseFill = (g, w, h, base, amt, n = 9000, sz = 2, seed = 1) => { g.fillStyle = base; g.fillRect(0, 0, w, h); for (let i = 0; i < n; i++) { const v = (hash(i * 3.1 + seed) - 0.5) * amt; g.fillStyle = v > 0 ? `rgba(255,255,255,${v})` : `rgba(0,0,0,${-v})`; g.fillRect(hash(i * 1.3 + seed) * w, hash(i * 7.7 + seed) * h, sz, sz); } };
+const woodTex = canvasTex(512, 512, (g, w, h) => { g.fillStyle = '#6b4a2c'; g.fillRect(0, 0, w, h); for (let p = 0; p < 8; p++) { const y = p * 64; g.fillStyle = `hsl(28,${35 + hash(p) * 10}%,${22 + hash(p + 3) * 10}%)`; g.fillRect(0, y, w, 62); g.fillStyle = 'rgba(0,0,0,0.55)'; g.fillRect(0, y + 62, w, 2);
+  for (let k = 0; k < 40; k++) { g.strokeStyle = `rgba(${hash(k + p) > 0.5 ? '255,220,170' : '20,10,0'},${0.05 + hash(k * 3 + p) * 0.08})`; g.lineWidth = 1 + hash(k) * 2; g.beginPath(); const yy = y + hash(k * 7 + p) * 60; g.moveTo(0, yy); for (let x = 0; x <= w; x += 32) g.lineTo(x, yy + Math.sin(x * 0.02 + k) * 3); g.stroke(); }
+  for (let k = 0; k < 3; k++) { g.fillStyle = 'rgba(30,15,5,0.6)'; g.beginPath(); g.ellipse(hash(k + p * 5) * w, y + 30, 9, 5, 0, 0, 7); g.fill(); } } }, [2, 2]);
+const stoneTex = canvasTex(512, 512, (g, w, h) => { noiseFill(g, w, h, '#c9b893', 0.25, 30000, 2, 3); for (let r = 0; r < 8; r++) for (let c = 0; c < 4; c++) { const off = r % 2 ? 64 : 0; g.strokeStyle = 'rgba(60,45,25,0.45)'; g.lineWidth = 3; g.strokeRect(c * 128 + off, r * 64, 128, 64); g.fillStyle = `rgba(${hash(r * 4 + c) > 0.5 ? '255,245,220' : '90,70,40'},${0.08 * hash(r + c * 9)})`; g.fillRect(c * 128 + off, r * 64, 128, 64); } }, [6, 2]);
+const sandTex = canvasTex(512, 512, (g, w, h) => noiseFill(g, w, h, '#cdb58a', 0.22, 60000, 2, 5), [60, 60]);
+const flagTex = canvasTex(512, 512, (g, w, h) => { noiseFill(g, w, h, '#8a7c66', 0.2, 20000, 2, 9); g.strokeStyle = 'rgba(30,25,15,0.6)'; g.lineWidth = 4; for (let i = 0; i <= 4; i++) { g.beginPath(); g.moveTo(i * 128, 0); g.lineTo(i * 128, h); g.stroke(); g.beginPath(); g.moveTo(0, i * 128); g.lineTo(w, i * 128); g.stroke(); } }, [30, 30]);
+
+const M = {
+  wood: new THREE.MeshStandardMaterial({ map: woodTex, bumpMap: woodTex, bumpScale: 0.6, roughness: 0.82, metalness: 0.02 }),
+  woodDark: new THREE.MeshStandardMaterial({ map: woodTex, color: 0x9a8a7a, roughness: 0.85 }),
+  stone: new THREE.MeshStandardMaterial({ map: stoneTex, bumpMap: stoneTex, bumpScale: 1.2, roughness: 0.92 }),
+  sand: new THREE.MeshStandardMaterial({ map: sandTex, bumpMap: sandTex, bumpScale: 0.6, roughness: 1 }),
+  flags: new THREE.MeshStandardMaterial({ map: flagTex, bumpMap: flagTex, bumpScale: 0.5, roughness: 0.9 }),
+  bronze: new THREE.MeshStandardMaterial({ color: 0xb08040, metalness: 0.85, roughness: 0.32 }),
+  rope: new THREE.MeshStandardMaterial({ color: 0xa89060, roughness: 0.95 }),
+  rock: new THREE.MeshStandardMaterial({ color: 0x6d655c, roughness: 0.95, flatShading: true }),
+  hull: new THREE.MeshStandardMaterial({ color: 0x15120f, roughness: 0.6 }),
+  sail: new THREE.MeshStandardMaterial({ color: 0xe8dcc0, roughness: 0.95, side: THREE.DoubleSide }),
+  skin: new THREE.MeshStandardMaterial({ color: 0xb07a55, roughness: 0.7 }),
+  red: new THREE.MeshStandardMaterial({ color: 0x8e1d18, roughness: 0.85 }), navy: new THREE.MeshStandardMaterial({ color: 0x1b2a4a, roughness: 0.85 }),
+  leather: new THREE.MeshStandardMaterial({ color: 0x4a3320, roughness: 0.8 }),
+};
+
+// ---------- sky / sun ----------
+const sky = new Sky(); sky.scale.setScalar(4500); scene.add(sky);
+const SU = sky.material.uniforms; SU.turbidity.value = 6; SU.rayleigh.value = 1.6; SU.mieCoefficient.value = 0.006; SU.mieDirectionalG.value = 0.86;
+const sun = new THREE.DirectionalLight(0xffe2b8, 3.2); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); const sc = sun.shadow.camera; sc.left = -90; sc.right = 90; sc.top = 90; sc.bottom = -90; sc.near = 1; sc.far = 800; sun.shadow.bias = -0.0004; scene.add(sun); scene.add(sun.target);
+const hemi = new THREE.HemisphereLight(0xa9c4e8, 0x6a5232, 0.9); scene.add(hemi);
+const moon = new THREE.DirectionalLight(0x8fa8ff, 0); moon.castShadow = true; moon.shadow.mapSize.set(1024, 1024); Object.assign(moon.shadow.camera, { left: -60, right: 60, top: 60, bottom: -60 }); scene.add(moon); scene.add(moon.target);
+const nightDome = new THREE.Mesh(new THREE.SphereGeometry(4000, 32, 16), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, vertexShader: `varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+  fragmentShader: `varying vec3 vP; float h(vec3 p){ return fract(sin(dot(p, vec3(12.9898,78.233,37.719)))*43758.5453); } void main(){ vec3 d = normalize(vP); float y = max(d.y,0.); vec3 c = mix(vec3(0.03,0.05,0.10), vec3(0.003,0.006,0.02), pow(y,.4)); float s = step(0.9985, h(floor(d*300.))); c += s*vec3(0.8)*y; vec3 m = normalize(vec3(0.5,0.45,-0.8)); float md = dot(d,m); c += vec3(0.9,0.92,1.)*smoothstep(0.9994,0.9997,md) + vec3(0.12,0.15,0.25)*pow(max(md,0.),40.); gl_FragColor = vec4(c,1.); }` }));
+scene.add(nightDome);
+
+// ---------- ground + sea ----------
+const groundGeo = new THREE.PlaneGeometry(1600, 1600, 200, 200); { const p = groundGeo.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); p.setZ(i, Math.sin(x * 0.03) * 0.6 + Math.cos(y * 0.025 + x * 0.01) * 0.8 + (hash(i) - 0.5) * 0.15 - Math.max(0, (-y - 150) * 0.06)); } groundGeo.computeVertexNormals(); }
+const ground = new THREE.Mesh(groundGeo, M.sand); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+const plaza = new THREE.Mesh(new THREE.PlaneGeometry(220, 200), M.flags); plaza.rotation.x = -Math.PI / 2; plaza.position.set(0, 1.5, -105); plaza.receiveShadow = true; scene.add(plaza);
+const SEAU = { uTime: { value: 0 }, uSun: { value: V3(0, 1, 0) }, uNight: { value: 0 } };
+const sea = new THREE.Mesh(new THREE.PlaneGeometry(4000, 3000, 300, 200), new THREE.ShaderMaterial({ uniforms: SEAU,
+  vertexShader: `uniform float uTime; varying vec3 vW; varying vec3 vN;
+  vec3 gw(vec2 p, vec2 d, float a, float l, float s){ float k = 6.2831/l; float f = k*(dot(d,p) - s*uTime); return vec3(d.x*a*cos(f), a*sin(f), d.y*a*cos(f)); }
+  vec3 wv(vec2 p){ return gw(p, normalize(vec2(0.2,1.)), 0.35, 22., 3.) + gw(p, normalize(vec2(-0.7,0.6)), 0.2, 11., 2.2) + gw(p, normalize(vec2(0.9,0.3)), 0.08, 4., 1.5); }
+  void main(){ vec3 p = vec3(position.x, 0., -position.y); vec3 w = p + wv(p.xz); float e = 0.3; vec3 dx = vec3(p.x+e,0.,p.z)+wv(p.xz+vec2(e,0.)) - w; vec3 dz = vec3(p.x,0.,p.z+e)+wv(p.xz+vec2(0.,e)) - w; vN = normalize(cross(dz,dx));
+    vec4 wp = modelMatrix*vec4(w,1.); vW = wp.xyz; gl_Position = projectionMatrix*viewMatrix*wp; }`,
+  fragmentShader: `uniform vec3 uSun; uniform float uNight; varying vec3 vW; varying vec3 vN;
+  void main(){ vec3 V = normalize(cameraPosition - vW); vec3 N = normalize(vN); float fres = pow(1.-max(dot(N,V),0.),5.);
+    vec3 deep = mix(vec3(0.02,0.16,0.20), vec3(0.003,0.01,0.02), uNight); vec3 skyc = mix(vec3(0.55,0.68,0.85), vec3(0.03,0.05,0.10), uNight);
+    vec3 R = reflect(-V,N); float sp = pow(max(dot(R,normalize(uSun)),0.), 300.) * mix(18., 4., uNight);
+    vec3 c = mix(deep, skyc, clamp(0.08 + fres,0.,1.)) + mix(vec3(1.,0.85,0.6), vec3(0.7,0.8,1.), uNight)*sp; float d = length(vW - cameraPosition); c = mix(c, skyc*0.9, 1.-exp(-d*0.0007)); gl_FragColor = vec4(c,1.); }` }));
+sea.position.set(0, -2.2, 1900); scene.add(sea);
+const island = new THREE.Mesh((() => { const g2 = new THREE.IcosahedronGeometry(60, 4); const p = g2.attributes.position; for (let i = 0; i < p.count; i++) { const v = V3(p.getX(i), p.getY(i), p.getZ(i)); const n = 1 + 0.25 * Math.sin(v.x * 0.15) * Math.cos(v.z * 0.12) + 0.1 * (hash(i) - 0.5); v.multiplyScalar(n); v.y *= 0.55; p.setXYZ(i, v.x, v.y, v.z); } g2.computeVertexNormals(); return g2; })(), M.rock);
+island.position.set(-260, -8, 900); island.castShadow = true; scene.add(island);
+
+// ---------- walls of Troy + gate ----------
+const city = new THREE.Group(); scene.add(city);
+const wallH = 18, wallT = 8;
+for (const [x0, x1] of [[-260, -14], [14, 260]]) { const w = x1 - x0; const wall = new THREE.Mesh(new THREE.BoxGeometry(w, wallH, wallT), M.stone); wall.position.set((x0 + x1) / 2, wallH / 2, 0); wall.castShadow = wall.receiveShadow = true; city.add(wall);
+  for (let x = x0 + 2; x < x1 - 2; x += 5) { const m = new THREE.Mesh(new THREE.BoxGeometry(2.6, 2.4, wallT), M.stone); m.position.set(x, wallH + 1.2, 0); m.castShadow = true; city.add(m); } }
+for (const sx of [-1, 1]) { const tw = new THREE.Mesh(new THREE.BoxGeometry(10, wallH + 8, 12), M.stone); tw.position.set(sx * 19, (wallH + 8) / 2, 0); tw.castShadow = tw.receiveShadow = true; city.add(tw); }
+const lintel = new THREE.Mesh(new THREE.BoxGeometry(28, 5, 12), M.stone); lintel.position.set(0, wallH + 1, 0); lintel.castShadow = true; city.add(lintel);
+const doors = []; for (const sx of [-1, 1]) { const pivot = new THREE.Group(); pivot.position.set(sx * 14, 0, -3.5); const d = new THREE.Mesh(new THREE.BoxGeometry(14, 16, 1.2), M.wood); d.position.set(-sx * 7, 8, 0); d.castShadow = d.receiveShadow = true; pivot.add(d);
+  for (let i = 0; i < 18; i++) { const s = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 6), M.bronze); s.position.set(-sx * (2 + (i % 3) * 5), 3 + Math.floor(i / 3) * 2.3, 0.7); pivot.add(s); s.position.z = 0.65; const s2 = s.clone(); s2.position.z = -0.65; pivot.add(s2); }
+  city.add(pivot); doors.push(pivot); }
+const bar = new THREE.Mesh(new THREE.BoxGeometry(30, 1.2, 1.4), M.woodDark); bar.position.set(0, 8, -5); bar.castShadow = true; city.add(bar);
+for (const sx of [-1, 1]) { const br = new THREE.Mesh(new THREE.BoxGeometry(1.2, 2.2, 1.6), M.bronze); br.position.set(sx * 12, 7.6, -5.2); city.add(br); }
+// buildings + columns inside
+for (let i = 0; i < 26; i++) { const x = (hash(i) - 0.5) * 220, z = -40 - hash(i + 9) * 160; if (Math.abs(x) < 26 && z > -80) continue; const h = 8 + hash(i + 3) * 10; const b = new THREE.Mesh(new THREE.BoxGeometry(14 + hash(i + 1) * 10, h, 12 + hash(i + 2) * 8), M.stone); b.position.set(x, h / 2, z); b.castShadow = b.receiveShadow = true; city.add(b); }
+const torches = []; for (const [x, z] of [[-18, -30], [18, -30], [-22, -60], [22, -60], [-12, -6], [12, -6]]) { const col = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.1, 12, 16), M.stone); col.position.set(x, 6, z); col.castShadow = true; city.add(col);
+  const L = new THREE.PointLight(0xff8a3a, 0, 45, 1.6); L.position.set(x, 10, z + 1.2); city.add(L); torches.push(L); }
+
+// ---------- the horse ----------
+const horse = new THREE.Group(); scene.add(horse);
+const add = (geo, mat, pos, rot = [0, 0, 0], parent = horse) => { const m = new THREE.Mesh(geo, mat); m.position.set(...pos); m.rotation.set(...rot); m.castShadow = m.receiveShadow = true; parent.add(m); return m; };
+add(new THREE.BoxGeometry(9, 1.2, 18), M.woodDark, [0, 1.6, 0]);
+const wheels = []; for (const sx of [-1, 1]) for (const z of [-6.5, 6.5]) { const w = add(new THREE.CylinderGeometry(1.5, 1.5, 0.8, 24), M.wood, [sx * 4.8, 1.5, z], [0, 0, Math.PI / 2]); wheels.push(w); }
+const body = add(new THREE.CapsuleGeometry(3.4, 8, 8, 16), M.wood, [0, 10, 0], [Math.PI / 2, 0, 0]); body.scale.set(1, 1, 0.92);
+for (const [x, z] of [[-2.2, -4.5], [2.2, -4.5], [-2.2, 4.5], [2.2, 4.5]]) add(new THREE.CylinderGeometry(0.9, 1.05, 7.6, 12), M.wood, [x, 5.6, z]);
+const neck = add(new THREE.CylinderGeometry(1.7, 2.6, 8, 14), M.wood, [0, 15.5, -7.2], [-0.55, 0, 0]);
+const head = add(new THREE.BoxGeometry(2.8, 3.2, 6.5), M.wood, [0, 19.4, -10.6], [0.35, 0, 0]);
+add(new THREE.BoxGeometry(0.6, 4.2, 7), M.woodDark, [0, 17.5, -7.4], [-0.55, 0, 0]);
+for (const sx of [-1, 1]) add(new THREE.ConeGeometry(0.6, 1.8, 8), M.wood, [sx * 0.9, 21.4, -9], [0.2, 0, 0]);
+add(new THREE.CylinderGeometry(0.5, 0.15, 7, 8), M.rope, [0, 9, 8.8], [0.7, 0, 0]);
+
+const hatchPivot = new THREE.Group(); hatchPivot.position.set(-1.6, 6.75, 0); horse.add(hatchPivot); const hatch = add(new THREE.BoxGeometry(3.2, 0.3, 5), M.woodDark, [1.6, 0, 0], [0, 0, 0], hatchPivot);
+const ladder = new THREE.Group(); horse.add(ladder); for (const sx of [-0.5, 0.5]) add(new THREE.CylinderGeometry(0.06, 0.06, 5.2, 6), M.rope, [sx, 4.2, 0.5], [0, 0, 0], ladder); for (let i = 0; i < 7; i++) add(new THREE.CylinderGeometry(0.05, 0.05, 1, 6), M.rope, [0, 2 + i * 0.7, 0.5], [0, 0, Math.PI / 2], ladder);
+const hollow = add(new THREE.CapsuleGeometry(3.1, 7.6, 6, 12), new THREE.MeshBasicMaterial({ color: 0x070504 }), [0, 10, 0], [Math.PI / 2, 0, 0]); hollow.visible = false;
+const xrayParts = [body, neck, head];
+
+// ---------- soldiers ----------
+const soldier = (team) => { const g2 = new THREE.Group(); const tunic = team === 'g' ? M.red : M.navy;
+  add(new THREE.CapsuleGeometry(0.42, 0.9, 4, 10), tunic, [0, 1.25, 0], [0, 0, 0], g2); add(new THREE.CylinderGeometry(0.5, 0.42, 0.75, 12), team === 'g' ? M.bronze : M.leather, [0, 1.55, 0], [0, 0, 0], g2);
+  add(new THREE.SphereGeometry(0.28, 12, 10), M.skin, [0, 2.2, 0], [0, 0, 0], g2); add(new THREE.SphereGeometry(0.32, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.bronze, [0, 2.25, 0], [0, 0, 0], g2);
+  add(new THREE.BoxGeometry(0.1, 0.42, 0.7), team === 'g' ? M.red : M.navy, [0, 2.65, 0], [0, 0, 0], g2); add(new THREE.CylinderGeometry(0.55, 0.55, 0.08, 20), M.bronze, [0.42, 1.35, 0.1], [0, 0, Math.PI / 2], g2);
+  for (const sx of [-0.18, 0.18]) add(new THREE.CylinderGeometry(0.11, 0.09, 0.8, 8), M.skin, [sx, 0.4, 0], [0, 0, 0], g2); return g2; };
+const army = []; for (let i = 0; i < 70; i++) { const s = soldier('g'); s.scale.setScalar(0.9); s.position.set(-2 + (i % 5) * 1.0, 7.0 + Math.floor(i / 35) * 2.2 - 0.3, -5 + Math.floor((i % 35) / 5) * 1.5); horse.add(s); army.push(s); }
+const trojans = []; for (let i = 0; i < 16; i++) { const s = soldier('t'); scene.add(s); trojans.push(s); }
+const greeks = []; for (let i = 0; i < 8; i++) { const s = soldier('g'); scene.add(s); greeks.push(s); }
+const ropes = []; for (let i = 0; i < 2; i++) { const r = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 1, 8), M.rope); r.castShadow = true; scene.add(r); ropes.push(r); }
+const setRope = (r, a, b) => { const mid = a.clone().add(b).multiplyScalar(0.5); r.position.copy(mid); r.scale.set(1, a.distanceTo(b), 1); r.quaternion.setFromUnitVectors(V3(0, 1, 0), b.clone().sub(a).normalize()); };
+
+// ---------- ships ----------
+const ships = []; for (let i = 0; i < 9; i++) { const s = new THREE.Group(); const sh = new THREE.Shape(); sh.moveTo(-14, 0); sh.quadraticCurveTo(-12, -3, 0, -3.2); sh.quadraticCurveTo(12, -3, 15, 1.2); sh.lineTo(-15, 1.2); const hull = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 4, bevelEnabled: false }), M.hull); hull.position.z = -2; hull.castShadow = true; s.add(hull);
+  const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 14, 8), M.woodDark); mast.position.y = 7; s.add(mast); const sail = new THREE.Mesh(new THREE.PlaneGeometry(10, 8, 8, 4), M.sail); { const p = sail.geometry.attributes.position; for (let k = 0; k < p.count; k++) p.setZ(k, Math.cos(p.getX(k) * 0.3) * 1.2); sail.geometry.computeVertexNormals(); } sail.position.set(0, 9, 0.6); sail.rotation.y = Math.PI / 2; s.add(sail);
+  for (let k = 0; k < 10; k++) for (const sz of [-1, 1]) { const o = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 5, 5), M.woodDark); o.position.set(-10 + k * 2.2, -0.5, sz * 3.3); o.rotation.x = sz * 1.2; s.add(o); }
+  s.scale.setScalar(1.2); scene.add(s); ships.push(s); }
+
+// ---------- dust + torch flames ----------
+const DN = 900, dGeo = new THREE.BufferGeometry(), dPos = new Float32Array(DN * 3); dGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
+const dust = new THREE.Points(dGeo, new THREE.PointsMaterial({ color: 0xffe2b0, size: 0.18, transparent: true, opacity: 0.55, depthWrite: false })); scene.add(dust);
+const flameMat = new THREE.SpriteMaterial({ color: 0xffa040, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.95, depthWrite: false });
+const flames = torches.map((L) => { const s = new THREE.Sprite(flameMat); s.scale.set(1.4, 2.4, 1); s.position.copy(L.position); city.add(s); return s; });
+const torchHand = new THREE.PointLight(0xff8a3a, 0, 70, 1.4); scene.add(torchHand); const torchSprite = new THREE.Sprite(flameMat); torchSprite.scale.set(2, 3.4, 1); scene.add(torchSprite);
+const glowLine = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineDashedMaterial({ color: 0xff3b2f, dashSize: 3, gapSize: 2, transparent: true, opacity: 0.9 })); scene.add(glowLine);
+
+// ---------- post ----------
+const composer = new EffectComposer(renderer); composer.setSize(W, H); composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(W / 2, H / 2), 0.35, 0.6, 0.85); composer.addPass(bloom);
+const bokeh = new BokehPass(scene, camera, { focus: 40, aperture: 0.00012, maxblur: 0.006 }); composer.addPass(bokeh); composer.addPass(new OutputPass());
+
+// ---------- time of day ----------
+const setDay = (elev, az) => { const phi = THREE.MathUtils.degToRad(90 - elev), th = THREE.MathUtils.degToRad(az); const d = new THREE.Vector3().setFromSphericalCoords(1, phi, th); SU.sunPosition.value.copy(d); sun.position.copy(d.clone().multiplyScalar(300)); sun.target.position.set(0, 0, 40); SEAU.uSun.value.copy(d);
+  sky.visible = true; nightDome.visible = false; sun.intensity = 3.2; hemi.intensity = 0.9; hemi.color.set(0xa9c4e8); moon.intensity = 0; SEAU.uNight.value = 0; renderer.toneMappingExposure = 0.85; scene.fog = new THREE.FogExp2(0xd9c7a8, 0.0011); torches.forEach((L) => (L.intensity = 0)); flames.forEach((f) => (f.visible = false)); };
+const setNight = (t) => { sky.visible = false; nightDome.visible = true; sun.intensity = 0; hemi.intensity = 0.18; hemi.color.set(0x5a6f9a); moon.intensity = 0.9; moon.position.set(150, 220, -240); moon.target.position.set(0, 0, -40); SEAU.uNight.value = 1; SEAU.uSun.value.set(0.5, 0.45, -0.8);
+  renderer.toneMappingExposure = 0.9; scene.fog = new THREE.FogExp2(0x0a0f1c, 0.0012); torches.forEach((L, i) => (L.intensity = 260 * (0.85 + 0.15 * Math.sin(t * 13 + i * 2)))); flames.forEach((f, i) => { f.visible = true; f.scale.set(1.3, 2.3 + 0.3 * Math.sin(t * 17 + i), 1); }); };
+
+// ---------- shots (anchored to the narration) ----------
+let WORDS = []; const wt = (word, n = 1) => { let c = 0; for (const w of WORDS) if (w.word.toLowerCase().replace(/[^a-z0-9,]/g, '') === word && ++c === n) return w.t; return null; };
+let SH = []; window.TOTAL = 32.2;
+const buildShots = () => { SH = [['establish', 0], ['towers', wt('told') - 0.2], ['xray', wt('army') - 0.35], ['emptied', wt('but') - 0.1], ['fewmen', wt('just') - 0.1], ['island', wt('the', 3) - 0.1], ['haul', wt('and') - 0.1], ['gate', wt('themselves') - 0.15], ['ropes', wt('that') - 0.15], ['open', wt('opened') - 0.1], ['torch', wt('and', 2) - 0.1], ['alone', wt('so') - 0.1], ['final', wt('it') - 0.1]]; };
+const shotAt = (t) => { let i = 0; while (i + 1 < SH.length && t >= SH[i + 1][1]) i++; const end = SH[i + 1] ? SH[i + 1][1] : window.TOTAL; return [SH[i][0], t - SH[i][1], end - SH[i][1]]; };
+const resetActors = () => { army.forEach((s) => (s.visible = false)); trojans.forEach((s) => (s.visible = false)); greeks.forEach((s) => (s.visible = false)); ropes.forEach((r) => (r.visible = false)); xrayParts.forEach((p) => { p.material = M.wood; }); hollow.visible = false; hatchPivot.rotation.z = 0; ladder.visible = false; glowLine.visible = false; torchHand.intensity = 0; torchSprite.visible = false; doors[0].rotation.y = 0; doors[1].rotation.y = 0; bar.position.set(0, 8, -5); ships.forEach((s) => (s.visible = false)); };
+const xrayMat = new THREE.MeshStandardMaterial({ map: woodTex, roughness: 0.8, transparent: true, opacity: 0.22, depthWrite: false });
+const placeShips = (t, mode) => ships.forEach((s, i) => { s.visible = true; const row = i % 3, col = Math.floor(i / 3);
+  if (mode === 'leave') { s.position.set(-60 + i * 22, -1.6, 420 + row * 40 + t * 9); s.rotation.y = Math.PI / 2 + 0.2; }
+  else if (mode === 'hide') { const a = clamp((t * 0.11) - i * 0.06); s.position.set(lerp(-40 + col * 30, -310, sm(a)), -1.6, lerp(700 + row * 40, 960 + row * 20, sm(a))); s.rotation.y = Math.PI / 2 + 0.6 * sm(a); s.visible = a < 0.98; }
+  else { s.position.set(-250 + col * 45 + t * 14, -1.6, 820 - row * 50 - t * 10); s.rotation.y = -Math.PI / 2 + 0.6; } s.position.y += Math.sin(t * 1.2 + i) * 0.4; s.rotation.z = Math.sin(t * 0.9 + i) * 0.03; });
+const setDust = (t, c) => { for (let i = 0; i < DN; i++) dPos.set([c.x + (hash(i) - 0.5) * 60 + Math.sin(t * 0.3 + i) * 2, 0.5 + ((hash(i + 4) * 20 + t * 0.4 * hash(i + 2)) % 20), c.z + (hash(i + 8) - 0.5) * 60], i * 3); dGeo.attributes.position.needsUpdate = true; };
+let shake = 0, punch = 0;
+
+window.renderFrame = (f) => {
+  const t = f / 30; SEAU.uTime.value = t; const [shot, u, d] = shotAt(t); const k = clamp(u / d); resetActors(); shake = 0; punch = 0;
+  let cp = V3(0, 10, 60), look = V3(0, 8, 0), fov = 40, focus = 50, dof = 0.00008;
+  horse.position.set(30, 0, 140); horse.rotation.set(0, 0.5, 0);
+  const night = ['ropes', 'open', 'torch', 'alone', 'final'].includes(shot); if (night) setNight(t); else setDay(shot === 'haul' || shot === 'gate' ? 24 : 16, 25);
+  if (shot === 'establish') { placeShips(t, 'leave'); cp = V3(lerp(0, 14, k), lerp(26, 20, k), lerp(215, 195, k)); look = V3(28, 9, 140); fov = 44; }
+  if (shot === 'towers') { cp = V3(30 - 12, 1.2, 140 + 22); look = V3(30, 16, 138); fov = lerp(34, 30, k); focus = 26; dof = 0.00025; }
+  if (shot === 'xray' || shot === 'emptied' || shot === 'fewmen') { xrayParts.forEach((p) => (p.material = xrayMat)); hollow.visible = false;
+    army.forEach((s, i) => { s.visible = shot === 'xray' || (shot === 'emptied' && hash(i * 3) < 1 - sm(k * 1.4)) || (shot === 'fewmen' && i % 3 === 0); });
+    cp = V3(30 + 26, 10, 140 + 8); look = V3(30, 10, 140); fov = shot === 'fewmen' ? lerp(30, 24, k) : 32; focus = 26; dof = 0.0002; if (shot === 'emptied' && u < 0.45) punch = 1 - u / 0.45; }
+  if (shot === 'island') { placeShips(t - 10, 'hide'); cp = V3(40, 18, 380); look = V3(-180, 4, 880); fov = 30; focus = 500; dof = 0.00002; }
+  if (shot === 'haul' || shot === 'gate') { const p = shot === 'haul' ? k * 0.75 : 0.75 + k * 0.25; const hz = lerp(70, 2, sm(p)); horse.position.set(0, 0, hz); horse.rotation.set(0, Math.PI, 0); wheels.forEach((w) => (w.rotation.x = -hz * 0.5));
+    trojans.forEach((s, i) => { s.visible = true; const side = i % 2 ? 1 : -1, n = Math.floor(i / 2); s.position.set(side * (2 + n * 0.35), 0, hz - 16 - n * 2.2); s.rotation.set(-0.35, Math.PI, 0); s.position.y = Math.abs(Math.sin(t * 6 + i)) * 0.15; });
+    ropes.forEach((r, i) => { r.visible = true; const side = i ? 1 : -1; setRope(r, V3(side * 1.2, 15, hz - 7), V3(side * 4.8, 1.6, hz - 34)); });
+    if (shot === 'haul') { cp = V3(38, 9, hz + 18); look = V3(0, 9, hz - 14); fov = 40; focus = 42; } else { cp = V3(-34, 12, 58); look = V3(0, 11, 4); fov = 38; focus = 65; if (hz < 10 && hz > 3) shake = 0.5; } }
+  if (shot === 'ropes' || shot === 'open' || shot === 'alone' || shot === 'final') { horse.position.set(-28, 0, -48); horse.rotation.set(0, Math.PI * 0.75, 0); hatchPivot.rotation.z = -1.7 * (shot === 'ropes' ? sm(k * 2.5) : 1); ladder.visible = true; }
+  if (shot === 'ropes') { greeks.forEach((s, i) => { s.visible = true; const tt = clamp(k * 1.6 - i * 0.16); const lp = horse.localToWorld(V3(0, 0, 0.5)); s.position.set(lp.x + (i % 3 - 1) * 0.9 * sm(tt * 2), lerp(6.5, 0, sm(tt)), lp.z + (tt > 0.8 ? -(tt - 0.8) * 10 : 0)); s.rotation.y = 0.4; s.visible = tt > 0.02; });
+    cp = V3(-8, 5, -28); look = V3(-26, 5, -46); fov = 40; focus = 26; dof = 0.00025; }
+  if (shot === 'open') { const a = sm(clamp(k * 1.4 - 0.2)); bar.position.set(0, 8 + sm(k * 2) * 2.5, -5 - sm(k * 2) * 3); doors[0].rotation.y = -1.3 * a; doors[1].rotation.y = 1.3 * a; greeks.slice(0, 4).forEach((s, i) => { s.visible = true; s.position.set(-6 + i * 4, 0, -8); s.rotation.y = Math.PI; });
+    cp = V3(6, 6, -42); look = V3(0, 8, 0); fov = 42; focus = 42; if (a > 0.3 && a < 0.6) shake = 0.35; }
+  if (shot === 'torch') { const tp = V3(16, wallH + 3.4 + sm(k * 3) * 1.2, -1); torchHand.position.copy(tp); torchHand.intensity = 500; torchSprite.visible = true; torchSprite.position.copy(tp); torchSprite.scale.set(2, 3.4 + 0.4 * Math.sin(t * 20), 1);
+    const g0 = greeks[0]; g0.visible = true; g0.position.set(15.4, wallH, -1); g0.scale.setScalar(1.6); g0.rotation.y = Math.PI;
+    placeShips(t - wt('and', 2), 'return'); glowLine.visible = k > 0.25; glowLine.geometry.setFromPoints([tp, V3(-200, 6, 820)]); glowLine.computeLineDistances(); glowLine.material.opacity = 0.8 * sm((k - 0.25) * 3);
+    cp = V3(6, wallH + 7, -9); look = V3(-60, 6, 400); fov = 44; focus = 20; }
+  if (shot === 'alone') { cp = V3(lerp(4, -2, k), lerp(8, 6, k), lerp(-22, -28, k)); look = V3(-28, 9, -48); fov = 34; focus = 20; dof = 0.00025; if (u < 0.4) punch = 0.6 * (1 - u / 0.4); }
+  if (shot === 'final') { doors[0].rotation.y = -1.3; doors[1].rotation.y = 1.3; cp = V3(0, lerp(8, 30, sm(k)), lerp(90, 150, sm(k))); look = V3(0, 8, -20); fov = 38; focus = 110; dof = 0.00004; }
+  greeks.forEach((s) => { if (shot !== 'torch') s.scale.setScalar(1); });
+  // camera + handheld drift + shake + punch zoom
+  camera.position.copy(cp).add(V3(Math.sin(t * 0.7) * 0.15, Math.sin(t * 0.9) * 0.1, 0)); camera.lookAt(look);
+  if (shake) { camera.position.x += Math.sin(t * 61) * shake; camera.position.y += Math.sin(t * 47) * shake * 0.7; }
+  camera.fov = fov * (1 - 0.12 * punch); camera.updateProjectionMatrix();
+  setDust(t, look); dust.visible = !night && shot !== 'island';
+  bokeh.uniforms.focus.value = focus; bokeh.uniforms.aperture.value = dof; bloom.strength = night ? 0.8 : 0.3;
+  composer.render();
+  // ---------- 2D: grade, grain, letterbox-free captions ----------
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(renderer.domElement, 0, 0);
+  const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H * 0.78); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.55)'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = 'rgba(255,240,220,0.03)'; for (let i = 0; i < 1800; i++) ctx.fillRect(hash(i + f * 13.1) * W, hash(i * 1.7 + f * 7.3) * H, 2, 2);
+  // captions: current phrase, the spoken word highlighted
+  const cur = WORDS.findIndex((w, i) => t >= w.t - 0.05 && t < (WORDS[i + 1] ? WORDS[i + 1].t : w.t + w.dur + 0.5)); if (cur >= 0 && t < window.TOTAL - 1) { const st = Math.floor(cur / 4) * 4, ws = WORDS.slice(st, st + 4).map((w) => w.word.toUpperCase());
+    ctx.save(); ctx.textAlign = 'left'; ctx.font = '800 58px "DejaVu Sans", sans-serif'; const sp = 18, tw = ws.reduce((a, w) => a + ctx.measureText(w).width + sp, -sp); let x = W / 2 - tw / 2; const y = 1330;
+    ws.forEach((w, i) => { ctx.lineJoin = 'round'; ctx.lineWidth = 12; ctx.strokeStyle = 'rgba(0,0,0,0.85)'; ctx.strokeText(w, x, y); ctx.fillStyle = st + i === cur ? '#ffd166' : '#ffffff'; ctx.fillText(w, x, y); x += ctx.measureText(w).width + sp; }); ctx.restore(); }
+  if (shot === 'fewmen' && u > 0.4) { ctx.save(); ctx.globalAlpha = sm((u - 0.4) / 0.3); ctx.textAlign = 'center'; ctx.font = '900 92px "DejaVu Sans", sans-serif'; ctx.lineWidth = 14; ctx.strokeStyle = '#000'; ctx.strokeText('~30 MEN', W / 2, 470); ctx.fillStyle = '#ffd166'; ctx.fillText('~30 MEN', W / 2, 470); ctx.restore(); }
+  if (shot === 'xray') { ctx.save(); ctx.globalAlpha = sm(u / 0.3); ctx.textAlign = 'center'; ctx.font = '900 80px "DejaVu Sans", sans-serif'; ctx.lineWidth = 14; ctx.strokeStyle = '#000'; ctx.strokeText('THE MYTH', W / 2, 470); ctx.fillStyle = '#ff5a4f'; ctx.fillText('THE MYTH', W / 2, 470); ctx.restore(); }
+  if (t > window.TOTAL - 1.0) { ctx.fillStyle = `rgba(0,0,0,${sm((t - (window.TOTAL - 1.0)) / 0.8)})`; ctx.fillRect(0, 0, W, H); }
+  return true; };
+fetch('./trojan_words.json').then((r) => r.json()).then((w) => { WORDS = w; buildShots(); window.ready = true; });
+</script></body></html>

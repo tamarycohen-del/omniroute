@@ -1,0 +1,7 @@
+{"calm":    {"file": "calm.wav",    "text": "The water climbs one floor every night."},
+ "whisper": {"file": "whisper.wav", "text": "Then the rope in the shaft started to move."},
+ "urgent":  {"file": "urgent.wav",  "text": "You told me to lock the closet and eat, so I did."},
+ "warm":    {"file": "warm.wav",    "text": "For the first time in two days, his tail was wagging."},
+ "tense":   {"file": "tense.wav",   "text": "It wasn't hiding in the closet, it was using it."},
+ "curious": {"file": "curious.wav", "text": "One of you asked, if they had food, why not send some with the note?"},
+ "dread":   {"file": "dread.wav",   "text": "And from far below, something was climbing."}}

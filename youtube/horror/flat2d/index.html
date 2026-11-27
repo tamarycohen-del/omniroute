@@ -1,0 +1,59 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+import { stickCard, capCard, chapterCard, whiteStick } from './stick.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920;
+const P = { g, // minimal pen for stickCard
+  ell() {}, poly() {}, stroke() {}, dot() {}, line() {}, arc() {} };
+const rr = (x, y, w, h, r, fill) => { g.beginPath(); g.roundRect(x, y, w, h, r); g.fillStyle = fill; g.fill(); };
+const lin = (x0, y0, x1, y1, stops) => { const gr = g.createLinearGradient(x0, y0, x1, y1); stops.forEach(([o, c]) => gr.addColorStop(o, c)); return gr; };
+window.renderFrame = (t = 0, shot = 'wide') => {
+  g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
+  const z = shot === 'face' ? 2.4 : 1.0 + 0.02 * t, fx = shot === 'face' ? 520 : 540, fy = shot === 'face' ? 980 : 1000;
+  g.translate(W / 2, H / 2); g.scale(z, z); g.translate(-fx, -fy);
+  // back wall
+  g.fillStyle = lin(0, 0, 0, 1500, [[0, '#1a1236'], [1, '#2a1e4e']]); g.fillRect(-200, -200, 1500, 1800);
+  // vertical wallpaper stripes
+  g.fillStyle = 'rgba(255,255,255,0.025)'; for (let x = -200; x < 1300; x += 90) g.fillRect(x, -200, 40, 1700);
+  // floor
+  g.fillStyle = lin(0, 1300, 0, 2100, [[0, '#231838'], [1, '#120c20']]); g.fillRect(-200, 1300, 1500, 900);
+  g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(-200, 1300, 1500, 14);
+  // window + moon
+  rr(600, 380, 330, 430, 10, '#0c0a1c'); g.fillStyle = lin(600, 380, 930, 810, [[0, '#3a3a7a'], [1, '#141038']]); g.fillRect(612, 392, 306, 406);
+  g.fillStyle = '#e8e6ff'; g.beginPath(); g.arc(840, 470, 38, 0, 7); g.fill(); g.fillStyle = '#3a3a7a'; g.beginPath(); g.arc(856, 460, 34, 0, 7); g.fill();
+  g.fillStyle = '#0c0a1c'; g.fillRect(760, 392, 10, 406); g.fillRect(612, 590, 306, 10);
+  // curtains
+  for (const [x, w] of [[560, 90], [880, 90]]) { g.fillStyle = lin(x, 0, x + w, 0, [[0, '#2e2050'], [0.5, '#3e2c68'], [1, '#261a44']]); g.fillRect(x, 340, w, 560); g.fillStyle = 'rgba(0,0,0,0.25)'; for (let k = 1; k < 4; k++) g.fillRect(x + k * w / 4, 340, 4, 560); }
+  // moon beam
+  g.save(); g.globalCompositeOperation = 'lighter'; g.fillStyle = lin(700, 800, 500, 1500, [[0, 'rgba(150,140,255,0.22)'], [1, 'rgba(150,140,255,0)']]);
+  g.beginPath(); g.moveTo(620, 800); g.lineTo(920, 800); g.lineTo(760, 1650); g.lineTo(260, 1650); g.closePath(); g.fill(); g.restore();
+  // door (right) with light crack
+  rr(1000, 560, 240, 760, 8, '#3a2c5c'); g.fillStyle = '#2e2248'; g.fillRect(1030, 600, 180, 300); g.fillRect(1030, 940, 180, 330);
+  g.fillStyle = '#c8b070'; g.beginPath(); g.arc(1030, 960, 12, 0, 7); g.fill();
+  g.fillStyle = 'rgba(255,200,130,0.9)'; g.fillRect(1000, 1314, 240, 8); g.save(); g.globalCompositeOperation = 'lighter'; g.fillStyle = lin(0, 1320, 0, 1420, [[0, 'rgba(255,190,120,0.35)'], [1, 'rgba(255,190,120,0)']]); g.fillRect(980, 1320, 280, 100); g.restore();
+  // nightstand + red clock
+  rr(60, 1080, 220, 230, 12, '#24183c'); rr(80, 1110, 180, 70, 8, '#1a1030');
+  rr(100, 1010, 150, 70, 10, '#0a0610'); g.fillStyle = '#ff2a3a'; g.shadowColor = '#ff2a3a'; g.shadowBlur = 22; g.font = '700 50px "DejaVu Sans Mono", monospace'; g.textAlign = 'center'; g.fillText('3:33', 175, 1062); g.shadowBlur = 0;
+  // bed
+  rr(260, 900, 40, 420, 10, '#2a1c44'); // headboard post
+  rr(260, 880, 640, 120, 30, '#33245a'); // headboard
+  rr(270, 1090, 700, 230, 24, '#3c2a6a'); // mattress
+  rr(300, 1040, 200, 80, 30, '#8a82c8'); // pillow
+  // stickman sitting up (drawn at card scale 0.62 at x,y)
+  if (shot !== 'chars') { g.save(); g.translate(300, 640); g.scale(0.8, 0.8); stickCard(P, { v: 'host', expr: t > 1.5 ? 'scared' : 'neutral', look: t > 1.5 ? 1 : 0, R: 'hang', sitting: true }); g.restore(); }
+  // blanket over his legs
+  g.fillStyle = lin(0, 1110, 0, 1330, [[0, '#6a54b8'], [1, '#3e2c78']]); g.beginPath(); g.moveTo(380, 1150); g.quadraticCurveTo(640, 1100, 980, 1140); g.lineTo(980, 1330); g.lineTo(380, 1330); g.closePath(); g.fill();
+  g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 6; for (const x of [520, 690, 840]) { g.beginPath(); g.moveTo(x, 1135); g.quadraticCurveTo(x + 30, 1230, x + 10, 1325); g.stroke(); }
+  // rug
+  g.fillStyle = 'rgba(80,60,140,0.45)'; g.beginPath(); g.ellipse(560, 1560, 380, 90, 0, 0, 7); g.fill();
+  g.setLineDash([26, 18]); g.strokeStyle = 'rgba(160,140,230,0.45)'; g.lineWidth = 6; g.beginPath(); g.ellipse(560, 1560, 340, 72, 0, 0, 7); g.stroke(); g.setLineDash([]);
+  if (shot === 'chars') { g.save(); g.translate(470, 520); g.scale(1.25, 1.25); whiteStick(P, { beanie: '#2a2a36', expr: 'worried', arm: 'flash' }); g.restore();
+    g.save(); g.translate(-90, 520); g.scale(1.25, 1.25); whiteStick(P, { beanie: '#f2f0ec', expr: 'scared', look: 1 }); g.restore(); }
+  // vignette + HUD (screen space)
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  g.save(); g.translate(40, -560); g.scale(1.1, 1.1); chapterCard(P, { time: '3:33', title: 'NIGHT ONE' }); g.restore();
+  if (shot !== 'chars') { g.save(); g.translate(240, 900); g.scale(1.0, 1.0); capCard(P, { words: shot === 'face' ? ['WITH', "MOM'S", 'VOICE.'] : ['EVERY', 'NIGHT', 'AT', '3:33…'], hi: shot === 'face' ? 1 : 3 }); g.restore(); }
+};
+window.ready = true;
+</script></body></html>

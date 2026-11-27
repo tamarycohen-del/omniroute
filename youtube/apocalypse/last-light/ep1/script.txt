@@ -1,0 +1,16 @@
+LAST LIGHT - PART 1  (v6: extended to ~70 s on request; action first, two choices)
+Card in the corner: SUNSET 00:59 (counting down). No gore.
+
+time   | narration (the kid, Clancy)                     | on screen
+0-2    | (none)                                          | FLASH-FORWARD: pale eyeless creatures mid-leap toward the camera, screeching; freeze; text WHAT DO YOU DO?
+2-4    | Ten seconds earlier...                          | rewind blur
+4-12   | One hour of daylight left. We were almost home. | empty overgrown avenue, rusted cars, weeds, skyscrapers, orange sunset; the kid (backpack) + Biscuit walking
+12-18  | Biscuit never growls.                           | Biscuit freezes mid-step, growling at the black entrance of an abandoned building
+18-25  | (silence, then a screech)                       | the creatures pour out of the dark, screeching, getting ready to charge
+25-32  | Three seconds. Choose.                          | freeze, colors drain; the kid's hand on a UV flare; an armored SUV glints across the street
+32-40  | Comment your choice.                            | two red choice cards: THROW THE UV FLARE / SPRINT TO THE ARMORED SUV
+
+Pinned comment: "🚗 HIDE IN THE CAR or 🏃 RUN INTO THE BUILDING? Most-liked answer decides Part 2 👇"  (choices changed to CAR / BUILDING on request)
+
+v6 extension (70 s): Two minutes earlier -> Biscuit finds a scratched backpack in the road -> a radio inside, still on -> it says "Help me... please." in the kid's own voice -> "That was my voice. I never said that." -> Biscuit growls -> they pour out -> "They hunt by sound. So we hid." behind a rusted car -> one comes closer -> the radio beeps, every head turns -> "Three seconds. Choose." -> same two choices.
+v7: added the daylight rule - the Hollow can't touch sunlight; at sunset the tower shadows creep over the street and they move only inside the shadow (new line at 33.6 s).

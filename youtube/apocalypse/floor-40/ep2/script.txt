@@ -1,0 +1,29 @@
+FLOOR 40 - PART 2 ("Day 2")  ~60 s   corner: FLOOR 40 · WATER 32 · NIGHTS LEFT 8
+Vote (Instagram; YouTube comments API returned 403): TAKE THE BOAT wins (7 + 2 + 0 likes vs STAY 3). Top comment: "Take the boat I don't want you eat biscuit" (7).
+Rules applied: frame 1 = hero + threat together in motion (over-under shot: kid paddling above, pale hand slapping the hull below), big top text from frame 0,
+voice at 0.0, impact on frame 0; whispers only on 2 lines; ending: cards appear while the line is spoken, closet knocks after the cards, hard cut (no static hold).
+World logic: the thing lives only below the water line and follows splashes (shown in beat 4 before it matters in beat 6).
+
+ 1 hook     You told me to take the boat. So did something under the water.        over-under: kid paddling / pale hand slaps the hull from below. TOP TEXT: SOMETHING IS UNDER THE BOAT
+ 2 comments Most of you said: take the boat. One of you said: please don't eat Biscuit. (funny callback to the real comment)   4 real IG comments pop in over dark water
+ 3 cross    Two hundred meters of open water to floor fifty-two.                    wide, boat between drowned rooftops, tower 52 ahead
+ 4 paddle   Every time my paddle hit the water... the shadow under us moved.        over-under: each paddle splash, the shadow below turns
+ 5 stop     Then the boat stopped. Something was holding it. (whisper)              boat jerks; pale fingers curl over the rim; Biscuit growls
+ 6 throw    So I threw our dinner.                                                   a can arcs away, splash far off, the shadow streaks to it
+ 7 free     Five cans left. But we were free.                                        paddling fast, 5 can icons
+ 8 stairs   The other tower's stairs were dry from floor thirty-two up.              boat at tower 52's stairwell, sign 32
+ 9 prints   Wet footprints went up ahead of us. Long toes.  (PAUSE CLUE)             flashlight on wet long-toed prints going up
+10 climb    Twenty floors later... floor fifty-two.                                  floor signs flip 33 -> 52, kid + Biscuit running up
+11 table    A table. Hot soup. Nobody there.                                         steaming bowl, empty chairs, window light
+12 never    The footprints went into this room... and never came out. (whisper)     prints lead to the middle of the room and stop
+13 closet   Biscuit didn't look at the soup. He growled at the closet.              Biscuit facing a dark, half-open closet
+14 choice   Eat while it's hot? Or open the closet? Comment your choice.            cards: 🍲 EAT THE SOUP AND REST / 🚪 OPEN THE CLOSET; then two knocks from inside, door jolts, hard cut
+Pinned comment: "🍲 EAT THE SOUP AND REST or 🚪 OPEN THE CLOSET? Most-liked answer decides Part 3 👇"
+
+v2 (user: too short, continue the story before the choice, no silence padding): after beat 13 added
+13a note2   Next to the bowl, a note. Same handwriting. "You must be starving."   paper close-up
+13b hungry  Biscuit hadn't eaten in two days.                                    Biscuit looking at the steaming soup
+13c door    Then the closet door moved. Just a little. From inside.              closet door opens an inch, creak
+13d spread  And from under the door... water was spreading.  (whisper)          puddle spreading with ripples, Biscuit growls
+then the choice (unchanged). Length 49 s -> 66 s.
+Note for the brief: it CAN leave the water (wet long-toed prints), it hunts by splashes in the water.

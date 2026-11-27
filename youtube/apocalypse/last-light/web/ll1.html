@@ -1,0 +1,198 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+// LAST LIGHT - Part 1. Original creatures ("the Hollow"), original city. Times match ep1/audio/words1.json.
+import { capCard, whiteStick } from './stick.js';
+import { biscuit } from './biscuit.js';
+const cv = document.getElementById('c'), g = cv.getContext('2d'), W = 1080, H = 1920, P = { g };
+const rr = (x, y, w, h, r, fill) => { g.beginPath(); g.roundRect(x, y, w, h, r); g.fillStyle = fill; g.fill(); };
+const lin = (x0, y0, x1, y1, st) => { const q = g.createLinearGradient(x0, y0, x1, y1); st.forEach(([o, c]) => q.addColorStop(o, c)); return q; };
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
+const add = (fn) => { g.save(); g.globalCompositeOperation = 'lighter'; fn(); g.restore(); };
+const cam = (z, fx, fy, sx = 0, sy = 0) => { g.translate(W / 2 + sx, H / 2 + sy); g.scale(z, z); g.translate(-fx, -fy); };
+const hash = (n) => { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); };
+let T = 0, WORDS = [];
+const O = '#121018';
+const hero = (x, y, s, o = {}) => { const br = Math.sin(T * 2.4 + x * 0.01) * 0.012; g.save(); g.translate(x, y + 975 * s * br * 0.5); g.scale(s * (o.flip ? -1 : 1), s * (1 - br)); if (o.flip) g.translate(-600, 0);
+  // backpack behind the body
+  rr(196, 600, 96, 170, 26, '#5a4630'); g.strokeStyle = O; g.lineWidth = 9; g.beginPath(); g.roundRect(196, 600, 96, 170, 26); g.stroke(); rr(208, 680, 72, 40, 10, '#4a3824');
+  whiteStick(P, { beanie: '#2a2a36', ...o }); g.restore(); };
+const dog = (x, y, s, o = {}) => { const br = Math.sin(T * 3.2 + x * 0.02) * 0.02; g.save(); g.translate(x, y); g.scale(s, s * (1 + br)); biscuit(g, { tail: 0.15, ...o, t: o.t ?? T }); g.restore(); };
+
+// ---------- the world: an overgrown city at sunset ----------
+const GY = 1500;
+const sky = (k = 0) => { g.fillStyle = lin(0, -600, 0, 1500, [[0, '#2a1340'], [0.45, '#8a2e3c'], [0.75, '#f0703a'], [1, '#ffc46a']]); g.fillRect(-1400, -900, 4000, 2500);
+  const sy = 1020 + 120 * k; add(() => { const rg = g.createRadialGradient(540, sy, 20, 540, sy, 900); rg.addColorStop(0, 'rgba(255,220,140,0.9)'); rg.addColorStop(0.15, 'rgba(255,150,80,0.45)'); rg.addColorStop(1, 'rgba(255,120,60,0)'); g.fillStyle = rg; g.fillRect(-1400, -900, 4000, 2600); });
+  g.fillStyle = '#ffe2a0'; g.beginPath(); g.arc(540, sy, 120, 0, 7); g.fill(); };
+const towers = (scroll = 0) => { // far skyline (one layer), broken tops, dead windows
+  for (let i = -6; i < 14; i++) { const x = i * 230 - (scroll * 0.25) % 230 - 600, h = 520 + hash(i + 3) * 700, w = 170 + hash(i + 9) * 80; const id = i + Math.floor(scroll * 0.25 / 230);
+    const hh = 380 + hash(id + 3) * 520, ww = 170 + hash(id + 9) * 80; g.fillStyle = '#3a1c36'; g.beginPath(); g.moveTo(x, GY - 120); g.lineTo(x, GY - 120 - hh); g.lineTo(x + ww * 0.4, GY - 120 - hh + 40 * hash(id)); g.lineTo(x + ww * 0.7, GY - 120 - hh - 30); g.lineTo(x + ww, GY - 120 - hh + 60); g.lineTo(x + ww, GY - 120); g.fill();
+    g.fillStyle = 'rgba(255,170,110,0.13)'; for (let r = 0; r < hh / 70 - 1; r++) for (let c = 0; c < 3; c++) if (hash(id * 31 + r * 7 + c) > 0.55) g.fillRect(x + 22 + c * (ww - 40) / 3, GY - 120 - hh + 60 + r * 70, 26, 34); } };
+const vines = (x, y, h, k = 1) => { g.strokeStyle = '#2c4a22'; g.lineWidth = 10; g.beginPath(); g.moveTo(x, y); for (let i = 1; i <= 8; i++) g.lineTo(x + Math.sin(i * 1.7 + x) * 22, y + (h * i) / 8); g.stroke(); g.fillStyle = '#3c6a2a'; for (let i = 1; i < 8; i++) { g.beginPath(); g.ellipse(x + Math.sin(i * 1.7 + x) * 22 + 16, y + (h * i) / 8, 18, 9, 0.6, 0, 7); g.fill(); } };
+const nearBuildings = (scroll = 0) => { for (let i = -3; i < 9; i++) { const id = i + Math.floor(scroll / 520), x = id * 520 - scroll - 200, h = 420 + hash(id * 5) * 360; if (hash(id * 7) > 0.55) continue;
+    g.fillStyle = '#2a1426'; g.fillRect(x, GY - h, 480, h); g.fillStyle = '#1c0c1a'; g.fillRect(x + 470, GY - h, 14, h);
+    for (let r = 0; r < 8; r++) for (let c = 0; c < 4; c++) { const wx = x + 40 + c * 110, wy = GY - h + 60 + r * 110; if (wy > GY - 260) continue; g.fillStyle = hash(id * 13 + r * 4 + c) > 0.3 ? '#0e0610' : 'rgba(255,160,100,0.35)'; g.fillRect(wx, wy, 70, 80); }
+    vines(x + 60 + hash(id) * 300, GY - h + 40, 500 + hash(id + 1) * 300); } };
+const street = (scroll = 0) => { g.fillStyle = lin(0, GY - 20, 0, GY + 500, [[0, '#3a2a30'], [1, '#140c14']]); g.fillRect(-1400, GY - 20, 4000, 1400);
+  g.fillStyle = 'rgba(255,210,120,0.25)'; for (let x = -1400; x < 2600; x += 220) { const xx = x - (scroll % 220); g.fillRect(xx, GY + 170, 110, 12); }
+  g.strokeStyle = '#120a10'; g.lineWidth = 5; for (let i = 0; i < 14; i++) { const x = ((i * 390 - scroll) % 3200 + 3200) % 3200 - 1000; g.beginPath(); g.moveTo(x, GY + 40); g.lineTo(x + 40, GY + 110); g.lineTo(x + 20, GY + 190); g.stroke(); }
+  for (let i = 0; i < 40; i++) { const x = ((i * 157 - scroll) % 3400 + 3400) % 3400 - 1100, y = GY + 10 + (i * 53) % 300; g.strokeStyle = i % 3 ? '#3e6a2c' : '#567f34'; g.lineWidth = 6; for (let b = -2; b <= 2; b++) { g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + b * 10, y - 30, x + b * 18 + Math.sin(T * 2 + i) * 5, y - 55 - (i % 4) * 10); g.stroke(); } } };
+const rustCar = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s * (o.flip ? -1 : 1), s); g.lineJoin = 'round'; const body = o.col || '#6a3a2a';
+  g.fillStyle = 'rgba(0,0,0,0.45)'; g.beginPath(); g.ellipse(0, 6, 520, 26, 0, 0, 7); g.fill();
+  g.fillStyle = body; g.strokeStyle = O; g.lineWidth = 10; g.beginPath(); g.moveTo(-300, -235); g.lineTo(-230, -390); g.lineTo(150, -390); g.lineTo(260, -235); g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = '#140a12'; g.beginPath(); g.moveTo(-262, -245); g.lineTo(-215, -372); g.lineTo(-30, -372); g.lineTo(-30, -245); g.fill(); g.beginPath(); g.moveTo(0, -245); g.lineTo(0, -372); g.lineTo(140, -372); g.lineTo(232, -245); g.fill();
+  g.fillStyle = body; g.beginPath(); g.roundRect(-480, -250, 960, 180, 46); g.fill(); g.stroke();
+  g.fillStyle = 'rgba(140,60,20,0.6)'; for (let i = 0; i < 9; i++) { g.beginPath(); g.ellipse(-400 + i * 100 + hash(i + x) * 40, -150 + hash(i * 3 + x) * 60, 30 + hash(i) * 30, 16, 0, 0, 7); g.fill(); }
+  for (const wx of [-300, 300]) { g.fillStyle = '#0c0a12'; g.beginPath(); g.arc(wx, -70, 74, 0, 7); g.fill(); g.strokeStyle = O; g.stroke(); g.fillStyle = '#4a3a3a'; g.beginPath(); g.arc(wx, -70, 30, 0, 7); g.fill(); }
+  vines(-200, -390, 300); vines(180, -260, 200); g.restore(); };
+const suv = (x, y, s, glint = 0) => { g.save(); g.translate(x, y); g.scale(s, s); g.lineJoin = 'round';
+  g.fillStyle = 'rgba(0,0,0,0.5)'; g.beginPath(); g.ellipse(0, 8, 560, 30, 0, 0, 7); g.fill();
+  g.fillStyle = '#3c4232'; g.strokeStyle = O; g.lineWidth = 12; g.beginPath(); g.moveTo(-480, -280); g.lineTo(-440, -500); g.lineTo(300, -500); g.lineTo(380, -300); g.lineTo(500, -280); g.lineTo(500, -90); g.lineTo(-500, -90); g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = '#0e1210'; g.fillRect(-400, -470, 300, 140); g.fillRect(-60, -470, 300, 140); g.strokeStyle = '#2a3024'; g.lineWidth = 8; for (let k = 0; k < 5; k++) { g.beginPath(); g.moveTo(-400 + k * 75, -470); g.lineTo(-400 + k * 75, -330); g.stroke(); g.beginPath(); g.moveTo(-60 + k * 75, -470); g.lineTo(-60 + k * 75, -330); g.stroke(); }
+  g.fillStyle = '#2c3224'; g.fillRect(-490, -300, 990, 40); g.fillStyle = '#7c8270'; for (let k = 0; k < 14; k++) { g.beginPath(); g.arc(-460 + k * 70, -280, 7, 0, 7); g.fill(); }
+  g.fillStyle = '#1a1e16'; g.fillRect(420, -260, 90, 150); g.strokeStyle = '#7c8270'; g.lineWidth = 6; for (let k = 0; k < 4; k++) { g.beginPath(); g.moveTo(430, -240 + k * 36); g.lineTo(500, -240 + k * 36); g.stroke(); }
+  for (const wx of [-310, 310]) { g.fillStyle = '#0a0a0c'; g.beginPath(); g.arc(wx, -90, 100, 0, 7); g.fill(); g.strokeStyle = O; g.lineWidth = 10; g.stroke(); g.fillStyle = '#5a5e52'; g.beginPath(); g.arc(wx, -90, 40, 0, 7); g.fill(); }
+  if (glint > 0) add(() => { const gx = 160, gy = -440, r = 260 * glint; g.fillStyle = `rgba(255,250,220,${glint})`; g.beginPath(); g.moveTo(gx - r, gy); g.lineTo(gx, gy - 14); g.lineTo(gx + r, gy); g.lineTo(gx, gy + 14); g.fill(); g.beginPath(); g.moveTo(gx, gy - r * 0.6); g.lineTo(gx + 12, gy); g.lineTo(gx, gy + r * 0.6); g.lineTo(gx - 12, gy); g.fill(); const rg = g.createRadialGradient(gx, gy, 2, gx, gy, 120); rg.addColorStop(0, `rgba(255,255,230,${glint})`); rg.addColorStop(1, 'rgba(255,255,230,0)'); g.fillStyle = rg; g.fillRect(gx - 120, gy - 120, 240, 240); });
+  g.restore(); };
+const doorway = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s); // abandoned building front, black entrance
+  g.fillStyle = '#2e1828'; g.fillRect(-500, -1500, 1000, 1500); g.fillStyle = '#3a2030'; g.fillRect(-520, -340, 1040, 40);
+  g.fillStyle = '#5a3a3a'; g.save(); g.translate(-200, -400); g.rotate(-0.08); rr(-180, -60, 360, 90, 8, '#5a3a3a'); g.fillStyle = 'rgba(255,200,150,0.5)'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('M_RKET', 0, 6); g.restore();
+  g.fillStyle = '#020103'; g.fillRect(-230, -300, 460, 300); g.strokeStyle = '#1a0c16'; g.lineWidth = 20; g.strokeRect(-240, -310, 480, 310);
+  g.fillStyle = 'rgba(0,0,0,0.6)'; for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) g.fillRect(-440 + c * 240, -1400 + r * 260, 140, 170);
+  vines(-470, -1500, 1100); vines(420, -1400, 900); vines(250, -330, 200);
+  if (o.inside) o.inside(); // drawn inside the black door
+  g.restore(); };
+
+// ---------- the Hollow: pale, thin, eyeless, wide mouth (original design) ----------
+const PALE = '#d9d3c8', PALE_D = '#a9a196';
+const plimb = (pts, w = 26) => { for (const [ww, c] of [[w + 12, O], [w, PALE]]) { g.strokeStyle = c; g.lineWidth = ww; g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke(); } };
+const hollowHead = (x, y, r, mouth, rot = 0) => { g.save(); g.translate(x, y); g.rotate(rot); g.fillStyle = PALE; g.strokeStyle = O; g.lineWidth = 10; g.beginPath(); g.ellipse(0, 0, r, r * 1.15, 0, 0, 7); g.fill(); g.stroke();
+  g.fillStyle = 'rgba(120,110,100,0.35)'; for (const sx of [-1, 1]) { g.beginPath(); g.ellipse(sx * r * 0.42, -r * 0.2, r * 0.26, r * 0.14, 0, 0, 7); g.fill(); } // smooth skin where eyes would be
+  const mw = r * (0.55 + 0.25 * mouth), mh = r * (0.12 + 0.6 * mouth); g.fillStyle = '#0a0406'; g.beginPath(); g.ellipse(0, r * 0.45, mw, mh, 0, 0, 7); g.fill(); g.stroke();
+  g.fillStyle = '#efe8da'; const n = 7; for (let k = 0; k < n; k++) { const tx = -mw * 0.8 + (k * 1.6 * mw) / (n - 1); g.beginPath(); g.moveTo(tx - 7, r * 0.45 - mh * 0.85); g.lineTo(tx + 7, r * 0.45 - mh * 0.85); g.lineTo(tx, r * 0.45 - mh * 0.45); g.fill(); g.beginPath(); g.moveTo(tx - 7, r * 0.45 + mh * 0.85); g.lineTo(tx + 7, r * 0.45 + mh * 0.85); g.lineTo(tx, r * 0.45 + mh * 0.45); g.fill(); }
+  g.restore(); };
+// side view crouched, feet at (x,y); face 1 = looking right. o: mouth 0..1, lean 0..1 (about to charge), crawl 0..1, phase
+const hollow = (x, y, s, o = {}) => { const ph = (o.phase || 0) + T * (o.speed || 1), br = Math.sin(ph * 5) * 6; const m = o.mouth ?? 0.2, ln = o.lean ?? 0.3;
+  g.save(); g.translate(x, y); g.scale(s * (o.face ?? 1), s); g.lineCap = 'round'; g.lineJoin = 'round'; if (o.dim) g.globalAlpha = o.dim;
+  const hip = [-40, -300 + br * 0.5], sh = [90 + 60 * ln, -430 + 50 * ln + br], head = [190 + 90 * ln, -470 + 60 * ln + br];
+  plimb([hip, [-120, -170], [-60, 0]]); plimb([hip, [10, -150], [60, 0]]); // legs (bent)
+  g.fillStyle = PALE; g.strokeStyle = O; g.lineWidth = 12; g.beginPath(); g.moveTo(hip[0] - 50, hip[1]); g.quadraticCurveTo(hip[0] + 20, hip[1] - 200, sh[0], sh[1] - 30); g.lineTo(sh[0] + 30, sh[1] + 40); g.quadraticCurveTo(hip[0] + 60, hip[1] - 40, hip[0] + 30, hip[1] + 30); g.closePath(); g.fill(); g.stroke();
+  g.strokeStyle = PALE_D; g.lineWidth = 5; for (let k = 0; k < 5; k++) { g.beginPath(); g.arc(hip[0] + 20 + k * 22, hip[1] - 60 - k * 22, 18, 3.6, 4.6); g.stroke(); } // spine bumps
+  const reach = o.reach ?? 0; plimb([[sh[0], sh[1]], [sh[0] + 60 + 120 * reach, sh[1] + 180 - 160 * reach], [sh[0] + 90 + 230 * reach, -10 - 300 * reach]], 22);
+  plimb([[sh[0] - 10, sh[1] + 10], [sh[0] + 20, sh[1] + 200], [sh[0] + 30 + 40 * Math.sin(ph * 3) * (o.crawl || 0), -8]], 22);
+  for (const [fx, fy] of [[sh[0] + 90 + 230 * reach, -10 - 300 * reach]]) { g.strokeStyle = O; g.lineWidth = 9; for (let k = -1; k <= 1; k++) { g.beginPath(); g.moveTo(fx, fy); g.lineTo(fx + 50, fy + k * 22 + 10); g.stroke(); } g.strokeStyle = PALE; g.lineWidth = 5; for (let k = -1; k <= 1; k++) { g.beginPath(); g.moveTo(fx, fy); g.lineTo(fx + 48, fy + k * 22 + 10); g.stroke(); } }
+  hollowHead(head[0], head[1], 70, m + 0.05 * Math.sin(ph * 11), 0.35 + 0.2 * ln);
+  g.restore(); };
+// front view, leaping at the camera
+const hollowLeap = (x, y, s, o = {}) => { const m = o.mouth ?? 1; g.save(); g.translate(x, y); g.scale(s, s); g.lineCap = 'round'; g.lineJoin = 'round';
+  plimb([[-60, 120], [-200, 260], [-160, 420]], 30); plimb([[60, 120], [200, 250], [170, 420]], 30);
+  g.fillStyle = PALE; g.strokeStyle = O; g.lineWidth = 12; g.beginPath(); g.ellipse(0, 40, 120, 160, 0, 0, 7); g.fill(); g.stroke();
+  g.strokeStyle = PALE_D; g.lineWidth = 6; for (let k = 0; k < 4; k++) { g.beginPath(); g.moveTo(-70, -20 + k * 40); g.quadraticCurveTo(0, 0 + k * 40, 70, -20 + k * 40); g.stroke(); } // ribs
+  for (const sx of [-1, 1]) { plimb([[sx * 90, -60], [sx * 300, -120], [sx * 430, -260]], 30); g.strokeStyle = O; g.lineWidth = 14; for (let k = -2; k <= 2; k++) { g.beginPath(); g.moveTo(sx * 430, -260); g.lineTo(sx * (480 + 20 * Math.abs(k)), -330 + k * 30); g.stroke(); } g.strokeStyle = PALE; g.lineWidth = 7; for (let k = -2; k <= 2; k++) { g.beginPath(); g.moveTo(sx * 430, -260); g.lineTo(sx * (478 + 20 * Math.abs(k)), -330 + k * 30); g.stroke(); } }
+  hollowHead(0, -170, 120, m, 0); g.restore(); };
+
+// ---------- props ----------
+const flareHand = (x, y, s, glow = 0) => { g.save(); g.translate(x, y); g.scale(s, s); g.rotate(-0.25);
+  rr(-60, -260, 120, 420, 26, '#5a2ab0'); g.strokeStyle = O; g.lineWidth = 12; g.beginPath(); g.roundRect(-60, -260, 120, 420, 26); g.stroke(); rr(-70, -300, 140, 80, 18, '#2a1a40'); g.stroke();
+  g.fillStyle = '#ffe14a'; g.fillRect(-60, -120, 120, 36); g.fillStyle = '#1a1020'; g.font = '900 32px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('UV', 0, -91);
+  if (glow > 0) add(() => { const rg = g.createRadialGradient(0, -300, 10, 0, -300, 500); rg.addColorStop(0, `rgba(190,120,255,${0.7 * glow})`); rg.addColorStop(1, 'rgba(190,120,255,0)'); g.fillStyle = rg; g.fillRect(-600, -900, 1200, 1200); });
+  for (const [w, c] of [[110, O], [86, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = w; g.lineCap = 'round'; g.beginPath(); g.moveTo(-400, 520); g.lineTo(-140, 120); g.stroke(); }
+  for (let k = 0; k < 4; k++) { for (const [w, c] of [[48, O], [30, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(-110, -30 + k * 60); g.lineTo(60, -40 + k * 60); g.stroke(); } }
+  g.restore(); };
+
+const walkie = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s); g.rotate(o.rot || 0); g.lineJoin = 'round';
+  g.strokeStyle = O; g.lineWidth = 14; g.beginPath(); g.moveTo(60, -230); g.lineTo(60, -420); g.stroke(); g.strokeStyle = '#2a2a30'; g.lineWidth = 8; g.stroke();
+  rr(-110, -250, 220, 420, 34, '#2c2e2a'); g.strokeStyle = O; g.lineWidth = 12; g.beginPath(); g.roundRect(-110, -250, 220, 420, 34); g.stroke();
+  rr(-80, -200, 160, 130, 14, '#151714'); g.fillStyle = '#3a3c36'; for (let r = 0; r < 4; r++) for (let c = 0; c < 6; c++) { g.beginPath(); g.arc(-60 + c * 24, -175 + r * 28, 6, 0, 7); g.fill(); }
+  rr(-80, -40, 160, 70, 10, o.beep ? '#ff3a3a' : '#7ad88a'); g.fillStyle = '#0a1a0c'; g.font = '700 30px "DejaVu Sans Mono", monospace'; g.textAlign = 'center'; g.fillText(o.beep ? 'CH 9 !' : 'CH 9', 0, 6);
+  const led = o.beep ? (Math.floor(T * 8) % 2 ? '#ff2a2a' : '#4a0a0a') : (o.talk ? '#3aff6a' : '#1a4a22'); g.fillStyle = led; g.beginPath(); g.arc(-70, -225, 12, 0, 7); g.fill();
+  if (o.beep || o.talk) add(() => { const c = o.beep ? '255,40,40' : '60,255,110'; const rg = g.createRadialGradient(-70, -225, 2, -70, -225, 120); rg.addColorStop(0, `rgba(${c},0.8)`); rg.addColorStop(1, `rgba(${c},0)`); g.fillStyle = rg; g.fillRect(-200, -350, 260, 260); });
+  g.strokeStyle = 'rgba(220,215,200,0.85)'; g.lineWidth = 6; for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(-90 + k * 26, 50 + k * 8); g.lineTo(40 + k * 26, 150 + k * 8); g.stroke(); } // claw scratches
+  if (o.talk) { g.strokeStyle = '#3aff6a'; g.lineWidth = 6; g.beginPath(); for (let i = 0; i <= 40; i++) { const xx = -150 - 200 + i * 10, yy = -130 + Math.sin(i * 0.9 + T * 30) * 40 * Math.sin(i / 40 * Math.PI) * o.talk; i ? g.lineTo(xx, yy) : g.moveTo(xx, yy); } g.stroke(); }
+  g.restore(); };
+const bag = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s); g.lineJoin = 'round'; g.fillStyle = 'rgba(0,0,0,0.4)'; g.beginPath(); g.ellipse(0, 6, 220, 22, 0, 0, 7); g.fill();
+  g.fillStyle = '#3e5a3a'; g.strokeStyle = O; g.lineWidth = 12; g.beginPath(); g.moveTo(-200, 0); g.quadraticCurveTo(-220, -200, -60, -230); g.lineTo(80, -230); g.quadraticCurveTo(220, -200, 200, 0); g.closePath(); g.fill(); g.stroke();
+  rr(-110, -120, 220, 100, 20, '#34502f'); g.stroke(); g.strokeStyle = 'rgba(220,215,200,0.85)'; g.lineWidth = 7; for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(-150 + k * 30, -200); g.lineTo(-40 + k * 30, -40); g.stroke(); }
+  if (o.open) { g.fillStyle = '#0a0a08'; g.beginPath(); g.ellipse(10, -225, 120, 26, 0, 0, 7); g.fill(); }
+  g.restore(); };
+const handWith = (x, y, s, o = {}) => { g.save(); g.translate(x, y); g.scale(s, s); for (const [w, c] of [[110, O], [86, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = w; g.lineCap = 'round'; g.beginPath(); g.moveTo(-420, 640); g.lineTo(-120, 160); g.stroke(); }
+  walkie(0, 0, 1, o); for (let k = 0; k < 3; k++) for (const [w, c] of [[48, O], [30, '#f4f2ee']]) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(-150, 40 + k * 55); g.lineTo(90, 30 + k * 55); g.stroke(); } g.restore(); };
+const heroClose = (o = {}) => { g.save(); g.translate(-120, -300); g.scale(2.2, 2.2); rr(196, 600, 96, 170, 26, '#5a4630'); whiteStick(P, { beanie: '#2a2a36', ...o }); g.restore(); };
+const choiceCard = (x, y, txt, a, col = '#ff4d5e') => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.translate(x, y); g.scale(0.85 + 0.15 * a, 0.85 + 0.15 * a);
+  let fs = 60; g.font = `900 ${fs}px "DejaVu Sans", sans-serif`; while (g.measureText(txt).width > 860 && fs > 30) { fs -= 2; g.font = `900 ${fs}px "DejaVu Sans", sans-serif`; }
+  const w = g.measureText(txt).width + 80; rr(-w / 2, -62, w, 112, 28, 'rgba(10,6,16,0.9)'); g.strokeStyle = col; g.lineWidth = 7; g.beginPath(); g.roundRect(-w / 2, -62, w, 112, 28); g.stroke();
+  g.fillStyle = col; g.textAlign = 'center'; g.fillText(txt, 0, 18); g.restore(); };
+const bigText = (txt, y, a, col = '#ffffff', fs = 110) => { if (a <= 0) return; g.save(); g.globalAlpha = a; g.textAlign = 'center'; g.font = `900 ${fs}px "DejaVu Sans", sans-serif`; while (g.measureText(txt).width > 980) { fs -= 4; g.font = `900 ${fs}px "DejaVu Sans", sans-serif`; } g.lineJoin = 'round'; g.lineWidth = 18; g.strokeStyle = '#0a0610'; g.strokeText(txt, 540, y); g.fillStyle = col; g.fillText(txt, 540, y); g.restore(); };
+const sunsetCard = (t) => { const left = Math.max(0, 59 * 60 + 59 - Math.floor(Math.max(0, t - 4.4))); const mm = String(Math.floor(left / 60)).padStart(2, '0'), ss = String(left % 60).padStart(2, '0');
+  g.save(); rr(40, 70, 380, 130, 20, 'rgba(10,6,16,0.75)'); g.fillStyle = '#ffb45a'; g.font = '800 30px "DejaVu Sans", sans-serif'; g.fillText('SUNSET IN', 66, 118); g.fillStyle = '#ff7a3a'; g.shadowColor = '#ff7a3a'; g.shadowBlur = 14; g.font = '700 62px "DejaVu Sans Mono", monospace'; g.fillText(`00:${mm}:${ss}`, 62, 180); g.restore(); };
+const titleTag = () => { g.save(); g.textAlign = 'right'; g.fillStyle = '#ffe2a0'; g.shadowColor = '#ff7a3a'; g.shadowBlur = 16; g.font = '900 44px "DejaVu Sans", sans-serif'; g.fillText('LAST LIGHT', 1040, 130); g.shadowBlur = 0; g.fillStyle = 'rgba(255,226,160,0.8)'; g.font = '700 24px "DejaVu Sans", sans-serif'; g.fillText('P A R T  1', 1040, 168); g.restore(); };
+const grade = (desat) => { if (desat <= 0) return; g.save(); g.globalCompositeOperation = 'saturation'; g.fillStyle = `rgba(128,128,128,${desat})`; g.fillRect(0, 0, W, H); g.restore(); g.fillStyle = `rgba(10,14,30,${0.25 * desat})`; g.fillRect(0, 0, W, H); };
+const shake = (a) => g.translate(Math.sin(T * 53) * 14 * a, Math.sin(T * 41) * 10 * a);
+const worldAt = (scroll, o = {}) => { sky(o.sun || 0); towers(scroll); nearBuildings(scroll * 0.6); street(scroll); };
+const cars = (scroll) => { rustCar(-200 - scroll + 0, GY + 120, 0.55, { col: '#6a3a2a' }); rustCar(1350 - scroll, GY + 110, 0.5, { col: '#4a4a5a', flip: true }); rustCar(2600 - scroll, GY + 120, 0.55, { col: '#5a4a2a' }); };
+
+
+const endWide = (u, desat) => { g.save(); cam(1.0, 720, 1200); worldAt(140 * 6.9 + 300); shade(700); doorway(1150, GY + 40, 0.75);
+  [[760, 0], [900, 1], [1040, 2], [1160, 3]].forEach(([x, i]) => hollow(x, GY + 50 + 20 * (i % 2), 0.42, { face: -1, mouth: 1, lean: 1, reach: 0.2, phase: i, speed: 0 }));
+  g.save(); g.translate(0, 120); hero(260 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: 'shock' }); g.restore(); dog(470, GY + 200, 0.38, { pose: 'crouch', ears: 'down', tail: 0, t: 0 });
+  rustCar(420, GY + 330, 0.75, { col: '#6a3a2a' }); g.restore(); grade(desat); };
+
+// tower shadow: everything right of x0 (world units) is in shadow; the Hollow stay inside it
+const shade = (x0) => { g.save(); g.fillStyle = 'rgba(18,8,40,0.6)'; g.beginPath(); g.moveTo(x0 + 260, -900); g.lineTo(4000, -900); g.lineTo(4000, 3000); g.lineTo(x0 - 120, 3000); g.lineTo(x0 - 60, GY + 600); g.lineTo(x0, GY - 20); g.closePath(); g.fill();
+  add(() => { g.fillStyle = lin(x0 - 500, 0, x0, 0, [[0, 'rgba(255,170,90,0)'], [1, 'rgba(255,170,90,0.22)']]); g.fillRect(x0 - 500, GY - 30, 500, 900); });
+  g.strokeStyle = 'rgba(255,190,110,0.55)'; g.lineWidth = 6; g.beginPath(); g.moveTo(x0, GY - 20); g.lineTo(x0 - 60, GY + 600); g.stroke(); g.restore(); };
+const SCENES = {
+  flash(u) { // flash-forward: they leap, freeze
+    const fz = Math.min(u, 0.55), z = 0.9 + 0.9 * sm(fz / 0.55); g.save(); shake(u < 0.55 ? 1 : 0.15); worldAt(2400); g.fillStyle = 'rgba(20,5,10,0.35)'; g.fillRect(0, 0, W, H);
+    hollow(160, 1640, 0.9, { mouth: 1, lean: 1, reach: 1, face: 1 }); hollow(940, 1660, 0.85, { mouth: 1, lean: 1, reach: 1, face: -1, phase: 2 });
+    g.save(); g.translate(540, 900); g.scale(z, z); hollowLeap(0, 0, 1.25, { mouth: 1 }); g.restore(); g.restore();
+    if (u < 0.12) { g.fillStyle = `rgba(255,255,255,${1 - u / 0.12})`; g.fillRect(0, 0, W, H); }
+    if (u >= 0.55) { grade(0.8); bigText('WHAT DO YOU DO?', 1580, sm((u - 0.55) / 0.15), '#ff4d5e', 104); } },
+  rewind(u) { const sc = 2400 - 2400 * sm(u / 2.3); worldAt(sc); cars(sc - 1800); hero(380 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1 }); dog(640, GY + 120, 0.42, { pose: 'stand', ears: 'up' });
+    g.fillStyle = 'rgba(255,255,255,0.07)'; for (let y = (T * 900) % 40; y < H; y += 40) g.fillRect(0, y, W, 6); for (let k = 0; k < 6; k++) { const y = hash(Math.floor(T * 20) + k) * H; g.fillStyle = 'rgba(255,255,255,0.18)'; g.fillRect(0, y, W, 4 + hash(k + T) * 14); }
+    grade(0.5); bigText('◀◀  2 MINUTES EARLIER', 420, 1, '#ffffff', 72); },
+  walk(u) { const sc = u * 140; g.save(); cam(1.0, 540, 960); worldAt(sc); cars(sc - 600); const st = Math.sin(u * 11.4);
+    hero(330 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, step: st, swing: st * 0.5 }); dog(620, GY + 125, 0.42, { pose: 'stand', ears: 'up', tail: 0.6 }); g.restore(); },
+
+  backpack(u) { const z = 1 + 0.5 * sm((u - 0.6) / 2.5); g.save(); cam(z, lerp(540, 470, sm(u / 3)), lerp(960, 1330, sm(u / 3))); worldAt(140 * 6.9 - 400); cars(140 * 6.9 - 1000); bag(640, GY + 150, 0.42, {});
+    hero(250 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: 'worried' }); dog(560, GY + 130, 0.42, { pose: u > 0.8 ? 'crouch' : 'stand', ears: 'up', tail: 0.5, look: 1 }); g.restore(); },
+  radio(u) { g.fillStyle = '#20141c'; g.fillRect(0, 0, W, H); g.save(); cam(1 + 0.04 * u, 540, 960); worldAt(140 * 6.9 - 400); g.fillStyle = 'rgba(10,4,14,0.5)'; g.fillRect(-400, -400, 2000, 2800);
+    bag(540, 1900, 1.6, { open: true }); const up = sm(u / 1.2); handWith(600, 1700 - 600 * up, 1.0, { talk: 0, rot: -0.15 }); g.restore(); },
+  voice(u) { g.fillStyle = '#20141c'; g.fillRect(0, 0, W, H); g.save(); shake(0.08); cam(1, 540, 960); worldAt(140 * 6.9 - 400); g.fillStyle = 'rgba(10,4,14,0.55)'; g.fillRect(-400, -400, 2000, 2800);
+    handWith(640, 1150, 1.0, { talk: u < 2.4 ? 1 : 0, rot: -0.15 }); g.restore(); if (u < 2.4) bigText('"HELP ME... PLEASE."', 1640, sm(u / 0.2), '#7affa0', 70); },
+  mine(u) { g.fillStyle = '#20141c'; g.fillRect(0, 0, W, H); g.save(); cam(1 + 0.12 * sm(u / 3), 540, 760); worldAt(140 * 6.9 - 400); g.fillStyle = 'rgba(10,4,14,0.4)'; g.fillRect(-400, -400, 2000, 2800); heroClose({ look: 0.2, expr: 'shock' }); g.restore(); },
+  hide(u) { const k = sm(u / 12); g.save(); cam(1.1, 600, 1250); worldAt(140 * 6.9 + 300); const ed = lerp(980, 720, k); shade(ed); doorway(1300, GY + 40, 0.75);
+    const cx = Math.max(ed + 40, lerp(1100, 760, k)); hollow(cx, GY + 60, 0.42, { face: -1, mouth: 0.15, lean: 0.2 + 0.4 * k, phase: 0.7, speed: 0.4 }); hollow(1200, GY + 40, 0.4, { face: -1, mouth: 0.1, lean: 0.2, phase: 2, speed: 0.3, dim: 0.7 });
+    // kid + Biscuit crouched behind the car (car drawn after = in front)
+    g.save(); g.translate(0, 120); hero(260 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: 'scared' }); g.restore(); dog(470, GY + 200, 0.38, { pose: 'crouch', ears: 'down', tail: 0, look: 1 });
+    rustCar(420, GY + 330, 0.75, { col: '#6a3a2a' }); g.restore();
+    if (u > 1.2) { g.save(); g.globalAlpha = 0.5 + 0.3 * Math.sin(T * 5); g.fillStyle = '#fff'; g.font = '900 46px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('🤫', 330, 1050); g.restore(); } },
+  beep(u) { if (u < 1.4) { g.fillStyle = '#1a0e14'; g.fillRect(0, 0, W, H); g.save(); shake(0.4); cam(1.1, 540, 960); worldAt(140 * 6.9 + 300); g.fillStyle = 'rgba(10,4,14,0.6)'; g.fillRect(-400, -400, 2000, 2800); handWith(600, 1150, 1.05, { beep: true, rot: -0.1 }); g.restore(); bigText('BEEP!', 560, 1, '#ff3a3a', 150); }
+    else { const v = u - 1.4; g.save(); cam(1.25, 760, 1220); worldAt(140 * 6.9 + 300); shade(710); doorway(1300, GY + 40, 0.75); [[760, 0], [900, 1], [1040, 2], [1160, 3]].forEach(([x, i]) => hollow(x, GY + 50 + 20 * (i % 2), 0.42, { face: -1, mouth: sm((v - i * 0.12) / 0.3), lean: 0.9, reach: 0.2, phase: i, speed: 0.2 })); rustCar(420, GY + 330, 0.75, { col: '#6a3a2a' }); g.restore(); } },
+  growl(u) { const z = 1.0 + 0.35 * sm(u / 6), fx = lerp(540, 760, sm(u / 6)); g.save(); cam(z, fx, 1180); worldAt(140 * 6.9); shade(780); doorway(980, GY + 40, 0.75, { inside: () => { if (u > 3.5) { g.globalAlpha = sm((u - 3.5) / 2) * 0.55; hollowHead(-60, -120, 40, 0.1); g.globalAlpha = 1; } } });
+    hero(330 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: u > 1.5 ? 'scared' : 'worried' }); dog(620, GY + 125, 0.42, { pose: 'crouch', ears: 'down', growl: true, tail: 0, shake: 0.3 }); g.restore(); },
+  pour(u) { const k = sm(u / 5.5); g.save(); shake(0.25 + 0.5 * k); cam(1.15 - 0.1 * k, 700, 1220); worldAt(140 * 6.9); const ed = lerp(780, 700, k); shade(ed); doorway(980, GY + 40, 0.75);
+    const pos = [[880, 0.0], [1000, 0.6], [760, 1.2], [1110, 1.8], [640, 2.4]]; pos.forEach(([x, d], i) => { const a = sm((u - d) / 0.8); if (a <= 0) return; const xx = Math.max(ed + 50, lerp(980, x - 120 * k, a)); hollow(xx, GY + 40 + 30 * (i % 2), 0.42, { face: -1, mouth: 0.3 + 0.7 * Math.abs(Math.sin(T * 3 + i)), lean: 0.4 + 0.6 * k, crawl: 1, phase: i * 1.3, dim: lerp(0.4, 1, a) }); });
+    hero(330 - 300 * 0.55, GY + 160 - 975 * 0.55, 0.55, { look: 1, expr: 'shock' }); dog(620, GY + 125, 0.42, { pose: 'crouch', ears: 'down', growl: true, bark: Math.sin(T * 9) > 0.5, tail: 0, shake: 0.6 }); g.restore(); },
+  freeze(u) { endWide(u, 0.3 + 0.5 * sm(u / 0.4)); const r = 120 + 8 * Math.sin(T * 6); g.save(); g.strokeStyle = '#ffe14a'; g.lineWidth = 7; g.setLineDash([18, 14]);
+    if (u > 0.6) { g.globalAlpha = sm((u - 0.6) / 0.3); g.beginPath(); g.arc(250, 1420, r * 1.5, 0, 7); g.stroke(); }
+    if (u > 1.6) { g.globalAlpha = sm((u - 1.6) / 0.3); g.strokeStyle = '#ff4d5e'; g.beginPath(); g.arc(970, 1190, r * 1.5, 0, 7); g.stroke(); } g.restore(); },
+  choice(u) { endWide(u, 0.85); g.fillStyle = 'rgba(5,3,10,0.45)'; g.fillRect(0, 0, W, H);
+    choiceCard(540, 560, '🚗 HIDE INSIDE THE RUSTED CAR', sm(u / 0.3)); g.save(); g.globalAlpha = sm((u - 0.3) / 0.3); g.fillStyle = '#fff'; g.font = '900 54px "DejaVu Sans", sans-serif'; g.textAlign = 'center'; g.fillText('OR', 540, 700); g.restore(); choiceCard(540, 820, '🏃 RUN INTO THE DARK BUILDING', sm((u - 0.5) / 0.3));
+    if (u > 1.6) { const b = Math.sin(T * 6) * 12; bigText('COMMENT 👇', 1760 + b, sm((u - 1.6) / 0.3), '#c6ff3a', 80); } },
+};
+const lerp = (a, b, u) => a + (b - a) * u;
+const SHOTS = [[0, 'flash'], [1.95, 'rewind'], [4.4, 'walk'], [9.3, 'backpack'], [13.9, 'radio'], [18.4, 'voice'], [22.6, 'mine'], [26.6, 'growl'], [33.5, 'pour'], [38.8, 'hide'], [52.6, 'beep'], [57.2, 'freeze'], [63.6, 'choice']];
+window.TOTAL = 70.0;
+const shotAt = (t) => { let i = 0; while (i + 1 < SHOTS.length && t >= SHOTS[i + 1][0]) i++; return [SHOTS[i][1], t - SHOTS[i][0]]; };
+let CHUNKS = [];
+const buildChunks = () => { CHUNKS = []; let cur = []; WORDS.forEach((w, i) => { cur.push(w); const end = /[.?!:,]$|\.\.\.$/.test(w.w) || cur.length >= 4; if (end) { CHUNKS.push(cur); cur = []; } }); if (cur.length) CHUNKS.push(cur); };
+const captions = (t) => { const ch = CHUNKS.find((c, i) => t >= c[0].s - 0.05 && t < (CHUNKS[i + 1] ? Math.min(CHUNKS[i + 1][0].s - 0.05, c[c.length - 1].e + 0.6) : c[c.length - 1].e + 0.6)); if (!ch) return;
+  const hi = ch.findIndex((w) => t >= w.s && t < w.e + 0.08); g.save(); g.translate(240, 260); capCard(P, { words: ch.map((w) => w.w.toUpperCase()), hi: hi < 0 ? ch.length - 1 : hi }); g.restore(); };
+window.renderFrame = (f) => { const t = f / 30; T = t; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H); const [shot, u] = shotAt(t);
+  g.save(); SCENES[shot](u, t); g.restore(); g.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.25, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.55)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  if (shot !== 'flash' && shot !== 'choice') { sunsetCard(t); titleTag(); } if (shot !== 'choice') captions(t); return true; };
+window.renderThumb = () => { T = 1.2; g.setTransform(1, 0, 0, 1, 0, 0); SCENES.flash(0.6); g.setTransform(1, 0, 0, 1, 0, 0); };
+fetch('./words1.json').then((r) => r.json()).then((w) => { WORDS = w; buildChunks(); window.ready = true; });
+</script></body></html>
