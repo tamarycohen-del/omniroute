@@ -39,6 +39,8 @@ txt = txt.replace("g.quadraticCurveTo(-26, -36, -34, -4); g.closePath(); g.fill(
 txt = txt.replace("  g.fillStyle = '#120a06'; g.beginPath(); g.moveTo(-34, 8);", "  if (LK.beard) { g.fillStyle = '#120a06'; g.beginPath(); g.moveTo(-34, 8);")
 txt = txt.replace("g.quadraticCurveTo(-18, 34, -26, 8); g.closePath(); g.fill();\n  g.beginPath(); g.moveTo(4, 26); g.quadraticCurveTo(24, 18, 42, 26); g.lineTo(42, 31); g.quadraticCurveTo(24, 24, 4, 31); g.closePath(); g.fill();", "g.quadraticCurveTo(-18, 34, -26, 8); g.closePath(); g.fill();\n  g.beginPath(); g.moveTo(4, 26); g.quadraticCurveTo(24, 18, 42, 26); g.lineTo(42, 31); g.quadraticCurveTo(24, 24, 4, 31); g.closePath(); g.fill(); }")
 txt = txt.replace("g.strokeStyle = '#e9eef7'", "g.strokeStyle = (LK.side || '#e9eef7')")
+txt = txt.replace('const court = (x, y, w, o = {}) => { g.save(); g.translate(x, y); const h = w * 0.2;', 'const court = (x, y, w, o = {}) => { g.save(); g.translate(x, y); const h = o.h || w * 0.2;')
+assert 'o.h || w * 0.2' in txt
 assert 'if (LK.hair)' in txt and 'if (LK.beard)' in txt and 'LK.band' in txt, 'gating failed'
 looks = '''
 const LOOK = {
@@ -65,4 +67,5 @@ window.renderThumb = () => { T = 2.4; g.setTransform(1, 0, 0, 1, 0, 0); g.save()
 html += thumb
 html += "Promise.all([fetch('./words.json').then((r) => r.json()), fetch('./lines.json').then((r) => r.json()), fetch('./clips.json').then((r) => r.json())]).then(([w, ln, cl]) => { WORDS = w; LINES = ln; CLIPS = cl; window.TOTAL = ln[ln.length - 1].e + 0.04 + 1.44 + 0.28; buildShots(); window.ready = true; });\n</script></body></html>\n"
 open(os.path.join(HERE, 'lbmj.html'), 'w').write(html)
+open(os.path.join(HERE, 'lbmj_wide.html'), 'w').write(html.replace('<script>', '<script>\nwindow.WIDE = true;', 1))
 print('built', len(html))

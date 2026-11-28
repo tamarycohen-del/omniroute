@@ -34,3 +34,5 @@ Ending v3 (user): LeBron releases at the end of 'shoots', then HANGS in the air 
 Hook v4 (user): the clip (LeBron's name) plays FIRST, then the narrator says "Versus Prime Jordan. Tied game. One shot left." (ElevenLabs line 0 re-generated, 46 credits; insert_clip.py prepends the clip when line 0 has no 'LeBron' word). ElevenLabs total ~661 credits.
 
 Hook v5 (user): "Prime" (first word of the original ElevenLabs take, assets/el/l0_old.mp3) + the clip (LeBron's name) + "versus Prime Jordan. Tied game. One shot left." (new take l0.mp3). Built by insert_clip.py.
+
+WIDE-COURT VERSION (user: the two hoops looked unrealistically close): `WIDE=1 N=el source_code/run.sh` -> lebron_vs_jordan_wide.mp4 (page lbmj_wide.html, window.WIDE=true). Hoops 4200 px apart (standard 960), longer floor with centre circle + key areas, camera follows the ball handler (fast breaks across the court with motion trails), last shot starts with LeBron running up from midcourt. Everything else (voice, sounds, text, timings) is identical; the standard version renders pixel-identical to before.
